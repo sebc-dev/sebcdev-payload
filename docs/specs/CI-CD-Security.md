@@ -47,26 +47,124 @@ Le pipeline CI/CD implémente une stratégie de **défense en profondeur** en 4 
 
 ### 2.1 Socket.dev - Protection contre les Paquets Malveillants
 
-**Problématique** : Les outils de génération de code par IA peuvent "halluciner" des noms de paquets qui n'existent pas, ou introduire des dépendances avec des typos permettant des attaques par typosquatting. Socket.dev analyse les paquets npm avant installation.
+**Problématique** : Les outils de génération de code par IA peuvent "halluciner" des noms de paquets qui n'existent pas, ou introduire des dépendances avec des typos permettant des attaques par typosquatting. Socket.dev analyse le **comportement** des paquets npm, pas seulement les CVE connues.
 
-**Configuration Bloquante** :
+**Approche Comportementale vs CVE** : Contrairement aux scanners traditionnels (rétrospectifs, basés sur des listes de vulnérabilités connues), Socket.dev analyse ce que fait le code : exfiltration de variables d'environnement, exécution de scripts obfusqués, téléchargement de binaires externes.
+
+#### 2.1.1 Configuration du Workflow GitHub Actions
+
+**Triggers Obligatoires** :
+
+| Événement | Configuration | Justification |
+|-----------|---------------|---------------|
+| `push` | `branches: ["main"]` | Maintient une ligne de base de sécurité propre |
+| `pull_request` | `types: [opened, synchronize, reopened]` | Rescanne après chaque nouveau commit |
+| `issue_comment` | `types: [created]` | **Critique** : Permet `@SocketSecurity ignore` pour débloquer les PRs |
+
+**Gestion de la Concurrence** :
 
 ```yaml
-# .github/workflows/quality-gate.yml
-- name: Socket.dev Supply Chain Security
-  uses: socketdev/socket-security-action@v1.2.3  # ⚠️ À épingler par SHA
-  with:
-    mode: block  # Bloque si vulnérabilité HIGH/CRITICAL détectée
-    scope: dependencies  # Analyse package.json + pnpm-lock.yaml
+concurrency:
+  group: socket-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true  # Annule les scans obsolètes
 ```
 
-**Détections Clés** :
-- Paquets avec installation scripts suspects (postinstall malveillants)
-- Typosquatting (lodahs vs lodash)
+**Permissions Granulaires** :
+
+```yaml
+jobs:
+  socket-security:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read        # Cloner le code
+      issues: write         # Commenter sur les PRs
+      pull-requests: write  # Mettre à jour les statuts
+    steps:
+      - uses: actions/checkout@v4
+      - name: Socket Security Scan
+        uses: SocketDev/action@v1  # ⚠️ Épingler par SHA en production
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          use-cache: true  # Évite le re-téléchargement du CLI à chaque run
+```
+
+#### 2.1.2 Configuration socket.yml (Version 2)
+
+Le fichier `socket.yml` à la racine du repo contrôle le comportement de l'analyse. **La version 2 est obligatoire** pour les fonctionnalités avancées.
+
+```yaml
+# socket.yml
+version: 2
+
+# Exclusion des dossiers non-production (évite les faux positifs)
+projectIgnorePaths:
+  - "tests/fixtures/**"
+  - "docs/**"
+  - "**/__tests__/fixtures/**"
+
+# Optimisation monorepo : ne scanne que si les dépendances changent
+triggerPaths:
+  - "package.json"
+  - "**/package.json"      # Workspaces imbriqués
+  - "pnpm-lock.yaml"
+  - "socket.yml"
+
+# Désactivation contextuelle de règles (si build tools légitimes)
+issueRules:
+  unsafe-eval: false       # Désactiver si bundler utilise eval() légitimement
+  # native-code: true      # Garder actif par défaut
+
+# Intégration GitHub App
+githubApp:
+  enabled: true
+  dependencyOverviewEnabled: true
+
+# Politique de licence (conformité légale)
+licensePolicies:
+  deny:
+    - "GPL-2.0-only"
+    - "GPL-3.0-only"
+    - "AGPL-3.0-only"
+```
+
+**Rationale des exclusions** :
+- **`tests/fixtures/**`** : Peut contenir des dépendances volontairement malveillantes pour les tests de détection
+- **`triggerPaths`** : Évite les scans inutiles lors de modifications de code métier (économie de minutes CI)
+
+#### 2.1.3 Matrice de Politique de Sécurité
+
+| Catégorie de Menace | Action | Justification |
+|---------------------|--------|---------------|
+| **Malware Connu** | **BLOCK** | Risque existentiel immédiat |
+| **Typosquatting** | **BLOCK** | Presque toujours une erreur ou attaque |
+| **Scripts d'Installation** | **BLOCK** (Frontend) / **WARN** (Backend) | Vecteur n°1 des malwares npm (90%+) |
+| **Télémetrie** | **WARN** | Problème de confidentialité, revue humaine requise |
+| **Code Natif** | **WARN** | Légitime souvent (esbuild, fsevents), ne pas bloquer aveuglément |
+| **Non Maintenu** (> 2 ans) | **MONITOR** | Dette technique, pas une faille active |
+
+**Règle d'Or Install Scripts** : En frontend pur, les `postinstall` sont rarement justifiés. Adopter une approche **Whitelisting** : bloquer par défaut, autoriser explicitement via `@SocketSecurity ignore`.
+
+#### 2.1.4 Mécanisme @SocketSecurity ignore
+
+Quand une alerte bloque une PR mais est jugée acceptable (faux positif ou risque accepté) :
+
+1. Le développeur poste un commentaire : `@SocketSecurity ignore <package-name>@<version>`
+2. Le bot Socket détecte le commentaire (grâce au trigger `issue_comment`)
+3. Socket re-scanne la PR en excluant cette alerte
+4. Le statut du check passe au vert
+
+**Avantage** : Traçabilité visible dans la conversation GitHub (audit trail).
+
+#### 2.1.5 Détections Clés
+
+- Paquets avec installation scripts suspects (`postinstall` malveillants)
+- Typosquatting (`lodahs` vs `lodash`, `raect-dom` vs `react-dom`)
 - Paquets récemment publiés (< 30 jours) par auteurs inconnus
 - Imports de modules natifs Node.js dans du code prétendu browser-only
+- Exfiltration de variables d'environnement (`process.env` vers serveurs distants)
+- Scripts d'installation obfusqués
 
-**Référence** : [Socket.dev CI Documentation](../tech/github/socker-dev-CI.md)
+**Référence** : [Socket.dev CI Documentation](../tech/github/socket-dev-CI.md)
 
 ### 2.2 Pinning par SHA des Actions GitHub
 
@@ -629,44 +727,193 @@ GitHub masque automatiquement les valeurs de `secrets.*` dans les logs, **mais**
 
 ### 7.1 Lighthouse CI
 
-**Objectif** : Prévenir la régression de performance et d'accessibilité via des **budgets stricts**. Le build échoue si les scores descendent sous les seuils.
+**Objectif** : Prévenir la régression de performance et d'accessibilité via des **budgets stricts** intégrés au pipeline CI. Le build échoue si les métriques dépassent les seuils définis.
 
-**Budgets Définis** :
-- **Performance** : ≥ 90
-- **Accessibility** : = 100 (non négociable)
-- **SEO** : = 100
-- **Best Practices** : ≥ 95
+#### Philosophie "Shift-Left Performance Testing"
 
-**Configuration** :
+L'intégration de Lighthouse CI dans GitHub Actions permet de détecter les régressions des Core Web Vitals (CWV), de l'accessibilité et du SEO **avant** qu'elles n'atteignent la production. Chaque Pull Request devient un point de contrôle où l'impact de chaque modification est quantifié.
+
+#### Configuration Expert (`lighthouserc.js`)
+
+**Important** : Privilégier le format `.js` au format `.json` pour permettre l'injection dynamique de variables d'environnement et la logique conditionnelle (gestion des URLs de preview Cloudflare).
+
+```javascript
+// lighthouserc.js - Configuration pour Next.js 15 + Cloudflare + Payload CMS
+module.exports = {
+  ci: {
+    collect: {
+      // URL injectée par le pipeline CI ou repli sur localhost
+      url: [
+        process.env.PREVIEW_URL || 'http://localhost:3000/',
+        `${process.env.PREVIEW_URL || 'http://localhost:3000'}/fr`,
+        `${process.env.PREVIEW_URL || 'http://localhost:3000'}/en`,
+      ],
+      // Script Puppeteer pour l'authentification admin (si audit /admin requis)
+      puppeteerScript: './scripts/lighthouse-auth.js',
+      numberOfRuns: 3, // Minimum 3 pour lisser la variance des runners CI
+      // Pas de serveur local si URL distante disponible
+      startServerCommand: process.env.PREVIEW_URL ? undefined : 'pnpm start',
+      startServerReadyPattern: 'Ready on',
+      settings: {
+        chromeFlags: '--no-sandbox --disable-gpu --disable-dev-shm-usage',
+        // Ajustement throttling pour compenser la faiblesse des runners CI
+        throttlingMethod: 'devtools',
+        preset: 'desktop', // 'mobile' pour le site public
+      },
+    },
+    assert: {
+      assertions: {
+        // ⚠️ STRATÉGIE CRITIQUE : Assertions sur métriques brutes, PAS sur scores abstraits
+        // Les scores sont non-linéaires et volatils en CI
+
+        // Largest Contentful Paint (sensible à l'optimisation d'image et temps serveur)
+        'largest-contentful-paint': ['warn', { maxNumericValue: 2500 }],
+        'largest-contentful-paint': ['error', { maxNumericValue: 4000 }],
+
+        // Cumulative Layout Shift (doit être proche de zéro pour pages Next.js statiques)
+        'cumulative-layout-shift': ['warn', { maxNumericValue: 0.1 }],
+        'cumulative-layout-shift': ['error', { maxNumericValue: 0.25 }],
+
+        // Total Blocking Time (un TBT élevé indique souvent des problèmes d'hydratation)
+        'total-blocking-time': ['warn', { maxNumericValue: 200 }],
+        'total-blocking-time': ['error', { maxNumericValue: 600 }],
+
+        // First Contentful Paint (la latence réseau CI gonfle souvent le FCP)
+        'first-contentful-paint': ['warn', { maxNumericValue: 1800 }],
+        'first-contentful-paint': ['error', { maxNumericValue: 3000 }],
+
+        // Accessibilité et SEO : tolérance zéro
+        'categories:accessibility': ['error', { minScore: 1.0 }],
+        'categories:seo': ['error', { minScore: 1.0 }],
+
+        // Erreurs console (détecte les erreurs d'hydratation React 19)
+        'errors-in-console': ['error', { maxLength: 0 }],
+      },
+    },
+    upload: {
+      target: 'temporary-public-storage', // Gratuit, URLs publiques immédiates (7 jours)
+    },
+  },
+};
+```
+
+#### Tableau des Seuils d'Assertion Recommandés
+
+| Métrique | ID Lighthouse | Seuil Warn (Soft) | Seuil Error (Hard) | Justification |
+|----------|---------------|-------------------|--------------------| --------------|
+| **First Contentful Paint** | `first-contentful-paint` | > 1800 ms | > 3000 ms | Latence réseau CI gonfle le FCP |
+| **Largest Contentful Paint** | `largest-contentful-paint` | > 2500 ms | > 4000 ms | Sensible à Cloudflare Images et temps serveur |
+| **Cumulative Layout Shift** | `cumulative-layout-shift` | > 0.1 | > 0.25 | Doit être ~0 pour pages Next.js statiques |
+| **Total Blocking Time** | `total-blocking-time` | > 200 ms | > 600 ms | TBT élevé = problème d'hydratation React 19 |
+
+**Rationale Warn vs Error** :
+- **Error (Bloquant)** : Limites larges représentant des dégradations inacceptables
+- **Warn (Non-bloquant)** : Limites strictes représentant l'état cible idéal
+
+Cette stratégie garantit que seules les régressions catastrophiques cassent le build, tandis que les dérives sont signalées dans les commentaires PR.
+
+#### Synchronisation avec Cloudflare Preview URLs
+
+**Problème** : La commande `wrangler deploy` rend la main avant que l'URL soit réellement accessible (propagation DNS, activation Worker). Lighthouse risque d'auditer une page d'erreur.
+
+**Solution** : Pattern `wait-for-url` obligatoire avant l'audit.
 
 ```yaml
 # .github/workflows/quality-gate.yml
-- name: Lighthouse CI
-  uses: treosh/lighthouse-ci-action@v11
+- name: Deploy to Cloudflare Pages (Preview)
+  id: deploy
+  uses: cloudflare/wrangler-action@v3
   with:
-    urls: |
-      http://localhost:3000/
-      http://localhost:3000/blog
-      http://localhost:3000/admin
-    budgetPath: ./lighthouserc.json
-    temporaryPublicStorage: true
+    apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+    accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+    command: pages deploy .vercel/output/static --branch=${{ github.head_ref }}
+
+- name: Wait for Preview URL
+  run: |
+    url="${{ steps.deploy.outputs.deployment-url }}"
+    echo "Attente de disponibilité pour $url..."
+    timeout 60s bash -c "until curl -s -f -o /dev/null $url; do sleep 2; done"
+
+- name: Run Lighthouse CI
+  env:
+    PREVIEW_URL: ${{ steps.deploy.outputs.deployment-url }}
+  run: |
+    npm install -g @lhci/cli
+    lhci autorun
 ```
 
-```json
-// lighthouserc.json
-{
-  "ci": {
-    "assert": {
-      "preset": "lighthouse:recommended",
-      "assertions": {
-        "categories:performance": ["error", {"minScore": 0.9}],
-        "categories:accessibility": ["error", {"minScore": 1.0}],
-        "categories:seo": ["error", {"minScore": 1.0}]
-      }
-    }
+#### Authentification Payload CMS (Routes Admin)
+
+Pour auditer le panneau d'administration (`/admin`), un script Puppeteer doit établir une session authentifiée **avant** l'audit Lighthouse.
+
+```javascript
+// scripts/lighthouse-auth.js
+module.exports = async (browser, context) => {
+  const page = await browser.newPage();
+  const baseUrl = new URL(context.url).origin;
+  const loginUrl = `${baseUrl}/admin/login`;
+
+  await page.goto(loginUrl, { waitUntil: 'networkidle0' });
+
+  // Sélecteurs Payload CMS 3.x
+  const emailSelector = 'input[name="email"]';
+  const passwordSelector = 'input[name="password"]';
+
+  // Attente hydratation React (CRITIQUE pour Payload)
+  await page.waitForSelector(emailSelector, { visible: true, timeout: 15000 });
+
+  // Identifiants depuis variables d'environnement (JAMAIS en dur)
+  const email = process.env.ADMIN_EMAIL;
+  const password = process.env.ADMIN_PASSWORD;
+
+  if (!email || !password) {
+    throw new Error('ADMIN_EMAIL et ADMIN_PASSWORD requis pour audit admin');
   }
-}
+
+  await page.type(emailSelector, email, { delay: 10 });
+  await page.type(passwordSelector, password, { delay: 10 });
+
+  await Promise.all([
+    page.click('button[type="submit"]'),
+    page.waitForNavigation({ waitUntil: 'networkidle0' }),
+  ]);
+
+  if (page.url().includes('/login')) {
+    throw new Error(`Échec login Payload. URL: ${page.url()}`);
+  }
+
+  await page.close();
+};
 ```
+
+**Note** : Ce script n'est nécessaire que si vous auditez les routes `/admin/*`. Pour le site public, il peut être omis.
+
+#### Stratégies Anti-Flakiness (Instabilité)
+
+Les runners GitHub Actions ont une performance CPU variable, causant des échecs non déterministes.
+
+**Mitigations** :
+1. **`numberOfRuns: 3`** : LHCI agrège en médiane pour lisser la variance
+2. **`throttlingMethod: 'devtools'`** : Évite le throttling CPU composé sur runners faibles
+3. **Assertions sur métriques brutes** : Plus stables que les scores abstraits
+4. **Warmup implicite** : Le `wait-for-url` "chauffe" aussi les caches ISR
+
+#### Intégration Workflow Complet
+
+```yaml
+# Extrait .github/workflows/quality-gate.yml
+- name: Lighthouse CI
+  env:
+    LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}
+    PREVIEW_URL: ${{ steps.deploy.outputs.deployment-url }}
+    ADMIN_EMAIL: ${{ secrets.ADMIN_EMAIL }}
+    ADMIN_PASSWORD: ${{ secrets.ADMIN_PASSWORD }}
+  run: |
+    npm install -g @lhci/cli
+    lhci autorun
+```
+
+**Configuration Token GitHub App** : Installer l'app [Lighthouse CI](https://github.com/apps/lighthouse-ci) sur le repo pour obtenir des Status Checks granulaires dans l'onglet "Checks" des PRs.
 
 **Référence** : [Lighthouse CLI Documentation](../tech/github/ligthouse-cli-CI.md)
 
@@ -995,7 +1242,7 @@ jobs:
 - [Spécificités Payload CMS + Next.js CI/CD](../tech/github/github-actions-nextjs-payload.md)
 
 ### Documentation Outils Individuels
-- [Socket.dev CI](../tech/github/socker-dev-CI.md)
+- [Socket.dev CI](../tech/github/socket-dev-CI.md)
 - [Knip CI](../tech/github/knip-CI.md)
 - [Lighthouse CLI](../tech/github/ligthouse-cli-CI.md)
 - [ESLint + Prettier CI](../tech/github/eslint-prettier-CI.md)

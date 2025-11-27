@@ -168,7 +168,12 @@ C'est entendu. Voici la section complète des **Exigences (Requirements)**, cons
 **Critères d'acceptation (Organisation par phase) :**
 
 **Phase 1 - MVP (Essentials) :**
-- **CA1 (Sécurité)** : Action **Socket.dev** bloquante contre les paquets malveillants.
+- **CA1 (Sécurité Supply Chain)** : Action **Socket.dev** avec politique de sécurité différenciée :
+  - **BLOCK** : Malware connu, typosquatting, scripts d'installation suspects (frontend)
+  - **WARN** : Télémetrie, code natif (esbuild, fsevents légitimes)
+  - **MONITOR** : Paquets non maintenus (> 2 ans)
+- **CA1b (Conformité Licence)** : Politique de licence deny list pour bloquer les licences virales (`GPL-3.0`, `AGPL-3.0`) protégeant la propriété intellectuelle.
+- **CA1c (Configuration socket.yml v2)** : Fichier de configuration avec `triggerPaths` (optimisation CI) et `projectIgnorePaths` (exclusion fixtures de test).
 - **CA2 (Hygiène)** : Action **Knip** configurée pour Next.js 15 + Payload CMS :
   - Points d'entrée explicites : `payload.config.ts`, `middleware.ts`, `instrumentation.ts`
   - Exclusion des types générés (`payload-types.ts`) et migrations Drizzle
@@ -180,7 +185,14 @@ C'est entendu. Voici la section complète des **Exigences (Requirements)**, cons
 **Phase 2 - Enhanced (Monitoring & Performance) :**
 - **CA6 (A11y)** : Tests Playwright + `axe-core`.
 - **CA7 (Architecture)** : Intégration de **dependency-cruiser** pour interdire les imports non conformes (ex: code serveur importé dans un composant client).
-- **CA9 (Performance Shield)** : Intégration de **Lighthouse CI** avec budgets stricts (Performance > 90, Accessibility = 100, SEO = 100).
+- **CA9 (Performance Shield)** : Intégration de **Lighthouse CI** avec assertions sur métriques brutes (plus stables que les scores abstraits en CI) :
+  - **LCP** : warn > 2500ms, error > 4000ms
+  - **CLS** : warn > 0.1, error > 0.25
+  - **TBT** : warn > 200ms, error > 600ms (indicateur d'erreurs d'hydratation React 19)
+  - **FCP** : warn > 1800ms, error > 3000ms
+  - **Accessibilité** : score = 100 (non négociable)
+  - **SEO** : score = 100
+  - Synchronisation obligatoire avec preview URLs Cloudflare (pattern `wait-for-url`)
 
 **Phase 3 - Advanced (Robustness) :**
 - **CA8 (Robustesse des Tests)** : Intégration de **Stryker** (Mutation Testing) exécuté sur les fichiers critiques (`src/lib/`, Server Actions).

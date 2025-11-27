@@ -294,7 +294,9 @@ Dans un projet utilisant la génération de code par IA, les vecteurs d'attaque 
 ```
 ┌─────────────────────────────────────────────────────────┐
 │ Layer 1: Supply Chain (Socket.dev + SHA Pinning)       │
-│          → Bloque paquets malveillants AVANT install    │
+│          → Analyse comportementale (pas seulement CVE)  │
+│          → Config socket.yml v2 avec triggerPaths       │
+│          → Politique Block/Warn/Monitor différenciée    │
 ├─────────────────────────────────────────────────────────┤
 │ Layer 2: Code Quality (Knip + ESLint + Type Sync)      │
 │          → Détecte hallucinations, code mort, drift     │
@@ -353,8 +355,9 @@ jobs:
       - Vitest (unit + integration)
       - Playwright + axe-core (E2E + a11y)
 
-      # Performance
-      - Lighthouse CI
+      # Performance (après déploiement preview)
+      - Wait for Preview URL (pattern wait-for-url obligatoire)
+      - Lighthouse CI (métriques brutes: LCP, CLS, TBT, FCP)
 
       # Mutation Testing (optionnel)
       - Stryker (si input activé)
