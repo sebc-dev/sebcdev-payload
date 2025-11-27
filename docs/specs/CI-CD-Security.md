@@ -130,6 +130,58 @@ updates:
 - Détection automatique des CVE dans les dépendances npm
 - Réduction du bruit via grouping des mises à jour mineures
 
+### 2.4 Détection Sécurisée des Fichiers Modifiés
+
+**Contexte de l'incident** : En mars 2025, l'action tierce `tj-actions/changed-files` (très populaire pour ne linter que les fichiers modifiés) a été **compromise par une attaque de la chaîne d'approvisionnement**. Un attaquant a injecté du code malveillant capable d'exfiltrer des secrets CI.
+
+**Leçon** : Les actions tierces "utilitaires" représentent une surface d'attaque significative. Les fonctionnalités simples doivent être implémentées nativement.
+
+**Solution Native (git diff)** :
+
+```bash
+#!/bin/bash
+# Script sécurisé pour linter uniquement les fichiers modifiés
+
+# Récupération de la branche cible pour comparaison
+git fetch origin main:main
+
+# Identification des fichiers modifiés (TS/TSX/JS/MJS uniquement)
+CHANGED_FILES=$(git diff --name-only main...HEAD -- '*.ts' '*.tsx' '*.js' '*.mjs')
+
+if [ -n "$CHANGED_FILES" ]; then
+  echo "Linting changed files: $CHANGED_FILES"
+  pnpm exec eslint $CHANGED_FILES --max-warnings 0
+else
+  echo "No relevant files changed, skipping lint."
+fi
+```
+
+**Intégration GitHub Actions** :
+
+```yaml
+- name: Lint Changed Files Only
+  run: |
+    git fetch origin main:main
+    CHANGED_FILES=$(git diff --name-only main...HEAD -- '*.ts' '*.tsx' '*.js' '*.mjs')
+    if [ -n "$CHANGED_FILES" ]; then
+      echo "::group::Linting changed files"
+      echo "$CHANGED_FILES"
+      echo "::endgroup::"
+      pnpm exec eslint $CHANGED_FILES --max-warnings 0
+    else
+      echo "No relevant files changed."
+    fi
+```
+
+**Avantages** :
+- **Zéro dépendance tierce** : Élimine complètement le risque de supply chain attack
+- **Performance** : Ne lint que les fichiers réellement modifiés
+- **Transparence** : Code visible et auditable directement dans le workflow
+
+**Note** : Cette approche est optionnelle. Pour un projet de taille modeste, linter l'ensemble du codebase avec cache ESLint reste acceptable et plus simple.
+
+**Référence** : [Incident tj-actions - Snyk Analysis](https://snyk.io/blog/reconstructing-tj-actions-changed-files-github-actions-compromise/)
+
 ## 3. Code Quality Gates (Phase 1 - MVP)
 
 ### 3.1 Knip - Détection de Code Mort
@@ -194,29 +246,157 @@ updates:
 
 **Problématique** : Code généré par IA peut ne pas respecter les conventions de formatage, créant du bruit dans les diffs et rendant la revue difficile.
 
-**Configuration** :
+#### Séparation Stricte des Préoccupations
 
-```yaml
-# .github/workflows/quality-gate.yml
-- name: Lint & Format Check
-  run: |
-    pnpm exec eslint . --max-warnings 0
-    pnpm exec prettier --check .
+**Anti-pattern à éviter** : L'utilisation de `eslint-plugin-prettier` pour exécuter Prettier à l'intérieur d'ESLint est obsolète et contre-productive :
+
+1. **Surcharge de Performance** : Chaque fichier est parsé deux fois (ESLint + Prettier), doublant le temps d'exécution
+2. **Pollution Visuelle** : Les erreurs de formatage (toujours auto-corrigibles) sont mélangées aux erreurs logiques, diluant l'attention sur les bugs réels
+
+**Approche recommandée** : Exécuter Prettier et ESLint comme deux processus **distincts et parallèles**. ESLint est configuré avec `eslint-config-prettier` pour désactiver les règles de conflit.
+
+#### Configuration ESLint 9 Flat Config
+
+Next.js 15 ne fournit pas encore de configuration Flat Config native. L'utilisation de `FlatCompat` est requise pour adapter les règles héritées.
+
+```javascript
+// eslint.config.mjs
+import { FlatCompat } from '@eslint/eslintrc';
+import js from '@eslint/js';
+import typescriptEslint from 'typescript-eslint';
+import prettierConfig from 'eslint-config-prettier';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const compat = new FlatCompat({ baseDirectory: __dirname });
+
+export default [
+  // 1. Ignorances Globales (Performance)
+  {
+    ignores: [
+      ".next/**",
+      "node_modules/**",
+      "build/**",
+      "dist/**",
+      "**/*.d.ts",
+      "src/payload-types.ts", // ⚠️ CRITIQUE : Fichier généré par Payload
+      "coverage/**"
+    ],
+  },
+
+  // 2. Base JavaScript
+  js.configs.recommended,
+
+  // 3. TypeScript
+  ...typescriptEslint.configs.recommended,
+
+  // 4. Next.js (via couche de compatibilité)
+  ...compat.extends('next/core-web-vitals'),
+
+  // 5. Overrides Spécifiques Payload
+  {
+    files: ["src/payload.config.ts", "src/scripts/*.ts"],
+    rules: {
+      "no-console": "off",     // Scripts serveur nécessitent des logs
+      "no-process-env": "off"  // Payload repose sur les variables d'env
+    }
+  },
+
+  // 6. Prettier (DOIT être en dernier)
+  prettierConfig,
+];
 ```
 
-```json
-// .prettierrc
-{
-  "plugins": ["prettier-plugin-tailwindcss"],
-  "tailwindFunctions": ["cn", "cva"]
-}
+**Points critiques** :
+- **`src/payload-types.ts` exclu** : Fichier généré automatiquement par Payload, linter ce fichier consomme des ressources CPU pour une valeur nulle
+- **Format `.mjs`** : Force le mode ESM, aligné avec `next.config.mjs`
+- **Ordre séquentiel** : Le tableau est traité dans l'ordre, `prettierConfig` doit être en dernier pour écraser les conflits
+
+#### Configuration Prettier
+
+```javascript
+// prettier.config.mjs
+/** @type {import("prettier").Config} */
+const config = {
+  semi: false,
+  singleQuote: true,
+  tabWidth: 2,
+  trailingComma: 'all', // Critique : réduit les diffs git lors d'ajouts
+  printWidth: 100,
+  plugins: ['prettier-plugin-tailwindcss'],
+  tailwindFunctions: ['cn', 'cva'],
+};
+
+export default config;
 ```
 
 **Bénéfices Tailwind Plugin** :
 - Ordre déterministe des classes Tailwind (réduit les conflicts git)
 - Détecte les classes dupliquées (ex: `p-4 padding-4`)
 
+#### Workflow CI
+
+```yaml
+# .github/workflows/quality-gate.yml
+- name: Lint & Format Check
+  run: |
+    pnpm exec eslint . --max-warnings 0 --cache --cache-location .eslintcache --format stylish
+    pnpm exec prettier . --check
+```
+
+**Note** : `--format stylish` est obligatoire pour que les Problem Matchers GitHub créent des annotations sur les fichiers modifiés dans l'interface PR.
+
 **Référence** : [ESLint/Prettier CI Documentation](../tech/github/eslint-prettier-CI.md)
+
+### 3.4 Stratégie de Cache CI (ESLint vs Prettier)
+
+**Problématique** : Les stratégies de cache pour ESLint et Prettier sont fondamentalement différentes en environnement CI. Une configuration naïve peut être contre-productive.
+
+#### Prettier : Cache NON recommandé en CI
+
+Par défaut, le cache Prettier utilise les **métadonnées de fichier** (date de modification - mtime) pour l'invalidation. Problème : l'action `actions/checkout` de GitHub **réécrit les timestamps** de tous les fichiers à l'heure du checkout.
+
+**Conséquence** : Le cache est invalidé à chaque exécution, rendant la sauvegarde/restauration du cache (temps réseau) plus coûteuse que l'exécution directe.
+
+```yaml
+# ❌ Inutile pour la plupart des projets
+- name: Prettier Check (avec cache inefficace)
+  run: pnpm exec prettier . --check --cache
+
+# ✅ Recommandé : exécution directe sans cache
+- name: Prettier Check
+  run: pnpm exec prettier . --check
+```
+
+**Exception (grands monorepos > 5000 fichiers)** : Utiliser `--cache-strategy content` qui hashe le contenu des fichiers au lieu des timestamps. Plus intensif CPU mais fiable.
+
+#### ESLint : Cache OBLIGATOIRE
+
+ESLint avec règles TypeScript est significativement plus lent que Prettier. Le cache est ici indispensable et doit être configuré avec une **clé composite** :
+
+```yaml
+- name: Restore ESLint Cache
+  uses: actions/cache@v4
+  with:
+    path: .eslintcache
+    # Clé primaire : dépendances + contenu source exact
+    key: ${{ runner.os }}-eslint-${{ hashFiles('pnpm-lock.yaml') }}-${{ hashFiles('**/*.[jt]s', '**/*.[jt]sx') }}
+    # Clés de repli : récupérer le cache de main même si le code a changé
+    restore-keys: |
+      ${{ runner.os }}-eslint-${{ hashFiles('pnpm-lock.yaml') }}-
+
+- name: ESLint Check
+  run: pnpm exec eslint . --max-warnings 0 --cache --cache-location .eslintcache --format stylish
+```
+
+**Rationale des clés** :
+- `hashFiles('pnpm-lock.yaml')` : Une mise à jour d'ESLint ou de ses plugins invalide le cache
+- `hashFiles('**/*.[jt]s', '**/*.[jt]sx')` : Le contenu source exact pour maximiser les hits
+- `restore-keys` : Permet de récupérer un cache partiel depuis `main`, accélérant le linting des PRs (seuls les fichiers modifiés sont revérifiés)
+
+**Référence** : [ESLint/Prettier CI Documentation - Section 4](../tech/github/eslint-prettier-CI.md#4-architecture-cicd-dans-github-actions)
 
 ## 4. Build Validation (Phase 1 - MVP)
 
@@ -489,12 +669,52 @@ module.exports = {
     },
     {
       name: 'no-circular',
-      severity: 'warn',
+      severity: 'error',
       from: {},
-      to: { circular: true }
+      to: {
+        circular: true,
+        // Ignore les cycles qui ne sont QUE des imports de types (TypeScript)
+        dependencyTypesNot: ['type-only']
+      }
     }
   ]
 }
+```
+
+**Baseline pour Adoption Progressive** :
+
+L'introduction de règles architecturales sur un projet existant génère souvent de nombreuses violations. La fonctionnalité **baseline** permet de geler la dette technique et de la rembourser progressivement :
+
+```bash
+# 1. Générer le cliché des violations existantes
+npx depcruise src --output-type json > .dependency-cruiser-known-violations.json
+
+# 2. Utiliser la baseline dans la CI (seules les NOUVELLES violations bloquent)
+npx depcruise src --known-violations .dependency-cruiser-known-violations.json
+```
+
+**Intégration GitHub Actions avec Summary** :
+
+```yaml
+- name: Run Dependency Cruiser
+  id: depcruise
+  continue-on-error: true
+  run: |
+    npx depcruise src \
+      --config .dependency-cruiser.cjs \
+      --known-violations .dependency-cruiser-known-violations.json \
+      --output-type json \
+      --output-to depcruise-report.json
+
+# Injection du rapport dans le GitHub Job Summary
+- name: Create Job Summary
+  run: |
+    echo "## 🏗️ Rapport d'Architecture" >> $GITHUB_STEP_SUMMARY
+    npx depcruise-fmt depcruise-report.json --output-type markdown >> $GITHUB_STEP_SUMMARY
+
+- name: Check for Failure
+  if: steps.depcruise.outcome == 'failure'
+  run: exit 1
 ```
 
 **Référence** : [dependency-cruiser Documentation](../tech/github/dependancy-cruiser-CI.md)
