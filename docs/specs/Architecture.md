@@ -73,7 +73,77 @@ graph TD
 - **Local API First :** Le Front-end récupère les données via `payload.find()` directement côté serveur, évitant la sérialisation JSON et les "round-trips" HTTP internes.
 - **Single Source of Truth (Schema) :** Le schéma de base de données est défini et géré uniquement par les configurations TypeScript de Payload (`payload.config.ts`), synchronisé vers D1 via Drizzle.
 - **Incremental Static Regeneration (ISR) :** Utilisation agressive du cache Next.js (`unstable_cache`), invalidé par les Hooks `afterChange` de Payload pour garantir la fraîcheur du contenu (< 60s Time-to-Value).
-- **Cold Start Optimization :** Minimisation de l'impact du démarrage à froid des Workers via l'utilisation agressive du cache HTML/JSON de Cloudflare (pour les lecteurs) et le maintien de l'initialisation de Payload (`payload.init()`) la plus légère possible (lazy-loading des plugins non critiques).
+- **Cold Start Optimization :** Minimisation de l'impact du démarrage à froid des Workers via une stratégie de cache multi-couches détaillée ci-dessous.
+
+### Stratégie d'Optimisation Cold Start (Multi-Couches)
+
+L'optimisation des cold starts repose sur le paradigme **"Compute Avoidance"** : la méthode la plus efficace pour éliminer la latence du démarrage à froid consiste à ne pas démarrer le Worker du tout pour les lecteurs anonymes.
+
+#### Couche 1 : Cache Rules Cloudflare (Niveau Réseau)
+
+**Principe** : Dichotomie stricte Lecteur / Éditeur. Les utilisateurs non authentifiés (99% du trafic) doivent percevoir le site comme une application statique.
+
+| Critère de Correspondance | Action | TTL Edge | Justification |
+|---------------------------|--------|----------|---------------|
+| Cookie contient `payload-token` | **Bypass Cache** | N/A | Admins voient toujours les données en temps réel |
+| Méthode HTTP ≠ GET | **Bypass Cache** | N/A | Mutations (POST, PUT, DELETE) atteignent le Worker |
+| URI commence par `/_next/static` | **Cache** | 1 an (Immutable) | Assets versionnés par Next.js |
+| Extensions images | **Cache** | 1 an (Immutable) | Assets statiques |
+| **Défaut** (HTML, JSON RSC) | **Cache Override Origin** | 1 mois | Force le cache du HTML/JSON public |
+
+> **Important** : L'option "Override Origin" est indispensable car Next.js 15 émet par défaut des headers `Cache-Control` conservateurs (`private`, `max-age=0`) pour les routes dynamiques.
+
+#### Couche 2 : Cache Incrémental OpenNext (Niveau Application)
+
+**Configuration requise** (`open-next.config.ts`) :
+
+```typescript
+import { defineCloudflareConfig } from "@opennextjs/cloudflare";
+import kvIncrementalCache from "@opennextjs/cloudflare/overrides/incremental-cache/kv-incremental-cache";
+
+export default defineCloudflareConfig({
+  incrementalCache: kvIncrementalCache,  // KV pour faible latence
+  queue: {
+    type: 'durable-object',  // Fiable pour revalidation ISR
+  }
+});
+```
+
+**Rationale** : Workers KV offre une latence minimale (eventually consistent) idéale pour le cache HTML/JSON. Lors d'un cold start, le Worker peut servir une page pré-générée depuis KV sans réexécuter la logique de rendu.
+
+#### Couche 3 : Initialisation Payload Optimisée (Niveau Code)
+
+**Pattern Singleton Impératif** (`src/lib/payload.ts`) :
+
+```typescript
+import { getPayload } from 'payload'
+import config from '@payload-config'
+
+let cachedPayload = null
+
+export const getPayloadClient = async () => {
+  if (cachedPayload) return cachedPayload
+
+  // Initialisation coûteuse : seulement au cold start
+  cachedPayload = await getPayload({ config })
+  return cachedPayload
+}
+```
+
+**Optimisations complémentaires** :
+- **Lazy-loading des plugins** : Utiliser des imports dynamiques (`await import()`) dans les Hooks Payload pour différer le chargement du code lourd (traitement d'image, génération PDF).
+- **Audit du bundle** : Maintenir la taille du bundle < 1-2 Mo pour le chemin critique (limite Workers : 10 Mo compressé, mais dégradation avant).
+- **Exclusion des packages lourds** : Utiliser `serverExternalPackages` dans `next.config.js` pour les dépendances non nécessaires au bundling.
+
+#### Couche 4 : Invalidation & Revalidation
+
+**Workflow** :
+1. Éditeur modifie un article dans Payload Admin
+2. Hook `afterChange` déclenche `revalidateTag('collection-posts')`
+3. OpenNext purge les entrées correspondantes dans KV
+4. Prochaine requête lecteur : cache miss → Worker génère → nouveau cache
+
+> **Documentation technique complète** : [Cold Start Optimization Report](../tech/cloudflare/cold-start-optimization.md)
 
 ## Tech Stack (Choix Technologiques)
 

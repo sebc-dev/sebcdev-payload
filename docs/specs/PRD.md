@@ -115,14 +115,20 @@ C'est entendu. Voici la section complète des **Exigences (Requirements)**, cons
 
 #### ENF2 — Performance & Web Vitals
 
-**Description** : Le site offre une expérience instantanée pour l'utilisateur final.
+**Description** : Le site offre une expérience instantanée pour l'utilisateur final via une stratégie de cache multi-couches éliminant les cold starts pour les lecteurs.
+
+> **Documentation technique complète** : Voir [Cold Start Optimization](../tech/cloudflare/cold-start-optimization.md) pour l'analyse approfondie et les justifications.
 
 **Critères d'acceptation** :
 
 - **CA1 (Time-to-Value)** : Le contenu principal est accessible en < 60s (perception utilisateur).
 - **CA2 (LCP)** : Largest Contentful Paint < 2.5s sur mobile 4G.
 - **CA3 (CLS)** : Cumulative Layout Shift < 0.1.
-- **CA4** : Utilisation du cache Next.js (`unstable_cache`) et révalidation ISR via les Hooks Payload.
+- **CA4 (Cache Next.js)** : Utilisation de `unstable_cache` et révalidation ISR via les Hooks `afterChange` de Payload.
+- **CA5 (Cache Rules Cloudflare)** : Configuration de règles de cache "Override Origin" avec bypass par cookie `payload-token` pour les administrateurs.
+- **CA6 (OpenNext KV)** : Configuration de `kvIncrementalCache` dans `open-next.config.ts` pour le cache incrémental.
+- **CA7 (Singleton Payload)** : Implémentation du pattern Singleton pour `payload.init()` afin d'éviter les initialisations multiples.
+- **CA8 (Bundle Size)** : Taille du bundle Worker < 2 Mo (chemin critique) pour minimiser le temps de parsing V8.
 
 #### ENF3 — Intégrité des Données
 
@@ -341,8 +347,14 @@ _Objectif : Maximiser la visibilité moteur et la vitesse de chargement._
     - **En tant que** Moteur de Recherche, **je veux** accéder à un `sitemap.xml` dynamique et lire des balises Méta/OpenGraph optimisées sur chaque page, **afin d'** indexer correctement le site.
 - **Story 6.2 : Optimisation Images (Cloudflare Loader)**
     - **En tant qu'** Utilisateur, **je veux** que les images soient servies au format WebP/AVIF et redimensionnées via Cloudflare Images (loader `next/image` custom), **afin de** réduire le temps de chargement et la consommation de données.
-- **Story 6.3 : Stratégie de Cache ISR**
+- **Story 6.3 : Stratégie de Cache ISR & Cold Start Optimization**
     - **En tant qu'** Utilisateur, **je veux** que les pages soient servies depuis le cache Edge (avec revalidation via les Hooks Payload), **afin d'** obtenir un affichage quasi-instantané (Time-to-Value < 60s).
+    - **Sous-tâches techniques** :
+        1. Configurer `open-next.config.ts` avec `kvIncrementalCache` pour le cache incrémental sur Workers KV.
+        2. Créer les Cache Rules Cloudflare : bypass par cookie `payload-token`, méthodes non-GET, et "Override Origin" pour HTML/JSON RSC.
+        3. Implémenter le pattern Singleton dans `src/lib/payload.ts` pour `getPayload()`.
+        4. Configurer les Hooks `afterChange` sur les collections pour appeler `revalidateTag()`.
+        5. Auditer la taille du bundle et configurer `serverExternalPackages` si nécessaire.
 
 ### 🛡️ Epic 7 : Quality Assurance & Hardening
 

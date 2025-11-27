@@ -51,7 +51,10 @@ sebc.dev est un blog technique bilingue (français/anglais) tenu par un auteur u
 - **UI Front** : TailwindCSS 4 + shadcn/ui.
 - **Runtime** : Cloudflare Workers.
 - **CI/CD** : GitHub Actions avec Quality Gate "AI-Shield" (Socket.dev, Knip, Type Sync, Lighthouse CI).
-- **Cache** : Next.js Cache API + Hooks de revalidation Payload (ISR).
+- **Cache Multi-Couches** :
+  - **Niveau Réseau** : Cloudflare Cache Rules (bypass cookie `payload-token`, Override Origin).
+  - **Niveau Application** : Workers KV via `@opennextjs/cloudflare` (`kvIncrementalCache`).
+  - **Niveau Code** : Next.js Cache API (`unstable_cache`) + Hooks `afterChange` Payload (ISR).
 
 ### Fonctionnalités produit
 
@@ -105,11 +108,17 @@ sebc.dev est un blog technique bilingue (français/anglais) tenu par un auteur u
 ## Risks & Open Questions
 
 **Risks**
-- **Cold Starts** : Payload est une application conséquente ; sur Cloudflare Workers, le temps de démarrage à froid peut être perceptible (nécessité d'optimiser le bundling).
+- **Cold Starts** : Payload est une application conséquente ; sur Cloudflare Workers, le temps de démarrage à froid peut être perceptible.
+  - **Mitigation** : Stratégie de cache multi-couches "Compute Avoidance" :
+    1. **Cache Rules Cloudflare** : Bypass par cookie `payload-token` + "Override Origin" pour forcer le cache HTML/JSON (élimine 99% des cold starts pour les lecteurs).
+    2. **OpenNext KV Cache** : `kvIncrementalCache` pour servir les pages pré-générées depuis KV même lors d'un cold start.
+    3. **Singleton Payload** : Pattern strict pour éviter les initialisations multiples de `payload.init()`.
+    4. **Bundle < 2 Mo** : Lazy-loading des plugins non-critiques et audit régulier.
+  - **Documentation** : [Cold Start Optimization Report](../tech/cloudflare/cold-start-optimization.md)
 - **Compatibilité Node** : Certaines dépendances de plugins Payload pourraient ne pas être compatibles avec le runtime Edge (surveillance des `compatibility_flags`).
 
 **Open Questions**
-- Stratégie de redimensionnement d'images : Utiliser le redimensionnement intégré de Payload (gourmand en CPU Worker) ou déléguer à Cloudflare Images ? (Recommandation : Cloudflare Images).
+- ~~Stratégie de redimensionnement d'images~~ : **Résolu** → Déléguer à Cloudflare Images (loader `next/image` custom).
 - Gestion des migrations D1 en CI/CD avec Payload : Validation du workflow `payload migrate` dans les GitHub Actions.
 
 ## CI/CD Quality Gate "AI-Shield"
