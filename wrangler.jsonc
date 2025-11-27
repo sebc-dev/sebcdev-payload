@@ -2,7 +2,7 @@
   "$schema": "node_modules/wrangler/config-schema.json",
   "main": ".open-next/worker.js",
   "name": "sebcdev-payload",
-  "compatibility_date": "2025-08-15",
+  "compatibility_date": "2025-11-27",
   "compatibility_flags": [
     // Enable Node.js API
     // see https://developers.cloudflare.com/workers/configuration/compatibility-flags/#nodejs-compatibility-flag
@@ -33,7 +33,8 @@
   "r2_buckets": [
     {
       "binding": "R2",
-      "bucket_name": "sebcdev-payload-cache","preview_bucket_name": "sebcdev-payload-cache",
+      "bucket_name": "sebcdev-payload-cache",
+      "preview_bucket_name": "sebcdev-payload-cache",
     },
     // Create a R2 binding with the binding name "NEXT_INC_CACHE_R2_BUCKET"
     // {
