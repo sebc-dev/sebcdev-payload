@@ -1,6 +1,8 @@
-# Payload CMS on Cloudflare Workers
+# sebc.dev — Technical Blog Platform
 
-> Modern headless CMS powered by Next.js 15, React 19, and Cloudflare's edge infrastructure
+> A bilingual (FR/EN) technical blog exploring AI amplification, UX principles, and software engineering best practices through a _learning in public_ approach.
+
+Built with **Payload CMS** on **Cloudflare Workers** — a modern, code-first headless CMS natively integrated with Next.js 15, enabling professional content management on serverless edge infrastructure.
 
 ## 🚀 Tech Stack
 
