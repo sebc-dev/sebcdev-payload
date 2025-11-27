@@ -40,6 +40,8 @@ pnpm payload migrate:create # Create new migration
 
 Le projet utilise un pipeline CI/CD "AI-Shield" avec validation multi-couches pour détecter les hallucinations IA et garantir la qualité du code.
 
+**Stratégie de déclenchement** : Workflows déclenchés **manuellement** (`workflow_dispatch`) mais **obligatoires** pour merger via branch protection.
+
 ```bash
 # Checks locaux avant push (recommandé)
 pnpm lint                    # ESLint + Prettier
@@ -50,30 +52,29 @@ pnpm test                    # Tests unitaires + E2E
 
 ### GitHub Actions Workflow
 
-Tous les pushs/PRs déclenchent automatiquement les checks suivants :
+Déclenchement manuel via : **Actions > Quality Gate > Run workflow** (sélectionner la branche)
 
-**Phase 1 (MVP) - Essentials :**
+**Supply Chain Security :**
 - **Socket.dev** : Bloque les paquets malveillants/suspects (typosquatting, installation scripts)
+- **SHA Pinning** : Actions GitHub tierces épinglées par SHA complet
+- **Dependabot** : Maintenance automatique des dépendances et actions
+
+**Code Quality Gates :**
 - **Knip** : Détecte le code mort et imports non utilisés (hallucinations IA)
 - **Type Sync** : Vérifie la cohérence Payload ↔ TypeScript (`payload-types.ts`)
 - **ESLint + Prettier** : Formatage et linting strict (includes Tailwind class ordering)
-- **Next.js Build** : `next build --experimental-build-mode compile` (sans connexion D1)
-
-**Phase 2 (Enhanced) - Monitoring & Performance :**
-- **Lighthouse CI** : Budgets performance (>90), A11y (100), SEO (100)
 - **dependency-cruiser** : Validation architecture (interdiction imports serveur ↔ client)
-- **Playwright + axe-core** : Tests accessibilité WCAG 2.1 AA (FR/EN)
+
+**Build & Tests :**
+- **Next.js Build** : `next build --experimental-build-mode compile` (sans connexion D1)
+- **Vitest** : Tests unitaires et d'intégration
+- **Playwright + axe-core** : Tests E2E et accessibilité WCAG 2.1 AA (FR/EN)
+- **Stryker** : Mutation testing sur modules critiques (optionnel via input)
+
+**Performance & Déploiement :**
+- **Lighthouse CI** : Budgets performance (≥90), A11y (=100), SEO (=100)
 - **OIDC Cloudflare** : Authentification sans secrets statiques
-
-**Phase 3 (Advanced) - Robustness :**
-- **Stryker** : Mutation testing sur modules critiques (`src/lib/`, Server Actions)
-
-### Security Best Practices
-
-- **SHA Pinning** : Actions GitHub tierces épinglées par SHA complet (immuabilité cryptographique)
-- **OIDC** : Authentification Cloudflare sans secrets statiques (Phase 2)
 - **Permissions** : GITHUB_TOKEN en read-only par défaut (least privilege)
-- **Dependabot** : Maintenance automatique des dépendances et actions
 
 > **Documentation complète :** [CI-CD Security Architecture](docs/specs/CI-CD-Security.md)
 

@@ -114,12 +114,14 @@ sebc.dev est un blog technique bilingue (français/anglais) tenu par un auteur u
 
 ## CI/CD Quality Gate "AI-Shield"
 
-Pipeline GitHub Actions avec validation multi-couches pour protéger contre les hallucinations IA et garantir la qualité du code :
+Pipeline GitHub Actions avec validation multi-couches pour protéger contre les hallucinations IA et garantir la qualité du code.
 
-- **Supply Chain** : Socket.dev (blocage paquets malveillants, typosquatting)
-- **Code Quality** : Knip (code mort), ESLint/Prettier, Type sync Payload ↔ TypeScript
-- **Performance** : Lighthouse CI (budgets stricts : Performance > 90, A11y = 100, SEO = 100)
-- **Architecture** : dependency-cruiser (interdiction imports serveur ↔ client)
-- **Security** : SHA pinning actions GitHub, OIDC Cloudflare (Phase 2)
+**Stratégie de déclenchement** : Workflows déclenchés **manuellement** (`workflow_dispatch`) mais **obligatoires** pour merger via branch protection.
+
+- **Supply Chain** : Socket.dev (blocage paquets malveillants), SHA pinning actions GitHub
+- **Code Quality** : Knip (code mort), ESLint/Prettier, Type sync Payload ↔ TypeScript, dependency-cruiser
+- **Build & Tests** : Next.js build (no-DB), Vitest, Playwright + axe-core, Stryker (optionnel)
+- **Performance** : Lighthouse CI (budgets stricts : Performance ≥ 90, A11y = 100, SEO = 100)
+- **Security** : OIDC Cloudflare (pas de secrets statiques), GITHUB_TOKEN read-only
 
 > **Documentation complète :** [CI-CD Security Architecture](./CI-CD-Security.md)

@@ -155,32 +155,35 @@ C'est entendu. Voici la section complète des **Exigences (Requirements)**, cons
 
 #### ENF6 — Souveraineté du Code & Sécurité Supply Chain (AI-Shield)
 
-**Description** : Pipeline CI/CD configuré pour détecter et bloquer les hallucinations, les failles architecturales et les tests superficiels.
+**Description** : Pipeline CI/CD configuré pour détecter et bloquer les hallucinations, les failles architecturales et les tests superficiels. CI complète opérationnelle dès la première mise en production.
 
-> **Documentation détaillée :** Voir [CI-CD Security Architecture](./CI-CD-Security.md) pour l'architecture complète de sécurité et la roadmap d'implémentation en 3 phases.
+> **Documentation détaillée :** Voir [CI-CD Security Architecture](./CI-CD-Security.md) pour l'architecture complète de sécurité.
 
-**Critères d'acceptation (Organisation par phase) :**
+**Stratégie de déclenchement** : Workflows déclenchés **manuellement** (`workflow_dispatch`) mais **obligatoires** pour merger via branch protection.
 
-**Phase 1 - MVP (Essentials) :**
-- **CA1 (Sécurité)** : Action **Socket.dev** bloquante contre les paquets malveillants.
-- **CA2 (Hygiène)** : Action **Knip** pour rejeter le code mort.
-- **CA3 (Type Sync)** : Vérification stricte des types Payload.
-- **CA4 (Build)** : Validation `next build --experimental-build-mode compile` sans DB.
-- **CA5 (Style)** : Prettier + plugin Tailwind (ordre déterministe).
+**Critères d'acceptation :**
 
-**Phase 2 - Enhanced (Monitoring & Performance) :**
-- **CA6 (A11y)** : Tests Playwright + `axe-core`.
-- **CA7 (Architecture)** : Intégration de **dependency-cruiser** pour interdire les imports non conformes (ex: code serveur importé dans un composant client).
-- **CA9 (Performance Shield)** : Intégration de **Lighthouse CI** avec budgets stricts (Performance > 90, Accessibility = 100, SEO = 100).
+**Supply Chain Security :**
+- **CA1** : Action **Socket.dev** bloquante contre les paquets malveillants.
+- **CA2** : SHA Pinning des actions GitHub tierces (immuabilité cryptographique).
+- **CA3** : Dependabot pour maintenance automatique des dépendances.
 
-**Phase 3 - Advanced (Robustness) :**
-- **CA8 (Robustesse des Tests)** : Intégration de **Stryker** (Mutation Testing) exécuté sur les fichiers critiques (`src/lib/`, Server Actions).
+**Code Quality Gates :**
+- **CA4** : Action **Knip** pour rejeter le code mort.
+- **CA5** : Vérification stricte des types Payload (Type Sync).
+- **CA6** : Prettier + ESLint + plugin Tailwind (ordre déterministe).
+- **CA7** : Intégration de **dependency-cruiser** pour interdire les imports non conformes.
 
-**Sécurité Pipeline :**
-- SHA Pinning des actions GitHub tierces (immuabilité cryptographique)
-- OIDC pour authentification Cloudflare (élimine secrets statiques) - Phase 2
-- Permissions GITHUB_TOKEN en read-only par défaut
-- Dependabot pour maintenance automatique des dépendances
+**Build & Tests :**
+- **CA8** : Validation `next build --experimental-build-mode compile` sans DB.
+- **CA9** : Tests Vitest (unitaires + intégration).
+- **CA10** : Tests Playwright + `axe-core` (E2E + accessibilité WCAG 2.1 AA).
+- **CA11** : Intégration de **Stryker** (Mutation Testing) optionnel via input workflow.
+
+**Performance & Déploiement :**
+- **CA12** : Intégration de **Lighthouse CI** avec budgets stricts (Performance ≥ 90, Accessibility = 100, SEO = 100).
+- **CA13** : OIDC pour authentification Cloudflare (élimine secrets statiques).
+- **CA14** : Permissions GITHUB_TOKEN en read-only par défaut.
 
 ## Objectifs de Design Interface Utilisateur
 
@@ -278,14 +281,16 @@ _Objectif : Déployer le socle technique via le template officiel et sécuriser 
 - **Story 1.2 : Récupération & Configuration Locale**
     - **En tant que** Développeur, **je veux** cloner le nouveau repo, installer les dépendances (`pnpm`) et vérifier les bindings dans `wrangler.toml`, **afin de** disposer d'un environnement de développement local fonctionnel connecté à Cloudflare.
 - **Story 1.3 : Pipeline "Quality Gate" (AI-Shield) — FINALE**
-    - **En tant que** Lead Tech, **je veux** configurer un workflow GitHub Actions exhaustif comprenant :
+    - **En tant que** Lead Tech, **je veux** configurer un workflow GitHub Actions exhaustif **déclenché manuellement** (`workflow_dispatch`) mais **obligatoire** pour merger (branch protection), comprenant :
         1. **Socket.dev** (Sécurité Supply Chain).
         2. **Knip** (Nettoyage code mort).
         3. **Dependency Cruiser** (Validation architecture).
-        4. **Stryker** (Mutation Testing sur modules critiques).
+        4. **Stryker** (Mutation Testing optionnel via input).
         5. **Lighthouse CI** (Audit Performance & SEO bloquant).
         6. **ESLint/Prettier** & Sync des Types Payload.
-    - **Afin de** garantir une base de code saine, sécurisée et performante avant toute fusion.
+        7. **Playwright + axe-core** (Tests E2E + accessibilité).
+        8. **OIDC Cloudflare** (Authentification sans secrets statiques).
+    - **Afin de** garantir une base de code saine, sécurisée et performante avant toute fusion, tout en évitant les exécutions répétées.
 - **Story 1.4 : Adaptation du Pipeline de Déploiement**
     - **En tant que** DevOps, **je veux** conditionner le script de déploiement Cloudflare (`wrangler deploy`) à la réussite préalable de la "Quality Gate", **afin d'** empêcher toute mise en production de code non conforme ou insécurisé.
 

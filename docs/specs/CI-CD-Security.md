@@ -551,34 +551,158 @@ export default {
 | **Actions épinglées par tag** | Tags mutables, détournement supply chain | ✅ Pertinent : épingler par SHA |
 | **Cache partagé multi-branches** | Empoisonnement de cache cross-branch | ❌ Risque faible (une seule branche principale) |
 
-## 11. Roadmap d'Implémentation
+## 11. Implémentation CI/CD Complète
 
-### Phase 1 (MVP) - Essentials
-**Objectif** : Protection de base contre supply chain et hallucinations IA
-**Durée estimée** : 2-3 heures
+**Objectif** : CI/CD complète opérationnelle dès la première mise en production (page "En construction" avec i18n)
 
-- [ ] **Socket.dev** : Bloquer les paquets malveillants
-- [ ] **SHA pinning** : Épingler actions tierces par SHA complet
-- [ ] **Dependabot** : Automatiser mises à jour de sécurité
-- [ ] **Knip** : Détecter code mort et imports orphelins
+### 11.1 Stratégie de Déclenchement
+
+**Principe** : Workflows déclenchés **manuellement** (`workflow_dispatch`) mais **obligatoires** pour merger via branch protection.
+
+```yaml
+# Déclenchement manuel uniquement
+on:
+  workflow_dispatch:
+    inputs:
+      run_mutation_tests:
+        description: 'Exécuter Stryker (mutation testing)'
+        required: false
+        default: false
+        type: boolean
+```
+
+**Pourquoi ce choix ?**
+- ✅ Évite les exécutions répétées à chaque commit/push pendant le développement
+- ✅ Le développeur lance le workflow quand il est prêt (après plusieurs commits locaux)
+- ✅ Branch protection garantit qu'aucune PR ne peut être mergée sans workflow validé
+- ✅ Économie de minutes GitHub Actions
+
+**Configuration Branch Protection (Settings > Branches > main)** :
+```
+☑ Require status checks to pass before merging
+  ☑ Require branches to be up to date before merging
+  Status checks required:
+    - quality-gate
+    - deploy-preview (optionnel)
+```
+
+### 11.2 Checklist d'Implémentation
+
+#### Supply Chain Security
+- [ ] **Socket.dev** : Bloquer les paquets malveillants (typosquatting, scripts suspects)
+- [ ] **SHA pinning** : Épingler toutes les actions tierces par SHA complet
+- [ ] **Dependabot** : Automatiser mises à jour de sécurité (actions + npm)
+
+#### Code Quality Gates
+- [ ] **Knip** : Détecter code mort et imports orphelins (hallucinations IA)
 - [ ] **Type sync** : Valider synchronisation Payload ↔ TypeScript
-- [ ] **ESLint + Prettier** : Formatage et linting strict
-- [ ] **Next.js build no-DB** : Valider buildabilité sans D1
+- [ ] **ESLint + Prettier** : Formatage et linting strict (includes Tailwind ordering)
+- [ ] **dependency-cruiser** : Validation architecture (imports serveur/client)
 
-### Phase 2 (Enhanced) - Monitoring & Performance
-**Objectif** : Ajout de monitoring performance et architecture
-**Durée estimée** : 4-6 heures
+#### Build & Tests
+- [ ] **Next.js build no-DB** : `next build --experimental-build-mode compile` (sans D1)
+- [ ] **Vitest** : Tests unitaires et d'intégration
+- [ ] **Playwright + axe-core** : Tests E2E et accessibilité WCAG 2.1 AA (FR/EN)
+- [ ] **Stryker** : Mutation testing sur modules critiques (optionnel via input)
 
-- [ ] **OIDC Cloudflare** : Migration vers authentification keyless
-- [ ] **Lighthouse CI** : Budgets stricts performance/A11y/SEO
-- [ ] **dependency-cruiser** : Validation imports serveur/client
-- [ ] **Playwright + axe-core** : Tests accessibilité FR/EN
+#### Performance & Accessibilité
+- [ ] **Lighthouse CI** : Budgets stricts (Performance ≥90, A11y =100, SEO =100)
 
-### Phase 3 (Advanced) - Robustness
-**Objectif** : Détection faux positifs tests IA
-**Durée estimée** : 2-3 heures
+#### Sécurité & Déploiement
+- [ ] **OIDC Cloudflare** : Authentification sans secrets statiques
+- [ ] **Permissions GITHUB_TOKEN** : Définir explicitement en read-only par défaut
 
-- [ ] **Stryker** : Mutation testing sur modules critiques (lib/, Server Actions)
+### 11.3 Structure du Workflow
+
+```yaml
+# .github/workflows/quality-gate.yml
+name: Quality Gate
+
+on:
+  workflow_dispatch:
+    inputs:
+      run_mutation_tests:
+        description: 'Exécuter Stryker (mutation testing) - CPU intensif'
+        required: false
+        default: false
+        type: boolean
+
+permissions:
+  contents: read
+  id-token: write  # Pour OIDC Cloudflare
+
+jobs:
+  quality-gate:
+    runs-on: ubuntu-latest
+    steps:
+      # 1. Supply Chain (bloque avant toute installation)
+      - name: Socket.dev Scan
+        uses: socketdev/socket-security-action@<SHA>
+
+      # 2. Checkout + Setup
+      - uses: actions/checkout@<SHA>
+      - uses: pnpm/action-setup@<SHA>
+      - uses: actions/setup-node@<SHA>
+
+      # 3. Installation
+      - run: pnpm install --frozen-lockfile
+
+      # 4. Code Quality (parallélisable via matrix ou jobs séparés)
+      - run: pnpm exec knip --strict
+      - run: pnpm exec eslint . --max-warnings 0
+      - run: pnpm exec prettier --check .
+      - run: pnpm generate:types:payload && git diff --exit-code src/payload-types.ts
+      - run: pnpm exec depcruise --config .dependency-cruiser.cjs src
+
+      # 5. Build
+      - run: pnpm exec next build --experimental-build-mode compile
+        env:
+          PAYLOAD_SECRET: "ci-build-dummy-secret-32-chars-min"
+
+      # 6. Tests
+      - run: pnpm test:int
+      - run: pnpm test:e2e
+
+      # 7. Performance
+      - name: Lighthouse CI
+        uses: treosh/lighthouse-ci-action@<SHA>
+
+      # 8. Mutation Testing (conditionnel)
+      - name: Stryker Mutation Testing
+        if: ${{ inputs.run_mutation_tests }}
+        run: pnpm exec stryker run
+
+  deploy-preview:
+    needs: quality-gate
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy to Cloudflare (OIDC)
+        uses: cloudflare/wrangler-action@<SHA>
+        # OIDC - pas de apiToken statique
+```
+
+### 11.4 Workflow Développeur Recommandé
+
+```
+1. Développement local (plusieurs commits)
+   └── pnpm lint && pnpm test (checks rapides locaux)
+
+2. Push vers branche feature
+   └── Pas de workflow automatique
+
+3. Création PR vers main
+   └── GitHub affiche "Required checks not run"
+
+4. Déclenchement manuel du workflow
+   └── Actions > Quality Gate > Run workflow
+   └── Sélectionner la branche de la PR
+
+5. Workflow passe ✅
+   └── PR peut être mergée
+
+6. Merge vers main
+   └── Déploiement (workflow séparé ou même workflow)
+```
 
 ## 12. Références
 

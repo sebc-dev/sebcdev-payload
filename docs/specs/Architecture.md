@@ -232,37 +232,55 @@ Dans un projet utilisant la génération de code par IA, les vecteurs d'attaque 
 │ Layer 3: Build Validation (Next.js no-DB mode)         │
 │          → Garantit buildabilité sans runtime deps      │
 ├─────────────────────────────────────────────────────────┤
-│ Layer 4: Identity (OIDC - Phase 2)                     │
+│ Layer 4: Identity (OIDC)                               │
 │          → Élimine secrets statiques, limite blast      │
 └─────────────────────────────────────────────────────────┘
 ```
 
 ### 6.3 Quality Gate Workflow
 
-Le déploiement Cloudflare est **strictement conditionné** à la réussite de tous les checks de la phase active :
+**Stratégie de déclenchement** : Workflows déclenchés **manuellement** (`workflow_dispatch`) mais **obligatoires** pour merger via branch protection.
+
+Le déploiement Cloudflare est **strictement conditionné** à la réussite de tous les checks :
 
 ```yaml
 # Workflow simplifié
 name: Quality Gate
-on: [push, pull_request]
+on:
+  workflow_dispatch:
+    inputs:
+      run_mutation_tests:
+        description: 'Exécuter Stryker (mutation testing)'
+        type: boolean
+        default: false
 
 jobs:
-  security:
-    - Socket.dev (blocker)
-    - SHA pinning verification
+  quality-gate:
+    steps:
+      # Supply Chain
+      - Socket.dev (blocker)
+      - SHA pinning verification
 
-  quality:
-    - Knip (dead code)
-    - Type sync (Payload)
-    - ESLint + Prettier
+      # Code Quality
+      - Knip (dead code)
+      - Type sync (Payload)
+      - ESLint + Prettier
+      - dependency-cruiser
 
-  build:
-    - next build --experimental-build-mode compile
+      # Build & Tests
+      - next build --experimental-build-mode compile
+      - Vitest (unit + integration)
+      - Playwright + axe-core (E2E + a11y)
+
+      # Performance
+      - Lighthouse CI
+
+      # Mutation Testing (optionnel)
+      - Stryker (si input activé)
 
   deploy:
-    needs: [security, quality, build]
-    if: github.ref == 'refs/heads/main'
-    # OIDC authentication (Phase 2)
+    needs: quality-gate
+    # OIDC authentication (pas de secrets statiques)
     - wrangler deploy
 ```
 
@@ -273,7 +291,8 @@ jobs:
 | **Least Privilege** | GITHUB_TOKEN en read-only par défaut | Limite le blast radius d'une compromission |
 | **Immutability** | SHA pinning des actions tierces | Garantie cryptographique de l'intégrité du code |
 | **Defense in Depth** | 4 layers de validation (supply chain, quality, build, identity) | Une couche échouée ne compromet pas tout le système |
-| **Keyless Auth** | OIDC pour Cloudflare (Phase 2) | Élimine le risque de vol de secrets statiques |
+| **Keyless Auth** | OIDC pour Cloudflare | Élimine le risque de vol de secrets statiques |
+| **Manual Trigger** | `workflow_dispatch` + branch protection | Évite exécutions répétées, contrôle développeur |
 
 ### 7. Structure du Projet Unifié
 
