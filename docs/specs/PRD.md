@@ -169,7 +169,10 @@ C'est entendu. Voici la section complète des **Exigences (Requirements)**, cons
 
 **Phase 1 - MVP (Essentials) :**
 - **CA1 (Sécurité)** : Action **Socket.dev** bloquante contre les paquets malveillants.
-- **CA2 (Hygiène)** : Action **Knip** pour rejeter le code mort.
+- **CA2 (Hygiène)** : Action **Knip** configurée pour Next.js 15 + Payload CMS :
+  - Points d'entrée explicites : `payload.config.ts`, `middleware.ts`, `instrumentation.ts`
+  - Exclusion des types générés (`payload-types.ts`) et migrations Drizzle
+  - Mode `--production` en CI (ignore tests et devDeps pour la vélocité)
 - **CA3 (Type Sync)** : Vérification stricte des types Payload.
 - **CA4 (Build)** : Validation `next build --experimental-build-mode compile` sans DB.
 - **CA5 (Style)** : Prettier + plugin Tailwind (ordre déterministe).

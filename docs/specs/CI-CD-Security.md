@@ -192,28 +192,92 @@ fi
 - Dépendances npm installées mais jamais importées
 - Types TypeScript orphelins
 
-**Configuration** :
+#### Défi des Frameworks "Convention-Based"
 
-```yaml
-# .github/workflows/quality-gate.yml
-- name: Knip - Dead Code Detection
-  run: pnpm exec knip --strict
-```
+Next.js 15 (App Router) et Payload CMS 3.0 reposent sur une **inversion de contrôle** : le framework appelle votre code via des fichiers aux noms conventionnels (`page.tsx`, `layout.tsx`, `payload.config.ts`). Pour un analyseur statique, ces fichiers apparaissent comme du code mort car **aucun fichier du projet ne les importe explicitement**.
+
+**Points d'entrée implicites critiques :**
+
+| Framework | Fichiers conventionnels |
+|-----------|------------------------|
+| **Next.js 15** | `page.tsx`, `layout.tsx`, `loading.tsx`, `error.tsx`, `not-found.tsx`, `route.ts`, `middleware.ts`, `instrumentation.ts` |
+| **Payload CMS** | `payload.config.ts` (point d'entrée absolu de toute la logique CMS) |
+| **Drizzle** | `drizzle.config.ts` (détecté par le plugin Knip) |
+
+**Exports Next.js protégés** : Le plugin Next.js de Knip reconnaît nativement les exports de configuration (`metadata`, `generateMetadata`, `dynamic`, `revalidate`, `viewport`). Ces exports ne seront pas marqués comme inutilisés.
+
+#### Configuration Optimale (Next.js 15 + Payload 3.0)
 
 ```jsonc
 // knip.json
 {
   "$schema": "https://unpkg.com/knip@5/schema.json",
-  "entry": ["src/app/**/*.tsx", "src/lib/**/*.ts"],
+  "entry": [
+    "next.config.ts",
+    "payload.config.ts",           // Point d'entrée Payload (critique)
+    "src/instrumentation.ts",      // Observabilité Next.js 15
+    "src/middleware.ts"
+  ],
   "project": ["src/**/*.{ts,tsx}"],
   "ignore": [
-    "src/payload-types.ts",  // Généré automatiquement
-    "**/*.test.ts"
+    "src/payload-types.ts",        // Types auto-générés par Payload
+    "public/**"                    // Assets statiques (référencés par chaînes)
+  ],
+  "exclude": [
+    "drizzle/migrations/**",       // Fichiers SQL critiques, jamais importés
+    "drizzle/meta/**"
   ],
   "ignoreDependencies": [
-    "@cloudflare/workers-types"  // Types utilisés uniquement pour LSP
-  ]
+    "@cloudflare/workers-types"    // Types utilisés uniquement pour LSP
+  ],
+  "next": {
+    "entry": []                    // Plugin auto-détecte les conventions App Router
+  },
+  "drizzle": {
+    "config": ["drizzle.config.ts"]
+  }
 }
+```
+
+**Rationale des exclusions :**
+- **`payload-types.ts`** : Fichier auto-généré par `pnpm generate:types:payload`. Peut contenir des types exportés mais non utilisés (normal pour un fichier généré).
+- **`drizzle/migrations/**`** : Fichiers SQL accumulés par `drizzle-kit generate`. Critiques pour l'intégrité DB mais jamais importés par le code applicatif.
+- **`public/**`** : Fichiers référencés uniquement via chaînes (`<Image src="/logo.png" />`), invisibles pour l'analyse statique.
+
+#### Mode Production vs Complet
+
+```yaml
+# .github/workflows/quality-gate.yml
+
+# Mode Production (recommandé en CI pour la vélocité)
+- name: Knip - Dead Code Detection
+  run: pnpm exec knip --production
+  # Ignore : devDependencies, fichiers de test, stories Storybook
+  # Bénéfice : Temps d'exécution réduit, focus sur le bundle final
+
+# Mode Complet (analyse exhaustive, optionnel)
+- name: Knip - Full Analysis
+  run: pnpm exec knip --strict
+  # Analyse tout, y compris le code de test
+```
+
+**Stratégie hybride** : Utiliser `--production` sur les PRs (vélocité) et une analyse complète en tâche de fond (cron job) ou avant une release majeure.
+
+#### Cache CI pour Knip
+
+Knip effectue un travail intensif d'analyse AST. Le cache doit être sauvegardé entre les runs :
+
+```yaml
+- name: Restore Knip Cache
+  uses: actions/cache@v4
+  with:
+    path: node_modules/.cache/knip
+    key: knip-${{ runner.os }}-${{ hashFiles('**/pnpm-lock.yaml') }}-${{ github.sha }}
+    restore-keys: |
+      knip-${{ runner.os }}-${{ hashFiles('**/pnpm-lock.yaml') }}-
+
+- name: Run Knip Analysis
+  run: pnpm exec knip --production --cache
 ```
 
 **Référence** : [Knip CI Documentation](../tech/github/knip-CI.md)

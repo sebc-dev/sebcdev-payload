@@ -307,6 +307,17 @@ Dans un projet utilisant la génération de code par IA, les vecteurs d'attaque 
 └─────────────────────────────────────────────────────────┘
 ```
 
+#### Spécificité Layer 2 : Analyse Statique et Frameworks Convention-Based
+
+Next.js 15 (App Router) et Payload CMS 3.0 reposent sur une **inversion de contrôle** : le framework appelle votre code via des fichiers aux noms conventionnels (`page.tsx`, `layout.tsx`, `payload.config.ts`). Pour un analyseur statique comme Knip, ces fichiers apparaissent comme du code mort car aucun fichier du projet ne les importe explicitement.
+
+La configuration Knip doit donc explicitement déclarer ces **points d'entrée implicites** :
+- **Next.js 15** : `page.tsx`, `layout.tsx`, `route.ts`, `middleware.ts`, `instrumentation.ts`
+- **Payload CMS** : `payload.config.ts` (point d'entrée absolu de toute la logique CMS)
+- **Drizzle** : `drizzle.config.ts` + exclusion du dossier `migrations/` (fichiers SQL jamais importés)
+
+> **Configuration détaillée** : Voir [CI-CD Security - Section 3.1](./CI-CD-Security.md#31-knip---détection-de-code-mort)
+
 ### 6.3 Quality Gate Workflow
 
 **Stratégie de déclenchement** : Workflows déclenchés **manuellement** (`workflow_dispatch`) mais **obligatoires** pour merger via branch protection.
