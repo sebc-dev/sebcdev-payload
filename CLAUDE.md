@@ -34,6 +34,44 @@ pnpm generate:types:payload # Generate Payload types only
 pnpm payload migrate:create # Create new migration
 ```
 
+## Commit Conventions
+
+Ce projet utilise [Gitmoji](https://gitmoji.dev/) pour préfixer les messages de commit avec des emojis significatifs.
+
+### Format des commits
+
+```
+<gitmoji> <message>
+
+Exemples:
+✨ Ajout de la fonctionnalité de recherche
+🐛 Correction du bug d'authentification
+📝 Mise à jour de la documentation API
+♻️ Refactorisation du système de cache
+```
+
+### Gitmojis courants
+
+| Emoji | Code | Usage |
+|-------|------|-------|
+| ✨ | `:sparkles:` | Nouvelle fonctionnalité |
+| 🐛 | `:bug:` | Correction de bug |
+| 📝 | `:memo:` | Documentation |
+| ♻️ | `:recycle:` | Refactorisation |
+| ⚡️ | `:zap:` | Amélioration de performance |
+| 🎨 | `:art:` | Amélioration structure/format du code |
+| ✅ | `:white_check_mark:` | Ajout/mise à jour de tests |
+| 🔒 | `:lock:` | Correction de sécurité |
+| ⬆️ | `:arrow_up:` | Mise à jour de dépendances |
+| 🔧 | `:wrench:` | Configuration |
+| 🚀 | `:rocket:` | Déploiement |
+| 💄 | `:lipstick:` | UI/Style |
+| 🚨 | `:rotating_light:` | Correction warnings linter |
+| 🏗️ | `:building_construction:` | Changements architecturaux |
+| ♿️ | `:wheelchair:` | Accessibilité |
+
+> **Liste complète :** [docs/gitmoji.md](docs/gitmoji.md)
+
 ## CI/CD Pipeline & Security
 
 ### Quality Gate Workflow
