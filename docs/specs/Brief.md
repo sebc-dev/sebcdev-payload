@@ -50,7 +50,7 @@ sebc.dev est un blog technique bilingue (français/anglais) tenu par un auteur u
 - **Stockage média** : Cloudflare R2 via **Payload Cloud Storage Plugin** (S3 compatible).
 - **UI Front** : TailwindCSS 4 + shadcn/ui.
 - **Runtime** : Cloudflare Workers.
-- **CI/CD** : GitHub Actions.
+- **CI/CD** : GitHub Actions avec Quality Gate "AI-Shield" (Socket.dev, Knip, Type Sync, Lighthouse CI).
 - **Cache** : Next.js Cache API + Hooks de revalidation Payload (ISR).
 
 ### Fonctionnalités produit
@@ -111,3 +111,15 @@ sebc.dev est un blog technique bilingue (français/anglais) tenu par un auteur u
 **Open Questions**
 - Stratégie de redimensionnement d'images : Utiliser le redimensionnement intégré de Payload (gourmand en CPU Worker) ou déléguer à Cloudflare Images ? (Recommandation : Cloudflare Images).
 - Gestion des migrations D1 en CI/CD avec Payload : Validation du workflow `payload migrate` dans les GitHub Actions.
+
+## CI/CD Quality Gate "AI-Shield"
+
+Pipeline GitHub Actions avec validation multi-couches pour protéger contre les hallucinations IA et garantir la qualité du code :
+
+- **Supply Chain** : Socket.dev (blocage paquets malveillants, typosquatting)
+- **Code Quality** : Knip (code mort), ESLint/Prettier, Type sync Payload ↔ TypeScript
+- **Performance** : Lighthouse CI (budgets stricts : Performance > 90, A11y = 100, SEO = 100)
+- **Architecture** : dependency-cruiser (interdiction imports serveur ↔ client)
+- **Security** : SHA pinning actions GitHub, OIDC Cloudflare (Phase 2)
+
+> **Documentation complète :** [CI-CD Security Architecture](./CI-CD-Security.md)
