@@ -1,101 +1,99 @@
-# Payload Cloudflare Template
+# Payload CMS on Cloudflare Workers
 
-[![Deploy to Cloudflare](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/payloadcms/payload/tree/main/templates/with-cloudflare-d1)
+> Modern headless CMS powered by Next.js 15, React 19, and Cloudflare's edge infrastructure
 
-**This can only be deployed on Paid Workers right now due to size limits.** This template comes configured with the bare minimum to get started on anything you need.
+## 🚀 Tech Stack
 
-## Quick start
+- **Framework**: Next.js 15 (App Router) + React 19
+- **CMS**: Payload CMS 3.x
+- **Database**: Cloudflare D1 (SQLite)
+- **Storage**: Cloudflare R2
+- **Deployment**: Cloudflare Workers
+- **Language**: TypeScript
 
-This template can be deployed directly to Cloudflare Workers by clicking the button to take you to the setup screen.
+## ✨ Features
 
-From there you can connect your code to a git provider such Github or Gitlab, name your Workers, D1 Database and R2 Bucket as well as attach any additional environment variables or services you need.
+- 🌐 **Edge-first architecture** - Deploy globally with Cloudflare Workers
+- 🔐 **Security-hardened CI/CD** - Multi-layer validation with Socket.dev, SHA pinning, and Dependabot
+- 🧪 **Comprehensive testing** - Integration tests (Vitest), E2E tests (Playwright), and mutation testing (Stryker)
+- ♿️ **Accessibility first** - WCAG 2.1 AA compliance with axe-core validation
+- ⚡️ **Performance optimized** - Lighthouse scores: Performance ≥90, A11y/SEO = 100
+- 📦 **Type-safe** - Full TypeScript support with auto-generated Payload types
+- 🎨 **Convention-based commits** - Gitmoji for semantic commit messages
 
-## Quick Start - local setup
-
-To spin up this template locally, follow these steps:
-
-### Clone
-
-After you click the `Deploy` button above, you'll want to have standalone copy of this repo on your machine. Cloudflare will connect your app to a git provider such as Github and you can access your code from there.
-
-### Local Development
-
-## How it works
-
-Out of the box, using [`Wrangler`](https://developers.cloudflare.com/workers/wrangler/) will automatically create local bindings for you to connect to the remote services and it can even create a local mock of the services you're using with Cloudflare.
-
-We've pre-configured Payload for you with the following:
-
-### Collections
-
-See the [Collections](https://payloadcms.com/docs/configuration/collections) docs for details on how to extend this functionality.
-
-- #### Users (Authentication)
-
-  Users are auth-enabled collections that have access to the admin panel.
-
-  For additional help, see the official [Auth Example](https://github.com/payloadcms/payload/tree/main/examples/auth) or the [Authentication](https://payloadcms.com/docs/authentication/overview#authentication-overview) docs.
-
-- #### Media
-
-  This is the uploads enabled collection.
-
-### Image Storage (R2)
-
-Images will be served from an R2 bucket which you can then further configure to use a CDN to serve for your frontend directly.
-
-### D1 Database
-
-The Worker will have direct access to a D1 SQLite database which Wrangler can connect locally to, just note that you won't have a connection string as you would typically with other providers.
-
-You can enable read replicas by adding `readReplicas: 'first-primary'` in the DB adapter and then enabling it on your D1 Cloudflare dashboard. Read more about this feature on [our docs](https://payloadcms.com/docs/database/sqlite#d1-read-replicas).
-
-## Working with Cloudflare
-
-Firstly, after installing dependencies locally you need to authenticate with Wrangler by running:
+## 🛠️ Quick Start
 
 ```bash
-pnpm wrangler login
+# Install dependencies
+pnpm install
+
+# Start development server
+pnpm dev
+
+# Run quality checks
+pnpm lint                    # ESLint + Prettier
+pnpm test                    # Unit + E2E tests
+pnpm build                   # Production build
+
+# Deploy to Cloudflare
+pnpm deploy
 ```
 
-This will take you to Cloudflare to login and then you can use the Wrangler CLI locally for anything, use `pnpm wrangler help` to see all available options.
+## 🏗️ Architecture
 
-Wrangler is pretty smart so it will automatically bind your services for local development just by running `pnpm dev`.
+### Project Structure
+```
+src/
+├── app/
+│   ├── (frontend)/          # Public pages
+│   └── (payload)/           # Admin panel + API
+├── collections/             # CMS collections
+├── migrations/              # Database migrations
+└── payload.config.ts        # Central configuration
+```
 
-## Deployments
+### Key Integrations
+- **D1 Database**: SQLite edge database via `@payloadcms/db-d1-sqlite`
+- **R2 Storage**: Object storage for media via `@payloadcms/storage-r2`
+- **OpenNext**: Cloudflare Workers adapter for Next.js
 
-When you're ready to deploy, first make sure you have created your migrations:
+## 🔒 Quality & Security
+
+This project implements an **AI-Shield** CI/CD pipeline with:
+
+- **Supply Chain Security**: Socket.dev package scanning, SHA-pinned GitHub Actions
+- **Code Quality Gates**: Knip (dead code detection), ESLint, Prettier, dependency-cruiser
+- **Architecture Validation**: Enforced separation between server/client code
+- **Automated Testing**: Multi-stage testing with coverage reports
+- **OIDC Authentication**: Secure deployments without static secrets
+
+> Full documentation: [CI/CD Security Architecture](docs/specs/CI-CD-Security.md)
+
+## 📝 Commit Convention
+
+This project uses [Gitmoji](https://gitmoji.dev/) for semantic commits:
 
 ```bash
-pnpm payload migrate:create
+✨ Add new feature
+🐛 Fix bug
+📝 Update documentation
+♻️ Refactor code
+⚡️ Improve performance
 ```
 
-Then run the following command:
+## 📚 Documentation
 
-```bash
-pnpm run deploy
-```
+- [CLAUDE.md](CLAUDE.md) - Development guidelines
+- [Gitmoji Reference](docs/gitmoji.md) - Complete emoji list
+- [Payload Docs](https://payloadcms.com/docs) - Official CMS documentation
+- [Cloudflare Workers](https://developers.cloudflare.com/workers/) - Deployment platform
 
-This will spin up Wrangler in `production` mode, run any created migrations, build the app and then deploy the bundle up to Cloudflare.
+## 🤝 Contributing
 
-That's it! You can if you wish move these steps into your CI pipeline as well.
+1. Follow the Gitmoji commit convention
+2. Run quality checks before pushing (`pnpm lint && pnpm test`)
+3. Ensure TypeScript types are synced (`pnpm generate:types:payload`)
 
-## Enabling logs
+## 📄 License
 
-By default logs are not enabled for your API, we've made this decision because it does run against your quota so we've left it opt-in. But you can easily enable logs in one click in the Cloudflare panel, [see docs](https://developers.cloudflare.com/workers/observability/logs/workers-logs/#enable-workers-logs).
-
-## Known issues
-
-### GraphQL
-
-We are currently waiting on some issues with GraphQL to be [fixed upstream in Workers](https://github.com/cloudflare/workerd/issues/5175) so full support for GraphQL is not currently guaranteed when deployed.
-
-### Worker size limits
-
-We currently recommend deploying this template to the Paid Workers plan due to bundle [size limits](https://developers.cloudflare.com/workers/platform/limits/#worker-size) of 3mb. We're actively trying to reduce our bundle footprint over time to better meet this metric.
-
-This also applies to your own code, in the case of importing a lot of libraries you may find yourself limited by the bundle.
-
-## Questions
-
-If you have any issues or questions, reach out to us on [Discord](https://discord.com/invite/payload) or start a [GitHub discussion](https://github.com/payloadcms/payload/discussions).
+MIT
