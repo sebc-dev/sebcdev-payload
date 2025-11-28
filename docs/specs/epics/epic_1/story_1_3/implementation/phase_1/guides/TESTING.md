@@ -145,17 +145,17 @@ fi
 SHA-pinned actions found: 3
 
 Action references:
-        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683  # v4.2.2
-        uses: pnpm/action-setup@fe02b34f77f8bc703788d5817da081398fad5dd2  # v4.0.0
-        uses: actions/setup-node@39370e3970a6d050c480ffad4ff0ed4d3fdee5af  # v4.1.0
+        uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3  # v6.0.0
+        uses: pnpm/action-setup@41ff72655975bd51cab0327fa583b6e92b6d3061  # v4.2.0
+        uses: actions/setup-node@2028fbc5c25fe9cf00d9f06a71cc4710d4507903  # v6.0.0
 
 Tag references (should be empty):
   None found (OK)
 
 SHA length verification:
-  @11bd71901bbe5b1630ceea73d27597364c9af683 - VALID (40 chars)
-  @fe02b34f77f8bc703788d5817da081398fad5dd2 - VALID (40 chars)
-  @39370e3970a6d050c480ffad4ff0ed4d3fdee5af - VALID (40 chars)
+  @1af3b93b6815bc44a9784bd300feb67ff0d1eeb3 - VALID (40 chars)
+  @41ff72655975bd51cab0327fa583b6e92b6d3061 - VALID (40 chars)
+  @2028fbc5c25fe9cf00d9f06a71cc4710d4507903 - VALID (40 chars)
 
 === PASS: All 3 actions are SHA-pinned ===
 ```
