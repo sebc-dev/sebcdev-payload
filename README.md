@@ -83,9 +83,40 @@ This project uses [Gitmoji](https://gitmoji.dev/) for semantic commits:
 ⚡️ Improve performance
 ```
 
+## 🚢 Deployment
+
+### Prerequisites
+
+1. **Cloudflare Account** with Workers, D1, and R2 access
+2. **Wrangler CLI** authenticated: `pnpm wrangler login`
+3. **PAYLOAD_SECRET** configured
+
+### Quick Deploy
+
+```bash
+# 1. Set production secret (first time only)
+pnpm wrangler secret put PAYLOAD_SECRET
+
+# 2. Deploy to Cloudflare Workers
+pnpm deploy
+```
+
+### Local Development with Cloudflare Bindings
+
+```bash
+# Create local secrets file
+echo "PAYLOAD_SECRET=$(openssl rand -hex 32)" > .dev.vars
+
+# Start dev server with Cloudflare bindings
+pnpm dev
+```
+
+> Full infrastructure details: [docs/deployment/INFRASTRUCTURE.md](docs/deployment/INFRASTRUCTURE.md)
+
 ## 📚 Documentation
 
 - [CLAUDE.md](CLAUDE.md) - Development guidelines
+- [Infrastructure Reference](docs/deployment/INFRASTRUCTURE.md) - Cloudflare resources & commands
 - [Gitmoji Reference](docs/gitmoji.md) - Complete emoji list
 - [Payload Docs](https://payloadcms.com/docs) - Official CMS documentation
 - [Cloudflare Workers](https://developers.cloudflare.com/workers/) - Deployment platform
