@@ -3,7 +3,7 @@
 **Epic**: Epic 1 - Foundation & Cloudflare Architecture
 **Story ID**: 1.2
 **Created**: 2025-11-28
-**Status**: 📋 PLANNING
+**Status**: ✅ COMPLETED
 
 ---
 
@@ -25,47 +25,47 @@ Le projet utilise Wrangler pour simuler localement les bindings D1 et R2, permet
 
 ### AC1: Clonage et Installation des Dépendances
 
-- [ ] Le repository peut être cloné localement via `git clone`
-- [ ] Les dépendances s'installent correctement avec `pnpm install`
-- [ ] Aucune erreur de résolution de dépendances
-- [ ] Les scripts npm/pnpm sont tous exécutables
+- [x] Le repository peut être cloné localement via `git clone`
+- [x] Les dépendances s'installent correctement avec `pnpm install`
+- [x] Aucune erreur de résolution de dépendances
+- [x] Les scripts npm/pnpm sont tous exécutables
 
 ### AC2: Configuration des Variables d'Environnement
 
-- [ ] Fichier `.env` créé à partir de `.env.example`
-- [ ] Variable `PAYLOAD_SECRET` configurée (génération aléatoire)
-- [ ] Toutes les variables requises documentées
-- [ ] Le fichier `.env` est dans `.gitignore`
+- [x] Fichier `.env` créé à partir de `.env.example`
+- [x] Variable `PAYLOAD_SECRET` configurée (génération aléatoire)
+- [x] Toutes les variables requises documentées
+- [x] Le fichier `.env` est dans `.gitignore`
 
 ### AC3: Vérification des Bindings Wrangler
 
-- [ ] Le fichier `wrangler.jsonc` contient les bindings D1 corrects
-- [ ] Le fichier `wrangler.jsonc` contient les bindings R2 corrects
-- [ ] Les `compatibility_flags` incluent `nodejs_compat`
-- [ ] Les types Cloudflare sont générés (`cloudflare-env.d.ts`)
+- [x] Le fichier `wrangler.jsonc` contient les bindings D1 corrects
+- [x] Le fichier `wrangler.jsonc` contient les bindings R2 corrects
+- [x] Les `compatibility_flags` incluent `nodejs_compat`
+- [x] Les types Cloudflare sont générés (`cloudflare-env.d.ts`)
 
 ### AC4: Serveur de Développement Fonctionnel
 
-- [ ] La commande `pnpm dev` démarre sans erreur
-- [ ] L'application est accessible sur `http://localhost:3000`
-- [ ] La page d'accueil s'affiche correctement
-- [ ] Le panneau admin est accessible sur `/admin`
-- [ ] La connexion à D1 fonctionne (pas d'erreur de base de données)
+- [x] La commande `pnpm dev` démarre sans erreur
+- [x] L'application est accessible sur `http://localhost:3000`
+- [x] La page d'accueil s'affiche correctement
+- [x] Le panneau admin est accessible sur `/admin`
+- [x] La connexion à D1 fonctionne (pas d'erreur de base de données)
 
 ### AC5: Génération des Types
 
-- [ ] Les types Payload sont générés (`pnpm generate:types:payload`)
-- [ ] Les types Cloudflare sont générés (`pnpm generate:types:cloudflare`)
-- [ ] Le fichier `payload-types.ts` est à jour
-- [ ] Le fichier `cloudflare-env.d.ts` est à jour
-- [ ] Aucune erreur TypeScript dans le projet
+- [x] Les types Payload sont générés (`pnpm generate:types:payload`)
+- [x] Les types Cloudflare sont générés (`pnpm generate:types:cloudflare`)
+- [x] Le fichier `payload-types.ts` est à jour
+- [x] Le fichier `cloudflare-env.d.ts` est à jour
+- [x] Aucune erreur TypeScript dans le projet
 
 ### AC6: Documentation Locale
 
-- [ ] Guide de démarrage rapide pour nouveaux développeurs
-- [ ] Liste des commandes essentielles documentées
-- [ ] Procédure de résolution des problèmes courants
-- [ ] Configuration IDE recommandée (VSCode settings)
+- [x] Guide de démarrage rapide pour nouveaux développeurs
+- [x] Liste des commandes essentielles documentées
+- [x] Procédure de résolution des problèmes courants
+- [x] Configuration IDE recommandée (VSCode settings)
 
 ---
 
@@ -144,13 +144,13 @@ pnpm devsafe
 
 ## Definition of Done
 
-- [ ] Tous les critères d'acceptation validés
-- [ ] Environnement local fonctionnel et testé
-- [ ] Documentation complète et à jour
-- [ ] Un nouveau développeur peut démarrer en < 15 minutes
-- [ ] Aucune erreur TypeScript
-- [ ] Aucune erreur ESLint
-- [ ] Story 1.2 marquée comme complétée dans EPIC_TRACKING.md
+- [x] Tous les critères d'acceptation validés
+- [x] Environnement local fonctionnel et testé
+- [x] Documentation complète et à jour
+- [x] Un nouveau développeur peut démarrer en < 15 minutes
+- [x] Aucune erreur TypeScript
+- [x] Aucune erreur ESLint
+- [x] Story 1.2 marquée comme complétée dans EPIC_TRACKING.md
 
 ---
 
