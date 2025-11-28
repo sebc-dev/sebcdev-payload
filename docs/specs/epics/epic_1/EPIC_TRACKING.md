@@ -33,7 +33,7 @@ This epic contains **4 stories** as defined in the PRD:
 |-------|-------|-------------|--------|--------|----------|
 | 1.1 | Initialisation & Déploiement 1-Click | Utiliser le template officiel pour provisionner automatiquement le Repo GitHub, la base D1, le bucket R2 et le Worker | ✅ COMPLETED | 3 | 3/3 |
 | 1.2 | Récupération & Configuration Locale | Cloner le repo, installer les dépendances et configurer l'environnement local avec bindings Cloudflare | ✅ COMPLETED | 2 | 2/2 |
-| 1.3 | Pipeline "Quality Gate" (AI-Shield) | Configurer le workflow GitHub Actions avec Socket.dev, Knip, Dependency Cruiser, Stryker, Lighthouse CI, ESLint/Prettier | 📋 NOT STARTED | - | 0/0 |
+| 1.3 | Pipeline "Quality Gate" (AI-Shield) | Configurer le workflow GitHub Actions avec Socket.dev, Knip, Dependency Cruiser, Stryker, Lighthouse CI, ESLint/Prettier | 🚧 IN PROGRESS | 8 | 0/8 |
 | 1.4 | Adaptation du Pipeline de Déploiement | Conditionner le déploiement Cloudflare à la réussite de la Quality Gate | 📋 NOT STARTED | - | 0/0 |
 
 **Columns Explained**:
@@ -90,12 +90,12 @@ cat docs/specs/epics/epic_1/EPIC_TRACKING.md
 
 ### Progress Summary
 
-- **Stories Started**: 2 / 4
+- **Stories Started**: 3 / 4
 - **Stories Completed**: 2 / 4
-- **Total Phases**: 5 (Story 1.1: 3, Story 1.2: 2)
-- **Phases Completed**: 5 / 5
+- **Total Phases**: 13 (Story 1.1: 3, Story 1.2: 2, Story 1.3: 8)
+- **Phases Completed**: 5 / 13
 
-**Completion**: 50% (Stories 1.1 and 1.2 complete)
+**Completion**: 38% (Stories 1.1 and 1.2 complete, Story 1.3 in progress)
 
 ### Timeline
 
@@ -150,6 +150,7 @@ Track epic-level milestones here:
 
 ### Recent Updates
 
+- **2025-11-28**: Story 1.3 planning completed - 8 phases identified (Quality Gate AI-Shield pipeline)
 - **2025-11-28**: Story 1.2 ✅ COMPLETED - All phases validated, local dev environment fully functional with documentation
 - **2025-11-28**: Story 1.2 Phase 1 COMPLETED - Environment validation passed (Wrangler auth, D1/R2 bindings, TypeScript types, dev server)
 - **2025-11-28**: Story 1.2 Phase 2 documentation generated - 7 files, 4 commits, ~3000 lines
@@ -169,7 +170,7 @@ Track epic-level milestones here:
 
 - Story 1.1: `docs/specs/epics/epic_1/story_1_1/story_1.1.md` ✅ Created
 - Story 1.2: `docs/specs/epics/epic_1/story_1_2/story_1.2.md` ✅ Created
-- Story 1.3: `docs/specs/epics/epic_1/story_1_3/story_1.3.md` (to be created via /plan-story)
+- Story 1.3: `docs/specs/epics/epic_1/story_1_3/story_1.3.md` ✅ Created
 - Story 1.4: `docs/specs/epics/epic_1/story_1_4/story_1.4.md` (to be created via /plan-story)
 
 ### Phase Plans
@@ -181,6 +182,15 @@ Track epic-level milestones here:
 - Story 1.2: `docs/specs/epics/epic_1/story_1_2/implementation/PHASES_PLAN.md` ✅ Created (2 phases)
   - Phase 1: `docs/specs/epics/epic_1/story_1_2/implementation/phase_1/` ✅ COMPLETED
   - Phase 2: `docs/specs/epics/epic_1/story_1_2/implementation/phase_2/` ✅ COMPLETED
+- Story 1.3: `docs/specs/epics/epic_1/story_1_3/implementation/PHASES_PLAN.md` ✅ Created (8 phases)
+  - Phase 1: Workflow Foundation & Dependabot (to generate)
+  - Phase 2: Supply Chain Security - Socket.dev (to generate)
+  - Phase 3: Code Quality - ESLint/Prettier (to generate)
+  - Phase 4: Code Quality - Knip/Type Sync (to generate)
+  - Phase 5: Build Validation (to generate)
+  - Phase 6: Architecture Validation - dependency-cruiser (to generate)
+  - Phase 7: Performance & Accessibility - Lighthouse/axe (to generate)
+  - Phase 8: Mutation Testing - Stryker (to generate)
 
 ### Related Documentation
 
@@ -208,8 +218,8 @@ Track epic-level milestones here:
 
 ### Epic Completion
 
-- [ ] All stories planned
-- [ ] All stories in progress
+- [ ] All stories planned (3/4 planned)
+- [x] At least one story in progress
 - [ ] All stories completed
 - [ ] Final review done
 - [ ] Ready for deployment
