@@ -32,7 +32,7 @@ This epic contains **4 stories** as defined in the PRD:
 | Story | Title | Description | Status | Phases | Progress |
 |-------|-------|-------------|--------|--------|----------|
 | 1.1 | Initialisation & Déploiement 1-Click | Utiliser le template officiel pour provisionner automatiquement le Repo GitHub, la base D1, le bucket R2 et le Worker | ✅ COMPLETED | 3 | 3/3 |
-| 1.2 | Récupération & Configuration Locale | Cloner le repo, installer les dépendances et configurer l'environnement local avec bindings Cloudflare | 📋 NOT STARTED | - | 0/0 |
+| 1.2 | Récupération & Configuration Locale | Cloner le repo, installer les dépendances et configurer l'environnement local avec bindings Cloudflare | 🚧 IN PROGRESS | 2 | 1/2 |
 | 1.3 | Pipeline "Quality Gate" (AI-Shield) | Configurer le workflow GitHub Actions avec Socket.dev, Knip, Dependency Cruiser, Stryker, Lighthouse CI, ESLint/Prettier | 📋 NOT STARTED | - | 0/0 |
 | 1.4 | Adaptation du Pipeline de Déploiement | Conditionner le déploiement Cloudflare à la réussite de la Quality Gate | 📋 NOT STARTED | - | 0/0 |
 
@@ -90,12 +90,12 @@ cat docs/specs/epics/epic_1/EPIC_TRACKING.md
 
 ### Progress Summary
 
-- **Stories Started**: 1 / 4
+- **Stories Started**: 2 / 4
 - **Stories Completed**: 1 / 4
-- **Total Phases**: 3 (Story 1.1)
-- **Phases Completed**: 3 / 3
+- **Total Phases**: 5 (Story 1.1: 3, Story 1.2: 2)
+- **Phases Completed**: 4 / 5
 
-**Completion**: 25% (Story 1.1 complete)
+**Completion**: 50% (Story 1.1 complete, Story 1.2 Phase 1 complete)
 
 ### Timeline
 
@@ -150,6 +150,10 @@ Track epic-level milestones here:
 
 ### Recent Updates
 
+- **2025-11-28**: Story 1.2 Phase 1 COMPLETED - Environment validation passed (Wrangler auth, D1/R2 bindings, TypeScript types, dev server)
+- **2025-11-28**: Story 1.2 Phase 2 documentation generated - 7 files, 4 commits, ~3000 lines
+- **2025-11-28**: Story 1.2 Phase 1 documentation generated - 7 files, 3 commits, ~2500 lines
+- **2025-11-28**: Story 1.2 planning completed - 2 phases identified (Environment Validation + Developer Documentation)
 - **2025-11-28**: Story 1.1 COMPLETED - All 3 phases validated, infrastructure deployed, documentation finalized
 - **2025-11-28**: Story 1.1 Phase 3 documentation generated - complete verification and documentation guide ready (7 files, 3 commits, ~3500 lines)
 - **2025-11-28**: Story 1.1 Phase 2 documentation generated - complete implementation guide ready
@@ -163,7 +167,7 @@ Track epic-level milestones here:
 ### Story Specifications
 
 - Story 1.1: `docs/specs/epics/epic_1/story_1_1/story_1.1.md` ✅ Created
-- Story 1.2: `docs/specs/epics/epic_1/story_1_2/story_1.2.md` (to be created via /plan-story)
+- Story 1.2: `docs/specs/epics/epic_1/story_1_2/story_1.2.md` ✅ Created
 - Story 1.3: `docs/specs/epics/epic_1/story_1_3/story_1.3.md` (to be created via /plan-story)
 - Story 1.4: `docs/specs/epics/epic_1/story_1_4/story_1.4.md` (to be created via /plan-story)
 
@@ -173,6 +177,9 @@ Track epic-level milestones here:
   - Phase 1: `docs/specs/epics/epic_1/story_1_1/implementation/phase_1/` ✅ COMPLETED
   - Phase 2: `docs/specs/epics/epic_1/story_1_1/implementation/phase_2/` ✅ COMPLETED
   - Phase 3: `docs/specs/epics/epic_1/story_1_1/implementation/phase_3/` ✅ COMPLETED
+- Story 1.2: `docs/specs/epics/epic_1/story_1_2/implementation/PHASES_PLAN.md` ✅ Created (2 phases)
+  - Phase 1: `docs/specs/epics/epic_1/story_1_2/implementation/phase_1/` ✅ COMPLETED
+  - Phase 2: `docs/specs/epics/epic_1/story_1_2/implementation/phase_2/` ✅ DOCS GENERATED (7 files)
 
 ### Related Documentation
 
