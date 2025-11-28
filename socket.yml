@@ -1,0 +1,33 @@
+# socket.yml
+# Socket.dev Configuration (v2)
+# Documentation: https://docs.socket.dev/docs/socket-yml
+#
+# Purpose: Configure behavioral analysis of npm dependencies for supply chain attack detection
+# This file defines:
+# - Which paths to include/exclude from scanning
+# - When to trigger scans based on file changes
+# - Security policy decisions (BLOCK/WARN/MONITOR)
+# - License compliance requirements
+
+version: 2
+
+# Exclude test fixtures and documentation from scanning
+# Prevents false positives from test fixtures that may intentionally contain problematic dependencies
+projectIgnorePaths:
+  - "tests/**"
+  - "docs/**"
+  - "**/__tests__/**"
+  - "**/fixtures/**"
+
+# Only trigger scans when dependency files change
+# Critical for monorepo efficiency: source code changes don't need dependency scanning
+triggerPaths:
+  - "package.json"
+  - "**/package.json"
+  - "pnpm-lock.yaml"
+  - "socket.yml"
+
+# GitHub App integration for enhanced features
+githubApp:
+  enabled: true
+  dependencyOverviewEnabled: true
