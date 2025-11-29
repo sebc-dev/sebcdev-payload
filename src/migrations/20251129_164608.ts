@@ -139,7 +139,25 @@ export async function down({ db, payload: _payload, req: _req }: MigrateDownArgs
 
     // Check if columns exist before attempting removal
     const tableInfo = await db.run(sql`PRAGMA table_info(\`payload_locked_documents_rels\`);`)
-    const columns = (tableInfo.results as Array<{ name: string }>).map((col) => col.name)
+
+    // Defensively validate PRAGMA result structure
+    if (!Array.isArray(tableInfo.results)) {
+      throw new Error(
+        `PRAGMA table_info returned unexpected result type: ${typeof tableInfo.results}`,
+      )
+    }
+
+    // Extract column names with type guard
+    const columns = tableInfo.results
+      .filter((item): item is { name: string } => {
+        return (
+          typeof item === 'object' &&
+          item !== null &&
+          'name' in item &&
+          typeof item.name === 'string'
+        )
+      })
+      .map((col) => col.name)
 
     // Only proceed with table rebuild if categories_id or tags_id exist
     if (columns.includes('categories_id') || columns.includes('tags_id')) {
