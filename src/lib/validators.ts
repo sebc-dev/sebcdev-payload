@@ -1,8 +1,9 @@
 import type { FieldHook } from 'payload'
 
 /**
- * Shared utilities for slug normalization and validation across taxonomy collections.
- * Used by Categories, Tags, and any future taxonomy-like collections.
+ * Shared validation utilities for Payload CMS fields.
+ * Includes slug normalization, taxonomy validation, and color validation.
+ * Used by Categories, Tags, and any future collections requiring field validation.
  */
 
 /**
@@ -70,4 +71,26 @@ export function validateTaxonomySlug(
     slugRegex.test(value) ||
     `Slug must contain only lowercase letters, numbers, and hyphens (e.g., "my-${entityName}-name")`
   )
+}
+
+/**
+ * Validates that a string is a valid hexadecimal color code.
+ * Accepts both 3-digit and 6-digit hex formats with a leading '#'.
+ * Allows null/undefined values (returns true) for optional color fields.
+ *
+ * @param value The color value to validate
+ * @returns true if valid or null/undefined, error message string if invalid
+ *
+ * @example
+ * isValidHexColor('#FF5733') // true
+ * isValidHexColor('#fff') // true
+ * isValidHexColor('#ABC123') // true
+ * isValidHexColor(null) // true
+ * isValidHexColor('FF5733') // 'Please enter a valid hex color...'
+ * isValidHexColor('#gg0000') // 'Please enter a valid hex color...'
+ */
+export function isValidHexColor(value: string | null | undefined): true | string {
+  if (!value) return true
+  const hexRegex = /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/
+  return hexRegex.test(value) || 'Please enter a valid hex color (e.g., "#FF5733")'
 }

@@ -1,6 +1,6 @@
 import type { CollectionConfig } from 'payload'
 
-import { slugifyTaxonomy, validateTaxonomySlug } from '@/lib/slugify'
+import { slugifyTaxonomy, validateTaxonomySlug } from '@/lib/validators'
 
 export const Tags: CollectionConfig = {
   slug: 'tags',
