@@ -65,11 +65,14 @@ jobs:
       - name: Prettier Check
         run: pnpm exec prettier --check .
 
+      - name: Knip - Dead Code Detection
+        run: pnpm exec knip --production
+
       # ============================================
       # PLACEHOLDER: Quality Checks (Future Phases)
       # ============================================
 
       - name: Placeholder - Quality checks coming soon
         run: |
-          echo "::notice::Phase 1-3 complete - Foundation + Socket.dev + ESLint/Prettier"
-          echo "::notice::Future phases will add: Knip, Build, dependency-cruiser, etc."
+          echo "::notice::Phase 1-4 complete - Foundation + Socket.dev + ESLint/Prettier + Knip"
+          echo "::notice::Future phases will add: Type Sync, Build, dependency-cruiser, etc."
