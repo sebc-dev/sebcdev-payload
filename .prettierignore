@@ -21,3 +21,6 @@ drizzle/migrations/
 # IDE
 .idea/
 .vscode/
+
+# Documentation - Exclude Markdown files from Prettier
+*.md
