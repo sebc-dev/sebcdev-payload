@@ -56,11 +56,11 @@ Install dependency-cruiser as a dev dependency and create a minimal working conf
 
 ### Changes
 
-| File | Action | Description |
-|------|--------|-------------|
-| `package.json` | Modify | Add dependency-cruiser to devDependencies |
-| `package.json` | Modify | Add `depcruise` and `depcruise:report` scripts |
-| `.dependency-cruiser.cjs` | Create | Minimal configuration file |
+| File                      | Action | Description                                    |
+| ------------------------- | ------ | ---------------------------------------------- |
+| `package.json`            | Modify | Add dependency-cruiser to devDependencies      |
+| `package.json`            | Modify | Add `depcruise` and `depcruise:report` scripts |
+| `.dependency-cruiser.cjs` | Create | Minimal configuration file                     |
 
 ### Implementation Details
 
@@ -141,8 +141,8 @@ Implement the core architecture rules to detect violations in Next.js 15 + Paylo
 
 ### Changes
 
-| File | Action | Description |
-|------|--------|-------------|
+| File                      | Action | Description         |
+| ------------------------- | ------ | ------------------- |
 | `.dependency-cruiser.cjs` | Modify | Add forbidden rules |
 
 ### Implementation Details
@@ -161,19 +161,19 @@ module.exports = {
       from: {
         path: '^src/app/.*\\.tsx$',
         pathNot: [
-          '\\.server\\.tsx$',  // Exclude server components
-          'layout\\.tsx$',     // Layouts are server by default
-          'page\\.tsx$',       // Pages are server by default (unless 'use client')
-          'loading\\.tsx$',    // Loading is server
-          'error\\.tsx$',      // Error has its own client boundary
-          'not-found\\.tsx$',  // Not found is server
+          '\\.server\\.tsx$', // Exclude server components
+          'layout\\.tsx$', // Layouts are server by default
+          'page\\.tsx$', // Pages are server by default (unless 'use client')
+          'loading\\.tsx$', // Loading is server
+          'error\\.tsx$', // Error has its own client boundary
+          'not-found\\.tsx$', // Not found is server
         ],
       },
       to: {
         path: [
-          '^src/collections/',  // Payload collections (server-only)
-          '^src/.*\\.server\\.',  // Explicit server files
-          'payload\\.config\\.ts$',  // Payload config
+          '^src/collections/', // Payload collections (server-only)
+          '^src/.*\\.server\\.', // Explicit server files
+          'payload\\.config\\.ts$', // Payload config
         ],
       },
     },
@@ -199,13 +199,13 @@ module.exports = {
       from: {
         orphan: true,
         pathNot: [
-          '\\.d\\.ts$',           // Type declarations
-          '\\.test\\.ts$',        // Test files
-          '\\.spec\\.ts$',        // Spec files
-          '\\.e2e\\.spec\\.ts$',  // E2E tests
-          '__tests__/',          // Test directories
-          '__mocks__/',          // Mock directories
-          'tests/',              // Test root directory
+          '\\.d\\.ts$', // Type declarations
+          '\\.test\\.ts$', // Test files
+          '\\.spec\\.ts$', // Spec files
+          '\\.e2e\\.spec\\.ts$', // E2E tests
+          '__tests__/', // Test directories
+          '__mocks__/', // Mock directories
+          'tests/', // Test root directory
         ],
       },
       to: {},
@@ -303,11 +303,11 @@ If the codebase has existing architectural violations, generate a baseline file 
 
 ### Changes
 
-| File | Action | Description |
-|------|--------|-------------|
+| File                                        | Action             | Description                     |
+| ------------------------------------------- | ------------------ | ------------------------------- |
 | `.dependency-cruiser-known-violations.json` | Create (if needed) | Baseline of existing violations |
-| `.dependency-cruiser.cjs` | Modify (if needed) | Reference baseline file |
-| `.gitignore` | Modify | Add depcruise-report.html |
+| `.dependency-cruiser.cjs`                   | Modify (if needed) | Reference baseline file         |
+| `.gitignore`                                | Modify             | Add depcruise-report.html       |
 
 ### Implementation Details
 
@@ -394,10 +394,10 @@ Add dependency-cruiser step to the quality-gate workflow with GitHub Job Summary
 
 ### Changes
 
-| File | Action | Description |
-|------|--------|-------------|
+| File                                 | Action | Description                 |
+| ------------------------------------ | ------ | --------------------------- |
 | `.github/workflows/quality-gate.yml` | Modify | Add dependency-cruiser step |
-| `CLAUDE.md` | Modify | Document depcruise commands |
+| `CLAUDE.md`                          | Modify | Document depcruise commands |
 
 ### Implementation Details
 
@@ -406,55 +406,57 @@ Add dependency-cruiser step to the quality-gate workflow with GitHub Job Summary
 Add after the build step (Layer 3) in the workflow:
 
 ```yaml
-      # ============================================
-      # LAYER 2+: Architecture Validation
-      # ============================================
+# ============================================
+# LAYER 2+: Architecture Validation
+# ============================================
 
-      - name: dependency-cruiser - Architecture Validation
-        id: depcruise
-        run: |
-          echo "## Architecture Validation" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
+- name: dependency-cruiser - Architecture Validation
+  id: depcruise
+  run: |
+    echo "## Architecture Validation" >> $GITHUB_STEP_SUMMARY
+    echo "" >> $GITHUB_STEP_SUMMARY
 
-          # Run dependency-cruiser with JSON output
-          if pnpm exec depcruise src --config .dependency-cruiser.cjs --output-type err-long 2>&1 | tee depcruise-output.txt; then
-            echo "### :white_check_mark: No architectural violations detected" >> $GITHUB_STEP_SUMMARY
-            echo "" >> $GITHUB_STEP_SUMMARY
-            echo "All import boundaries and dependency rules are respected." >> $GITHUB_STEP_SUMMARY
-          else
-            echo "### :x: Architectural violations detected" >> $GITHUB_STEP_SUMMARY
-            echo "" >> $GITHUB_STEP_SUMMARY
-            echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
-            cat depcruise-output.txt >> $GITHUB_STEP_SUMMARY
-            echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
-            exit 1
-          fi
+    # Run dependency-cruiser with JSON output
+    if pnpm exec depcruise src --config .dependency-cruiser.cjs --output-type err-long 2>&1 | tee depcruise-output.txt; then
+      echo "### :white_check_mark: No architectural violations detected" >> $GITHUB_STEP_SUMMARY
+      echo "" >> $GITHUB_STEP_SUMMARY
+      echo "All import boundaries and dependency rules are respected." >> $GITHUB_STEP_SUMMARY
+    else
+      echo "### :x: Architectural violations detected" >> $GITHUB_STEP_SUMMARY
+      echo "" >> $GITHUB_STEP_SUMMARY
+      echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+      cat depcruise-output.txt >> $GITHUB_STEP_SUMMARY
+      echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+      exit 1
+    fi
 ```
 
 #### 2. Update Quality Gate Summary step
 
 ```yaml
-      - name: Quality Gate Summary
-        run: |
-          echo "::notice::Layer 1: Supply Chain Security (Socket Firewall)"
-          echo "::notice::Layer 2: Code Quality (ESLint, Prettier, Knip, Type Sync)"
-          echo "::notice::Layer 2+: Architecture Validation (dependency-cruiser)"
-          echo "::notice::Layer 3: Build Validation (Next.js No-DB Mode)"
-          echo "::notice::Coming: Lighthouse CI, Stryker"
+- name: Quality Gate Summary
+  run: |
+    echo "::notice::Layer 1: Supply Chain Security (Socket Firewall)"
+    echo "::notice::Layer 2: Code Quality (ESLint, Prettier, Knip, Type Sync)"
+    echo "::notice::Layer 2+: Architecture Validation (dependency-cruiser)"
+    echo "::notice::Layer 3: Build Validation (Next.js No-DB Mode)"
+    echo "::notice::Coming: Lighthouse CI, Stryker"
 ```
 
 #### 3. Update CLAUDE.md
 
 Add to the Code Quality section:
 
-```markdown
+````markdown
 # Architecture Validation
 
 ```bash
 pnpm depcruise           # Run architecture validation
 pnpm depcruise:report    # Generate HTML report
 ```
-```
+````
+
+````
 
 ### Validation
 
@@ -464,7 +466,7 @@ pnpm depcruise
 
 # Verify workflow syntax
 # Push to branch and trigger workflow manually
-```
+````
 
 ### Commit Message
 
@@ -518,12 +520,12 @@ git commit -m "Revert Phase 6: dependency-cruiser integration"
 
 ## Success Metrics
 
-| Metric | Target | Measurement |
-|--------|--------|-------------|
-| New violations detected | 0 | CI passes |
-| CI execution time increase | < 30s | Compare before/after |
-| False positives | 0 | No manual overrides needed |
-| GitHub Summary generated | Yes | Visible in Actions |
+| Metric                     | Target | Measurement                |
+| -------------------------- | ------ | -------------------------- |
+| New violations detected    | 0      | CI passes                  |
+| CI execution time increase | < 30s  | Compare before/after       |
+| False positives            | 0      | No manual overrides needed |
+| GitHub Summary generated   | Yes    | Visible in Actions         |
 
 ---
 

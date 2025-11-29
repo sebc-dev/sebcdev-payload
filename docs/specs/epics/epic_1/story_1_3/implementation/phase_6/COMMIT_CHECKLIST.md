@@ -113,14 +113,12 @@ EOF
 ### Implementation Checklist
 
 - [ ] Update `.dependency-cruiser.cjs` with forbidden rules:
-
   - [ ] `no-server-in-client` rule configured
   - [ ] `no-circular` rule configured
   - [ ] `no-orphans` rule configured (warn)
   - [ ] `no-deprecated` rule configured (warn)
 
 - [ ] Configure exclusions:
-
   - [ ] `node_modules` excluded
   - [ ] `.next` and `.open-next` excluded
   - [ ] `src/payload-types.ts` excluded
@@ -304,53 +302,57 @@ EOF
   Location: After build step, before Quality Gate Summary
 
   ```yaml
-        # ============================================
-        # LAYER 2+: Architecture Validation
-        # ============================================
+  # ============================================
+  # LAYER 2+: Architecture Validation
+  # ============================================
 
-        - name: dependency-cruiser - Architecture Validation
-          id: depcruise
-          run: |
-            echo "## Architecture Validation" >> $GITHUB_STEP_SUMMARY
-            echo "" >> $GITHUB_STEP_SUMMARY
+  - name: dependency-cruiser - Architecture Validation
+    id: depcruise
+    run: |
+      echo "## Architecture Validation" >> $GITHUB_STEP_SUMMARY
+      echo "" >> $GITHUB_STEP_SUMMARY
 
-            if pnpm exec depcruise src --config .dependency-cruiser.cjs --output-type err-long 2>&1 | tee depcruise-output.txt; then
-              echo "### :white_check_mark: No architectural violations detected" >> $GITHUB_STEP_SUMMARY
-              echo "" >> $GITHUB_STEP_SUMMARY
-              echo "All import boundaries and dependency rules are respected." >> $GITHUB_STEP_SUMMARY
-            else
-              echo "### :x: Architectural violations detected" >> $GITHUB_STEP_SUMMARY
-              echo "" >> $GITHUB_STEP_SUMMARY
-              echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
-              cat depcruise-output.txt >> $GITHUB_STEP_SUMMARY
-              echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
-              exit 1
-            fi
+      if pnpm exec depcruise src --config .dependency-cruiser.cjs --output-type err-long 2>&1 | tee depcruise-output.txt; then
+        echo "### :white_check_mark: No architectural violations detected" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "All import boundaries and dependency rules are respected." >> $GITHUB_STEP_SUMMARY
+      else
+        echo "### :x: Architectural violations detected" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+        cat depcruise-output.txt >> $GITHUB_STEP_SUMMARY
+        echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+        exit 1
+      fi
   ```
 
 - [ ] Update Quality Gate Summary step:
 
   ```yaml
-        - name: Quality Gate Summary
-          run: |
-            echo "::notice::✅ Layer 1: Supply Chain Security (Socket Firewall)"
-            echo "::notice::✅ Layer 2: Code Quality (ESLint, Prettier, Knip, Type Sync)"
-            echo "::notice::✅ Layer 2+: Architecture Validation (dependency-cruiser)"
-            echo "::notice::✅ Layer 3: Build Validation (Next.js No-DB Mode)"
-            echo "::notice::⏳ Coming: Lighthouse CI, Stryker"
+  - name: Quality Gate Summary
+    run: |
+      echo "::notice::✅ Layer 1: Supply Chain Security (Socket Firewall)"
+      echo "::notice::✅ Layer 2: Code Quality (ESLint, Prettier, Knip, Type Sync)"
+      echo "::notice::✅ Layer 2+: Architecture Validation (dependency-cruiser)"
+      echo "::notice::✅ Layer 3: Build Validation (Next.js No-DB Mode)"
+      echo "::notice::⏳ Coming: Lighthouse CI, Stryker"
   ```
 
 - [ ] Update CLAUDE.md with commands:
 
   Add to Common Commands section or create new Architecture section:
 
-  ```markdown
+  ````markdown
   # Architecture Validation
 
   ```bash
   pnpm depcruise           # Run architecture validation
   pnpm depcruise:report    # Generate HTML report
   ```
+  ````
+
+  ```
+
   ```
 
 ### Validation Checklist
@@ -462,20 +464,20 @@ from: {
 
 ### Essential Commands
 
-| Command | Purpose |
-|---------|---------|
-| `pnpm depcruise` | Run architecture validation |
-| `pnpm depcruise:report` | Generate HTML visualization |
-| `pnpm exec depcruise --version` | Check version |
-| `pnpm exec depcruise --init` | Generate default config (reference only) |
+| Command                         | Purpose                                  |
+| ------------------------------- | ---------------------------------------- |
+| `pnpm depcruise`                | Run architecture validation              |
+| `pnpm depcruise:report`         | Generate HTML visualization              |
+| `pnpm exec depcruise --version` | Check version                            |
+| `pnpm exec depcruise --init`    | Generate default config (reference only) |
 
 ### Exit Codes
 
-| Code | Meaning |
-|------|---------|
-| 0 | No violations |
-| 1 | Violations found |
-| 2 | Configuration error |
+| Code | Meaning             |
+| ---- | ------------------- |
+| 0    | No violations       |
+| 1    | Violations found    |
+| 2    | Configuration error |
 
 ---
 

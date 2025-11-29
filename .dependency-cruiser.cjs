@@ -43,13 +43,13 @@ module.exports = {
       from: {
         orphan: true,
         pathNot: [
-          '\\.d\\.ts$',           // Type declarations
-          '\\.test\\.ts$',        // Test files
-          '\\.spec\\.ts$',        // Spec files
-          '\\.e2e\\.spec\\.ts$',  // E2E tests
-          '__tests__/',          // Test directories
-          '__mocks__/',          // Mock directories
-          'tests/',              // Test root directory
+          '\\.d\\.ts$', // Type declarations
+          '\\.test\\.ts$', // Test files
+          '\\.spec\\.ts$', // Spec files
+          '\\.e2e\\.spec\\.ts$', // E2E tests
+          '__tests__/', // Test directories
+          '__mocks__/', // Mock directories
+          'tests/', // Test root directory
         ],
       },
       to: {},

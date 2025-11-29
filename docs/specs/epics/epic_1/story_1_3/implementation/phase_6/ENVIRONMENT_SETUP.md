@@ -9,11 +9,11 @@
 
 ### Required Tools
 
-| Tool | Required Version | Check Command | Install Command |
-|------|------------------|---------------|-----------------|
-| Node.js | >= 18.20.2 or >= 20.9.0 | `node --version` | Use nvm or volta |
-| pnpm | >= 9.0.0 | `pnpm --version` | `npm install -g pnpm` |
-| Git | >= 2.30.0 | `git --version` | System package manager |
+| Tool    | Required Version        | Check Command    | Install Command        |
+| ------- | ----------------------- | ---------------- | ---------------------- |
+| Node.js | >= 18.20.2 or >= 20.9.0 | `node --version` | Use nvm or volta       |
+| pnpm    | >= 9.0.0                | `pnpm --version` | `npm install -g pnpm`  |
+| Git     | >= 2.30.0               | `git --version`  | System package manager |
 
 ### Verify Prerequisites
 
@@ -81,10 +81,10 @@ pnpm exec depcruise --version
 
 After this phase, the following files will exist:
 
-| File | Purpose |
-|------|---------|
-| `.dependency-cruiser.cjs` | Architecture rules configuration |
-| `.dependency-cruiser-known-violations.json` | Baseline (if violations exist) |
+| File                                        | Purpose                          |
+| ------------------------------------------- | -------------------------------- |
+| `.dependency-cruiser.cjs`                   | Architecture rules configuration |
+| `.dependency-cruiser-known-violations.json` | Baseline (if violations exist)   |
 
 ---
 
@@ -146,10 +146,10 @@ The report shows:
 
 No specific extensions are required for dependency-cruiser, but these help:
 
-| Extension | Purpose |
-|-----------|---------|
-| ESLint | Code quality (already configured) |
-| Prettier | Formatting (already configured) |
+| Extension | Purpose                           |
+| --------- | --------------------------------- |
+| ESLint    | Code quality (already configured) |
+| Prettier  | Formatting (already configured)   |
 
 ### Configuration Validation
 
@@ -270,8 +270,8 @@ This phase does not require any environment variables.
 
 The CI workflow uses:
 
-| Variable | Context | Purpose |
-|----------|---------|---------|
+| Variable              | Context | Purpose              |
+| --------------------- | ------- | -------------------- |
 | `GITHUB_STEP_SUMMARY` | CI only | Write to job summary |
 
 ---
@@ -289,14 +289,14 @@ The CI workflow uses:
 
 ## Quick Reference Card
 
-| Task | Command |
-|------|---------|
-| Run validation | `pnpm depcruise` |
-| Generate report | `pnpm depcruise:report` |
-| Check version | `pnpm exec depcruise --version` |
-| Verbose output | `pnpm exec depcruise src --config .dependency-cruiser.cjs --output-type err-long` |
-| JSON output | `pnpm exec depcruise src --output-type json` |
-| Validate config | `node -e "require('./.dependency-cruiser.cjs')"` |
+| Task            | Command                                                                           |
+| --------------- | --------------------------------------------------------------------------------- |
+| Run validation  | `pnpm depcruise`                                                                  |
+| Generate report | `pnpm depcruise:report`                                                           |
+| Check version   | `pnpm exec depcruise --version`                                                   |
+| Verbose output  | `pnpm exec depcruise src --config .dependency-cruiser.cjs --output-type err-long` |
+| JSON output     | `pnpm exec depcruise src --output-type json`                                      |
+| Validate config | `node -e "require('./.dependency-cruiser.cjs')"`                                  |
 
 ---
 

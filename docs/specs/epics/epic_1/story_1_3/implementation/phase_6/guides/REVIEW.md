@@ -39,11 +39,11 @@ This phase adds architecture validation to the CI pipeline. The review focuses o
 
 ### Files to Review
 
-| File | Review Focus |
-|------|--------------|
-| `package.json` | Correct script definitions |
+| File                      | Review Focus                |
+| ------------------------- | --------------------------- |
+| `package.json`            | Correct script definitions  |
 | `.dependency-cruiser.cjs` | Valid minimal configuration |
-| `pnpm-lock.yaml` | Clean dependency addition |
+| `pnpm-lock.yaml`          | Clean dependency addition   |
 
 ### Checklist
 
@@ -102,8 +102,8 @@ module.exports = {
 
 ### Files to Review
 
-| File | Review Focus |
-|------|--------------|
+| File                      | Review Focus                    |
+| ------------------------- | ------------------------------- |
 | `.dependency-cruiser.cjs` | Rule definitions and exclusions |
 
 ### Checklist
@@ -171,8 +171,8 @@ module.exports = {
 
 #### Files to Review
 
-| File | Review Focus |
-|------|--------------|
+| File         | Review Focus         |
+| ------------ | -------------------- |
 | `.gitignore` | Report file excluded |
 
 #### Checklist
@@ -185,11 +185,11 @@ module.exports = {
 
 #### Files to Review
 
-| File | Review Focus |
-|------|--------------|
-| `.dependency-cruiser.cjs` | Baseline reference added |
+| File                                        | Review Focus                |
+| ------------------------------------------- | --------------------------- |
+| `.dependency-cruiser.cjs`                   | Baseline reference added    |
 | `.dependency-cruiser-known-violations.json` | Valid JSON, real violations |
-| `.gitignore` | Report file excluded |
+| `.gitignore`                                | Report file excluded        |
 
 #### Checklist
 
@@ -211,10 +211,10 @@ module.exports = {
 
 ### Files to Review
 
-| File | Review Focus |
-|------|--------------|
+| File                                 | Review Focus              |
+| ------------------------------------ | ------------------------- |
 | `.github/workflows/quality-gate.yml` | Step placement and output |
-| `CLAUDE.md` | Documentation accuracy |
+| `CLAUDE.md`                          | Documentation accuracy    |
 
 ### Checklist
 
@@ -308,6 +308,7 @@ Before approving the PR:
 Approved
 
 The dependency-cruiser configuration looks solid:
+
 - Rules correctly target Next.js 15 + Payload CMS architecture
 - Exclusions are appropriate for generated files
 - CI integration produces actionable output
@@ -346,12 +347,12 @@ Currently this would allow orphan modules to exist without blocking CI. Let me k
 
 ## Time Estimates
 
-| Commit | Review Time | Notes |
-|--------|-------------|-------|
-| Commit 1 | 10-15 min | Straightforward installation |
-| Commit 2 | 20-30 min | Careful rule review needed |
-| Commit 3 | 5-15 min | Depends on baseline complexity |
-| Commit 4 | 15-20 min | Workflow syntax review |
+| Commit   | Review Time | Notes                          |
+| -------- | ----------- | ------------------------------ |
+| Commit 1 | 10-15 min   | Straightforward installation   |
+| Commit 2 | 20-30 min   | Careful rule review needed     |
+| Commit 3 | 5-15 min    | Depends on baseline complexity |
+| Commit 4 | 15-20 min   | Workflow syntax review         |
 
 **Total Review Time**: 50-80 minutes
 
