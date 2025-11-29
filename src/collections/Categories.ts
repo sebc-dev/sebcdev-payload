@@ -1,5 +1,6 @@
 import type { CollectionConfig } from 'payload'
 
+import { getLucideIconOptions } from '@/lib/lucide-icons'
 import { isValidHexColor, slugifyTaxonomy, validateTaxonomySlug } from '@/lib/validators'
 
 export const Categories: CollectionConfig = {
@@ -56,9 +57,12 @@ export const Categories: CollectionConfig = {
     },
     {
       name: 'icon',
-      type: 'text',
+      type: 'select',
+      options: getLucideIconOptions(),
+      defaultValue: 'folder',
       admin: {
-        description: 'Icon identifier for visual identity (e.g., "newspaper", "book")',
+        description: 'Icon from Lucide library for visual identity',
+        isClearable: true,
       },
     },
   ],
