@@ -1,7 +1,10 @@
 # .github/workflows/quality-gate.yml
 # Quality Gate Pipeline - AI-Shield Defense Strategy
 #
-# Trigger: Manual via workflow_dispatch (mandatory for branch protection)
+# Triggers:
+#   - pull_request: Auto-run on PRs targeting main (reports status to PR)
+#   - workflow_dispatch: Manual trigger for any branch
+#
 # Purpose: Multi-layer code quality validation before merge
 #
 # Documentation: docs/specs/CI-CD-Security.md
@@ -9,6 +12,8 @@
 name: Quality Gate
 
 on:
+  pull_request:
+    branches: [main]
   workflow_dispatch:
 
 jobs:
