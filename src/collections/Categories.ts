@@ -1,6 +1,6 @@
 import type { CollectionConfig } from 'payload'
 
-import { slugifyTaxonomy, validateTaxonomySlug } from '@/lib/slugify'
+import { isValidHexColor, slugifyTaxonomy, validateTaxonomySlug } from '@/lib/validators'
 
 export const Categories: CollectionConfig = {
   slug: 'categories',
@@ -52,11 +52,7 @@ export const Categories: CollectionConfig = {
       admin: {
         description: 'Hex color code for visual identity (e.g., "#FF5733")',
       },
-      validate: (value: string | null | undefined) => {
-        if (!value) return true
-        const hexRegex = /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/
-        return hexRegex.test(value) || 'Please enter a valid hex color (e.g., "#FF5733")'
-      },
+      validate: isValidHexColor,
     },
     {
       name: 'icon',

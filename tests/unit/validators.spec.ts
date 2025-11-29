@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 
-import { validateTaxonomySlug } from '@/lib/slugify'
+import { isValidHexColor, validateTaxonomySlug } from '@/lib/validators'
 
 /**
  * Note: The slugifyTaxonomy function is a FieldHook and requires
@@ -41,5 +41,41 @@ describe('validateTaxonomySlug', () => {
   it('should use default entity name when not provided', () => {
     const result = validateTaxonomySlug('INVALID')
     expect(result).toContain('my-taxonomy-name')
+  })
+})
+
+describe('isValidHexColor', () => {
+  it('should accept valid 6-digit hex colors', () => {
+    expect(isValidHexColor('#FF5733')).toBe(true)
+    expect(isValidHexColor('#000000')).toBe(true)
+    expect(isValidHexColor('#FFFFFF')).toBe(true)
+    expect(isValidHexColor('#abc123')).toBe(true)
+    expect(isValidHexColor('#AbC123')).toBe(true)
+  })
+
+  it('should accept valid 3-digit hex colors', () => {
+    expect(isValidHexColor('#fff')).toBe(true)
+    expect(isValidHexColor('#000')).toBe(true)
+    expect(isValidHexColor('#F5A')).toBe(true)
+    expect(isValidHexColor('#abc')).toBe(true)
+  })
+
+  it('should reject invalid hex colors', () => {
+    expect(isValidHexColor('FF5733')).toContain('Please enter a valid hex color')
+    expect(isValidHexColor('#gg0000')).toContain('Please enter a valid hex color')
+    expect(isValidHexColor('#FF57')).toContain('Please enter a valid hex color')
+    expect(isValidHexColor('#FF57333')).toContain('Please enter a valid hex color')
+    expect(isValidHexColor('red')).toContain('Please enter a valid hex color')
+    expect(isValidHexColor('#')).toContain('Please enter a valid hex color')
+    expect(isValidHexColor('##FF5733')).toContain('Please enter a valid hex color')
+  })
+
+  it('should allow null/undefined values', () => {
+    expect(isValidHexColor(null)).toBe(true)
+    expect(isValidHexColor(undefined)).toBe(true)
+  })
+
+  it('should reject empty string', () => {
+    expect(isValidHexColor('')).toBe(true) // Empty string is falsy, returns true
   })
 })
