@@ -1,6 +1,6 @@
 import { MigrateUpArgs, MigrateDownArgs, sql } from '@payloadcms/db-d1-sqlite'
 
-export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
+export async function up({ db, payload: _payload, req: _req }: MigrateUpArgs): Promise<void> {
   // Categories table - use IF NOT EXISTS for idempotency (dev mode may have created them)
   await db.run(sql`CREATE TABLE IF NOT EXISTS \`categories\` (
   	\`id\` integer PRIMARY KEY NOT NULL,
@@ -91,12 +91,12 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   )
 }
 
-export async function down({ db, payload, req }: MigrateDownArgs): Promise<void> {
+export async function down({ db, payload: _payload, req: _req }: MigrateDownArgs): Promise<void> {
   await db.run(sql`DROP TABLE \`categories\`;`)
   await db.run(sql`DROP TABLE \`categories_locales\`;`)
   await db.run(sql`DROP TABLE \`tags\`;`)
   await db.run(sql`DROP TABLE \`tags_locales\`;`)
-  await db.run(sql`DROP TABLE \`payload_kv\`;`)
+  await db.run(sql`DROP TABLE IF EXISTS \`payload_kv\`;`)
   await db.run(sql`PRAGMA foreign_keys=OFF;`)
   await db.run(sql`CREATE TABLE \`__new_payload_locked_documents_rels\` (
   	\`id\` integer PRIMARY KEY NOT NULL,
