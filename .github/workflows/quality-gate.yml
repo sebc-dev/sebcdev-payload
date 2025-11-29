@@ -121,6 +121,29 @@ jobs:
           PAYLOAD_SECRET: ${{ secrets.PAYLOAD_SECRET || env.PAYLOAD_SECRET_CI }}
 
       # ============================================
+      # LAYER 4: Architecture Validation
+      # ============================================
+
+      - name: dependency-cruiser - Architecture Validation
+        id: depcruise
+        run: |
+          echo "## Architecture Validation" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+          if pnpm exec depcruise src --config .dependency-cruiser.cjs --output-type err-long 2>&1 | tee depcruise-output.txt; then
+            echo "### :white_check_mark: No architectural violations detected" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "All import boundaries and dependency rules are respected." >> $GITHUB_STEP_SUMMARY
+          else
+            echo "### :x: Architectural violations detected" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+            cat depcruise-output.txt >> $GITHUB_STEP_SUMMARY
+            echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+            exit 1
+          fi
+
+      # ============================================
       # PLACEHOLDER: Future Phases
       # ============================================
 
@@ -129,4 +152,5 @@ jobs:
           echo "::notice::✅ Layer 1: Supply Chain Security (Socket Firewall)"
           echo "::notice::✅ Layer 2: Code Quality (ESLint, Prettier, Knip, Type Sync)"
           echo "::notice::✅ Layer 3: Build Validation (Next.js No-DB Mode)"
-          echo "::notice::⏳ Coming: dependency-cruiser, Lighthouse CI, Stryker"
+          echo "::notice::✅ Layer 4: Architecture Validation (dependency-cruiser)"
+          echo "::notice::⏳ Coming: Lighthouse CI, Stryker"
