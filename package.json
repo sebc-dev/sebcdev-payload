@@ -28,7 +28,8 @@
     "start": "cross-env NODE_OPTIONS=--no-deprecation next start",
     "test": "pnpm run test:int && pnpm run test:e2e",
     "test:e2e": "cross-env NODE_OPTIONS=\"--no-deprecation --no-experimental-strip-types\" pnpm exec playwright test",
-    "test:int": "cross-env NODE_OPTIONS=--no-deprecation vitest run --config ./vitest.config.mts"
+    "test:int": "cross-env NODE_OPTIONS=--no-deprecation vitest run --config ./vitest.config.mts",
+    "prepare": "husky"
   },
   "dependencies": {
     "@opennextjs/cloudflare": "^1.6.5",
@@ -57,8 +58,10 @@
     "eslint": "^9.16.0",
     "eslint-config-next": "15.4.7",
     "eslint-config-prettier": "^10.1.8",
+    "husky": "^9.1.7",
     "jsdom": "26.1.0",
     "knip": "^5.70.2",
+    "lint-staged": "^16.2.7",
     "playwright": "1.56.1",
     "playwright-core": "1.56.1",
     "prettier": "^3.4.2",
@@ -85,5 +88,13 @@
         "description": "Generate a random string using `openssl rand -hex 32`"
       }
     }
+  },
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx,mjs,cjs}": [
+      "prettier --write"
+    ],
+    "*.{json,md,yml,yaml,css,scss}": [
+      "prettier --write"
+    ]
   }
 }
