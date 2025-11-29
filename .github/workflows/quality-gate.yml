@@ -121,7 +121,7 @@ jobs:
           PAYLOAD_SECRET: ${{ secrets.PAYLOAD_SECRET || env.PAYLOAD_SECRET_CI }}
 
       # ============================================
-      # LAYER 2+: Architecture Validation
+      # LAYER 4: Architecture Validation
       # ============================================
 
       - name: dependency-cruiser - Architecture Validation
@@ -151,6 +151,6 @@ jobs:
         run: |
           echo "::notice::✅ Layer 1: Supply Chain Security (Socket Firewall)"
           echo "::notice::✅ Layer 2: Code Quality (ESLint, Prettier, Knip, Type Sync)"
-          echo "::notice::✅ Layer 2+: Architecture Validation (dependency-cruiser)"
           echo "::notice::✅ Layer 3: Build Validation (Next.js No-DB Mode)"
+          echo "::notice::✅ Layer 4: Architecture Validation (dependency-cruiser)"
           echo "::notice::⏳ Coming: Lighthouse CI, Stryker"

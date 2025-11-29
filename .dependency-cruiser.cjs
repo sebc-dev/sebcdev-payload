@@ -85,8 +85,8 @@ module.exports = {
         'build',
         // Exclude generated files
         'src/payload-types\\.ts',
-        // Exclude migrations (SQL files, not TS)
-        'drizzle/migrations',
+        // Exclude Payload migrations
+        'src/migrations',
       ],
     },
     tsPreCompilationDeps: true,
