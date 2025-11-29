@@ -115,40 +115,81 @@ export async function down({ db, payload: _payload, req: _req }: MigrateDownArgs
   await db.run(sql`DROP TABLE IF EXISTS \`categories\`;`)
   await db.run(sql`DROP TABLE IF EXISTS \`tags\`;`)
   await db.run(sql`DROP TABLE IF EXISTS \`payload_kv\`;`)
-  await db.run(sql`PRAGMA foreign_keys=OFF;`)
-  await db.run(sql`CREATE TABLE \`__new_payload_locked_documents_rels\` (
-  	\`id\` integer PRIMARY KEY NOT NULL,
-  	\`order\` integer,
-  	\`parent_id\` integer NOT NULL,
-  	\`path\` text NOT NULL,
-  	\`users_id\` integer,
-  	\`media_id\` integer,
-  	FOREIGN KEY (\`parent_id\`) REFERENCES \`payload_locked_documents\`(\`id\`) ON UPDATE no action ON DELETE cascade,
-  	FOREIGN KEY (\`users_id\`) REFERENCES \`users\`(\`id\`) ON UPDATE no action ON DELETE cascade,
-  	FOREIGN KEY (\`media_id\`) REFERENCES \`media\`(\`id\`) ON UPDATE no action ON DELETE cascade
-  );
-  `)
-  await db.run(
-    sql`INSERT INTO \`__new_payload_locked_documents_rels\`("id", "order", "parent_id", "path", "users_id", "media_id") SELECT "id", "order", "parent_id", "path", "users_id", "media_id" FROM \`payload_locked_documents_rels\`;`,
-  )
-  await db.run(sql`DROP TABLE \`payload_locked_documents_rels\`;`)
-  await db.run(
-    sql`ALTER TABLE \`__new_payload_locked_documents_rels\` RENAME TO \`payload_locked_documents_rels\`;`,
-  )
-  await db.run(sql`PRAGMA foreign_keys=ON;`)
-  await db.run(
-    sql`CREATE INDEX \`payload_locked_documents_rels_order_idx\` ON \`payload_locked_documents_rels\` (\`order\`);`,
-  )
-  await db.run(
-    sql`CREATE INDEX \`payload_locked_documents_rels_parent_idx\` ON \`payload_locked_documents_rels\` (\`parent_id\`);`,
-  )
-  await db.run(
-    sql`CREATE INDEX \`payload_locked_documents_rels_path_idx\` ON \`payload_locked_documents_rels\` (\`path\`);`,
-  )
-  await db.run(
-    sql`CREATE INDEX \`payload_locked_documents_rels_users_id_idx\` ON \`payload_locked_documents_rels\` (\`users_id\`);`,
-  )
-  await db.run(
-    sql`CREATE INDEX \`payload_locked_documents_rels_media_id_idx\` ON \`payload_locked_documents_rels\` (\`media_id\`);`,
-  )
+
+  // Remove categories_id and tags_id columns from payload_locked_documents_rels
+  // Use transaction and proper error handling for idempotency
+  try {
+    // Begin transaction
+    await db.run(sql`BEGIN TRANSACTION;`)
+
+    // Turn off foreign keys for schema changes
+    await db.run(sql`PRAGMA foreign_keys=OFF;`)
+
+    // Check if columns exist before attempting removal
+    const tableInfo = await db.run(sql`PRAGMA table_info(\`payload_locked_documents_rels\`);`)
+    const columns = (tableInfo.results as Array<{ name: string }>).map((col) => col.name)
+
+    // Only proceed with table rebuild if categories_id or tags_id exist
+    if (columns.includes('categories_id') || columns.includes('tags_id')) {
+      // Drop temporary table if it exists from previous failed run
+      await db.run(sql`DROP TABLE IF EXISTS \`__new_payload_locked_documents_rels\`;`)
+
+      // Create new table without categories_id and tags_id
+      await db.run(sql`CREATE TABLE \`__new_payload_locked_documents_rels\` (
+      	\`id\` integer PRIMARY KEY NOT NULL,
+      	\`order\` integer,
+      	\`parent_id\` integer NOT NULL,
+      	\`path\` text NOT NULL,
+      	\`users_id\` integer,
+      	\`media_id\` integer,
+      	FOREIGN KEY (\`parent_id\`) REFERENCES \`payload_locked_documents\`(\`id\`) ON UPDATE no action ON DELETE cascade,
+      	FOREIGN KEY (\`users_id\`) REFERENCES \`users\`(\`id\`) ON UPDATE no action ON DELETE cascade,
+      	FOREIGN KEY (\`media_id\`) REFERENCES \`media\`(\`id\`) ON UPDATE no action ON DELETE cascade
+      );
+      `)
+
+      // Copy data (only columns that exist in both tables)
+      await db.run(
+        sql`INSERT INTO \`__new_payload_locked_documents_rels\`("id", "order", "parent_id", "path", "users_id", "media_id") SELECT "id", "order", "parent_id", "path", "users_id", "media_id" FROM \`payload_locked_documents_rels\`;`,
+      )
+
+      // Drop old table
+      await db.run(sql`DROP TABLE \`payload_locked_documents_rels\`;`)
+
+      // Rename new table
+      await db.run(
+        sql`ALTER TABLE \`__new_payload_locked_documents_rels\` RENAME TO \`payload_locked_documents_rels\`;`,
+      )
+
+      // Recreate indexes with IF NOT EXISTS for idempotency
+      await db.run(
+        sql`CREATE INDEX IF NOT EXISTS \`payload_locked_documents_rels_order_idx\` ON \`payload_locked_documents_rels\` (\`order\`);`,
+      )
+      await db.run(
+        sql`CREATE INDEX IF NOT EXISTS \`payload_locked_documents_rels_parent_idx\` ON \`payload_locked_documents_rels\` (\`parent_id\`);`,
+      )
+      await db.run(
+        sql`CREATE INDEX IF NOT EXISTS \`payload_locked_documents_rels_path_idx\` ON \`payload_locked_documents_rels\` (\`path\`);`,
+      )
+      await db.run(
+        sql`CREATE INDEX IF NOT EXISTS \`payload_locked_documents_rels_users_id_idx\` ON \`payload_locked_documents_rels\` (\`users_id\`);`,
+      )
+      await db.run(
+        sql`CREATE INDEX IF NOT EXISTS \`payload_locked_documents_rels_media_id_idx\` ON \`payload_locked_documents_rels\` (\`media_id\`);`,
+      )
+    }
+
+    // Restore foreign keys and commit
+    await db.run(sql`PRAGMA foreign_keys=ON;`)
+    await db.run(sql`COMMIT;`)
+  } catch (error) {
+    // Rollback transaction on error and restore foreign keys
+    try {
+      await db.run(sql`ROLLBACK;`)
+      await db.run(sql`PRAGMA foreign_keys=ON;`)
+    } catch (rollbackError) {
+      console.error('Failed to rollback transaction:', rollbackError)
+    }
+    throw error
+  }
 }
