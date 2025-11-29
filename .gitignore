@@ -53,5 +53,5 @@ node_modules/
 .open-next
 .wrangler
 
-# dependency-cruiser reports
+# Dependency cruiser reports (generated, not committed)
 depcruise-report.html
