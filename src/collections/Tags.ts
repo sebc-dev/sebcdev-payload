@@ -1,5 +1,7 @@
 import type { CollectionConfig } from 'payload'
 
+import { slugifyTaxonomy, validateTaxonomySlug } from '@/lib/slugify'
+
 export const Tags: CollectionConfig = {
   slug: 'tags',
   labels: {
@@ -32,27 +34,9 @@ export const Tags: CollectionConfig = {
         description: 'URL-friendly identifier (e.g., "javascript", "react-hooks")',
       },
       hooks: {
-        beforeChange: [
-          ({ value }) => {
-            if (!value) return value
-            return value
-              .toLowerCase()
-              .normalize('NFD')
-              .replace(/[\u0300-\u036f]/g, '') // Remove diacritics
-              .replace(/[^a-z0-9]+/g, '-') // Replace non-alphanumeric with hyphens
-              .replace(/^-+|-+$/g, '') // Trim leading/trailing hyphens
-              .replace(/-+/g, '-') // Collapse multiple hyphens
-          },
-        ],
+        beforeChange: [slugifyTaxonomy],
       },
-      validate: (value: string | null | undefined) => {
-        if (!value) return true
-        const slugRegex = /^[a-z0-9]+(?:-[a-z0-9]+)*$/
-        return (
-          slugRegex.test(value) ||
-          'Slug must contain only lowercase letters, numbers, and hyphens (e.g., "my-tag-name")'
-        )
-      },
+      validate: (value: string | null | undefined) => validateTaxonomySlug(value, 'tag'),
     },
   ],
 }

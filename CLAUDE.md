@@ -19,6 +19,7 @@ pnpm deploy                 # Run migrations and deploy to Cloudflare Workers
 pnpm preview                # Local preview of Cloudflare deployment
 
 # Testing
+pnpm test:unit              # Run unit tests (Vitest)
 pnpm test:int               # Run integration tests (Vitest)
 pnpm test:e2e               # Run E2E tests (Playwright)
 pnpm test                   # Run all tests
@@ -219,6 +220,13 @@ src/
 - **Media**: Upload collection with R2 storage (image crop/focalPoint disabled due to Workers limitations)
 
 ## Testing
+
+### Unit Tests (`tests/unit/*.spec.ts`)
+
+- Use Vitest with jsdom environment
+- Test isolated functions and utilities
+- No external dependencies (database, network)
+- Run with: `pnpm test:unit`
 
 ### Integration Tests (`tests/int/*.int.spec.ts`)
 
