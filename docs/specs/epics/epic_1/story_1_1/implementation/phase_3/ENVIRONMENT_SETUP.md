@@ -115,6 +115,7 @@ These resources should already exist from Phase 2 deployment:
 - **Status**: Should be "Active" in Cloudflare dashboard
 
 **Verify**:
+
 ```bash
 # Check Worker status via curl
 curl -I https://[worker-url]
@@ -130,6 +131,7 @@ wrangler tail [worker-name] --format=pretty
 - **Binding**: `DB` (referenced in code)
 
 **Verify**:
+
 ```bash
 # List D1 databases
 wrangler d1 list
@@ -146,6 +148,7 @@ wrangler d1 execute [db-name] --command "SELECT name FROM sqlite_master WHERE ty
 - **Binding**: `MEDIA_BUCKET` (referenced in code)
 
 **Verify**:
+
 ```bash
 # List R2 buckets
 wrangler r2 bucket list
@@ -205,6 +208,7 @@ Complete this checklist before starting Phase 3 implementation:
 **Symptoms**: `wrangler whoami` returns error
 
 **Solution**:
+
 ```bash
 # Authenticate Wrangler
 wrangler login
@@ -218,12 +222,14 @@ wrangler whoami
 **Symptoms**: curl to Worker URL fails, D1 queries error, R2 bucket not found
 
 **Solution**:
+
 - Review Phase 2 deployment logs for errors
 - Check Cloudflare dashboard to verify resources exist
 - Verify `wrangler.toml` bindings match actual resource names
 - Do not proceed to Phase 3 until Phase 2 infrastructure is functional
 
 **Check**:
+
 ```bash
 # Verify Worker deployment
 wrangler deployments list [worker-name]
@@ -240,6 +246,7 @@ wrangler r2 bucket list
 **Symptoms**: Don't know Worker URL, D1 name, or R2 bucket name
 
 **Solution**:
+
 ```bash
 # Get account ID
 wrangler whoami
@@ -263,6 +270,7 @@ cat wrangler.toml
 **Symptoms**: `git commit` fails with identity errors
 
 **Solution**:
+
 ```bash
 # Configure Git
 git config user.name "Your Name"
@@ -306,6 +314,7 @@ When all items in the Pre-Phase Verification Checklist are complete:
 ✅ **You are ready to begin Phase 3 implementation!**
 
 Proceed to:
+
 1. Read [IMPLEMENTATION_PLAN.md](./IMPLEMENTATION_PLAN.md) for the atomic commit strategy
 2. Follow [COMMIT_CHECKLIST.md](./COMMIT_CHECKLIST.md) for step-by-step instructions
 3. Use [guides/TESTING.md](./guides/TESTING.md) for verification procedures

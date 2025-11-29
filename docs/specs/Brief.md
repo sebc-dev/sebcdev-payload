@@ -1,4 +1,3 @@
-
 ## Executive Summary
 
 sebc.dev est un blog technique bilingue (français/anglais) tenu par un auteur unique. Il explore trois piliers fondamentaux : l'IA comme outil d'amplification, les principes d'UX, et les bonnes pratiques d'ingénierie logicielle. Chaque article illustre un apprentissage réel dans une logique _learning in public_. Pour garantir pérennité et vélocité, le projet repose sur **Payload CMS**, un CMS "code-first" moderne intégré nativement à Next.js, permettant une gestion de contenu puissante sur une architecture serverless Cloudflare.
@@ -64,7 +63,6 @@ sebc.dev est un blog technique bilingue (français/anglais) tenu par un auteur u
   - **Localization** : Champs traductibles nativement (FR/EN) dans la base de données.
   - **Médias** : Upload direct vers R2 avec redimensionnement automatique.
   - **Live Preview** : Prévisualisation temps réel du front-end depuis l'admin.
-  
 - **Front-End Blog (Next.js)** :
   - **Internationalisation** : `next-intl` pour l'interface + contenu récupéré via Payload Local API en fonction de la locale.
   - **Hub de recherche avancée** : Filtrage performant via requêtes Drizzle/Payload (Catégories, Tags, Complexité, Durée).
@@ -108,6 +106,7 @@ sebc.dev est un blog technique bilingue (français/anglais) tenu par un auteur u
 ## Risks & Open Questions
 
 **Risks**
+
 - **Cold Starts** : Payload est une application conséquente ; sur Cloudflare Workers, le temps de démarrage à froid peut être perceptible.
   - **Mitigation** : Stratégie de cache multi-couches "Compute Avoidance" :
     1. **Cache Rules Cloudflare** : Bypass par cookie `payload-token` + "Override Origin" pour forcer le cache HTML/JSON (élimine 99% des cold starts pour les lecteurs).
@@ -118,6 +117,7 @@ sebc.dev est un blog technique bilingue (français/anglais) tenu par un auteur u
 - **Compatibilité Node** : Certaines dépendances de plugins Payload pourraient ne pas être compatibles avec le runtime Edge (surveillance des `compatibility_flags`).
 
 **Open Questions**
+
 - ~~Stratégie de redimensionnement d'images~~ : **Résolu** → Déléguer à Cloudflare Images (loader `next/image` custom).
 - Gestion des migrations D1 en CI/CD avec Payload : Validation du workflow `payload migrate` dans les GitHub Actions.
 

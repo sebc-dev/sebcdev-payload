@@ -8,6 +8,7 @@
 ## Review Scope
 
 This guide helps reviewers validate the Phase 2 implementation. Each commit should be reviewed independently to ensure:
+
 - Correct configuration syntax
 - Security best practices
 - Documentation completeness
@@ -18,17 +19,19 @@ This guide helps reviewers validate the Phase 2 implementation. Each commit shou
 
 ### Files to Review
 
-| File | Focus Areas |
-|------|-------------|
+| File         | Focus Areas                                |
+| ------------ | ------------------------------------------ |
 | `socket.yml` | Schema version, path patterns, YAML syntax |
 
 ### Review Checklist
 
 #### Schema Version
+
 - [ ] `version: 2` is present and is a number (not `"2"`)
 - [ ] File is at repository root (same level as `package.json`)
 
 #### Path Patterns
+
 - [ ] `projectIgnorePaths` excludes test directories
 - [ ] `projectIgnorePaths` excludes documentation
 - [ ] `triggerPaths` includes `package.json`
@@ -36,22 +39,24 @@ This guide helps reviewers validate the Phase 2 implementation. Each commit shou
 - [ ] All paths use forward slashes (cross-platform)
 
 #### YAML Syntax
+
 - [ ] No duplicate keys
 - [ ] Proper indentation (2 spaces)
 - [ ] Arrays use `-` prefix correctly
 - [ ] No trailing whitespace
 
 #### GitHub App Section
+
 - [ ] `githubApp.enabled: true`
 - [ ] `dependencyOverviewEnabled: true`
 
 ### Common Issues to Flag
 
-| Issue | Severity | Resolution |
-|-------|----------|------------|
-| Wrong version format (`"2"` instead of `2`) | High | Fix schema version |
-| Missing `pnpm-lock.yaml` in triggerPaths | Medium | Add lockfile path |
-| Overly broad ignore patterns | Medium | Be more specific |
+| Issue                                       | Severity | Resolution         |
+| ------------------------------------------- | -------- | ------------------ |
+| Wrong version format (`"2"` instead of `2`) | High     | Fix schema version |
+| Missing `pnpm-lock.yaml` in triggerPaths    | Medium   | Add lockfile path  |
+| Overly broad ignore patterns                | Medium   | Be more specific   |
 
 ### Example Valid Configuration
 
@@ -59,16 +64,16 @@ This guide helps reviewers validate the Phase 2 implementation. Each commit shou
 version: 2
 
 projectIgnorePaths:
-  - "tests/**"
-  - "docs/**"
-  - "**/__tests__/**"
-  - "**/fixtures/**"
+  - 'tests/**'
+  - 'docs/**'
+  - '**/__tests__/**'
+  - '**/fixtures/**'
 
 triggerPaths:
-  - "package.json"
-  - "**/package.json"
-  - "pnpm-lock.yaml"
-  - "socket.yml"
+  - 'package.json'
+  - '**/package.json'
+  - 'pnpm-lock.yaml'
+  - 'socket.yml'
 
 githubApp:
   enabled: true
@@ -81,35 +86,40 @@ githubApp:
 
 ### Files to Review
 
-| File | Focus Areas |
-|------|-------------|
+| File                                 | Focus Areas                          |
+| ------------------------------------ | ------------------------------------ |
 | `.github/workflows/quality-gate.yml` | SHA pinning, permissions, step order |
 
 ### Review Checklist
 
 #### SHA Pinning
+
 - [ ] Action uses full SHA (40 characters)
 - [ ] Version comment matches SHA version
 - [ ] SHA is correct for specified version
 
 Expected:
+
 ```yaml
-uses: SocketDev/socket-security-action@6f55d8fa2cebd6ef40fad5e1dea9ae0edbe4ee13  # v2.0.1
+uses: SocketDev/socket-security-action@6f55d8fa2cebd6ef40fad5e1dea9ae0edbe4ee13 # v2.0.1
 ```
 
 #### Permissions
+
 - [ ] `contents: read` is present
 - [ ] `issues: write` is present (for PR comments)
 - [ ] `pull-requests: write` is present (for status updates)
 - [ ] No excessive permissions (no `contents: write`)
 
 #### Step Configuration
+
 - [ ] `continue-on-error: true` is set
 - [ ] `github-token` uses `${{ secrets.GITHUB_TOKEN }}`
 - [ ] Step is positioned after `pnpm install`
 - [ ] Step has descriptive name
 
 #### Step Order Verification
+
 - [ ] Checkout first
 - [ ] pnpm setup second
 - [ ] Node.js setup third
@@ -118,12 +128,12 @@ uses: SocketDev/socket-security-action@6f55d8fa2cebd6ef40fad5e1dea9ae0edbe4ee13 
 
 ### Common Issues to Flag
 
-| Issue | Severity | Resolution |
-|-------|----------|------------|
-| SHA not 40 characters | Critical | Get correct SHA |
-| Missing `continue-on-error` | High | Add for resilience |
-| Wrong permissions | High | Add required permissions |
-| Step before install | Medium | Move after pnpm install |
+| Issue                       | Severity | Resolution               |
+| --------------------------- | -------- | ------------------------ |
+| SHA not 40 characters       | Critical | Get correct SHA          |
+| Missing `continue-on-error` | High     | Add for resilience       |
+| Wrong permissions           | High     | Add required permissions |
+| Step before install         | Medium   | Move after pnpm install  |
 
 ### Example Valid Step
 
@@ -143,7 +153,7 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Socket.dev Security Scan
-        uses: SocketDev/socket-security-action@6f55d8fa2cebd6ef40fad5e1dea9ae0edbe4ee13  # v2.0.1
+        uses: SocketDev/socket-security-action@6f55d8fa2cebd6ef40fad5e1dea9ae0edbe4ee13 # v2.0.1
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
         continue-on-error: true
@@ -155,13 +165,14 @@ jobs:
 
 ### Files to Review
 
-| File | Focus Areas |
-|------|-------------|
+| File         | Focus Areas                   |
+| ------------ | ----------------------------- |
 | `socket.yml` | License policies, issue rules |
 
 ### Review Checklist
 
 #### License Policies
+
 - [ ] `licensePolicies.deny` array exists
 - [ ] GPL-2.0 variants blocked
 - [ ] GPL-3.0 variants blocked
@@ -169,6 +180,7 @@ jobs:
 - [ ] License identifiers use SPDX format
 
 #### Issue Rules
+
 - [ ] `issueRules` section exists
 - [ ] Default rules (malware, typosquatting) not disabled
 - [ ] Any disabled rules have justification comment
@@ -177,19 +189,19 @@ jobs:
 
 Verify license identifiers are correct SPDX format:
 
-| Correct | Incorrect |
-|---------|-----------|
-| `GPL-2.0-only` | `GPL2` |
-| `GPL-3.0-or-later` | `GPLv3` |
-| `AGPL-3.0-only` | `AGPL` |
+| Correct            | Incorrect |
+| ------------------ | --------- |
+| `GPL-2.0-only`     | `GPL2`    |
+| `GPL-3.0-or-later` | `GPLv3`   |
+| `AGPL-3.0-only`    | `AGPL`    |
 
 ### Common Issues to Flag
 
-| Issue | Severity | Resolution |
-|-------|----------|------------|
-| Wrong license format | High | Use SPDX identifiers |
-| Missing GPL variant | Medium | Add missing license |
-| Critical rule disabled | High | Require justification |
+| Issue                  | Severity | Resolution            |
+| ---------------------- | -------- | --------------------- |
+| Wrong license format   | High     | Use SPDX identifiers  |
+| Missing GPL variant    | Medium   | Add missing license   |
+| Critical rule disabled | High     | Require justification |
 
 ### Example Valid Policies
 
@@ -200,12 +212,12 @@ issueRules:
 
 licensePolicies:
   deny:
-    - "GPL-2.0-only"
-    - "GPL-2.0-or-later"
-    - "GPL-3.0-only"
-    - "GPL-3.0-or-later"
-    - "AGPL-3.0-only"
-    - "AGPL-3.0-or-later"
+    - 'GPL-2.0-only'
+    - 'GPL-2.0-or-later'
+    - 'GPL-3.0-only'
+    - 'GPL-3.0-or-later'
+    - 'AGPL-3.0-only'
+    - 'AGPL-3.0-or-later'
 ```
 
 ---
@@ -214,19 +226,21 @@ licensePolicies:
 
 ### Files to Review
 
-| File | Focus Areas |
-|------|-------------|
+| File                             | Focus Areas                      |
+| -------------------------------- | -------------------------------- |
 | `docs/guides/socket-security.md` | Accuracy, completeness, examples |
 
 ### Review Checklist
 
 #### Content Accuracy
+
 - [ ] Security levels correctly described
 - [ ] Ignore workflow correctly documented
 - [ ] License policy matches `socket.yml`
 - [ ] All examples are accurate and copyable
 
 #### Completeness
+
 - [ ] Overview section present
 - [ ] What gets scanned section present
 - [ ] Security levels table present
@@ -234,6 +248,7 @@ licensePolicies:
 - [ ] Troubleshooting section present
 
 #### Quality
+
 - [ ] Markdown renders correctly
 - [ ] No broken links
 - [ ] Examples use proper formatting
@@ -241,11 +256,11 @@ licensePolicies:
 
 ### Common Issues to Flag
 
-| Issue | Severity | Resolution |
-|-------|----------|------------|
-| Incorrect ignore syntax | High | Fix example |
-| Missing troubleshooting | Medium | Add section |
-| Outdated config reference | Medium | Update to match socket.yml |
+| Issue                     | Severity | Resolution                 |
+| ------------------------- | -------- | -------------------------- |
+| Incorrect ignore syntax   | High     | Fix example                |
+| Missing troubleshooting   | Medium   | Add section                |
+| Outdated config reference | Medium   | Update to match socket.yml |
 
 ### Example Valid Documentation Structure
 
@@ -253,25 +268,33 @@ licensePolicies:
 # Socket.dev Security Guide
 
 ## Overview
+
 [Brief description]
 
 ## What Gets Scanned
+
 [List of scanned files]
 
 ## Security Levels
+
 [Table of Block/Warn/Monitor]
 
 ## Handling Alerts
+
 ### Blocked Package
+
 [Steps with @SocketSecurity ignore example]
 
 ### License Violations
+
 [Explanation of policy]
 
 ## Configuration
+
 [Reference to socket.yml]
 
 ## Troubleshooting
+
 [Common issues and solutions]
 ```
 
@@ -308,12 +331,12 @@ After all 4 commits, verify:
 
 ### Red Flags to Watch For
 
-| Red Flag | Why It's Concerning |
-|----------|---------------------|
-| Tag instead of SHA | Mutable reference |
-| `contents: write` permission | Excessive access |
-| Disabled malware detection | Removes critical protection |
-| API key in `socket.yml` | Secret exposure |
+| Red Flag                     | Why It's Concerning         |
+| ---------------------------- | --------------------------- |
+| Tag instead of SHA           | Mutable reference           |
+| `contents: write` permission | Excessive access            |
+| Disabled malware detection   | Removes critical protection |
+| API key in `socket.yml`      | Secret exposure             |
 
 ---
 
@@ -322,6 +345,7 @@ After all 4 commits, verify:
 ### Commit-Level Approval
 
 Each commit can be approved if:
+
 - [ ] All checklist items pass
 - [ ] No critical issues found
 - [ ] Security best practices followed
@@ -329,6 +353,7 @@ Each commit can be approved if:
 ### Phase-Level Approval
 
 Phase 2 can be approved if:
+
 - [ ] All 4 commits reviewed and approved
 - [ ] Workflow runs successfully
 - [ ] Socket.dev scan completes without blocking alerts

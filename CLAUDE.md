@@ -52,23 +52,23 @@ Exemples:
 
 ### Gitmojis courants
 
-| Emoji | Code | Usage |
-|-------|------|-------|
-| ✨ | `:sparkles:` | Nouvelle fonctionnalité |
-| 🐛 | `:bug:` | Correction de bug |
-| 📝 | `:memo:` | Documentation |
-| ♻️ | `:recycle:` | Refactorisation |
-| ⚡️ | `:zap:` | Amélioration de performance |
-| 🎨 | `:art:` | Amélioration structure/format du code |
-| ✅ | `:white_check_mark:` | Ajout/mise à jour de tests |
-| 🔒 | `:lock:` | Correction de sécurité |
-| ⬆️ | `:arrow_up:` | Mise à jour de dépendances |
-| 🔧 | `:wrench:` | Configuration |
-| 🚀 | `:rocket:` | Déploiement |
-| 💄 | `:lipstick:` | UI/Style |
-| 🚨 | `:rotating_light:` | Correction warnings linter |
-| 🏗️ | `:building_construction:` | Changements architecturaux |
-| ♿️ | `:wheelchair:` | Accessibilité |
+| Emoji | Code                      | Usage                                 |
+| ----- | ------------------------- | ------------------------------------- |
+| ✨    | `:sparkles:`              | Nouvelle fonctionnalité               |
+| 🐛    | `:bug:`                   | Correction de bug                     |
+| 📝    | `:memo:`                  | Documentation                         |
+| ♻️    | `:recycle:`               | Refactorisation                       |
+| ⚡️   | `:zap:`                   | Amélioration de performance           |
+| 🎨    | `:art:`                   | Amélioration structure/format du code |
+| ✅    | `:white_check_mark:`      | Ajout/mise à jour de tests            |
+| 🔒    | `:lock:`                  | Correction de sécurité                |
+| ⬆️    | `:arrow_up:`              | Mise à jour de dépendances            |
+| 🔧    | `:wrench:`                | Configuration                         |
+| 🚀    | `:rocket:`                | Déploiement                           |
+| 💄    | `:lipstick:`              | UI/Style                              |
+| 🚨    | `:rotating_light:`        | Correction warnings linter            |
+| 🏗️    | `:building_construction:` | Changements architecturaux            |
+| ♿️    | `:wheelchair:`            | Accessibilité                         |
 
 > **Liste complète :** [docs/gitmoji.md](docs/gitmoji.md)
 
@@ -93,23 +93,27 @@ pnpm test                    # Tests unitaires + E2E
 Déclenchement manuel via : **Actions > Quality Gate > Run workflow** (sélectionner la branche)
 
 **Supply Chain Security :**
+
 - **Socket.dev** : Bloque les paquets malveillants/suspects (typosquatting, installation scripts)
 - **SHA Pinning** : Actions GitHub tierces épinglées par SHA complet
 - **Dependabot** : Maintenance automatique des dépendances et actions
 
 **Code Quality Gates :**
+
 - **Knip** : Détecte le code mort et imports non utilisés (hallucinations IA)
 - **Type Sync** : Vérifie la cohérence Payload ↔ TypeScript (`payload-types.ts`)
 - **ESLint + Prettier** : Formatage et linting strict (includes Tailwind class ordering)
 - **dependency-cruiser** : Validation architecture (interdiction imports serveur ↔ client)
 
 **Build & Tests :**
+
 - **Next.js Build** : `next build --experimental-build-mode compile` (sans connexion D1)
 - **Vitest** : Tests unitaires et d'intégration
 - **Playwright + axe-core** : Tests E2E et accessibilité WCAG 2.1 AA (FR/EN)
 - **Stryker** : Mutation testing sur modules critiques (optionnel via input)
 
 **Performance & Déploiement :**
+
 - **Lighthouse CI** : Budgets performance (≥90), A11y (=100), SEO (=100)
 - **OIDC Cloudflare** : Authentification sans secrets statiques
 - **Permissions** : GITHUB_TOKEN en read-only par défaut (least privilege)
@@ -119,12 +123,14 @@ Déclenchement manuel via : **Actions > Quality Gate > Run workflow** (sélectio
 ## Architecture
 
 ### Cloudflare Integration
+
 - **D1**: SQLite database via `@payloadcms/db-d1-sqlite`
 - **R2**: Media storage via `@payloadcms/storage-r2`
 - **Wrangler**: Configuration in `wrangler.jsonc`, handles local bindings automatically
 - **OpenNext**: Adapts Next.js for Cloudflare Workers (`open-next.config.ts`)
 
 ### Project Structure
+
 ```
 src/
 ├── app/
@@ -139,31 +145,37 @@ src/
 ```
 
 ### Key Files
+
 - `src/payload.config.ts`: Central configuration for collections, database adapter, and plugins
 - `wrangler.jsonc`: Cloudflare bindings (D1 database, R2 bucket)
 - `cloudflare-env.d.ts`: Generated Cloudflare environment types
 
 ### Collections
+
 - **Users**: Auth-enabled collection for admin access
 - **Media**: Upload collection with R2 storage (image crop/focalPoint disabled due to Workers limitations)
 
 ## Testing
 
 ### Integration Tests (`tests/int/*.int.spec.ts`)
+
 - Use Vitest with jsdom environment
 - Access Payload API directly via `getPayload()`
 - Run with: `pnpm test:int`
 
 ### E2E Tests (`tests/e2e/*.e2e.spec.ts`)
+
 - Use Playwright with Chromium
 - Dev server starts automatically
 - Run with: `pnpm test:e2e`
 
 ## TypeScript Paths
+
 - `@/*` maps to `./src/*`
 - `@payload-config` maps to `./src/payload.config.ts`
 
 ## Environment
+
 - Requires `PAYLOAD_SECRET` environment variable
 - `CLOUDFLARE_ENV` controls deployment environment
 - Uses `.env` files (see `.env.example`)

@@ -24,16 +24,16 @@ This checklist validates that Phase 2 is complete and ready for merge. Complete 
 
 ### Created Files
 
-| File | Status | Validator |
-|------|--------|-----------|
-| `socket.yml` | [ ] Exists | |
-| `docs/guides/socket-security.md` | [ ] Exists | |
+| File                             | Status     | Validator |
+| -------------------------------- | ---------- | --------- |
+| `socket.yml`                     | [ ] Exists |           |
+| `docs/guides/socket-security.md` | [ ] Exists |           |
 
 ### Modified Files
 
-| File | Status | Validator |
-|------|--------|-----------|
-| `.github/workflows/quality-gate.yml` | [ ] Modified | |
+| File                                 | Status       | Validator |
+| ------------------------------------ | ------------ | --------- |
+| `.github/workflows/quality-gate.yml` | [ ] Modified |           |
 
 ### Verification Commands
 
@@ -107,11 +107,12 @@ grep -A3 'permissions:' .github/workflows/quality-gate.yml
 
 Provide link to successful workflow run:
 
-**Workflow Run URL**: ________________________________
+**Workflow Run URL**: **\*\***\*\***\*\***\_\_\_\_**\*\***\*\***\*\***
 
 **Run Details**:
-- Date: __________
-- Duration: __________
+
+- Date: \***\*\_\_\*\***
+- Duration: \***\*\_\_\*\***
 - Socket.dev Step Status: PASS / WARN / FAIL
 
 ---
@@ -175,10 +176,10 @@ head -50 docs/guides/socket-security.md
 
 ### Timing Requirements
 
-| Metric | Requirement | Actual | Status |
-|--------|-------------|--------|--------|
-| Socket.dev step | < 30 seconds | ______ | [ ] PASS |
-| Total workflow | < 2 minutes | ______ | [ ] PASS |
+| Metric          | Requirement  | Actual   | Status   |
+| --------------- | ------------ | -------- | -------- |
+| Socket.dev step | < 30 seconds | **\_\_** | [ ] PASS |
+| Total workflow  | < 2 minutes  | **\_\_** | [ ] PASS |
 
 ### Cache Verification
 
@@ -217,11 +218,11 @@ git log --oneline -4
 
 From Story 1.3, Phase 2 addresses:
 
-| Criteria | Requirement | Status |
-|----------|-------------|--------|
-| CA1 | Socket.dev with BLOCK/WARN/MONITOR policy | [ ] |
-| CA1b | License deny list (GPL/AGPL) | [ ] |
-| CA1c | socket.yml v2 configuration | [ ] |
+| Criteria | Requirement                               | Status |
+| -------- | ----------------------------------------- | ------ |
+| CA1      | Socket.dev with BLOCK/WARN/MONITOR policy | [ ]    |
+| CA1b     | License deny list (GPL/AGPL)              | [ ]    |
+| CA1c     | socket.yml v2 configuration               | [ ]    |
 
 ---
 
@@ -230,8 +231,8 @@ From Story 1.3, Phase 2 addresses:
 Document any known issues or deviations from the plan:
 
 | Issue | Description | Impact | Resolution |
-|-------|-------------|--------|------------|
-| | | | |
+| ----- | ----------- | ------ | ---------- |
+|       |             |        |            |
 
 ---
 
@@ -244,8 +245,8 @@ Document any known issues or deviations from the plan:
 - [ ] Documentation complete
 - [ ] Ready for merge
 
-**Implementer**: _________________
-**Date**: _________________
+**Implementer**: **\*\*\*\***\_**\*\*\*\***
+**Date**: **\*\*\*\***\_**\*\*\*\***
 
 ### Reviewer Sign-Off (Optional)
 
@@ -253,8 +254,8 @@ Document any known issues or deviations from the plan:
 - [ ] Configuration validated
 - [ ] Security review complete
 
-**Reviewer**: _________________
-**Date**: _________________
+**Reviewer**: **\*\*\*\***\_**\*\*\*\***
+**Date**: **\*\*\*\***\_**\*\*\*\***
 
 ---
 

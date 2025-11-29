@@ -14,12 +14,14 @@ This document describes the prerequisites and environment configuration required
 Phase 1 (Environment Validation) **must be completed** before starting Phase 2.
 
 **Verify Phase 1 status**:
+
 ```bash
 # Check PHASES_PLAN.md for Phase 1 status
 grep -A5 "Phase 1" docs/specs/epics/epic_1/story_1_2/implementation/PHASES_PLAN.md
 ```
 
 **Phase 1 completion requirements**:
+
 - [ ] Wrangler authentication verified
 - [ ] D1 database connection working
 - [ ] R2 binding configured
@@ -46,15 +48,16 @@ curl -I http://localhost:3000
 
 You need read access to these files for documentation reference:
 
-| File | Purpose | Location |
-|------|---------|----------|
-| `package.json` | Script definitions | Root |
-| `.env.example` | Environment template | Root |
-| `wrangler.jsonc` | Cloudflare config | Root |
-| `tsconfig.json` | TypeScript config | Root |
-| `.eslintrc.*` | ESLint config | Root |
+| File             | Purpose              | Location |
+| ---------------- | -------------------- | -------- |
+| `package.json`   | Script definitions   | Root     |
+| `.env.example`   | Environment template | Root     |
+| `wrangler.jsonc` | Cloudflare config    | Root     |
+| `tsconfig.json`  | TypeScript config    | Root     |
+| `.eslintrc.*`    | ESLint config        | Root     |
 
 **Verify access**:
+
 ```bash
 # Check all files exist
 ls -la package.json .env.example wrangler.jsonc tsconfig.json
@@ -66,21 +69,23 @@ ls -la package.json .env.example wrangler.jsonc tsconfig.json
 
 ### Required Software
 
-| Tool | Purpose | Check Command |
-|------|---------|---------------|
-| Node.js | Runtime | `node --version` |
-| pnpm | Package manager | `pnpm --version` |
-| Git | Version control | `git --version` |
-| Text editor | Writing docs | - |
+| Tool        | Purpose         | Check Command    |
+| ----------- | --------------- | ---------------- |
+| Node.js     | Runtime         | `node --version` |
+| pnpm        | Package manager | `pnpm --version` |
+| Git         | Version control | `git --version`  |
+| Text editor | Writing docs    | -                |
 
 ### Recommended: VSCode
 
 VSCode is recommended for documentation writing:
+
 - Built-in Markdown preview
 - Spell checking extensions
 - Link validation
 
 **Markdown Preview**:
+
 - Open `.md` file
 - Press `Ctrl+Shift+V` for preview
 - Or `Ctrl+K V` for side-by-side
@@ -130,24 +135,29 @@ docs/
 Before creating each documentation file, review these sources:
 
 #### For QUICKSTART.md
+
 - Phase 1 validation notes (if created)
 - `.env.example` - for environment setup steps
 - Current `CLAUDE.md` - for existing setup instructions
 
 #### For COMMANDS.md
+
 - `package.json` - scripts section
 - Current command usage experience
 
 #### For ENVIRONMENT.md
+
 - `.env.example` - all variables
 - `wrangler.jsonc` - Cloudflare bindings
 
 #### For TROUBLESHOOTING.md
+
 - Phase 1 issues encountered
 - Common error messages seen
 - Existing documentation gaps
 
 #### For IDE_SETUP.md
+
 - `.vscode/` directory (if exists)
 - Current project settings
 - Extension recommendations
@@ -184,7 +194,7 @@ Follow these standards for all documentation:
 
 ### Markdown Template
 
-```markdown
+````markdown
 # Document Title
 
 Brief description of what this document covers.
@@ -201,8 +211,10 @@ Content here.
 # Command example
 command --flag value
 ```
+````
 
 **Expected Output**:
+
 ```
 Output here
 ```
@@ -212,7 +224,8 @@ Output here
 ## See Also
 
 - [Related Doc](./RELATED.md)
-```
+
+````
 
 ---
 
@@ -228,7 +241,7 @@ git branch --show-current
 
 # Verify clean state
 git status
-```
+````
 
 ### Commit Strategy
 
@@ -242,6 +255,7 @@ Make 4 atomic commits as defined in IMPLEMENTATION_PLAN.md:
 ### Commit Message Format
 
 Use Gitmoji convention:
+
 ```
 📝 <short description>
 

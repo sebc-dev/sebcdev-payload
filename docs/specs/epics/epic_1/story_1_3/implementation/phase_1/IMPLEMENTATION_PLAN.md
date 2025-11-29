@@ -35,11 +35,11 @@ Commit 1                    Commit 2                    Commit 3                
 
 ### Files to Create/Modify
 
-| File | Action | Commit |
-|------|--------|--------|
-| `.github/workflows/quality-gate.yml` | CREATE | 1, 3 |
-| `.github/dependabot.yml` | CREATE | 2 |
-| `CLAUDE.md` | MODIFY | 4 |
+| File                                 | Action | Commit |
+| ------------------------------------ | ------ | ------ |
+| `.github/workflows/quality-gate.yml` | CREATE | 1, 3   |
+| `.github/dependabot.yml`             | CREATE | 2      |
+| `CLAUDE.md`                          | MODIFY | 4      |
 
 ---
 
@@ -105,17 +105,17 @@ jobs:
       # ============================================
 
       - name: Checkout repository
-        uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3  # v6.0.0
+        uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3 # v6.0.0
         with:
-          fetch-depth: 0  # Full history for git diff operations
+          fetch-depth: 0 # Full history for git diff operations
 
       - name: Setup pnpm
-        uses: pnpm/action-setup@41ff72655975bd51cab0327fa583b6e92b6d3061  # v4.2.0
+        uses: pnpm/action-setup@41ff72655975bd51cab0327fa583b6e92b6d3061 # v4.2.0
         with:
           version: 9
 
       - name: Setup Node.js
-        uses: actions/setup-node@2028fbc5c25fe9cf00d9f06a71cc4710d4507903  # v6.0.0
+        uses: actions/setup-node@2028fbc5c25fe9cf00d9f06a71cc4710d4507903 # v6.0.0
         with:
           node-version: '20'
           cache: 'pnpm'
@@ -137,11 +137,11 @@ jobs:
 
 Current SHA values (verified 2025-11):
 
-| Action | Version | SHA |
-|--------|---------|-----|
-| `actions/checkout` | v6.0.0 | `1af3b93b6815bc44a9784bd300feb67ff0d1eeb3` |
-| `actions/setup-node` | v6.0.0 | `2028fbc5c25fe9cf00d9f06a71cc4710d4507903` |
-| `pnpm/action-setup` | v4.2.0 | `41ff72655975bd51cab0327fa583b6e92b6d3061` |
+| Action               | Version | SHA                                        |
+| -------------------- | ------- | ------------------------------------------ |
+| `actions/checkout`   | v6.0.0  | `1af3b93b6815bc44a9784bd300feb67ff0d1eeb3` |
+| `actions/setup-node` | v6.0.0  | `2028fbc5c25fe9cf00d9f06a71cc4710d4507903` |
+| `pnpm/action-setup`  | v4.2.0  | `41ff72655975bd51cab0327fa583b6e92b6d3061` |
 
 **How to verify**: Go to the action's GitHub releases page and click on the commit SHA for the release tag.
 
@@ -197,74 +197,74 @@ updates:
   # ============================================
   # GitHub Actions - SHA Pinned
   # ============================================
-  - package-ecosystem: "github-actions"
-    directory: "/"
+  - package-ecosystem: 'github-actions'
+    directory: '/'
     schedule:
-      interval: "weekly"
-      day: "monday"
-      time: "09:00"
-      timezone: "Europe/Paris"
+      interval: 'weekly'
+      day: 'monday'
+      time: '09:00'
+      timezone: 'Europe/Paris'
     open-pull-requests-limit: 10
     commit-message:
-      prefix: "ci"
-      include: "scope"
+      prefix: 'ci'
+      include: 'scope'
     labels:
-      - "dependencies"
-      - "github-actions"
+      - 'dependencies'
+      - 'github-actions'
     reviewers:
-      - "sebcdev"  # Update with actual GitHub username
+      - 'sebcdev' # Update with actual GitHub username
 
   # ============================================
   # npm Packages
   # ============================================
-  - package-ecosystem: "npm"
-    directory: "/"
+  - package-ecosystem: 'npm'
+    directory: '/'
     schedule:
-      interval: "weekly"
-      day: "monday"
-      time: "09:00"
-      timezone: "Europe/Paris"
+      interval: 'weekly'
+      day: 'monday'
+      time: '09:00'
+      timezone: 'Europe/Paris'
     open-pull-requests-limit: 10
     commit-message:
-      prefix: "deps"
-      include: "scope"
+      prefix: 'deps'
+      include: 'scope'
     labels:
-      - "dependencies"
-      - "npm"
+      - 'dependencies'
+      - 'npm'
     reviewers:
-      - "sebcdev"  # Update with actual GitHub username
+      - 'sebcdev' # Update with actual GitHub username
     groups:
       # Group minor and patch updates to reduce noise
       minor-and-patch:
         patterns:
-          - "*"
+          - '*'
         update-types:
-          - "minor"
-          - "patch"
+          - 'minor'
+          - 'patch'
       # Payload CMS updates grouped separately (may need testing)
       payload:
         patterns:
-          - "@payloadcms/*"
-          - "payload"
+          - '@payloadcms/*'
+          - 'payload'
         update-types:
-          - "minor"
-          - "patch"
+          - 'minor'
+          - 'patch'
       # Development tools
       dev-tools:
         patterns:
-          - "@types/*"
-          - "eslint*"
-          - "prettier*"
-          - "typescript"
-          - "vitest"
-          - "@playwright/*"
+          - '@types/*'
+          - 'eslint*'
+          - 'prettier*'
+          - 'typescript'
+          - 'vitest'
+          - '@playwright/*'
         update-types:
-          - "minor"
-          - "patch"
+          - 'minor'
+          - 'patch'
     ignore:
       # Ignore major updates for stability (review manually)
-      - dependency-name: "*"
-        update-types: ["version-update:semver-major"]
+      - dependency-name: '*'
+        update-types: ['version-update:semver-major']
 ```
 
 ### Validation Criteria
@@ -305,7 +305,7 @@ Add at the top of the workflow file, after `on:`:
 # Permissions: Least privilege principle
 # Only request permissions actually needed by job steps
 permissions:
-  contents: read  # Required for checkout
+  contents: read # Required for checkout
   # Future phases may add:
   # pull-requests: write  # For status comments (Socket.dev)
   # issues: write         # For @SocketSecurity ignore mechanism
@@ -344,7 +344,7 @@ on:
 # Permissions: Least privilege principle
 # Only request permissions actually needed by job steps
 permissions:
-  contents: read  # Required for checkout
+  contents: read # Required for checkout
   # Future phases may add:
   # pull-requests: write  # For status comments (Socket.dev)
   # issues: write         # For @SocketSecurity ignore mechanism
@@ -366,17 +366,17 @@ jobs:
       # ============================================
 
       - name: Checkout repository
-        uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3  # v6.0.0
+        uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3 # v6.0.0
         with:
-          fetch-depth: 0  # Full history for git diff operations
+          fetch-depth: 0 # Full history for git diff operations
 
       - name: Setup pnpm
-        uses: pnpm/action-setup@41ff72655975bd51cab0327fa583b6e92b6d3061  # v4.2.0
+        uses: pnpm/action-setup@41ff72655975bd51cab0327fa583b6e92b6d3061 # v4.2.0
         with:
           version: 9
 
       - name: Setup Node.js
-        uses: actions/setup-node@2028fbc5c25fe9cf00d9f06a71cc4710d4507903  # v6.0.0
+        uses: actions/setup-node@2028fbc5c25fe9cf00d9f06a71cc4710d4507903 # v6.0.0
         with:
           node-version: '20'
           cache: 'pnpm'
@@ -428,6 +428,7 @@ docs(ci): update CLAUDE.md with quality gate workflow documentation
 The `CLAUDE.md` file already contains CI/CD documentation. Verify and update if needed the section about Quality Gate Workflow.
 
 The existing content in CLAUDE.md already covers:
+
 - Quality Gate Workflow description
 - Manual trigger strategy (`workflow_dispatch`)
 - Local checks before push
@@ -449,6 +450,7 @@ The Quality Gate workflow is triggered **manually** via GitHub Actions UI:
 6. Click **Run workflow** button
 
 This manual approach is intentional:
+
 - Allows branch protection to require the check
 - Avoids redundant runs on every push
 - Enables optional slow checks (Stryker)
@@ -502,12 +504,12 @@ After pushing to GitHub:
 
 ### Success Metrics
 
-| Metric | Target | Validation Method |
-|--------|--------|-------------------|
-| Workflow execution | < 2 min | Check Actions run duration |
-| pnpm cache hit | Yes | Look for "Cache hit" in logs |
-| Checkout complete | Yes | No errors in checkout step |
-| Dependencies installed | Yes | No errors in install step |
+| Metric                 | Target  | Validation Method            |
+| ---------------------- | ------- | ---------------------------- |
+| Workflow execution     | < 2 min | Check Actions run duration   |
+| pnpm cache hit         | Yes     | Look for "Cache hit" in logs |
+| Checkout complete      | Yes     | No errors in checkout step   |
+| Dependencies installed | Yes     | No errors in install step    |
 
 ---
 

@@ -23,6 +23,7 @@ Use this checklist to track progress through each atomic commit. Each commit sho
 ### Implementation Checklist
 
 - [ ] Create `.github/workflows/` directory
+
   ```bash
   mkdir -p .github/workflows
   ```
@@ -68,6 +69,7 @@ Use this checklist to track progress through each atomic commit. Each commit sho
 - [ ] Stage file: `git add .github/workflows/quality-gate.yml`
 - [ ] Verify staged changes: `git diff --cached`
 - [ ] Commit with message:
+
   ```
   feat(ci): initialize quality-gate workflow with SHA-pinned actions
 
@@ -142,6 +144,7 @@ Use this checklist to track progress through each atomic commit. Each commit sho
 - [ ] Stage file: `git add .github/dependabot.yml`
 - [ ] Verify staged changes: `git diff --cached`
 - [ ] Commit with message:
+
   ```
   feat(ci): configure dependabot for actions and npm packages
 
@@ -199,6 +202,7 @@ Use this checklist to track progress through each atomic commit. Each commit sho
 - [ ] Stage file: `git add .github/workflows/quality-gate.yml`
 - [ ] Verify staged changes: `git diff --cached`
 - [ ] Commit with message:
+
   ```
   feat(ci): add GITHUB_TOKEN permissions and concurrency config
 
@@ -254,6 +258,7 @@ Use this checklist to track progress through each atomic commit. Each commit sho
 - [ ] Stage file: `git add CLAUDE.md`
 - [ ] Verify staged changes: `git diff --cached`
 - [ ] Commit with message:
+
   ```
   docs(ci): update CLAUDE.md with quality gate workflow documentation
 
@@ -313,11 +318,11 @@ Use this checklist to track progress through each atomic commit. Each commit sho
 
 ## Quick Reference: SHA Values
 
-| Action | Version | SHA |
-|--------|---------|-----|
-| `actions/checkout` | v6.0.0 | `1af3b93b6815bc44a9784bd300feb67ff0d1eeb3` |
-| `actions/setup-node` | v6.0.0 | `2028fbc5c25fe9cf00d9f06a71cc4710d4507903` |
-| `pnpm/action-setup` | v4.2.0 | `41ff72655975bd51cab0327fa583b6e92b6d3061` |
+| Action               | Version | SHA                                        |
+| -------------------- | ------- | ------------------------------------------ |
+| `actions/checkout`   | v6.0.0  | `1af3b93b6815bc44a9784bd300feb67ff0d1eeb3` |
+| `actions/setup-node` | v6.0.0  | `2028fbc5c25fe9cf00d9f06a71cc4710d4507903` |
+| `pnpm/action-setup`  | v4.2.0  | `41ff72655975bd51cab0327fa583b6e92b6d3061` |
 
 ---
 

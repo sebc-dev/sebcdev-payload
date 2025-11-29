@@ -23,9 +23,11 @@ Phase 1 focuses on **infrastructure setup**, not code implementation. Testing is
 ## 📋 Test Levels
 
 ### Level 1: Repository Verification (GitHub)
+
 **Purpose**: Verify repository exists and is configured correctly
 
 **What to test**:
+
 - Repository created from correct template
 - Repository accessible with correct permissions
 - Template files visible in GitHub UI
@@ -36,9 +38,11 @@ Phase 1 focuses on **infrastructure setup**, not code implementation. Testing is
 ---
 
 ### Level 2: Local Clone Verification
+
 **Purpose**: Verify repository cloned correctly and structure intact
 
 **What to test**:
+
 - All files present locally
 - Git configuration correct
 - File integrity (no corruption)
@@ -49,9 +53,11 @@ Phase 1 focuses on **infrastructure setup**, not code implementation. Testing is
 ---
 
 ### Level 3: Dependency & Build Verification
+
 **Purpose**: Verify development environment is functional
 
 **What to test**:
+
 - Dependencies installed successfully
 - No critical vulnerabilities
 - TypeScript compiles
@@ -72,6 +78,7 @@ Phase 1 focuses on **infrastructure setup**, not code implementation. Testing is
 **Objective**: Verify repository was created successfully
 
 **Steps**:
+
 ```bash
 # 1. Check repository exists
 gh repo view [username]/sebcdev-payload
@@ -81,11 +88,13 @@ gh repo view [username]/sebcdev-payload --web
 ```
 
 **Expected Result**:
+
 - ✅ Repository page loads
 - ✅ Shows "generated from payloadcms/payload"
 - ✅ Repository name is `sebcdev-payload`
 
 **Pass Criteria**:
+
 - [ ] Repository visible on GitHub
 - [ ] Correct name and description
 - [ ] Shows template source
@@ -97,6 +106,7 @@ gh repo view [username]/sebcdev-payload --web
 **Objective**: Verify repository settings are correct
 
 **Steps**:
+
 ```bash
 # Get repository metadata
 gh api repos/[username]/sebcdev-payload | jq '{
@@ -110,6 +120,7 @@ gh api repos/[username]/sebcdev-payload | jq '{
 ```
 
 **Expected Result**:
+
 ```json
 {
   "name": "sebcdev-payload",
@@ -122,6 +133,7 @@ gh api repos/[username]/sebcdev-payload | jq '{
 ```
 
 **Pass Criteria**:
+
 - [ ] Name is correct
 - [ ] Description is appropriate
 - [ ] Visibility matches expectation
@@ -134,10 +146,12 @@ gh api repos/[username]/sebcdev-payload | jq '{
 **Objective**: Verify all critical files exist in GitHub
 
 **Steps**:
+
 1. Navigate to repository on GitHub
 2. Check each critical file is visible:
 
 **Expected Files**:
+
 - [ ] `README.md`
 - [ ] `package.json`
 - [ ] `wrangler.toml`
@@ -151,6 +165,7 @@ gh api repos/[username]/sebcdev-payload | jq '{
 - [ ] `src/migrations/` directory
 
 **Pass Criteria**:
+
 - [ ] All files visible in GitHub UI
 - [ ] Directory structure matches template
 
@@ -161,6 +176,7 @@ gh api repos/[username]/sebcdev-payload | jq '{
 **Objective**: Ensure no sensitive data in repository
 
 **Steps**:
+
 ```bash
 # Search for .env files in GitHub
 gh api repos/[username]/sebcdev-payload/contents | jq '.[].name' | grep -i env
@@ -169,11 +185,13 @@ gh api repos/[username]/sebcdev-payload/contents | jq '.[].name' | grep -i env
 ```
 
 **Expected Result**:
+
 - No `.env` files
 - No `.env.local` files
 - Only `.env.example` permitted (if present)
 
 **Pass Criteria**:
+
 - [ ] No `.env` files in repository
 - [ ] `.gitignore` excludes `.env*`
 - [ ] No API keys or secrets visible
@@ -189,6 +207,7 @@ gh api repos/[username]/sebcdev-payload/contents | jq '.[].name' | grep -i env
 **Objective**: Clone repository successfully
 
 **Steps**:
+
 ```bash
 # Navigate to workspace
 cd ~/projects  # Or your preferred location
@@ -204,6 +223,7 @@ git status
 ```
 
 **Expected Result**:
+
 ```
 On branch main
 Your branch is up to date with 'origin/main'.
@@ -212,6 +232,7 @@ nothing to commit, working tree clean
 ```
 
 **Pass Criteria**:
+
 - [ ] Clone completed without errors
 - [ ] Directory created
 - [ ] Git status shows clean working tree
@@ -224,6 +245,7 @@ nothing to commit, working tree clean
 **Objective**: Verify all files cloned correctly
 
 **Steps**:
+
 ```bash
 # Count total files (excluding .git)
 find . -type f -not -path "./.git/*" | wc -l
@@ -240,10 +262,12 @@ test -d public && echo "✅ public/" || echo "❌ Missing"
 ```
 
 **Expected Result**:
+
 - 50-100+ files
 - All critical directories present
 
 **Pass Criteria**:
+
 - [ ] File count matches expected range
 - [ ] All critical directories present
 - [ ] Structure matches template
@@ -255,6 +279,7 @@ test -d public && echo "✅ public/" || echo "❌ Missing"
 **Objective**: Verify configuration files are intact
 
 **Steps**:
+
 ```bash
 # Check each critical file exists and has content
 for file in wrangler.toml payload.config.ts next.config.mjs open-next.config.ts package.json tsconfig.json; do
@@ -268,10 +293,12 @@ done
 ```
 
 **Expected Result**:
+
 - All files exist
 - Each file has reasonable line count (not empty)
 
 **Pass Criteria**:
+
 - [ ] `wrangler.toml` exists (~30-50 lines)
 - [ ] `payload.config.ts` exists (~50-150 lines)
 - [ ] `next.config.mjs` exists (~20-50 lines)
@@ -286,6 +313,7 @@ done
 **Objective**: Verify Cloudflare configuration is valid
 
 **Steps**:
+
 ```bash
 # Display wrangler.toml
 cat wrangler.toml
@@ -298,12 +326,14 @@ grep "r2_buckets" wrangler.toml
 ```
 
 **Expected Result**:
+
 - File contains worker name
 - Contains `compatibility_flags = ["nodejs_compat"]`
 - Contains `[[d1_databases]]` section
 - Contains `[[r2_buckets]]` section
 
 **Pass Criteria**:
+
 - [ ] Worker name defined
 - [ ] nodejs_compat flag present (required for Payload)
 - [ ] D1 database binding configured
@@ -317,6 +347,7 @@ grep "r2_buckets" wrangler.toml
 **Objective**: Verify package.json contains expected dependencies
 
 **Steps**:
+
 ```bash
 # Check for critical dependencies
 cat package.json | jq '.dependencies | keys'
@@ -338,6 +369,7 @@ grep -E "@payloadcms/db-|@payloadcms/storage-" package.json
 All critical packages present
 
 **Pass Criteria**:
+
 - [ ] `payload` dependency present
 - [ ] `@payloadcms/db-sqlite` or `@payloadcms/db-d1-sqlite` present
 - [ ] `@payloadcms/storage-r2` present
@@ -357,6 +389,7 @@ All critical packages present
 **Objective**: Install all dependencies successfully
 
 **Steps**:
+
 ```bash
 # Check Node.js version
 node --version  # Should be v18.x or v20.x+
@@ -372,6 +405,7 @@ echo "Exit code: $?"  # Should be 0
 ```
 
 **Expected Result**:
+
 ```
 Packages: +XXX
 +++++++++++++++++++++++++++++++++
@@ -381,6 +415,7 @@ Done in Xs
 ```
 
 **Pass Criteria**:
+
 - [ ] Installation completes without errors
 - [ ] Exit code is 0
 - [ ] No critical peer dependency errors
@@ -393,6 +428,7 @@ Done in Xs
 **Objective**: Verify lock file created correctly
 
 **Steps**:
+
 ```bash
 # Verify lock file exists
 test -f pnpm-lock.yaml && echo "✅ Lock file exists" || echo "❌ Missing"
@@ -408,11 +444,13 @@ git status | grep pnpm-lock.yaml
 ```
 
 **Expected Result**:
+
 - Lock file exists
 - node_modules directory exists with 500+ packages
 - Lock file shows as untracked or staged in git
 
 **Pass Criteria**:
+
 - [ ] `pnpm-lock.yaml` exists
 - [ ] `node_modules/` exists
 - [ ] Lock file tracked by git
@@ -425,6 +463,7 @@ git status | grep pnpm-lock.yaml
 **Objective**: Verify all critical packages installed
 
 **Steps**:
+
 ```bash
 # List all dependencies
 pnpm list --depth=0
@@ -443,6 +482,7 @@ pnpm list typescript
 Each package shows version installed
 
 **Pass Criteria**:
+
 - [ ] `payload@3.x+` installed
 - [ ] `next@15.x+` installed
 - [ ] DB adapter installed
@@ -458,6 +498,7 @@ Each package shows version installed
 **Objective**: Check for security vulnerabilities
 
 **Steps**:
+
 ```bash
 # Run security audit
 pnpm audit
@@ -467,6 +508,7 @@ pnpm audit --json | jq '.metadata'
 ```
 
 **Expected Result**:
+
 ```
 X vulnerabilities found
   Low: X
@@ -476,6 +518,7 @@ X vulnerabilities found
 ```
 
 **Pass Criteria**:
+
 - [ ] No critical vulnerabilities
 - [ ] No high vulnerabilities (or acceptable/documented)
 - [ ] Low/moderate vulnerabilities documented
@@ -492,6 +535,7 @@ X vulnerabilities found
 **Objective**: Verify TypeScript setup is correct
 
 **Steps**:
+
 ```bash
 # Run TypeScript compiler (no emit, just check)
 pnpm tsc --noEmit
@@ -500,20 +544,24 @@ pnpm tsc --noEmit
 ```
 
 **Expected Result** (one of):
+
 1. **Ideal**: No errors
 2. **Acceptable**: Only errors about missing Cloudflare bindings (fixed in Phase 2)
 3. **Unacceptable**: Syntax errors, configuration errors
 
 **Pass Criteria**:
+
 - [ ] TypeScript runs without configuration errors
 - [ ] No syntax errors in template files
 - [ ] Errors only related to missing runtime (Cloudflare bindings) are acceptable
 - [ ] Can proceed to Phase 2
 
 **Example acceptable error**:
+
 ```
 src/app/api/[...slug]/route.ts:10:20 - error TS2304: Cannot find name 'DB'.
 ```
+
 (This will be resolved when Cloudflare bindings are available in Phase 2)
 
 ---
@@ -523,6 +571,7 @@ src/app/api/[...slug]/route.ts:10:20 - error TS2304: Cannot find name 'DB'.
 **Objective**: Verify type generation command works
 
 **Steps**:
+
 ```bash
 # Attempt to generate Payload types
 pnpm generate:types:payload || echo "⚠️ Expected to fail without database"
@@ -532,10 +581,12 @@ pnpm run generate:types:payload --help 2>/dev/null || echo "Script exists"
 ```
 
 **Expected Result**:
+
 - Command exists (may fail without database connection)
 - Failure is expected until Phase 2
 
 **Pass Criteria**:
+
 - [ ] Script defined in package.json
 - [ ] Command is callable (even if it fails)
 - [ ] No syntax errors in script
@@ -547,6 +598,7 @@ pnpm run generate:types:payload --help 2>/dev/null || echo "Script exists"
 **Objective**: Verify build process is configured
 
 **Steps**:
+
 ```bash
 # Attempt to build
 pnpm build || echo "⚠️ Build may fail until Cloudflare bindings exist"
@@ -555,10 +607,12 @@ pnpm build || echo "⚠️ Build may fail until Cloudflare bindings exist"
 ```
 
 **Expected Result**:
+
 - Build process starts
 - May fail due to missing Cloudflare bindings (expected)
 
 **Pass Criteria**:
+
 - [ ] Build command exists
 - [ ] Build process initiates
 - [ ] Errors are related to missing infrastructure (not configuration)
@@ -569,13 +623,13 @@ pnpm build || echo "⚠️ Build may fail until Cloudflare bindings exist"
 
 ### Test Coverage by Category
 
-| Category | Tests | Manual/Auto | Duration |
-|----------|-------|-------------|----------|
-| Repository Creation | 4 tests | Manual | 5-10 min |
-| Local Clone | 5 tests | Manual + CLI | 10-15 min |
-| Dependencies | 4 tests | CLI | 15-20 min |
-| TypeScript/Build | 3 tests | CLI | 5-10 min |
-| **TOTAL** | **16 tests** | **Mixed** | **35-55 min** |
+| Category            | Tests        | Manual/Auto  | Duration      |
+| ------------------- | ------------ | ------------ | ------------- |
+| Repository Creation | 4 tests      | Manual       | 5-10 min      |
+| Local Clone         | 5 tests      | Manual + CLI | 10-15 min     |
+| Dependencies        | 4 tests      | CLI          | 15-20 min     |
+| TypeScript/Build    | 3 tests      | CLI          | 5-10 min      |
+| **TOTAL**           | **16 tests** | **Mixed**    | **35-55 min** |
 
 ### Coverage Goals
 
@@ -591,12 +645,14 @@ pnpm build || echo "⚠️ Build may fail until Cloudflare bindings exist"
 Complete this checklist to validate Phase 1:
 
 ### Repository Verification
+
 - [ ] Test 1.1: Repository exists ✅
 - [ ] Test 1.2: Configuration correct ✅
 - [ ] Test 1.3: Template files present ✅
 - [ ] Test 1.4: No security issues ✅
 
 ### Clone Verification
+
 - [ ] Test 2.1: Clone successful ✅
 - [ ] Test 2.2: File count matches ✅
 - [ ] Test 2.3: Configuration files intact ✅
@@ -604,12 +660,14 @@ Complete this checklist to validate Phase 1:
 - [ ] Test 2.5: package.json valid ✅
 
 ### Dependency Verification
+
 - [ ] Test 3.1: Install successful ✅
 - [ ] Test 3.2: Lock file created ✅
 - [ ] Test 3.3: Packages verified ✅
 - [ ] Test 3.4: Security audit passed ✅
 
 ### TypeScript/Build Verification
+
 - [ ] Test 4.1: TypeScript compiles ✅
 - [ ] Test 4.2: Type generation script exists ✅
 - [ ] Test 4.3: Build process configured ✅
@@ -623,6 +681,7 @@ Complete this checklist to validate Phase 1:
 **Symptom**: Repository not found or inaccessible
 
 **Debug**:
+
 ```bash
 gh auth status
 gh repo list --limit 5
@@ -637,6 +696,7 @@ gh repo list --limit 5
 **Symptom**: Clone fails or files missing
 
 **Debug**:
+
 ```bash
 git clone --verbose https://github.com/[username]/sebcdev-payload.git
 ls -la sebcdev-payload
@@ -651,6 +711,7 @@ ls -la sebcdev-payload
 **Symptom**: Installation fails or packages missing
 
 **Debug**:
+
 ```bash
 node --version  # Check Node.js version
 pnpm --version  # Check pnpm version
@@ -667,6 +728,7 @@ pnpm install --force  # Force reinstall
 **Symptom**: TypeScript shows unexpected errors
 
 **Debug**:
+
 ```bash
 pnpm tsc --noEmit --listFiles  # See what files are being checked
 cat tsconfig.json  # Verify configuration
@@ -717,6 +779,7 @@ echo "✅ Phase 1 validation complete"
 ```
 
 **Usage**:
+
 ```bash
 chmod +x phase1-validation.sh
 ./phase1-validation.sh
@@ -753,19 +816,20 @@ Document test results:
 **Tested by**: [Name]
 **Date**: [Date]
 **Environment**:
+
 - OS: [macOS/Linux/Windows]
 - Node.js: [version]
 - pnpm: [version]
 
 ### Test Results
 
-| Test Suite | Tests | Passed | Failed | Notes |
-|------------|-------|--------|--------|-------|
-| Repository | 4 | 4 | 0 | All passed |
-| Clone | 5 | 5 | 0 | All passed |
-| Dependencies | 4 | 4 | 0 | All passed |
-| TypeScript | 3 | 3 | 0 | Expected errors only |
-| **TOTAL** | **16** | **16** | **0** | **✅ All tests passed** |
+| Test Suite   | Tests  | Passed | Failed | Notes                   |
+| ------------ | ------ | ------ | ------ | ----------------------- |
+| Repository   | 4      | 4      | 0      | All passed              |
+| Clone        | 5      | 5      | 0      | All passed              |
+| Dependencies | 4      | 4      | 0      | All passed              |
+| TypeScript   | 3      | 3      | 0      | Expected errors only    |
+| **TOTAL**    | **16** | **16** | **0**  | **✅ All tests passed** |
 
 ### Issues Found
 

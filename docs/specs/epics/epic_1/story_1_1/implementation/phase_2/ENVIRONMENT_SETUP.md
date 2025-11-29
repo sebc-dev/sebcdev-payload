@@ -87,6 +87,7 @@ pnpm exec wrangler --version
 ```
 
 **Packages added** (should already be in package.json from template):
+
 - `wrangler` - Cloudflare Workers CLI for deployment and management
 - `@cloudflare/workers-types` - TypeScript types for Workers runtime
 - `@payloadcms/db-d1-sqlite` - Payload adapter for Cloudflare D1
@@ -159,6 +160,7 @@ You'll need your Cloudflare Account ID for documentation:
 4. Copy and save your Account ID (format: `xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx`)
 
 **Account ID Location**:
+
 - Dashboard URL: `dash.cloudflare.com/<account-id>/...`
 - Or: Account Home > Right sidebar under "Account ID"
 
@@ -181,6 +183,7 @@ wrangler login
 ```
 
 **Verification**:
+
 ```bash
 # Verify authentication
 wrangler whoami
@@ -195,6 +198,7 @@ wrangler whoami
 ```
 
 **Save this information**:
+
 - Account Name: `___________________________`
 - Account ID: `___________________________`
 - Email: `___________________________`
@@ -216,6 +220,7 @@ PAYLOAD_SECRET=your-local-secret-here-change-this-value
 ```
 
 **Generate a strong secret**:
+
 ```bash
 # Option 1: Using Node.js
 node -e "console.log(require('crypto').randomBytes(32).toString('base64'))"
@@ -228,6 +233,7 @@ openssl rand -base64 32
 ```
 
 **Example .dev.vars**:
+
 ```env
 PAYLOAD_SECRET=kJ8vN2mP9qR3sT7uV4wX1yZ5aB6cD0eF8gH2iJ4kL9mN
 ```
@@ -246,15 +252,16 @@ wrangler secret put PAYLOAD_SECRET
 ```
 
 **Important**:
+
 - Use **different** secrets for local (.dev.vars) and production (Wrangler secrets)
 - **Never** commit `.dev.vars` to git (should be in `.gitignore`)
 - **Never** commit Wrangler secrets to git (managed via Wrangler CLI)
 
 ### Variable Descriptions
 
-| Variable | Description | Example | Required | Where Set |
-|----------|-------------|---------|----------|-----------|
-| `PAYLOAD_SECRET` | Encryption key for Payload CMS (JWT, cookies) | `kJ8vN2mP9qR3...` | Yes | .dev.vars (local), wrangler secret (prod) |
+| Variable         | Description                                   | Example           | Required | Where Set                                 |
+| ---------------- | --------------------------------------------- | ----------------- | -------- | ----------------------------------------- |
+| `PAYLOAD_SECRET` | Encryption key for Payload CMS (JWT, cookies) | `kJ8vN2mP9qR3...` | Yes      | .dev.vars (local), wrangler secret (prod) |
 
 ---
 
@@ -265,12 +272,14 @@ wrangler secret put PAYLOAD_SECRET
 **Purpose**: Cloudflare D1 provides a distributed SQLite database for Payload CMS data storage.
 
 **Setup Steps** (performed in Commit 2):
+
 1. Authenticate Wrangler (must be done first)
 2. Create D1 database: `wrangler d1 create sebcdev-payload-db`
 3. Capture database ID from output
 4. Verify in dashboard: Workers & Pages > D1
 
 **Verification**:
+
 ```bash
 # List D1 databases
 wrangler d1 list
@@ -284,6 +293,7 @@ wrangler d1 execute sebcdev-payload-db --command "SELECT 1 as test"
 ```
 
 **Expected Output After Creation**:
+
 ```
 ✅ Successfully created DB 'sebcdev-payload-db'
 
@@ -294,6 +304,7 @@ database_id = "<your-database-id-here>"
 ```
 
 **Document these values**:
+
 - Database Name: `sebcdev-payload-db`
 - Database ID: `_______________________________`
 
@@ -304,11 +315,13 @@ database_id = "<your-database-id-here>"
 **Purpose**: Cloudflare R2 provides S3-compatible object storage for Payload CMS media uploads.
 
 **Setup Steps** (performed in Commit 3):
+
 1. Authenticate Wrangler (must be done first)
 2. Create R2 bucket: `wrangler r2 bucket create sebcdev-payload-media`
 3. Verify in dashboard: R2 > Buckets
 
 **Verification**:
+
 ```bash
 # List R2 buckets
 wrangler r2 bucket list
@@ -322,11 +335,13 @@ wrangler r2 object list sebcdev-payload-media
 ```
 
 **Expected Output After Creation**:
+
 ```
 ✅ Created bucket 'sebcdev-payload-media'
 ```
 
 **Document these values**:
+
 - Bucket Name: `sebcdev-payload-media`
 
 ---
@@ -336,12 +351,14 @@ wrangler r2 object list sebcdev-payload-media
 **Purpose**: Cloudflare Worker runs the Next.js + Payload CMS application on the edge network.
 
 **Setup Steps** (performed in Commit 5):
+
 1. Configure bindings in `wrangler.toml` (Commit 4)
 2. Set PAYLOAD_SECRET as Wrangler secret
 3. Deploy: `wrangler deploy`
 4. Verify in dashboard: Workers & Pages > sebcdev-payload
 
 **Verification**:
+
 ```bash
 # Deploy (dry-run first to test)
 wrangler deploy --dry-run
@@ -360,6 +377,7 @@ curl -I https://<worker-url>.workers.dev
 ```
 
 **Expected Output After Deployment**:
+
 ```
 ✨ Uploaded sebcdev-payload
 ✨ Published sebcdev-payload
@@ -367,6 +385,7 @@ curl -I https://<worker-url>.workers.dev
 ```
 
 **Document these values**:
+
 - Worker Name: `sebcdev-payload`
 - Worker URL: `_______________________________`
 
@@ -457,14 +476,17 @@ curl -I https://<your-worker-url>.workers.dev
 ### Issue: Wrangler login fails
 
 **Symptoms**:
+
 - `wrangler login` opens browser but authorization fails
 - Error: "Failed to open a browser"
 
 **Solutions**:
+
 1. **Manual OAuth flow**:
+
    ```bash
    wrangler login --browser=false
-   
+
    # Follow URL shown in terminal
    # Authorize in browser manually
    ```
@@ -472,18 +494,20 @@ curl -I https://<your-worker-url>.workers.dev
 2. **Check browser settings**: Allow pop-ups for cloudflare.com
 
 3. **Use API token** (alternative):
+
    ```bash
    # Generate API token in Cloudflare dashboard
    # Account Home > API Tokens > Create Token
    # Use "Edit Cloudflare Workers" template
-   
+
    # Set environment variable
    export CLOUDFLARE_API_TOKEN=your-token-here
-   
+
    # Wrangler will use token automatically
    ```
 
 **Verify Fix**:
+
 ```bash
 wrangler whoami
 # Should show account details
@@ -494,10 +518,12 @@ wrangler whoami
 ### Issue: Permission denied errors
 
 **Symptoms**:
+
 - Error: "You do not have permission to access this resource"
 - Cannot create D1 database or R2 bucket
 
 **Solutions**:
+
 1. **Verify account permissions**:
    - Go to Account Home > Members
    - Ensure you are "Account Owner" or have Workers permissions
@@ -513,6 +539,7 @@ wrangler whoami
    ```
 
 **Verify Fix**:
+
 ```bash
 wrangler d1 list
 # Should show existing databases (if any) without errors
@@ -523,20 +550,23 @@ wrangler d1 list
 ### Issue: Quota limits reached
 
 **Symptoms**:
+
 - Error: "You have reached your quota for D1 databases"
 - Error: "R2 storage limit exceeded"
 
 **Solutions**:
+
 1. **Check current usage**:
    - Dashboard > Workers & Pages > D1 (shows database count)
    - Dashboard > R2 (shows storage usage)
 
 2. **Delete unused resources**:
+
    ```bash
    # List and delete old D1 databases
    wrangler d1 list
    wrangler d1 delete <old-database-name>
-   
+
    # List and delete old R2 buckets
    wrangler r2 bucket list
    wrangler r2 bucket delete <old-bucket-name>
@@ -548,6 +578,7 @@ wrangler d1 list
    - Consider Workers Paid for production workloads
 
 **Verify Fix**:
+
 ```bash
 wrangler d1 list
 # Should show available quota
@@ -558,11 +589,14 @@ wrangler d1 list
 ### Issue: Network connectivity issues
 
 **Symptoms**:
+
 - Wrangler commands timeout
 - Error: "Failed to connect to Cloudflare API"
 
 **Solutions**:
+
 1. **Check internet connection**:
+
    ```bash
    ping cloudflare.com
    # Should respond
@@ -583,6 +617,7 @@ wrangler d1 list
    ```
 
 **Verify Fix**:
+
 ```bash
 wrangler whoami
 # Should complete successfully
@@ -593,24 +628,28 @@ wrangler whoami
 ### Issue: .dev.vars not loading
 
 **Symptoms**:
+
 - Local development fails
 - Error: "PAYLOAD_SECRET is required"
 
 **Solutions**:
+
 1. **Verify .dev.vars exists**:
+
    ```bash
    ls -la .dev.vars
    # Should show file
-   
+
    cat .dev.vars
    # Should show PAYLOAD_SECRET=...
    ```
 
 2. **Check file format**:
+
    ```env
    # Correct format (no spaces around =)
    PAYLOAD_SECRET=your-secret-here
-   
+
    # Incorrect format
    PAYLOAD_SECRET = your-secret-here  ❌
    ```
@@ -622,6 +661,7 @@ wrangler whoami
    ```
 
 **Verify Fix**:
+
 ```bash
 pnpm dev
 # Should start without errors
@@ -676,14 +716,14 @@ Complete this checklist before starting Phase 2 implementation:
 
 Document your environment details:
 
-| Component | Version/Status | Notes |
-|-----------|----------------|-------|
-| Node.js | _________ | Min: 18.17.0 |
-| pnpm | _________ | Min: 8.0.0 |
-| Wrangler | _________ | Min: 3.0.0 |
-| Cloudflare Account | ✅ / ❌ | Account ID: _________ |
-| D1 Quota | ___/5 used | Free tier limit |
-| R2 Quota | ___/10 GB used | Free tier limit |
-| Workers Quota | Free / Paid | Plan type |
+| Component          | Version/Status    | Notes                      |
+| ------------------ | ----------------- | -------------------------- |
+| Node.js            | \***\*\_\*\***    | Min: 18.17.0               |
+| pnpm               | \***\*\_\*\***    | Min: 8.0.0                 |
+| Wrangler           | \***\*\_\*\***    | Min: 3.0.0                 |
+| Cloudflare Account | ✅ / ❌           | Account ID: \***\*\_\*\*** |
+| D1 Quota           | \_\_\_/5 used     | Free tier limit            |
+| R2 Quota           | \_\_\_/10 GB used | Free tier limit            |
+| Workers Quota      | Free / Paid       | Plan type                  |
 
 **Next Step**: Proceed to Commit 1 (Wrangler Authentication) using COMMIT_CHECKLIST.md

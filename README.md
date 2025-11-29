@@ -44,6 +44,7 @@ pnpm deploy
 ## 🏗️ Architecture
 
 ### Project Structure
+
 ```
 src/
 ├── app/
@@ -55,6 +56,7 @@ src/
 ```
 
 ### Key Integrations
+
 - **D1 Database**: SQLite edge database via `@payloadcms/db-d1-sqlite`
 - **R2 Storage**: Object storage for media via `@payloadcms/storage-r2`
 - **OpenNext**: Cloudflare Workers adapter for Next.js

@@ -32,6 +32,7 @@ Complete validation checklist before marking Phase 2 - Cloudflare Infrastructure
 - [ ] Can query database without errors
 
 **Validation**:
+
 ```bash
 wrangler d1 list
 wrangler d1 execute sebcdev-payload-db --command "SELECT 1 as test"
@@ -46,6 +47,7 @@ wrangler d1 execute sebcdev-payload-db --command "SELECT 1 as test"
 - [ ] Can list objects in bucket
 
 **Validation**:
+
 ```bash
 wrangler r2 bucket list
 wrangler r2 object list sebcdev-payload-media
@@ -61,6 +63,7 @@ wrangler r2 object list sebcdev-payload-media
 - [ ] Recent deployment visible in dashboard
 
 **Validation**:
+
 ```bash
 curl -I https://<worker-url>.workers.dev
 # Expected: HTTP/2 200 OK
@@ -84,6 +87,7 @@ curl -I https://<worker-url>.workers.dev
 - [ ] Inline comments explain each binding
 
 **Validation**:
+
 ```bash
 wrangler deploy --dry-run
 # Expected: Dry-run succeeds, shows correct bindings
@@ -99,6 +103,7 @@ wrangler deploy --dry-run
 - [ ] No secrets visible in git history
 
 **Validation**:
+
 ```bash
 git check-ignore .dev.vars
 # Expected: .dev.vars
@@ -122,6 +127,7 @@ wrangler secret list
 - [ ] No API keys exposed in public code
 
 **Validation**:
+
 ```bash
 # Check git history for leaked secrets
 git log --all --full-history -- .dev.vars wrangler.toml | grep -i "secret"
@@ -153,6 +159,7 @@ wrangler secret list
 - [ ] Deployment timestamp documented
 
 **Validation**:
+
 ```bash
 wrangler deploy
 # Expected: Deployment succeeds, shows Worker URL
@@ -169,6 +176,7 @@ wrangler deploy
 - [ ] Page renders correctly (no broken layout)
 
 **Validation**:
+
 ```bash
 curl -I https://<worker-url>.workers.dev
 # Expected: HTTP/2 200 OK
@@ -191,6 +199,7 @@ curl -I https://<worker-url>.workers.dev
 - [ ] Migrations listed in `wrangler d1 migrations list`
 
 **Validation**:
+
 ```bash
 # List applied migrations
 wrangler d1 migrations list sebcdev-payload-db
@@ -215,6 +224,7 @@ wrangler d1 execute sebcdev-payload-db --command "SELECT name FROM sqlite_master
 - [ ] No critical unhandled exceptions
 
 **Validation**:
+
 ```bash
 # Tail Worker logs
 wrangler tail
@@ -241,6 +251,7 @@ wrangler tail
 - [ ] Troubleshooting guides included
 
 **Verification**:
+
 ```bash
 # Check all docs exist
 ls -la docs/deployment/
@@ -259,6 +270,7 @@ ls -la docs/deployment/
 - [ ] Project builds successfully
 
 **Validation**:
+
 ```bash
 pnpm install
 # Expected: Dependencies installed
@@ -288,6 +300,7 @@ pnpm build
 - [ ] Application stable over 10+ requests
 
 **Validation**:
+
 ```bash
 # Test multiple requests
 for i in {1..10}; do curl -I https://<worker-url>.workers.dev; done
@@ -361,18 +374,18 @@ wrangler secret list
 
 ## 📊 Success Metrics
 
-| Metric | Target | Actual | Status |
-|--------|--------|--------|--------|
-| **Commits** | 5 | - | ⏳ |
-| **Infrastructure Components** | 3 (Worker, D1, R2) | - | ⏳ |
-| **Worker Accessibility** | 100% (200 OK) | - | ⏳ |
-| **Admin Panel Accessibility** | 100% (login screen) | - | ⏳ |
-| **Database Tables** | 5+ (Payload core) | - | ⏳ |
-| **Secrets in Git** | 0 | - | ⏳ |
-| **Deployment Time** | < 5 min | - | ⏳ |
-| **Homepage Load Time (first)** | < 5s | - | ⏳ |
-| **Homepage Load Time (cached)** | < 1s | - | ⏳ |
-| **Worker Logs Errors** | 0 critical | - | ⏳ |
+| Metric                          | Target              | Actual | Status |
+| ------------------------------- | ------------------- | ------ | ------ |
+| **Commits**                     | 5                   | -      | ⏳     |
+| **Infrastructure Components**   | 3 (Worker, D1, R2)  | -      | ⏳     |
+| **Worker Accessibility**        | 100% (200 OK)       | -      | ⏳     |
+| **Admin Panel Accessibility**   | 100% (login screen) | -      | ⏳     |
+| **Database Tables**             | 5+ (Payload core)   | -      | ⏳     |
+| **Secrets in Git**              | 0                   | -      | ⏳     |
+| **Deployment Time**             | < 5 min             | -      | ⏳     |
+| **Homepage Load Time (first)**  | < 5s                | -      | ⏳     |
+| **Homepage Load Time (cached)** | < 1s                | -      | ⏳     |
+| **Worker Logs Errors**          | 0 critical          | -      | ⏳     |
 
 ---
 
@@ -382,25 +395,25 @@ Document these final details:
 
 ### Cloudflare Resources
 
-| Resource Type | Name | ID/URL | Status |
-|---------------|------|--------|--------|
-| Worker | sebcdev-payload | https://_______.workers.dev | ✅ / ❌ |
-| D1 Database | sebcdev-payload-db | database_id: _______ | ✅ / ❌ |
-| R2 Bucket | sebcdev-payload-media | sebcdev-payload-media | ✅ / ❌ |
+| Resource Type | Name                  | ID/URL                      | Status  |
+| ------------- | --------------------- | --------------------------- | ------- |
+| Worker        | sebcdev-payload       | https://_______.workers.dev | ✅ / ❌ |
+| D1 Database   | sebcdev-payload-db    | database_id: **\_\_\_**     | ✅ / ❌ |
+| R2 Bucket     | sebcdev-payload-media | sebcdev-payload-media       | ✅ / ❌ |
 
 ### Secrets
 
-| Secret | Location | Status |
-|--------|----------|--------|
-| PAYLOAD_SECRET (local) | .dev.vars | ✅ / ❌ |
-| PAYLOAD_SECRET (prod) | Wrangler secrets | ✅ / ❌ |
+| Secret                 | Location         | Status  |
+| ---------------------- | ---------------- | ------- |
+| PAYLOAD_SECRET (local) | .dev.vars        | ✅ / ❌ |
+| PAYLOAD_SECRET (prod)  | Wrangler secrets | ✅ / ❌ |
 
 ### Bindings
 
-| Binding Name | Type | Resource | Status |
-|--------------|------|----------|--------|
-| DB | D1 | sebcdev-payload-db | ✅ / ❌ |
-| MEDIA_BUCKET | R2 | sebcdev-payload-media | ✅ / ❌ |
+| Binding Name | Type | Resource              | Status  |
+| ------------ | ---- | --------------------- | ------- |
+| DB           | D1   | sebcdev-payload-db    | ✅ / ❌ |
+| MEDIA_BUCKET | R2   | sebcdev-payload-media | ✅ / ❌ |
 
 ---
 
@@ -416,13 +429,13 @@ Select one:
   - Ready for Phase 3
 
 - [ ] 🔧 **CHANGES REQUESTED** - Issues to fix:
-  - [ ] Issue 1: _________________________________
-  - [ ] Issue 2: _________________________________
-  - [ ] Issue 3: _________________________________
+  - [ ] Issue 1: **\*\***\*\*\*\***\*\***\_**\*\***\*\*\*\***\*\***
+  - [ ] Issue 2: **\*\***\*\*\*\***\*\***\_**\*\***\*\*\*\***\*\***
+  - [ ] Issue 3: **\*\***\*\*\*\***\*\***\_**\*\***\*\*\*\***\*\***
 
 - [ ] ❌ **REJECTED** - Major rework needed:
-  - Major issues: _________________________________
-  - Rework plan: _________________________________
+  - Major issues: **\*\***\*\*\*\***\*\***\_**\*\***\*\*\*\***\*\***
+  - Rework plan: **\*\***\*\*\*\***\*\***\_**\*\***\*\*\*\***\*\***
 
 ---
 
@@ -432,9 +445,9 @@ Select one:
 
 1. [ ] Update INDEX.md status to ✅ COMPLETED
 2. [ ] Update PHASES_PLAN.md with actual metrics
-   - Actual duration: ___ hours
+   - Actual duration: \_\_\_ hours
    - Actual commits: 5
-   - Issues encountered: ___
+   - Issues encountered: \_\_\_
 3. [ ] Document Worker URL for team
 4. [ ] Update EPIC_TRACKING.md (Phase 2 complete)
 5. [ ] Prepare for Phase 3 (Configuration Validation & Documentation)
@@ -480,26 +493,29 @@ Before marking Phase 2 as complete, these **MUST** be true:
 
 Document any known issues discovered during Phase 2:
 
-| Issue | Impact | Workaround | Fix Plan |
-|-------|--------|------------|----------|
+| Issue                    | Impact | Workaround         | Fix Plan                |
+| ------------------------ | ------ | ------------------ | ----------------------- |
 | Example: Cold start slow | Medium | Acceptable for dev | Optimize in later phase |
-|  |  |  |  |
-|  |  |  |  |
+|                          |        |                    |                         |
+|                          |        |                    |                         |
 
 ---
 
 ## 🎉 Phase 2 Completion Certificate
 
-**Validation completed by**: _______________________  
-**Date**: _______________________  
-**Phase 2 Status**: ✅ APPROVED / 🔧 CHANGES REQUESTED / ❌ REJECTED  
+**Validation completed by**: \***\*\*\*\*\***\_\_\_\***\*\*\*\*\***  
+**Date**: \***\*\*\*\*\***\_\_\_\***\*\*\*\*\***  
+**Phase 2 Status**: ✅ APPROVED / 🔧 CHANGES REQUESTED / ❌ REJECTED
 
-**Signature**: _______________________
+**Signature**: \***\*\*\*\*\***\_\_\_\***\*\*\*\*\***
 
 **Notes**:
-_________________________________________________________________
-_________________________________________________________________
-_________________________________________________________________
+
+---
+
+---
+
+---
 
 ---
 

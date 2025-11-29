@@ -20,30 +20,31 @@
 
 ### Required Tools
 
-| Tool | Minimum Version | Purpose | Check Command |
-|------|-----------------|---------|---------------|
-| Node.js | 20.9.0 | Runtime environment | `node --version` |
-| pnpm | 9.0.0 | Package manager | `pnpm --version` |
-| Git | 2.40.0 | Version control | `git --version` |
-| VS Code | Latest | Editor with YAML support | `code --version` |
+| Tool    | Minimum Version | Purpose                  | Check Command    |
+| ------- | --------------- | ------------------------ | ---------------- |
+| Node.js | 20.9.0          | Runtime environment      | `node --version` |
+| pnpm    | 9.0.0           | Package manager          | `pnpm --version` |
+| Git     | 2.40.0          | Version control          | `git --version`  |
+| VS Code | Latest          | Editor with YAML support | `code --version` |
 
 ### Required Access
 
-| Resource | Access Level | Purpose |
-|----------|--------------|---------|
-| GitHub Repository | Write | Push workflow files |
-| GitHub Actions | Enabled | Run workflows |
-| GitHub Dependabot | Enabled | Automated updates |
+| Resource          | Access Level | Purpose             |
+| ----------------- | ------------ | ------------------- |
+| GitHub Repository | Write        | Push workflow files |
+| GitHub Actions    | Enabled      | Run workflows       |
+| GitHub Dependabot | Enabled      | Automated updates   |
 
 ### VS Code Extensions (Recommended)
 
-| Extension | ID | Purpose |
-|-----------|-----|---------|
-| YAML | `redhat.vscode-yaml` | YAML syntax highlighting and validation |
-| GitHub Actions | `github.vscode-github-actions` | Workflow syntax support |
-| GitLens | `eamodio.gitlens` | Git history and blame |
+| Extension      | ID                             | Purpose                                 |
+| -------------- | ------------------------------ | --------------------------------------- |
+| YAML           | `redhat.vscode-yaml`           | YAML syntax highlighting and validation |
+| GitHub Actions | `github.vscode-github-actions` | Workflow syntax support                 |
+| GitLens        | `eamodio.gitlens`              | Git history and blame                   |
 
 Install all recommended extensions:
+
 ```bash
 code --install-extension redhat.vscode-yaml
 code --install-extension github.vscode-github-actions
@@ -126,6 +127,7 @@ Navigate to your GitHub repository and verify:
 **Path**: Settings > Branches > Branch protection rules
 
 For `main` branch (can be configured after Phase 1 is complete):
+
 - [ ] Require status checks to pass before merging
 - [ ] Require the "Quality Gate" workflow to pass
 
@@ -145,11 +147,11 @@ For `main` branch (can be configured after Phase 1 is complete):
 
 These SHA values must be used for action pinning. Verify they are current:
 
-| Action | Version | SHA | Verify Link |
-|--------|---------|-----|-------------|
-| `actions/checkout` | v6.0.0 | `1af3b93b6815bc44a9784bd300feb67ff0d1eeb3` | [Releases](https://github.com/actions/checkout/releases) |
-| `actions/setup-node` | v6.0.0 | `2028fbc5c25fe9cf00d9f06a71cc4710d4507903` | [Releases](https://github.com/actions/setup-node/releases) |
-| `pnpm/action-setup` | v4.2.0 | `41ff72655975bd51cab0327fa583b6e92b6d3061` | [Releases](https://github.com/pnpm/action-setup/releases) |
+| Action               | Version | SHA                                        | Verify Link                                                |
+| -------------------- | ------- | ------------------------------------------ | ---------------------------------------------------------- |
+| `actions/checkout`   | v6.0.0  | `1af3b93b6815bc44a9784bd300feb67ff0d1eeb3` | [Releases](https://github.com/actions/checkout/releases)   |
+| `actions/setup-node` | v6.0.0  | `2028fbc5c25fe9cf00d9f06a71cc4710d4507903` | [Releases](https://github.com/actions/setup-node/releases) |
+| `pnpm/action-setup`  | v4.2.0  | `41ff72655975bd51cab0327fa583b6e92b6d3061` | [Releases](https://github.com/pnpm/action-setup/releases)  |
 
 ### How to Verify SHA Values
 
@@ -160,6 +162,7 @@ These SHA values must be used for action pinning. Verify they are current:
 5. Copy the full commit SHA (40 characters)
 
 Example for `actions/checkout@v6.0.0`:
+
 ```
 https://github.com/actions/checkout/releases/tag/v6.0.0
 → Commit: 1af3b93b6815bc44a9784bd300feb67ff0d1eeb3
@@ -171,10 +174,10 @@ If newer versions are available, update both the SHA and the version comment:
 
 ```yaml
 # Before
-- uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3  # v6.0.0
+- uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3 # v6.0.0
 
 # After (example with hypothetical v6.1.0)
-- uses: actions/checkout@abc123def456789abc123def456789abc123def4  # v6.1.0
+- uses: actions/checkout@abc123def456789abc123def456789abc123def4 # v6.1.0
 ```
 
 ---
@@ -237,6 +240,7 @@ git log --oneline -4
 **Symptom**: VS Code shows red squiggles in YAML file
 
 **Solution**:
+
 1. Check indentation (must use spaces, not tabs)
 2. Verify all keys have values
 3. Check for missing colons or quotes
@@ -247,6 +251,7 @@ git log --oneline -4
 **Symptom**: After pushing, workflow doesn't appear in GitHub Actions
 
 **Solution**:
+
 1. Verify file is in correct path: `.github/workflows/quality-gate.yml`
 2. Check file has been pushed: `git log --oneline -1`
 3. Verify YAML is valid (invalid YAML won't appear)
@@ -257,6 +262,7 @@ git log --oneline -4
 **Symptom**: Workflow fails with "Resource not accessible by integration"
 
 **Solution**:
+
 1. Check repository permissions in Settings > Actions
 2. Verify `permissions: contents: read` is in workflow
 3. Ensure repository is not restricted by organization policies
@@ -266,6 +272,7 @@ git log --oneline -4
 **Symptom**: "Cache not found" in workflow logs
 
 **Solution**:
+
 1. This is normal for first run
 2. Subsequent runs should show "Cache restored"
 3. Verify `cache: 'pnpm'` is in setup-node step
@@ -275,6 +282,7 @@ git log --oneline -4
 **Symptom**: No Dependabot PRs appear after pushing `dependabot.yml`
 
 **Solution**:
+
 1. Wait for next scheduled run (Monday 09:00 Paris time)
 2. Check Insights > Dependency graph > Dependabot for status
 3. Verify repository has no organization restrictions on Dependabot
@@ -285,6 +293,7 @@ git log --oneline -4
 **Symptom**: Workflow fails with "Unable to resolve action"
 
 **Solution**:
+
 1. Verify SHA is exactly 40 characters
 2. Check SHA matches the correct version
 3. Go to action's releases page and verify SHA
@@ -298,24 +307,24 @@ git log --oneline -4
 
 These environment variables are available in the workflow:
 
-| Variable | Description | Example |
-|----------|-------------|---------|
-| `${{ github.workflow }}` | Workflow name | "Quality Gate" |
-| `${{ github.ref }}` | Branch/tag reference | "refs/heads/story_1_3" |
-| `${{ github.sha }}` | Commit SHA | "abc123..." |
-| `${{ github.actor }}` | User who triggered | "username" |
-| `${{ runner.os }}` | Runner OS | "Linux" |
+| Variable                 | Description          | Example                |
+| ------------------------ | -------------------- | ---------------------- |
+| `${{ github.workflow }}` | Workflow name        | "Quality Gate"         |
+| `${{ github.ref }}`      | Branch/tag reference | "refs/heads/story_1_3" |
+| `${{ github.sha }}`      | Commit SHA           | "abc123..."            |
+| `${{ github.actor }}`    | User who triggered   | "username"             |
+| `${{ runner.os }}`       | Runner OS            | "Linux"                |
 
 ### Secrets Available
 
 For Phase 1, no secrets are required. Future phases will need:
 
-| Secret | Phase | Purpose |
-|--------|-------|---------|
-| `GITHUB_TOKEN` | Auto-provided | Repository access (read) |
-| `CLOUDFLARE_API_TOKEN` | Phase 2+ | Cloudflare deployment (OIDC preferred) |
-| `ADMIN_EMAIL` | Phase 7 | Lighthouse admin auth |
-| `ADMIN_PASSWORD` | Phase 7 | Lighthouse admin auth |
+| Secret                 | Phase         | Purpose                                |
+| ---------------------- | ------------- | -------------------------------------- |
+| `GITHUB_TOKEN`         | Auto-provided | Repository access (read)               |
+| `CLOUDFLARE_API_TOKEN` | Phase 2+      | Cloudflare deployment (OIDC preferred) |
+| `ADMIN_EMAIL`          | Phase 7       | Lighthouse admin auth                  |
+| `ADMIN_PASSWORD`       | Phase 7       | Lighthouse admin auth                  |
 
 ---
 

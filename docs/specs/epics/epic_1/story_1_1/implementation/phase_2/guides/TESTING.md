@@ -9,6 +9,7 @@ Complete testing strategy for Phase 2 - Cloudflare Infrastructure Deployment.
 Phase 2 focuses on **infrastructure provisioning and deployment**, not code implementation. Testing is primarily **manual verification** of Cloudflare resources and application accessibility.
 
 **Testing Layers**:
+
 1. **Infrastructure Tests**: Verify Cloudflare resources created (D1, R2, Worker)
 2. **Connectivity Tests**: Verify bindings and network accessibility
 3. **Application Tests**: Verify deployed application responds correctly
@@ -40,11 +41,13 @@ wrangler whoami
 ```
 
 **Success Criteria**:
+
 - [ ] Command succeeds without errors
 - [ ] Shows correct account email
 - [ ] Shows correct account ID (matches documentation)
 
 **Failure Actions**:
+
 - If command fails: Re-authenticate with `wrangler login`
 - If wrong account: Logout and login to correct account
 
@@ -72,16 +75,19 @@ wrangler d1 execute sebcdev-payload-db --command "SELECT 1 as test"
 ```
 
 **Success Criteria**:
+
 - [ ] Database appears in `wrangler d1 list`
 - [ ] Database name matches expected: `sebcdev-payload-db`
 - [ ] Test query executes successfully
 - [ ] Query returns expected result: `{ test: 1 }`
 
 **Failure Actions**:
+
 - If database not found: Re-run Commit 2 (D1 provisioning)
 - If query fails: Check database status in Cloudflare dashboard
 
 **Cloudflare Dashboard Verification**:
+
 1. Navigate to [dash.cloudflare.com](https://dash.cloudflare.com)
 2. Go to **Workers & Pages** > **D1**
 3. Verify `sebcdev-payload-db` appears in list
@@ -106,15 +112,18 @@ wrangler r2 object list sebcdev-payload-media
 ```
 
 **Success Criteria**:
+
 - [ ] Bucket appears in `wrangler r2 bucket list`
 - [ ] Bucket name matches expected: `sebcdev-payload-media`
 - [ ] Can list objects without errors (empty is OK)
 
 **Failure Actions**:
+
 - If bucket not found: Re-run Commit 3 (R2 provisioning)
 - If access denied: Check account permissions
 
 **Cloudflare Dashboard Verification**:
+
 1. Navigate to [dash.cloudflare.com](https://dash.cloudflare.com)
 2. Go to **R2** > **Buckets**
 3. Verify `sebcdev-payload-media` appears in list
@@ -137,11 +146,13 @@ wrangler deployments list --name sebcdev-payload
 ```
 
 **Success Criteria**:
+
 - [ ] Worker deployment visible
 - [ ] Deployment timestamp is recent (within last hour)
 - [ ] Deployment status is "Active"
 
 **Cloudflare Dashboard Verification**:
+
 1. Navigate to [dash.cloudflare.com](https://dash.cloudflare.com)
 2. Go to **Workers & Pages** > **Overview**
 3. Find `sebcdev-payload` in Workers list
@@ -173,12 +184,14 @@ wrangler deploy --dry-run
 ```
 
 **Success Criteria**:
+
 - [ ] Dry-run succeeds without errors
 - [ ] D1 binding shows correct database name and ID
 - [ ] R2 binding shows correct bucket name
 - [ ] No warnings about missing bindings
 
 **Failure Actions**:
+
 - If dry-run fails: Check `wrangler.toml` syntax
 - If bindings missing: Re-run Commit 4 (bindings configuration)
 - If database_id mismatch: Update `wrangler.toml` with correct ID from Commit 2
@@ -205,12 +218,14 @@ curl -v https://<worker-url>.workers.dev
 ```
 
 **Success Criteria**:
+
 - [ ] HTTP status code is 200 OK
 - [ ] Response has `cf-ray` header (confirms Cloudflare serving)
 - [ ] Response has `content-type: text/html`
 - [ ] No 500 or 502 errors
 
 **Failure Actions**:
+
 - If 500 error: Check Worker logs with `wrangler tail`
 - If 502 error: Worker may be crashing, check logs for errors
 - If timeout: Check Cloudflare status page
@@ -228,12 +243,14 @@ Verify the deployed Next.js + Payload CMS application is functional.
 **Objective**: Verify application homepage loads successfully
 
 **Manual Test Steps**:
+
 1. Open browser (Chrome, Firefox, or Safari)
 2. Navigate to: `https://<worker-url>.workers.dev`
 3. Wait for page to load (may take 2-5 seconds on first request - cold start)
 4. Verify page loads without errors
 
 **Success Criteria**:
+
 - [ ] Homepage loads and displays content
 - [ ] No JavaScript errors in browser console (F12)
 - [ ] No network errors (check Network tab)
@@ -241,6 +258,7 @@ Verify the deployed Next.js + Payload CMS application is functional.
 - [ ] Response time < 5 seconds (first load)
 
 **Browser Console Check**:
+
 ```javascript
 // Open browser console (F12), check for errors
 // Should see no red error messages
@@ -248,6 +266,7 @@ Verify the deployed Next.js + Payload CMS application is functional.
 ```
 
 **Failure Actions**:
+
 - If blank page: Check browser console for JavaScript errors
 - If 404: Verify Worker URL is correct
 - If slow (>10s): Check Worker logs for cold start issues
@@ -259,12 +278,14 @@ Verify the deployed Next.js + Payload CMS application is functional.
 **Objective**: Verify Payload CMS admin panel is accessible
 
 **Manual Test Steps**:
+
 1. Open browser
 2. Navigate to: `https://<worker-url>.workers.dev/admin`
 3. Wait for admin panel to load
 4. Verify login screen appears
 
 **Success Criteria**:
+
 - [ ] Admin panel loads
 - [ ] Payload CMS branding visible
 - [ ] Login form displays (username and password fields)
@@ -273,6 +294,7 @@ Verify the deployed Next.js + Payload CMS application is functional.
 - [ ] Page renders correctly
 
 **Login Screen Elements**:
+
 - [ ] Payload logo or branding
 - [ ] Email/username input field
 - [ ] Password input field
@@ -280,6 +302,7 @@ Verify the deployed Next.js + Payload CMS application is functional.
 - [ ] "Forgot password?" link (if applicable)
 
 **Failure Actions**:
+
 - If 404: Admin route may not be configured, check Next.js routes
 - If blank: Check console for errors, verify Payload config
 - If 500: Check Worker logs for backend errors
@@ -303,6 +326,7 @@ curl https://<worker-url>.workers.dev/api/graphql
 ```
 
 **Success Criteria**:
+
 - [ ] API endpoints respond (200 or appropriate status)
 - [ ] No 500 errors
 - [ ] CORS headers present if needed
@@ -334,11 +358,13 @@ wrangler d1 execute sebcdev-payload-db --command "SELECT name FROM sqlite_master
 ```
 
 **Success Criteria**:
+
 - [ ] Migrations list shows applied migrations
 - [ ] Database has Payload core tables
 - [ ] No migration errors in Worker logs
 
 **Expected Tables** (Payload core):
+
 - `users` - User accounts
 - `media` - Uploaded media files
 - `payload_preferences` - User preferences
@@ -346,6 +372,7 @@ wrangler d1 execute sebcdev-payload-db --command "SELECT name FROM sqlite_master
 - (plus any custom collections)
 
 **Failure Actions**:
+
 - If no migrations: Check Worker logs for migration errors
 - If tables missing: Migrations may have failed, check error logs
 - If migration errors: Review migration SQL and Payload config
@@ -365,6 +392,7 @@ wrangler tail
 ```
 
 **Success Criteria**:
+
 - [ ] Logs show incoming HTTP requests
 - [ ] No 500 Internal Server errors
 - [ ] No database connection errors
@@ -372,6 +400,7 @@ wrangler tail
 - [ ] Payload CMS initialization logs visible
 
 **Expected Log Patterns**:
+
 ```
 GET https://<worker-url>.workers.dev/ - 200 OK
 GET https://<worker-url>.workers.dev/admin - 200 OK
@@ -379,12 +408,14 @@ Payload CMS initialized successfully
 ```
 
 **Critical Errors to Watch For**:
+
 - ❌ "DB is not defined" → Bindings not configured
 - ❌ "Failed to connect to database" → D1 issue
 - ❌ "PAYLOAD_SECRET is required" → Secret not set
 - ❌ "500 Internal Server Error" → Application crash
 
 **Failure Actions**:
+
 - If binding errors: Re-check `wrangler.toml` (Commit 4)
 - If secret errors: Re-run `wrangler secret put PAYLOAD_SECRET`
 - If crashes: Review error stack trace, check code compatibility
@@ -419,12 +450,14 @@ cat wrangler.toml | grep -i "secret\|password\|key"
 ```
 
 **Success Criteria**:
+
 - [ ] `.dev.vars` is gitignored
 - [ ] No `PAYLOAD_SECRET` values in git history
 - [ ] No secrets in `wrangler.toml`
 - [ ] Secrets managed via `wrangler secret put`
 
 **Failure Actions**:
+
 - If secrets in git: Remove from history (dangerous!), rotate secrets
 - If .dev.vars not ignored: Add to .gitignore immediately
 
@@ -443,11 +476,13 @@ wrangler secret list
 ```
 
 **Success Criteria**:
+
 - [ ] `PAYLOAD_SECRET` appears in secret list
 - [ ] Secret values are NOT displayed (security)
 - [ ] Secret is set for correct Worker
 
 **Failure Actions**:
+
 - If secret missing: Re-run `wrangler secret put PAYLOAD_SECRET`
 
 ---
@@ -490,23 +525,23 @@ Run through this checklist to verify Phase 2 deployment:
 
 After completing all tests, document results:
 
-| Test | Status | Notes |
-|------|--------|-------|
-| 1. Wrangler Auth | ✅ / ❌ | Account ID: _______ |
-| 2. D1 Database | ✅ / ❌ | Database: sebcdev-payload-db |
-| 3. R2 Bucket | ✅ / ❌ | Bucket: sebcdev-payload-media |
-| 4. Worker Deployed | ✅ / ❌ | URL: _______ |
-| 5. Bindings Config | ✅ / ❌ | Dry-run: Pass/Fail |
-| 6. HTTP Connectivity | ✅ / ❌ | Response: 200 OK |
-| 7. Homepage | ✅ / ❌ | Load time: ___s |
-| 8. Admin Panel | ✅ / ❌ | Login screen: Yes/No |
-| 9. API Routes | ✅ / ❌ | Optional |
-| 10. Migrations | ✅ / ❌ | Tables: ___ |
-| 11. Worker Logs | ✅ / ❌ | Errors: 0 |
-| 12. Git Secrets | ✅ / ❌ | Clean: Yes/No |
-| 13. Wrangler Secrets | ✅ / ❌ | PAYLOAD_SECRET: Set |
+| Test                 | Status  | Notes                         |
+| -------------------- | ------- | ----------------------------- |
+| 1. Wrangler Auth     | ✅ / ❌ | Account ID: **\_\_\_**        |
+| 2. D1 Database       | ✅ / ❌ | Database: sebcdev-payload-db  |
+| 3. R2 Bucket         | ✅ / ❌ | Bucket: sebcdev-payload-media |
+| 4. Worker Deployed   | ✅ / ❌ | URL: **\_\_\_**               |
+| 5. Bindings Config   | ✅ / ❌ | Dry-run: Pass/Fail            |
+| 6. HTTP Connectivity | ✅ / ❌ | Response: 200 OK              |
+| 7. Homepage          | ✅ / ❌ | Load time: \_\_\_s            |
+| 8. Admin Panel       | ✅ / ❌ | Login screen: Yes/No          |
+| 9. API Routes        | ✅ / ❌ | Optional                      |
+| 10. Migrations       | ✅ / ❌ | Tables: \_\_\_                |
+| 11. Worker Logs      | ✅ / ❌ | Errors: 0                     |
+| 12. Git Secrets      | ✅ / ❌ | Clean: Yes/No                 |
+| 13. Wrangler Secrets | ✅ / ❌ | PAYLOAD_SECRET: Set           |
 
-**Overall Pass Rate**: ___/13 tests passed
+**Overall Pass Rate**: \_\_\_/13 tests passed
 
 ---
 
@@ -515,11 +550,13 @@ After completing all tests, document results:
 ### Issue: Worker returns 500 error
 
 **Symptoms**:
+
 - `curl` returns HTTP 500
 - Browser shows "Internal Server Error"
 - Worker logs show error stack traces
 
 **Troubleshooting Steps**:
+
 1. Check Worker logs: `wrangler tail`
 2. Look for specific error messages
 3. Common causes:
@@ -529,6 +566,7 @@ After completing all tests, document results:
    - Code compatibility issues
 
 **Solutions**:
+
 - Missing bindings: Re-check `wrangler.toml` and redeploy
 - Missing secret: `wrangler secret put PAYLOAD_SECRET`
 - Migration errors: Check migration SQL compatibility with D1
@@ -538,15 +576,18 @@ After completing all tests, document results:
 ### Issue: Homepage loads but admin panel shows 404
 
 **Symptoms**:
+
 - `/` route works
 - `/admin` shows 404 Not Found
 
 **Troubleshooting Steps**:
+
 1. Verify admin route in Next.js app directory
 2. Check build output includes admin files
 3. Review `next.config.mjs` for route configuration
 
 **Solutions**:
+
 - Verify Payload config includes `admin` route
 - Check OpenNext build includes admin assets
 - Redeploy after fixing configuration
@@ -556,16 +597,19 @@ After completing all tests, document results:
 ### Issue: Database migrations don't run
 
 **Symptoms**:
+
 - Worker logs show "migrations pending"
 - Database has no tables
 - Admin panel shows database errors
 
 **Troubleshooting Steps**:
+
 1. Check Worker logs for migration errors
 2. Query database: `wrangler d1 execute <db> --command "SELECT name FROM sqlite_master WHERE type='table'"`
 3. Check migration files in `src/migrations/`
 
 **Solutions**:
+
 - Migrations may run on first admin panel access (trigger by visiting `/admin`)
 - Manually run migrations via Payload CLI if needed
 - Check D1 compatibility with migration SQL
@@ -575,15 +619,18 @@ After completing all tests, document results:
 ### Issue: Worker logs show binding errors
 
 **Symptoms**:
+
 - Error: "DB is not defined"
 - Error: "MEDIA_BUCKET is not defined"
 
 **Troubleshooting Steps**:
+
 1. Check `wrangler.toml` bindings configuration
 2. Verify database_id and bucket_name are correct
 3. Run `wrangler deploy --dry-run` to validate
 
 **Solutions**:
+
 - Update `wrangler.toml` with correct bindings (Commit 4)
 - Verify binding names match code expectations (`DB`, `MEDIA_BUCKET`)
 - Redeploy after fixing bindings

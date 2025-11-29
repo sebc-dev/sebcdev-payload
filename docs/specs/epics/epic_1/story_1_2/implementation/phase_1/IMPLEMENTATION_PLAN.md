@@ -51,6 +51,7 @@ wrangler whoami
 ```
 
 **Expected Output**:
+
 ```
 Getting User settings...
  ⛅️ wrangler 4.x.x
@@ -65,6 +66,7 @@ You are logged in with an API Token, associated with the email <your-email>@<dom
 ```
 
 **If Not Authenticated**:
+
 ```bash
 # Login to Cloudflare
 wrangler login
@@ -78,6 +80,7 @@ wrangler d1 execute D1 --command "SELECT name FROM sqlite_master WHERE type='tab
 ```
 
 **Expected Output** (tables from Payload CMS):
+
 ```
 ┌─────────────────────────────────┐
 │ name                            │
@@ -92,6 +95,7 @@ wrangler d1 execute D1 --command "SELECT name FROM sqlite_master WHERE type='tab
 ```
 
 **If No Tables**:
+
 - Check if migrations have been run
 - Run `pnpm payload migrate` if needed
 
@@ -103,6 +107,7 @@ cat wrangler.jsonc | grep -A5 "r2_buckets"
 ```
 
 **Expected Configuration**:
+
 ```json
 "r2_buckets": [
   {
@@ -188,6 +193,7 @@ pnpm generate:types:cloudflare
 ```
 
 **Expected Output**:
+
 ```
  ⛅️ wrangler 4.x.x
 ──────────────────────
@@ -196,16 +202,18 @@ Generating project types...
 ```
 
 **Verify Generated File**:
+
 ```bash
 cat cloudflare-env.d.ts
 ```
 
 **Expected Content** (should include):
+
 ```typescript
 interface CloudflareEnv {
-  ASSETS: Fetcher;
-  D1: D1Database;
-  R2: R2Bucket;
+  ASSETS: Fetcher
+  D1: D1Database
+  R2: R2Bucket
 }
 ```
 
@@ -217,27 +225,30 @@ pnpm generate:types:payload
 ```
 
 **Expected Output**:
+
 ```
 [14:XX:XX] INFO: Generating Payload types...
 [14:XX:XX] INFO: Done.
 ```
 
 **Verify Generated File**:
+
 ```bash
 head -50 src/payload-types.ts
 ```
 
 **Expected Content** (should include User, Media types):
+
 ```typescript
 export interface Config {
   auth: {
-    users: UserAuthOperations;
-  };
+    users: UserAuthOperations
+  }
   collections: {
-    users: User;
-    media: Media;
+    users: User
+    media: Media
     // ... other collections
-  };
+  }
   // ...
 }
 ```
@@ -250,10 +261,12 @@ npx tsc --noEmit
 ```
 
 **Expected Output**:
+
 - No output (success)
 - Exit code 0
 
 **If Errors**:
+
 - Read error messages carefully
 - Fix type issues in source files
 - Re-run until passing
@@ -266,11 +279,13 @@ pnpm lint
 ```
 
 **Expected Output**:
+
 ```
 ✔ No ESLint warnings or errors
 ```
 
 **If Errors**:
+
 - Review ESLint errors
 - Fix issues or update `.eslintrc` if needed
 - Re-run until passing
@@ -283,6 +298,7 @@ git status --short cloudflare-env.d.ts src/payload-types.ts
 ```
 
 **If Files Modified**:
+
 ```bash
 # Stage the regenerated type files
 git add cloudflare-env.d.ts src/payload-types.ts
@@ -298,9 +314,9 @@ git add cloudflare-env.d.ts src/payload-types.ts
 
 ### Files Modified
 
-| File | Change Type | Description |
-|------|-------------|-------------|
-| `cloudflare-env.d.ts` | Regenerated | Cloudflare environment types |
+| File                   | Change Type | Description                  |
+| ---------------------- | ----------- | ---------------------------- |
+| `cloudflare-env.d.ts`  | Regenerated | Cloudflare environment types |
 | `src/payload-types.ts` | Regenerated | Payload CMS collection types |
 
 ### Commit Message
@@ -345,6 +361,7 @@ pnpm dev
 ```
 
 **Expected Output**:
+
 ```
   ▲ Next.js 15.x.x
   - Local:        http://localhost:3000
@@ -355,6 +372,7 @@ pnpm dev
 ```
 
 **Monitor for Errors**:
+
 - Watch terminal output for errors
 - Note any warnings (some are expected)
 
@@ -363,12 +381,14 @@ pnpm dev
 Open browser to `http://localhost:3000`
 
 **Verification Steps**:
+
 1. Page loads without errors
 2. No JavaScript console errors (open DevTools > Console)
 3. Page renders content (may be default template)
 4. Network tab shows successful requests
 
 **Expected**:
+
 - HTTP 200 response
 - Page renders (even if minimal)
 - No critical errors in console
@@ -378,12 +398,14 @@ Open browser to `http://localhost:3000`
 Open browser to `http://localhost:3000/admin`
 
 **Verification Steps**:
+
 1. Admin panel loads
 2. Login screen appears (or dashboard if already logged in)
 3. No JavaScript console errors
 4. Forms are interactive
 
 **Expected**:
+
 - Login screen renders
 - No database connection errors
 - UI components load correctly
@@ -397,10 +419,12 @@ In browser DevTools (F12):
 3. **Application Tab**: Verify cookies/storage
 
 **Acceptable**:
+
 - Warnings about development mode
 - Hot reload messages
 
 **Not Acceptable**:
+
 - Database connection errors
 - Type errors
 - Failed API requests
@@ -568,12 +592,12 @@ PORT=3001 pnpm dev
 
 ## Summary
 
-| Commit | Objective | Duration | Files |
-|--------|-----------|----------|-------|
-| 1.1 | Wrangler auth & bindings | 30 min | 0 |
-| 1.2 | TypeScript types | 45 min | 2 |
-| 1.3 | Dev server validation | 45 min | 0 |
-| **Total** | | **~2 hours** | **2** |
+| Commit    | Objective                | Duration     | Files |
+| --------- | ------------------------ | ------------ | ----- |
+| 1.1       | Wrangler auth & bindings | 30 min       | 0     |
+| 1.2       | TypeScript types         | 45 min       | 2     |
+| 1.3       | Dev server validation    | 45 min       | 0     |
+| **Total** |                          | **~2 hours** | **2** |
 
 ---
 

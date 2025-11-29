@@ -527,15 +527,15 @@ Affichage homogène dans toutes les listes (Hub, catégories, articles connexes)
 
 ```tsx
 <ArticleCard
-  title='Article Title'
-  excerpt='Short excerpt...'
-  category='Tutorial'
+  title="Article Title"
+  excerpt="Short excerpt..."
+  category="Tutorial"
   tags={['tag1', 'tag2']}
-  complexity='intermediate'
+  complexity="intermediate"
   readingTime={8}
   publishedAt={new Date()}
-  slug='article-slug'
-  lang='fr'
+  slug="article-slug"
+  lang="fr"
 />
 ```
 
@@ -595,7 +595,7 @@ Affiche progression visuelle (0-100%) via largeur bar, couleur accent (#14B8A6).
 Badge avec icône et label, traductions via next-intl :
 
 ```tsx
-<ComplexityBadge level='intermediate' />
+<ComplexityBadge level="intermediate" />
 ```
 
 Variantes :
@@ -1052,26 +1052,26 @@ describe('SearchFilters', () => {
 
 ```typescript
 // e2e/articles-hub.spec.ts
-import { test, expect } from '@playwright/test';
+import { test, expect } from '@playwright/test'
 
 test('search articles with filters', async ({ page }) => {
-  await page.goto('/fr/articles');
-  await page.click('text=Filtrer');
-  await page.selectOption('[name=category]', 'tutorial');
+  await page.goto('/fr/articles')
+  await page.click('text=Filtrer')
+  await page.selectOption('[name=category]', 'tutorial')
 
   // Attend mise à jour Server Component (re-fetch + re-render)
-  await expect(page.locator('[data-testid=article-card]')).toHaveCount(5);
-});
+  await expect(page.locator('[data-testid=article-card]')).toHaveCount(5)
+})
 
 test('auth flow: login → protected route → logout', async ({ page }) => {
   // Test complet : middleware, session, RSC avec auth context
-  await page.goto('/fr/admin/articles');
+  await page.goto('/fr/admin/articles')
   // Expect redirect to login (middleware intercept)
-  expect(page.url()).toContain('/sign-in');
+  expect(page.url()).toContain('/sign-in')
 
   // Login flow
   // ... assertions
-});
+})
 ```
 
 ### 18.3 Configuration Recommandée

@@ -29,14 +29,15 @@ Cette épique garantit que le projet démarre sur des bases solides avec une inf
 
 This epic contains **4 stories** as defined in the PRD:
 
-| Story | Title | Description | Status | Phases | Progress |
-|-------|-------|-------------|--------|--------|----------|
-| 1.1 | Initialisation & Déploiement 1-Click | Utiliser le template officiel pour provisionner automatiquement le Repo GitHub, la base D1, le bucket R2 et le Worker | ✅ COMPLETED | 3 | 3/3 |
-| 1.2 | Récupération & Configuration Locale | Cloner le repo, installer les dépendances et configurer l'environnement local avec bindings Cloudflare | ✅ COMPLETED | 2 | 2/2 |
-| 1.3 | Pipeline "Quality Gate" (AI-Shield) | Configurer le workflow GitHub Actions avec Socket.dev, Knip, Dependency Cruiser, Stryker, Lighthouse CI, ESLint/Prettier | 🚧 IN PROGRESS | 8 | 2/8 |
-| 1.4 | Adaptation du Pipeline de Déploiement | Conditionner le déploiement Cloudflare à la réussite de la Quality Gate | 📋 NOT STARTED | - | 0/0 |
+| Story | Title                                 | Description                                                                                                              | Status         | Phases | Progress |
+| ----- | ------------------------------------- | ------------------------------------------------------------------------------------------------------------------------ | -------------- | ------ | -------- |
+| 1.1   | Initialisation & Déploiement 1-Click  | Utiliser le template officiel pour provisionner automatiquement le Repo GitHub, la base D1, le bucket R2 et le Worker    | ✅ COMPLETED   | 3      | 3/3      |
+| 1.2   | Récupération & Configuration Locale   | Cloner le repo, installer les dépendances et configurer l'environnement local avec bindings Cloudflare                   | ✅ COMPLETED   | 2      | 2/2      |
+| 1.3   | Pipeline "Quality Gate" (AI-Shield)   | Configurer le workflow GitHub Actions avec Socket.dev, Knip, Dependency Cruiser, Stryker, Lighthouse CI, ESLint/Prettier | 🚧 IN PROGRESS | 8      | 2/8      |
+| 1.4   | Adaptation du Pipeline de Déploiement | Conditionner le déploiement Cloudflare à la réussite de la Quality Gate                                                  | 📋 NOT STARTED | -      | 0/0      |
 
 **Columns Explained**:
+
 - **Story**: Reference ID (e.g., 1.1, 1.2)
 - **Title**: Story name from PRD
 - **Description**: One-line summary of what the story delivers

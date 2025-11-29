@@ -125,23 +125,23 @@ Example:
 ```typescript
 // Users table
 interface User {
-  id: string;
-  email: string;
-  password_hash: string;
-  role: 'admin' | 'editor' | 'viewer';
-  permissions: string[];
-  created_at: Date;
-  updated_at: Date;
-  last_login: Date | null;
+  id: string
+  email: string
+  password_hash: string
+  role: 'admin' | 'editor' | 'viewer'
+  permissions: string[]
+  created_at: Date
+  updated_at: Date
+  last_login: Date | null
 }
 
 // Sessions table (if using database sessions)
 interface Session {
-  id: string;
-  user_id: string;
-  token: string;
-  expires_at: Date;
-  created_at: Date;
+  id: string
+  user_id: string
+  token: string
+  expires_at: Date
+  created_at: Date
 }
 ```
 
@@ -179,7 +179,7 @@ export const authConfig = {
   jwtExpiry: process.env.JWT_EXPIRY || '24h',
   bcryptRounds: parseInt(process.env.BCRYPT_ROUNDS || '10'),
   refreshExpiry: process.env.JWT_REFRESH_EXPIRY || '7d',
-};
+}
 ```
 
 ---

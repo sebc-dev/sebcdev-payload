@@ -21,23 +21,23 @@
 
 ### Phase 1 Review Focus Areas
 
-| Area | Priority | Description |
-|------|----------|-------------|
-| SHA Pinning | Critical | All actions must use full SHA, not tags |
-| Permissions | Critical | Least privilege principle for GITHUB_TOKEN |
-| YAML Syntax | High | Valid YAML, proper indentation |
-| Concurrency | Medium | Prevent redundant workflow runs |
-| Documentation | Medium | Comments explain rationale |
+| Area          | Priority | Description                                |
+| ------------- | -------- | ------------------------------------------ |
+| SHA Pinning   | Critical | All actions must use full SHA, not tags    |
+| Permissions   | Critical | Least privilege principle for GITHUB_TOKEN |
+| YAML Syntax   | High     | Valid YAML, proper indentation             |
+| Concurrency   | Medium   | Prevent redundant workflow runs            |
+| Documentation | Medium   | Comments explain rationale                 |
 
 ### Review Time Estimate
 
-| Commit | Estimated Review Time |
-|--------|----------------------|
-| Commit 1: Workflow initialization | 15-20 minutes |
-| Commit 2: Dependabot configuration | 10-15 minutes |
-| Commit 3: Permissions and concurrency | 10-15 minutes |
-| Commit 4: Documentation update | 5-10 minutes |
-| **Total** | **40-60 minutes** |
+| Commit                                | Estimated Review Time |
+| ------------------------------------- | --------------------- |
+| Commit 1: Workflow initialization     | 15-20 minutes         |
+| Commit 2: Dependabot configuration    | 10-15 minutes         |
+| Commit 3: Permissions and concurrency | 10-15 minutes         |
+| Commit 4: Documentation update        | 5-10 minutes          |
+| **Total**                             | **40-60 minutes**     |
 
 ---
 
@@ -65,20 +65,21 @@
 
 For each action, verify:
 
-| Action | Expected SHA | Expected Version |
-|--------|--------------|------------------|
-| `actions/checkout` | `1af3b93b6815bc44a9784bd300feb67ff0d1eeb3` | v6.0.0 |
-| `pnpm/action-setup` | `41ff72655975bd51cab0327fa583b6e92b6d3061` | v4.2.0 |
-| `actions/setup-node` | `2028fbc5c25fe9cf00d9f06a71cc4710d4507903` | v6.0.0 |
+| Action               | Expected SHA                               | Expected Version |
+| -------------------- | ------------------------------------------ | ---------------- |
+| `actions/checkout`   | `1af3b93b6815bc44a9784bd300feb67ff0d1eeb3` | v6.0.0           |
+| `pnpm/action-setup`  | `41ff72655975bd51cab0327fa583b6e92b6d3061` | v4.2.0           |
+| `actions/setup-node` | `2028fbc5c25fe9cf00d9f06a71cc4710d4507903` | v6.0.0           |
 
 **Verification steps**:
+
 1. SHA is exactly 40 characters (not shortened)
 2. Version comment matches the SHA
 3. No `@v4` or `@main` references (must be SHA)
 
 ```yaml
 # Correct
-- uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3  # v6.0.0
+- uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3 # v6.0.0
 
 # Incorrect - tag reference
 - uses: actions/checkout@v6
@@ -132,13 +133,13 @@ For each action, verify:
 #### github-actions Ecosystem Review
 
 ```yaml
-- package-ecosystem: "github-actions"
-  directory: "/"
+- package-ecosystem: 'github-actions'
+  directory: '/'
   schedule:
-    interval: "weekly"
-    day: "monday"
-    time: "09:00"
-    timezone: "Europe/Paris"
+    interval: 'weekly'
+    day: 'monday'
+    time: '09:00'
+    timezone: 'Europe/Paris'
 ```
 
 - [ ] Directory is `/` (root)
@@ -157,8 +158,8 @@ For each action, verify:
 
 ```yaml
 ignore:
-  - dependency-name: "*"
-    update-types: ["version-update:semver-major"]
+  - dependency-name: '*'
+    update-types: ['version-update:semver-major']
 ```
 
 #### Labels and Reviewers
@@ -231,13 +232,13 @@ concurrency:
 
 ### Critical Security Items
 
-| Item | Status | Notes |
-|------|--------|-------|
-| All actions use full SHA (40 chars) | [ ] | Not tags or branches |
-| No secrets in workflow file | [ ] | Secrets only via `${{ secrets.* }}` |
-| Permissions follow least privilege | [ ] | Only `contents: read` |
-| No `pull_request_target` trigger | [ ] | Security risk for public repos |
-| No inline scripts with user input | [ ] | Prevent injection |
+| Item                                | Status | Notes                               |
+| ----------------------------------- | ------ | ----------------------------------- |
+| All actions use full SHA (40 chars) | [ ]    | Not tags or branches                |
+| No secrets in workflow file         | [ ]    | Secrets only via `${{ secrets.* }}` |
+| Permissions follow least privilege  | [ ]    | Only `contents: read`               |
+| No `pull_request_target` trigger    | [ ]    | Security risk for public repos      |
+| No inline scripts with user input   | [ ]    | Prevent injection                   |
 
 ### SHA Pinning Verification Commands
 
@@ -309,7 +310,7 @@ grep 'write' .github/workflows/quality-gate.yml
 - uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3
 
 # Correct (version comment for maintainability)
-- uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3  # v6.0.0
+- uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3 # v6.0.0
 ```
 
 ### Issue 3: Overly Permissive Permissions
@@ -332,7 +333,7 @@ permissions:
 - uses: actions/checkout@v6
 
 # Correct (immutable SHA)
-- uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3  # v6.0.0
+- uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3 # v6.0.0
 ```
 
 ### Issue 5: Missing Concurrency Control
@@ -382,14 +383,14 @@ jobs:
 
 ## Review Decision Matrix
 
-| Criteria | Pass | Fail |
-|----------|------|------|
-| All SHA pins valid | Approve | Request changes |
-| Minimal permissions | Approve | Request changes |
-| Valid YAML | Approve | Request changes |
-| Concurrency configured | Approve | Request changes |
+| Criteria                 | Pass              | Fail              |
+| ------------------------ | ----------------- | ----------------- |
+| All SHA pins valid       | Approve           | Request changes   |
+| Minimal permissions      | Approve           | Request changes   |
+| Valid YAML               | Approve           | Request changes   |
+| Concurrency configured   | Approve           | Request changes   |
 | Version comments present | Approve (warning) | Approve (warning) |
-| Documentation complete | Approve | Approve (comment) |
+| Documentation complete   | Approve           | Approve (comment) |
 
 ---
 
@@ -401,20 +402,24 @@ Use this template for PR review comments:
 ## Phase 1 Review: Workflow Foundation & Dependabot
 
 ### Security Review
+
 - [ ] SHA pinning verified
 - [ ] Permissions are minimal
 - [ ] No secrets exposed
 
 ### Configuration Review
+
 - [ ] Workflow structure correct
 - [ ] Dependabot configured properly
 - [ ] Concurrency group defined
 
 ### Documentation Review
+
 - [ ] CLAUDE.md updated
 - [ ] Comments are clear
 
 ### Overall Assessment
+
 - Status: [ ] Approved / [ ] Changes Requested
 - Notes: [Add specific feedback here]
 ```

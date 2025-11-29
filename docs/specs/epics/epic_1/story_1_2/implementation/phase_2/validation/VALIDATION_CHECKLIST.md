@@ -22,15 +22,16 @@ Before validating Phase 2, ensure:
 
 ### Documentation Files Created
 
-| File | Path | Status |
-|------|------|--------|
-| Quick-Start Guide | `docs/development/QUICKSTART.md` | [ ] |
-| Commands Reference | `docs/development/COMMANDS.md` | [ ] |
-| Environment Variables | `docs/development/ENVIRONMENT.md` | [ ] |
-| Troubleshooting Guide | `docs/development/TROUBLESHOOTING.md` | [ ] |
-| IDE Setup Guide | `docs/development/IDE_SETUP.md` | [ ] |
+| File                  | Path                                  | Status |
+| --------------------- | ------------------------------------- | ------ |
+| Quick-Start Guide     | `docs/development/QUICKSTART.md`      | [ ]    |
+| Commands Reference    | `docs/development/COMMANDS.md`        | [ ]    |
+| Environment Variables | `docs/development/ENVIRONMENT.md`     | [ ]    |
+| Troubleshooting Guide | `docs/development/TROUBLESHOOTING.md` | [ ]    |
+| IDE Setup Guide       | `docs/development/IDE_SETUP.md`       | [ ]    |
 
 **Verification Command**:
+
 ```bash
 ls -la docs/development/*.md
 ```
@@ -267,12 +268,12 @@ Check `docs/specs/epics/epic_1/story_1_2/implementation/PHASES_PLAN.md`:
 
 ### Story 1.2 AC6: Documentation Locale
 
-| Criterion | Document | Status |
-|-----------|----------|--------|
-| Guide de démarrage rapide pour nouveaux développeurs | QUICKSTART.md | [ ] |
-| Liste des commandes essentielles documentées | COMMANDS.md | [ ] |
-| Procédure de résolution des problèmes courants | TROUBLESHOOTING.md | [ ] |
-| Configuration IDE recommandée (VSCode settings) | IDE_SETUP.md | [ ] |
+| Criterion                                            | Document           | Status |
+| ---------------------------------------------------- | ------------------ | ------ |
+| Guide de démarrage rapide pour nouveaux développeurs | QUICKSTART.md      | [ ]    |
+| Liste des commandes essentielles documentées         | COMMANDS.md        | [ ]    |
+| Procédure de résolution des problèmes courants       | TROUBLESHOOTING.md | [ ]    |
+| Configuration IDE recommandée (VSCode settings)      | IDE_SETUP.md       | [ ]    |
 
 ---
 
@@ -280,21 +281,21 @@ Check `docs/specs/epics/epic_1/story_1_2/implementation/PHASES_PLAN.md`:
 
 ### Documentation Completeness
 
-| Metric | Target | Actual | Status |
-|--------|--------|--------|--------|
-| Documentation files created | 5 | | [ ] |
-| All commands documented | 100% | | [ ] |
-| All env vars documented | 100% | | [ ] |
-| Internal links working | 100% | | [ ] |
-| Commands tested | 100% | | [ ] |
+| Metric                      | Target | Actual | Status |
+| --------------------------- | ------ | ------ | ------ |
+| Documentation files created | 5      |        | [ ]    |
+| All commands documented     | 100%   |        | [ ]    |
+| All env vars documented     | 100%   |        | [ ]    |
+| Internal links working      | 100%   |        | [ ]    |
+| Commands tested             | 100%   |        | [ ]    |
 
 ### User Experience
 
-| Metric | Target | Actual | Status |
-|--------|--------|--------|--------|
-| New developer setup time | < 15 min | | [ ] |
-| Troubleshooting coverage | Top 5 issues | | [ ] |
-| Commands copy-paste ready | 100% | | [ ] |
+| Metric                    | Target       | Actual | Status |
+| ------------------------- | ------------ | ------ | ------ |
+| New developer setup time  | < 15 min     |        | [ ]    |
+| Troubleshooting coverage  | Top 5 issues |        | [ ]    |
+| Commands copy-paste ready | 100%         |        | [ ]    |
 
 ---
 
@@ -302,14 +303,14 @@ Check `docs/specs/epics/epic_1/story_1_2/implementation/PHASES_PLAN.md`:
 
 ### Phase 2 Status
 
-| Category | Items | Passed | Status |
-|----------|-------|--------|--------|
-| File Existence | 5 | /5 | [ ] |
-| Content Quality | 5 | /5 | [ ] |
-| Link Validation | 5 | /5 | [ ] |
-| Command Testing | 5 | /5 | [ ] |
-| Cross-Reference | 2 | /2 | [ ] |
-| Tracking Updates | 2 | /2 | [ ] |
+| Category         | Items | Passed | Status |
+| ---------------- | ----- | ------ | ------ |
+| File Existence   | 5     | /5     | [ ]    |
+| Content Quality  | 5     | /5     | [ ]    |
+| Link Validation  | 5     | /5     | [ ]    |
+| Command Testing  | 5     | /5     | [ ]    |
+| Cross-Reference  | 2     | /2     | [ ]    |
+| Tracking Updates | 2     | /2     | [ ]    |
 
 ### Overall Phase 2 Validation
 
@@ -327,9 +328,9 @@ Check `docs/specs/epics/epic_1/story_1_2/implementation/PHASES_PLAN.md`:
 
 ### Phase 2 Complete
 
-- **Validated by**: _______________
-- **Date**: _______________
-- **Notes**: _______________
+- **Validated by**: **\*\***\_\_\_**\*\***
+- **Date**: **\*\***\_\_\_**\*\***
+- **Notes**: **\*\***\_\_\_**\*\***
 
 ### Blockers Identified
 
@@ -337,8 +338,8 @@ Check `docs/specs/epics/epic_1/story_1_2/implementation/PHASES_PLAN.md`:
 - [ ] Blockers exist (document below):
 
 | Blocker | Impact | Resolution |
-|---------|--------|------------|
-| | | |
+| ------- | ------ | ---------- |
+|         |        |            |
 
 ---
 

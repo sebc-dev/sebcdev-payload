@@ -20,6 +20,7 @@
 Cette story établit les fondations de l'infrastructure en utilisant le template officiel Payload CMS pour Cloudflare. L'objectif est de provisionner automatiquement toute l'infrastructure nécessaire sans configuration manuelle complexe.
 
 **Objectifs clés**:
+
 1. Créer un nouveau repository GitHub à partir du template officiel
 2. Provisionner automatiquement la base de données Cloudflare D1
 3. Créer le bucket Cloudflare R2 pour le stockage des médias
@@ -31,22 +32,26 @@ Cette story établit les fondations de l'infrastructure en utilisant le template
 ## ✅ Acceptance Criteria
 
 ### AC1: Template Deployed
+
 - [ ] Le repository GitHub est créé à partir du template `with-cloudflare-d1`
 - [ ] Le repository contient tous les fichiers du template (code source, configuration)
 - [ ] Le repository est accessible et clonable
 
 ### AC2: Cloudflare Infrastructure Provisioned
+
 - [ ] La base de données Cloudflare D1 est créée automatiquement
 - [ ] Le bucket Cloudflare R2 est créé automatiquement
 - [ ] Le Worker Cloudflare est déployé et accessible
 - [ ] Les bindings entre Worker, D1 et R2 sont configurés dans `wrangler.toml`
 
 ### AC3: Application Accessible
+
 - [ ] L'application est accessible via l'URL Cloudflare Workers
 - [ ] La page d'accueil se charge sans erreur
 - [ ] Le panneau admin Payload est accessible (même s'il n'est pas configuré)
 
 ### AC4: Configuration Verified
+
 - [ ] Le fichier `wrangler.toml` contient les bonnes références aux ressources
 - [ ] Les variables d'environnement nécessaires sont documentées
 - [ ] Les credentials Cloudflare sont sauvegardés de manière sécurisée
@@ -56,13 +61,16 @@ Cette story établit les fondations de l'infrastructure en utilisant le template
 ## 🔗 Dependencies
 
 ### Upstream Dependencies
+
 - Aucune (première story de l'epic)
 
 ### Downstream Dependencies
+
 - **Story 1.2**: Récupération & Configuration Locale (nécessite l'infrastructure provisionnée)
 - **Story 1.3**: Pipeline "Quality Gate" (peut être développé en parallèle)
 
 ### External Dependencies
+
 - **Cloudflare Account**: Compte Cloudflare avec accès aux Workers, D1, et R2
 - **GitHub Account**: Compte GitHub pour créer le repository
 - **Template Availability**: Template officiel `payloadcms/payload` avec le starter `with-cloudflare-d1`
@@ -72,6 +80,7 @@ Cette story établit les fondations de l'infrastructure en utilisant le template
 ## 📊 Technical Requirements
 
 ### Infrastructure Components
+
 1. **GitHub Repository**
    - Nom: `sebcdev-payload` (ou selon préférence)
    - Visibilité: Public ou Private
@@ -93,6 +102,7 @@ Cette story établit les fondations de l'infrastructure en utilisant le template
    - Adaptateur: `@opennextjs/cloudflare`
 
 ### Configuration Files
+
 - `wrangler.toml`: Configuration Cloudflare (bindings, compatibility flags)
 - `package.json`: Dépendances et scripts
 - `next.config.mjs`: Configuration Next.js
@@ -106,6 +116,7 @@ Cette story établit les fondations de l'infrastructure en utilisant le template
 ### High-Risk Items
 
 **Risk 1: Template Incompatibility**
+
 - **Description**: Le template officiel pourrait ne pas être à jour ou compatible avec la dernière version de Payload
 - **Likelihood**: Faible
 - **Impact**: Élevé (blocage complet)
@@ -113,6 +124,7 @@ Cette story établit les fondations de l'infrastructure en utilisant le template
 - **Contingency**: Utiliser une version spécifique du template connue pour être stable
 
 **Risk 2: Cloudflare Quota Limits**
+
 - **Description**: Le compte Cloudflare pourrait avoir des limites (Workers gratuits, taille D1)
 - **Likelihood**: Moyenne
 - **Impact**: Moyen (peut nécessiter upgrade du plan)
@@ -120,6 +132,7 @@ Cette story établit les fondations de l'infrastructure en utilisant le template
 - **Contingency**: Créer un nouveau compte ou upgrader le plan existant
 
 **Risk 3: Deployment Failure**
+
 - **Description**: Le déploiement automatique pourrait échouer en raison d'erreurs de configuration
 - **Likelihood**: Faible
 - **Impact**: Moyen (nécessite debug manuel)
@@ -143,6 +156,7 @@ Cette story établit les fondations de l'infrastructure en utilisant le template
 5. **Admin User**: Après le déploiement, il faudra créer le premier utilisateur admin (Story 1.2)
 
 ### Related Documentation
+
 - [Payload CMS Official Templates](https://github.com/payloadcms/payload/tree/main/templates)
 - [Cloudflare Workers Documentation](https://developers.cloudflare.com/workers/)
 - [Wrangler CLI Reference](https://developers.cloudflare.com/workers/wrangler/)
@@ -152,6 +166,7 @@ Cette story établit les fondations de l'infrastructure en utilisant le template
 ## 🎬 User Value
 
 Cette story établit les fondations techniques du projet en quelques clics, permettant de:
+
 - **Gagner du temps**: Évite des heures de configuration manuelle d'infrastructure
 - **Réduire les erreurs**: Le template est testé et validé par Payload CMS
 - **Accélérer le développement**: L'équipe peut immédiatement commencer à travailler sur les fonctionnalités

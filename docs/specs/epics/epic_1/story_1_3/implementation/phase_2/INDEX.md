@@ -9,15 +9,15 @@
 
 ## Quick Navigation
 
-| Document | Purpose |
-|----------|---------|
-| [INDEX.md](./INDEX.md) | This file - Overview and navigation |
-| [IMPLEMENTATION_PLAN.md](./IMPLEMENTATION_PLAN.md) | Detailed atomic commit strategy |
-| [COMMIT_CHECKLIST.md](./COMMIT_CHECKLIST.md) | Per-commit validation checklists |
-| [ENVIRONMENT_SETUP.md](./ENVIRONMENT_SETUP.md) | Environment configuration |
-| [guides/REVIEW.md](./guides/REVIEW.md) | Code review guidelines |
-| [guides/TESTING.md](./guides/TESTING.md) | Testing strategy |
-| [validation/VALIDATION_CHECKLIST.md](./validation/VALIDATION_CHECKLIST.md) | Final validation checklist |
+| Document                                                                   | Purpose                             |
+| -------------------------------------------------------------------------- | ----------------------------------- |
+| [INDEX.md](./INDEX.md)                                                     | This file - Overview and navigation |
+| [IMPLEMENTATION_PLAN.md](./IMPLEMENTATION_PLAN.md)                         | Detailed atomic commit strategy     |
+| [COMMIT_CHECKLIST.md](./COMMIT_CHECKLIST.md)                               | Per-commit validation checklists    |
+| [ENVIRONMENT_SETUP.md](./ENVIRONMENT_SETUP.md)                             | Environment configuration           |
+| [guides/REVIEW.md](./guides/REVIEW.md)                                     | Code review guidelines              |
+| [guides/TESTING.md](./guides/TESTING.md)                                   | Testing strategy                    |
+| [validation/VALIDATION_CHECKLIST.md](./validation/VALIDATION_CHECKLIST.md) | Final validation checklist          |
 
 ---
 
@@ -32,6 +32,7 @@ Configure Socket.dev for behavioral analysis of npm dependencies and supply chai
 Traditional security scanners (SCA tools) rely on known CVE databases - they're **reactive**. Socket.dev is **proactive**: it analyzes what packages actually do (network calls, file access, environment variable reads) to detect malicious behavior before a CVE is published.
 
 **Key Detections:**
+
 - Malware injection via `postinstall` scripts
 - Typosquatting attacks (`react-dom` vs `raect-dom`)
 - Environment variable exfiltration
@@ -41,6 +42,7 @@ Traditional security scanners (SCA tools) rely on known CVE databases - they're 
 ### Scope
 
 **In Scope:**
+
 - Socket.dev GitHub App integration
 - `socket.yml` configuration file (v2)
 - Security policy configuration (BLOCK/WARN/MONITOR)
@@ -49,16 +51,17 @@ Traditional security scanners (SCA tools) rely on known CVE databases - they're 
 - Documentation of `@SocketSecurity ignore` mechanism
 
 **Out of Scope:**
+
 - OIDC authentication (Phase 2 of ENF6, different story)
 - Other quality checks (ESLint, Knip - future phases)
 
 ### Dependencies
 
-| Dependency | Status | Impact |
-|------------|--------|--------|
+| Dependency                   | Status   | Impact                     |
+| ---------------------------- | -------- | -------------------------- |
 | Phase 1: Workflow Foundation | Required | Must have quality-gate.yml |
-| Socket.dev Account | Required | Free tier available |
-| GitHub App Installation | Required | One-time setup |
+| Socket.dev Account           | Required | Free tier available        |
+| GitHub App Installation      | Required | One-time setup             |
 
 ### Success Criteria
 
@@ -74,12 +77,12 @@ Traditional security scanners (SCA tools) rely on known CVE databases - they're 
 
 This phase consists of **4 atomic commits**:
 
-| Commit | Description | Files | Complexity |
-|--------|-------------|-------|------------|
-| 1 | Create socket.yml configuration | `socket.yml` | Low |
-| 2 | Add Socket.dev step to workflow | `quality-gate.yml` | Low |
-| 3 | Configure security and license policies | `socket.yml` | Medium |
-| 4 | Document Socket.dev workflow | `docs/` | Low |
+| Commit | Description                             | Files              | Complexity |
+| ------ | --------------------------------------- | ------------------ | ---------- |
+| 1      | Create socket.yml configuration         | `socket.yml`       | Low        |
+| 2      | Add Socket.dev step to workflow         | `quality-gate.yml` | Low        |
+| 3      | Configure security and license policies | `socket.yml`       | Medium     |
+| 4      | Document Socket.dev workflow            | `docs/`            | Low        |
 
 **Total Estimated Duration:** 1-2 days
 **Total Lines Changed:** ~100-150 lines
@@ -123,15 +126,15 @@ This phase consists of **4 atomic commits**:
 
 ### Security Policy Matrix
 
-| Threat Category | Action | Rationale |
-|-----------------|--------|-----------|
-| **Malware Known** | BLOCK | Existential risk |
-| **Typosquatting** | BLOCK | Almost always an attack |
-| **Install Scripts** | BLOCK (Frontend) | 90%+ of npm malware vector |
-| **Telemetry** | WARN | Privacy concern, human review needed |
-| **Native Code** | WARN | Often legitimate (esbuild, fsevents) |
-| **Unmaintained** | MONITOR | Tech debt, not active threat |
-| **GPL/AGPL Licenses** | BLOCK | Legal compliance |
+| Threat Category       | Action           | Rationale                            |
+| --------------------- | ---------------- | ------------------------------------ |
+| **Malware Known**     | BLOCK            | Existential risk                     |
+| **Typosquatting**     | BLOCK            | Almost always an attack              |
+| **Install Scripts**   | BLOCK (Frontend) | 90%+ of npm malware vector           |
+| **Telemetry**         | WARN             | Privacy concern, human review needed |
+| **Native Code**       | WARN             | Often legitimate (esbuild, fsevents) |
+| **Unmaintained**      | MONITOR          | Tech debt, not active threat         |
+| **GPL/AGPL Licenses** | BLOCK            | Legal compliance                     |
 
 ---
 
@@ -139,11 +142,11 @@ This phase consists of **4 atomic commits**:
 
 ### Identified Risks
 
-| Risk | Likelihood | Impact | Mitigation |
-|------|------------|--------|------------|
-| False positives on legitimate deps | Medium | High | Configure `@SocketSecurity ignore` workflow |
-| Socket.dev service unavailable | Low | Medium | Non-blocking workflow (continue-on-error) |
-| Long scan time on large lockfile | Low | Low | Use cache, configure triggerPaths |
+| Risk                               | Likelihood | Impact | Mitigation                                  |
+| ---------------------------------- | ---------- | ------ | ------------------------------------------- |
+| False positives on legitimate deps | Medium     | High   | Configure `@SocketSecurity ignore` workflow |
+| Socket.dev service unavailable     | Low        | Medium | Non-blocking workflow (continue-on-error)   |
+| Long scan time on large lockfile   | Low        | Low    | Use cache, configure triggerPaths           |
 
 ### Contingency Plans
 
@@ -161,11 +164,13 @@ This phase consists of **4 atomic commits**:
 ## Reference Documents
 
 ### Internal Documentation
+
 - [PHASES_PLAN.md](../PHASES_PLAN.md) - Story phase overview
 - [CI-CD-Security.md](../../../../../CI-CD-Security.md) - Section 2.1
 - [socket-dev-CI.md](../../../../../../tech/github/socket-dev-CI.md) - Detailed Socket.dev guide
 
 ### External Resources
+
 - [Socket.dev Documentation](https://docs.socket.dev/)
 - [Socket.dev GitHub Action](https://github.com/SocketDev/action)
 - [socket.yml Configuration](https://docs.socket.dev/docs/socket-yml)

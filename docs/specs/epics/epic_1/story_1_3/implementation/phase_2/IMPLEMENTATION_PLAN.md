@@ -12,6 +12,7 @@
 ### Atomic Commit Principles
 
 Each commit in this phase follows atomic commit principles:
+
 - **Single Responsibility**: One logical change per commit
 - **Type-Safe**: Codebase remains valid after each commit
 - **Reviewable**: Changes can be understood in 15-30 minutes
@@ -49,9 +50,9 @@ Create the Socket.dev configuration file with v2 schema, establishing the founda
 
 ### Files Changed
 
-| File | Action | Lines |
-|------|--------|-------|
-| `socket.yml` | Create | ~30 |
+| File         | Action | Lines |
+| ------------ | ------ | ----- |
+| `socket.yml` | Create | ~30   |
 
 ### Implementation Details
 
@@ -64,17 +65,17 @@ version: 2
 
 # Exclude test fixtures and documentation from scanning
 projectIgnorePaths:
-  - "tests/**"
-  - "docs/**"
-  - "**/__tests__/**"
-  - "**/fixtures/**"
+  - 'tests/**'
+  - 'docs/**'
+  - '**/__tests__/**'
+  - '**/fixtures/**'
 
 # Only trigger scans when dependency files change
 triggerPaths:
-  - "package.json"
-  - "**/package.json"
-  - "pnpm-lock.yaml"
-  - "socket.yml"
+  - 'package.json'
+  - '**/package.json'
+  - 'pnpm-lock.yaml'
+  - 'socket.yml'
 
 # Enable GitHub App features
 githubApp:
@@ -102,6 +103,7 @@ githubApp:
 ### Expected Behavior
 
 After this commit, Socket.dev will:
+
 - Recognize the project as configured
 - Exclude test directories from scanning
 - Only scan when dependencies change
@@ -116,9 +118,9 @@ Integrate Socket.dev action into the quality-gate workflow, enabling automated s
 
 ### Files Changed
 
-| File | Action | Lines |
-|------|--------|-------|
-| `.github/workflows/quality-gate.yml` | Modify | ~15 |
+| File                                 | Action | Lines |
+| ------------------------------------ | ------ | ----- |
+| `.github/workflows/quality-gate.yml` | Modify | ~15   |
 
 ### Implementation Details
 
@@ -132,8 +134,8 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
-      issues: write         # For Socket.dev comments
-      pull-requests: write  # For Socket.dev PR updates
+      issues: write # For Socket.dev comments
+      pull-requests: write # For Socket.dev PR updates
 
     steps:
       # ... existing checkout and setup steps ...
@@ -146,10 +148,10 @@ jobs:
       # ============================================
 
       - name: Socket.dev Security Scan
-        uses: SocketDev/socket-security-action@6f55d8fa2cebd6ef40fad5e1dea9ae0edbe4ee13  # v2.0.1
+        uses: SocketDev/socket-security-action@6f55d8fa2cebd6ef40fad5e1dea9ae0edbe4ee13 # v2.0.1
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
-        continue-on-error: true  # Don't block workflow if service unavailable
+        continue-on-error: true # Don't block workflow if service unavailable
 ```
 
 ### SHA Verification
@@ -159,6 +161,7 @@ jobs:
 **SHA**: `6f55d8fa2cebd6ef40fad5e1dea9ae0edbe4ee13`
 
 To verify:
+
 ```bash
 # Check the SHA for v2.0.1 release
 curl -s https://api.github.com/repos/SocketDev/socket-security-action/git/refs/tags/v2.0.1
@@ -182,6 +185,7 @@ curl -s https://api.github.com/repos/SocketDev/socket-security-action/git/refs/t
 ### Expected Behavior
 
 After this commit:
+
 - Workflow will attempt to run Socket.dev scan
 - Scan results will appear in PR checks (if PR context)
 - Workflow continues even if Socket.dev fails
@@ -196,9 +200,9 @@ Harden the Socket.dev configuration with explicit security rules and license com
 
 ### Files Changed
 
-| File | Action | Lines |
-|------|--------|-------|
-| `socket.yml` | Modify | ~25 |
+| File         | Action | Lines |
+| ------------ | ------ | ----- |
+| `socket.yml` | Modify | ~25   |
 
 ### Implementation Details
 
@@ -209,16 +213,16 @@ Expand `socket.yml` with security and license policies:
 version: 2
 
 projectIgnorePaths:
-  - "tests/**"
-  - "docs/**"
-  - "**/__tests__/**"
-  - "**/fixtures/**"
+  - 'tests/**'
+  - 'docs/**'
+  - '**/__tests__/**'
+  - '**/fixtures/**'
 
 triggerPaths:
-  - "package.json"
-  - "**/package.json"
-  - "pnpm-lock.yaml"
-  - "socket.yml"
+  - 'package.json'
+  - '**/package.json'
+  - 'pnpm-lock.yaml'
+  - 'socket.yml'
 
 # Issue-specific rule configuration
 # Set to false to disable specific checks
@@ -237,24 +241,24 @@ githubApp:
 # License compliance - block viral licenses
 licensePolicies:
   deny:
-    - "GPL-2.0-only"
-    - "GPL-2.0-or-later"
-    - "GPL-3.0-only"
-    - "GPL-3.0-or-later"
-    - "AGPL-3.0-only"
-    - "AGPL-3.0-or-later"
+    - 'GPL-2.0-only'
+    - 'GPL-2.0-or-later'
+    - 'GPL-3.0-only'
+    - 'GPL-3.0-or-later'
+    - 'AGPL-3.0-only'
+    - 'AGPL-3.0-or-later'
 ```
 
 ### Security Policy Decisions
 
-| Policy | Decision | Justification |
-|--------|----------|---------------|
-| Malware | BLOCK (default) | Non-negotiable |
-| Typosquatting | BLOCK (default) | Almost always malicious |
-| Install Scripts | Default (warn) | Some legit packages use them |
-| Native Code | Default (warn) | esbuild, fsevents are legit |
-| Unmaintained | Default (monitor) | Tech debt, not active threat |
-| GPL/AGPL | BLOCK (explicit) | Legal compliance |
+| Policy          | Decision          | Justification                |
+| --------------- | ----------------- | ---------------------------- |
+| Malware         | BLOCK (default)   | Non-negotiable               |
+| Typosquatting   | BLOCK (default)   | Almost always malicious      |
+| Install Scripts | Default (warn)    | Some legit packages use them |
+| Native Code     | Default (warn)    | esbuild, fsevents are legit  |
+| Unmaintained    | Default (monitor) | Tech debt, not active threat |
+| GPL/AGPL        | BLOCK (explicit)  | Legal compliance             |
 
 ### License Policy Rationale
 
@@ -272,6 +276,7 @@ licensePolicies:
 ### Expected Behavior
 
 After this commit:
+
 - Any package with GPL/AGPL license will block PRs
 - Security issues follow configured severity levels
 - False positives can be addressed via `@SocketSecurity ignore`
@@ -286,9 +291,9 @@ Create documentation explaining the Socket.dev integration, ignore workflow, and
 
 ### Files Changed
 
-| File | Action | Lines |
-|------|--------|-------|
-| `docs/guides/socket-security.md` | Create | ~80 |
+| File                             | Action | Lines |
+| -------------------------------- | ------ | ----- |
+| `docs/guides/socket-security.md` | Create | ~80   |
 
 ### Implementation Details
 
@@ -304,17 +309,18 @@ This project uses Socket.dev for supply chain security. Socket.dev analyzes npm 
 ## What Gets Scanned
 
 Socket.dev scans:
+
 - `package.json` dependencies
 - `pnpm-lock.yaml` lockfile
 - All transitive dependencies
 
 ## Security Levels
 
-| Level | Meaning | Action Required |
-|-------|---------|-----------------|
-| **Block** | Critical security issue | Must be resolved before merge |
-| **Warn** | Potential concern | Review and decide |
-| **Monitor** | Informational | No action required |
+| Level       | Meaning                 | Action Required               |
+| ----------- | ----------------------- | ----------------------------- |
+| **Block**   | Critical security issue | Must be resolved before merge |
+| **Warn**    | Potential concern       | Review and decide             |
+| **Monitor** | Informational           | No action required            |
 
 ## Handling Alerts
 
@@ -324,9 +330,11 @@ If a legitimate package is blocked:
 
 1. Review the alert reason
 2. If it's a false positive, add a PR comment:
-   ```
-   @SocketSecurity ignore <package>@<version>
-   ```
+```
+
+@SocketSecurity ignore <package>@<version>
+
+```
 3. Explain why it's acceptable in your comment
 4. Socket.dev will re-scan and allow the package
 
@@ -368,6 +376,7 @@ If you consistently get false positives on specific packages:
 ### Expected Behavior
 
 After this commit:
+
 - Developers have clear guidance on Socket.dev
 - Ignore workflow is documented
 - License policy is explained
@@ -379,6 +388,7 @@ After this commit:
 ### Functional Tests
 
 1. **Trigger Workflow**
+
    ```bash
    git push origin story_1_3
    # Navigate to GitHub Actions
@@ -414,6 +424,7 @@ If issues are discovered after implementation:
 ### Immediate Rollback
 
 1. Remove Socket.dev step from workflow:
+
    ```bash
    git revert <commit-2-sha>
    git push
@@ -439,7 +450,7 @@ steps:
   - setup pnpm
   - setup node
   - install dependencies
-  - Socket.dev scan        # Added in Phase 2
+  - Socket.dev scan # Added in Phase 2
   # - ESLint/Prettier      # Phase 3
   # - Knip                 # Phase 4
   # - Build                # Phase 5

@@ -20,24 +20,24 @@
 
 ### Test Categories for Phase 1
 
-| Category | Type | Description |
-|----------|------|-------------|
-| YAML Validation | Local | Syntax and structure verification |
-| SHA Verification | Local | Action SHA pinning validation |
-| Workflow Execution | GitHub | Manual trigger and completion |
-| Dependency Caching | GitHub | pnpm cache functionality |
-| Dependabot Integration | GitHub | Configuration recognition |
+| Category               | Type   | Description                       |
+| ---------------------- | ------ | --------------------------------- |
+| YAML Validation        | Local  | Syntax and structure verification |
+| SHA Verification       | Local  | Action SHA pinning validation     |
+| Workflow Execution     | GitHub | Manual trigger and completion     |
+| Dependency Caching     | GitHub | pnpm cache functionality          |
+| Dependabot Integration | GitHub | Configuration recognition         |
 
 ### Test Priority Matrix
 
-| Test | Priority | Blocking | Automated |
-|------|----------|----------|-----------|
-| YAML syntax valid | Critical | Yes | Yes |
-| SHA format correct | Critical | Yes | Yes |
-| Workflow triggers | Critical | Yes | Manual |
-| Workflow completes | Critical | Yes | Manual |
-| pnpm cache works | High | No | Auto |
-| Dependabot detected | Medium | No | Auto |
+| Test                | Priority | Blocking | Automated |
+| ------------------- | -------- | -------- | --------- |
+| YAML syntax valid   | Critical | Yes      | Yes       |
+| SHA format correct  | Critical | Yes      | Yes       |
+| Workflow triggers   | Critical | Yes      | Manual    |
+| Workflow completes  | Critical | Yes      | Manual    |
+| pnpm cache works    | High     | No       | Auto      |
+| Dependabot detected | Medium   | No       | Auto      |
 
 ---
 
@@ -74,6 +74,7 @@ yamllint .github/dependabot.yml
 #### Method 3: Online Validator
 
 If local tools unavailable:
+
 1. Copy YAML content
 2. Paste to https://www.yamllint.com/
 3. Verify no errors
@@ -330,6 +331,7 @@ fi
 #### Steps
 
 1. **Push to GitHub**
+
    ```bash
    git push origin story_1_3
    ```
@@ -353,13 +355,13 @@ fi
 
 #### Expected Results
 
-| Step | Expected Status | Duration |
-|------|-----------------|----------|
-| Checkout repository | Success | ~5s |
-| Setup pnpm | Success | ~10s |
-| Setup Node.js | Success | ~30s |
-| Install dependencies | Success | ~30s (cache miss) or ~5s (cache hit) |
-| Placeholder | Success | ~1s |
+| Step                 | Expected Status | Duration                             |
+| -------------------- | --------------- | ------------------------------------ |
+| Checkout repository  | Success         | ~5s                                  |
+| Setup pnpm           | Success         | ~10s                                 |
+| Setup Node.js        | Success         | ~30s                                 |
+| Install dependencies | Success         | ~30s (cache miss) or ~5s (cache hit) |
+| Placeholder          | Success         | ~1s                                  |
 
 #### Success Indicators
 
@@ -379,11 +381,13 @@ fi
 #### First Run (Cache Miss)
 
 Expected log output in "Setup Node.js" step:
+
 ```
 Cache not found for input keys: ...
 ```
 
 Expected log output in "Install dependencies" step:
+
 ```
 Packages are up to date
 ```
@@ -391,11 +395,13 @@ Packages are up to date
 #### Second Run (Cache Hit)
 
 Expected log output in "Setup Node.js" step:
+
 ```
 Cache restored from key: ...
 ```
 
 Expected log output in "Install dependencies" step:
+
 ```
 Packages are up to date
 (Faster execution time)
@@ -481,36 +487,36 @@ Dependabot runs on schedule. To test immediately:
 
 ### YAML Validation Failures
 
-| Error | Cause | Solution |
-|-------|-------|----------|
-| `expected <block end>` | Indentation error | Check spaces (2 per level) |
-| `mapping values are not allowed` | Missing colon | Add colon after key |
-| `found character that cannot start` | Tab character | Replace tabs with spaces |
+| Error                               | Cause             | Solution                   |
+| ----------------------------------- | ----------------- | -------------------------- |
+| `expected <block end>`              | Indentation error | Check spaces (2 per level) |
+| `mapping values are not allowed`    | Missing colon     | Add colon after key        |
+| `found character that cannot start` | Tab character     | Replace tabs with spaces   |
 
 ### SHA Verification Failures
 
-| Error | Cause | Solution |
-|-------|-------|----------|
-| SHA too short | Using shortened SHA | Get full 40-char SHA |
-| Invalid characters | Typo in SHA | Copy SHA from releases page |
-| Version mismatch | Wrong SHA for version | Verify SHA on GitHub releases |
+| Error              | Cause                 | Solution                      |
+| ------------------ | --------------------- | ----------------------------- |
+| SHA too short      | Using shortened SHA   | Get full 40-char SHA          |
+| Invalid characters | Typo in SHA           | Copy SHA from releases page   |
+| Version mismatch   | Wrong SHA for version | Verify SHA on GitHub releases |
 
 ### Workflow Execution Failures
 
-| Step | Error | Solution |
-|------|-------|----------|
-| Checkout | "Resource not accessible" | Check repository permissions |
-| Setup pnpm | "Version not found" | Verify pnpm version exists |
-| Setup Node | "Version not found" | Use valid Node.js version |
-| Install | "Lockfile mismatch" | Run `pnpm install` locally first |
+| Step       | Error                     | Solution                         |
+| ---------- | ------------------------- | -------------------------------- |
+| Checkout   | "Resource not accessible" | Check repository permissions     |
+| Setup pnpm | "Version not found"       | Verify pnpm version exists       |
+| Setup Node | "Version not found"       | Use valid Node.js version        |
+| Install    | "Lockfile mismatch"       | Run `pnpm install` locally first |
 
 ### Dependabot Not Working
 
-| Symptom | Cause | Solution |
-|---------|-------|----------|
-| Not showing in settings | File not pushed | Verify file exists on GitHub |
-| Not creating PRs | No updates available | Normal if dependencies current |
-| Wrong schedule | Timezone issue | Verify timezone format |
+| Symptom                 | Cause                | Solution                       |
+| ----------------------- | -------------------- | ------------------------------ |
+| Not showing in settings | File not pushed      | Verify file exists on GitHub   |
+| Not creating PRs        | No updates available | Normal if dependencies current |
+| Wrong schedule          | Timezone issue       | Verify timezone format         |
 
 ---
 

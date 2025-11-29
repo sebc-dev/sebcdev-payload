@@ -13,6 +13,7 @@
 
 **En tant que** Lead Tech,
 **Je veux** configurer un workflow GitHub Actions exhaustif comprenant :
+
 1. **Socket.dev** (Sécurité Supply Chain)
 2. **Knip** (Nettoyage code mort)
 3. **Dependency Cruiser** (Validation architecture)
@@ -25,6 +26,7 @@
 ### Business Value
 
 Cette story implémente le pipeline CI/CD "AI-Shield" qui protège le projet contre :
+
 - **Supply Chain Attacks** : Injection de dépendances malveillantes via hallucinations IA
 - **Code Quality Drift** : Accumulation de code mort, imports cassés, violations d'architecture
 - **Régressions de Performance** : Dégradation des Core Web Vitals et de l'accessibilité
@@ -86,23 +88,24 @@ Cette story implémente le pipeline CI/CD "AI-Shield" qui protège le projet con
 
 ### Tools to Configure
 
-| Tool | Purpose | Phase |
-|------|---------|-------|
-| **Socket.dev** | Supply chain security (behavioral analysis) | 1 |
-| **Knip** | Dead code detection, unused dependencies | 1 |
-| **ESLint 9** | Code linting (Flat Config) | 1 |
-| **Prettier** | Code formatting + Tailwind ordering | 1 |
-| **Type Sync** | Payload types validation | 1 |
-| **Next.js Build** | No-DB build validation | 1 |
-| **dependency-cruiser** | Architecture validation | 2 |
-| **Playwright + axe-core** | E2E + Accessibility testing | 2 |
-| **Lighthouse CI** | Performance & SEO auditing | 2 |
-| **Stryker** | Mutation testing | 3 |
-| **Dependabot** | Automated dependency updates | 1 |
+| Tool                      | Purpose                                     | Phase |
+| ------------------------- | ------------------------------------------- | ----- |
+| **Socket.dev**            | Supply chain security (behavioral analysis) | 1     |
+| **Knip**                  | Dead code detection, unused dependencies    | 1     |
+| **ESLint 9**              | Code linting (Flat Config)                  | 1     |
+| **Prettier**              | Code formatting + Tailwind ordering         | 1     |
+| **Type Sync**             | Payload types validation                    | 1     |
+| **Next.js Build**         | No-DB build validation                      | 1     |
+| **dependency-cruiser**    | Architecture validation                     | 2     |
+| **Playwright + axe-core** | E2E + Accessibility testing                 | 2     |
+| **Lighthouse CI**         | Performance & SEO auditing                  | 2     |
+| **Stryker**               | Mutation testing                            | 3     |
+| **Dependabot**            | Automated dependency updates                | 1     |
 
 ### Files to Create/Modify
 
 #### New Files
+
 - `.github/workflows/quality-gate.yml` - Main CI workflow
 - `.github/dependabot.yml` - Dependency update config
 - `socket.yml` - Socket.dev configuration (v2)
@@ -113,6 +116,7 @@ Cette story implémente le pipeline CI/CD "AI-Shield" qui protège le projet con
 - `scripts/lighthouse-auth.js` - Puppeteer auth script (optional)
 
 #### Modified Files
+
 - `eslint.config.mjs` - ESLint 9 Flat Config updates
 - `prettier.config.mjs` - Prettier + Tailwind plugin
 - `package.json` - New dev dependencies and scripts
@@ -140,6 +144,7 @@ Cette story implémente le pipeline CI/CD "AI-Shield" qui protège le projet con
 ### Story Complexity: 🟠 **Complex** (7-8 phases)
 
 **Factors**:
+
 - **Multiple independent tools** : 10+ outils à configurer
 - **Layered architecture** : 4 couches de défense (supply chain, quality, build, identity)
 - **Configuration files** : 8+ nouveaux fichiers de configuration
@@ -148,28 +153,31 @@ Cette story implémente le pipeline CI/CD "AI-Shield" qui protège le projet con
 
 ### Risk Assessment
 
-| Risk | Level | Mitigation |
-|------|-------|------------|
-| Socket.dev false positives | 🟡 Medium | Configure `@SocketSecurity ignore` workflow |
-| Knip false positives on Next.js conventions | 🟡 Medium | Explicit entry points in knip.json |
-| Lighthouse flakiness in CI | 🟡 Medium | numberOfRuns: 3, raw metrics assertions |
-| Stryker CPU-intensive | 🟢 Low | Optional via workflow_dispatch input |
-| D1 not available in CI | 🟢 Low | `--experimental-build-mode compile` |
+| Risk                                        | Level     | Mitigation                                  |
+| ------------------------------------------- | --------- | ------------------------------------------- |
+| Socket.dev false positives                  | 🟡 Medium | Configure `@SocketSecurity ignore` workflow |
+| Knip false positives on Next.js conventions | 🟡 Medium | Explicit entry points in knip.json          |
+| Lighthouse flakiness in CI                  | 🟡 Medium | numberOfRuns: 3, raw metrics assertions     |
+| Stryker CPU-intensive                       | 🟢 Low    | Optional via workflow_dispatch input        |
+| D1 not available in CI                      | 🟢 Low    | `--experimental-build-mode compile`         |
 
 ---
 
 ## 🔗 Dependencies
 
 ### Story Dependencies
+
 - **Story 1.1** ✅ COMPLETED : Infrastructure provisionnée (GitHub repo exists)
 - **Story 1.2** ✅ COMPLETED : Environnement local fonctionnel
 
 ### External Dependencies
+
 - **GitHub Account** : Repository access for Actions
 - **Socket.dev Account** : Free tier available for supply chain scanning
 - **Cloudflare Account** : For OIDC authentication (Phase 2)
 
 ### Blocks
+
 - **Story 1.4** : Depends on this story (deployment gated by Quality Gate)
 
 ---

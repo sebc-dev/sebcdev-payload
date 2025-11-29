@@ -12,11 +12,11 @@ This project uses Socket.dev for supply chain security. Socket.dev analyzes npm 
 
 ## Security Levels
 
-| Level | Meaning | Action |
-|-------|---------|--------|
-| **Block** | Critical security issue | Must resolve before merge |
-| **Warn** | Potential concern | Review and decide |
-| **Monitor** | Informational | No action required |
+| Level       | Meaning                 | Action                    |
+| ----------- | ----------------------- | ------------------------- |
+| **Block**   | Critical security issue | Must resolve before merge |
+| **Warn**    | Potential concern       | Review and decide         |
+| **Monitor** | Informational           | No action required        |
 
 ## Handling Alerts
 
@@ -37,6 +37,7 @@ If a legitimate package is blocked:
 This project blocks GPL/AGPL licenses for legal compliance.
 
 If you need a GPL package:
+
 1. Find an MIT/Apache alternative first
 2. If no alternative exists, consult with tech lead
 
@@ -50,6 +51,7 @@ If you need a GPL package:
 ### Scan Timeout
 
 Socket.dev scans only when `triggerPaths` files change:
+
 - `package.json`
 - `pnpm-lock.yaml`
 - `socket.yml`
@@ -59,5 +61,6 @@ If scans are slow, check if your lockfile is unusually large.
 ### Persistent False Positives
 
 For repeated false positives on specific packages:
+
 1. Document with `@SocketSecurity ignore` in a PR
 2. Consider adding to `issueRules` in `socket.yml`

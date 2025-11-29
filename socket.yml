@@ -14,18 +14,18 @@ version: 2
 # Exclude test fixtures and documentation from scanning
 # Prevents false positives from test fixtures that may intentionally contain problematic dependencies
 projectIgnorePaths:
-  - "tests/**"
-  - "docs/**"
-  - "**/__tests__/**"
-  - "**/fixtures/**"
+  - 'tests/**'
+  - 'docs/**'
+  - '**/__tests__/**'
+  - '**/fixtures/**'
 
 # Only trigger scans when dependency files change
 # Critical for monorepo efficiency: source code changes don't need dependency scanning
 triggerPaths:
-  - "package.json"
-  - "**/package.json"
-  - "pnpm-lock.yaml"
-  - "socket.yml"
+  - 'package.json'
+  - '**/package.json'
+  - 'pnpm-lock.yaml'
+  - 'socket.yml'
 
 # Issue-specific rule configuration
 # Default rules are enabled (malware, typosquatting)
@@ -42,9 +42,9 @@ githubApp:
 # These licenses require derivative works to be open-sourced, which may conflict with proprietary code
 licensePolicies:
   deny:
-    - "GPL-2.0-only"
-    - "GPL-2.0-or-later"
-    - "GPL-3.0-only"
-    - "GPL-3.0-or-later"
-    - "AGPL-3.0-only"
-    - "AGPL-3.0-or-later"
+    - 'GPL-2.0-only'
+    - 'GPL-2.0-or-later'
+    - 'GPL-3.0-only'
+    - 'GPL-3.0-or-later'
+    - 'AGPL-3.0-only'
+    - 'AGPL-3.0-or-later'

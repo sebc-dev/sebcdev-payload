@@ -2,8 +2,8 @@
 
 **Story**: 1.3 - Pipeline "Quality Gate" (AI-Shield)
 **Phase**: 1 of 8
-**Validation Date**: _______________
-**Validated By**: _______________
+**Validation Date**: **\*\***\_\_\_**\*\***
+**Validated By**: **\*\***\_\_\_**\*\***
 
 ---
 
@@ -13,13 +13,13 @@ This checklist ensures Phase 1 implementation meets all acceptance criteria befo
 
 ### Validation Categories
 
-| Category | Weight | Pass Criteria |
-|----------|--------|---------------|
-| Files Created | Critical | All required files exist |
-| Security | Critical | SHA pinning, permissions correct |
-| Functionality | Critical | Workflow executes successfully |
-| Configuration | High | Dependabot, concurrency configured |
-| Documentation | Medium | CLAUDE.md updated |
+| Category      | Weight   | Pass Criteria                      |
+| ------------- | -------- | ---------------------------------- |
+| Files Created | Critical | All required files exist           |
+| Security      | Critical | SHA pinning, permissions correct   |
+| Functionality | Critical | Workflow executes successfully     |
+| Configuration | High     | Dependabot, concurrency configured |
+| Documentation | Medium   | CLAUDE.md updated                  |
 
 ---
 
@@ -34,6 +34,7 @@ This checklist ensures Phase 1 implementation meets all acceptance criteria befo
 - [ ] File size is reasonable (> 500 bytes)
 
 **Verification Command**:
+
 ```bash
 ls -la .github/workflows/quality-gate.yml
 ```
@@ -49,6 +50,7 @@ ls -la .github/workflows/quality-gate.yml
 - [ ] File contains both ecosystems
 
 **Verification Command**:
+
 ```bash
 ls -la .github/dependabot.yml
 grep -c 'package-ecosystem' .github/dependabot.yml
@@ -65,6 +67,7 @@ grep -c 'package-ecosystem' .github/dependabot.yml
 - [ ] Reference to CI-CD-Security.md present
 
 **Verification Command**:
+
 ```bash
 grep -c "Quality Gate" CLAUDE.md
 grep -c "workflow_dispatch" CLAUDE.md
@@ -80,13 +83,14 @@ grep -c "workflow_dispatch" CLAUDE.md
 
 All GitHub Actions must use full 40-character SHA references.
 
-| Action | SHA | Version | Status |
-|--------|-----|---------|--------|
-| `actions/checkout` | `1af3b93b6815bc44a9784bd300feb67ff0d1eeb3` | v6.0.0 | [ ] |
-| `pnpm/action-setup` | `41ff72655975bd51cab0327fa583b6e92b6d3061` | v4.2.0 | [ ] |
-| `actions/setup-node` | `2028fbc5c25fe9cf00d9f06a71cc4710d4507903` | v6.0.0 | [ ] |
+| Action               | SHA                                        | Version | Status |
+| -------------------- | ------------------------------------------ | ------- | ------ |
+| `actions/checkout`   | `1af3b93b6815bc44a9784bd300feb67ff0d1eeb3` | v6.0.0  | [ ]    |
+| `pnpm/action-setup`  | `41ff72655975bd51cab0327fa583b6e92b6d3061` | v4.2.0  | [ ]    |
+| `actions/setup-node` | `2028fbc5c25fe9cf00d9f06a71cc4710d4507903` | v6.0.0  | [ ]    |
 
 **Verification Command**:
+
 ```bash
 # Count SHA pins (expected: 3)
 grep -c '@[a-f0-9]\{40\}' .github/workflows/quality-gate.yml
@@ -96,6 +100,7 @@ grep -E '@v[0-9]' .github/workflows/quality-gate.yml || echo "No tag references 
 ```
 
 **Validation Criteria**:
+
 - [ ] Exactly 3 SHA-pinned actions
 - [ ] No `@v4` or similar tag references
 - [ ] Version comments match SHA versions
@@ -105,17 +110,20 @@ grep -E '@v[0-9]' .github/workflows/quality-gate.yml || echo "No tag references 
 GITHUB_TOKEN must follow least privilege principle.
 
 **Verification Command**:
+
 ```bash
 grep -A3 '^permissions:' .github/workflows/quality-gate.yml
 ```
 
 **Expected Output**:
+
 ```yaml
 permissions:
   contents: read
 ```
 
 **Validation Criteria**:
+
 - [ ] `permissions` block exists
 - [ ] Only `contents: read` is active
 - [ ] No `write` permissions (except in comments)
@@ -123,12 +131,14 @@ permissions:
 ### 2.3 No Secrets in Code
 
 **Verification Command**:
+
 ```bash
 # Check for hardcoded secrets (should return nothing)
 grep -rE '(sk-|api_key|password|secret).*=' .github/ || echo "No hardcoded secrets (OK)"
 ```
 
 **Validation Criteria**:
+
 - [ ] No hardcoded API keys
 - [ ] No hardcoded passwords
 - [ ] Secrets only via `${{ secrets.* }}`
@@ -140,11 +150,13 @@ grep -rE '(sk-|api_key|password|secret).*=' .github/ || echo "No hardcoded secre
 ### 3.1 Workflow Trigger
 
 **Verification Command**:
+
 ```bash
 grep -A10 '^on:' .github/workflows/quality-gate.yml
 ```
 
 **Validation Criteria**:
+
 - [ ] `workflow_dispatch` trigger configured
 - [ ] `run_mutation_tests` input defined
 - [ ] Input has default value `false`
@@ -153,11 +165,13 @@ grep -A10 '^on:' .github/workflows/quality-gate.yml
 ### 3.2 Concurrency Control
 
 **Verification Command**:
+
 ```bash
 grep -A3 '^concurrency:' .github/workflows/quality-gate.yml
 ```
 
 **Expected Output**:
+
 ```yaml
 concurrency:
   group: quality-gate-${{ github.workflow }}-${{ github.ref }}
@@ -165,6 +179,7 @@ concurrency:
 ```
 
 **Validation Criteria**:
+
 - [ ] `concurrency` block exists
 - [ ] Group uses workflow and ref variables
 - [ ] `cancel-in-progress: true` is set
@@ -172,11 +187,13 @@ concurrency:
 ### 3.3 Job Configuration
 
 **Verification Command**:
+
 ```bash
 grep -E '(runs-on|node-version|cache)' .github/workflows/quality-gate.yml
 ```
 
 **Validation Criteria**:
+
 - [ ] `runs-on: ubuntu-latest`
 - [ ] `node-version: '20'`
 - [ ] `cache: 'pnpm'`
@@ -184,12 +201,14 @@ grep -E '(runs-on|node-version|cache)' .github/workflows/quality-gate.yml
 ### 3.4 Dependabot Ecosystems
 
 **Verification Command**:
+
 ```bash
 grep -A20 'package-ecosystem: "github-actions"' .github/dependabot.yml
 grep -A30 'package-ecosystem: "npm"' .github/dependabot.yml
 ```
 
 **Validation Criteria**:
+
 - [ ] `github-actions` ecosystem configured
 - [ ] `npm` ecosystem configured
 - [ ] Weekly schedule for both
@@ -203,12 +222,14 @@ grep -A30 'package-ecosystem: "npm"' .github/dependabot.yml
 ### 4.1 YAML Syntax
 
 **Verification Command**:
+
 ```bash
 python3 -c "import yaml; yaml.safe_load(open('.github/workflows/quality-gate.yml'))" && echo "VALID"
 python3 -c "import yaml; yaml.safe_load(open('.github/dependabot.yml'))" && echo "VALID"
 ```
 
 **Validation Criteria**:
+
 - [ ] quality-gate.yml is valid YAML
 - [ ] dependabot.yml is valid YAML
 - [ ] No syntax errors
@@ -216,6 +237,7 @@ python3 -c "import yaml; yaml.safe_load(open('.github/dependabot.yml'))" && echo
 ### 4.2 Workflow Execution (GitHub)
 
 **Steps**:
+
 1. Push changes to GitHub
 2. Go to Actions tab
 3. Click "Quality Gate" workflow
@@ -224,6 +246,7 @@ python3 -c "import yaml; yaml.safe_load(open('.github/dependabot.yml'))" && echo
 6. Monitor execution
 
 **Validation Criteria**:
+
 - [ ] Workflow appears in Actions list
 - [ ] Manual trigger works
 - [ ] Checkout step succeeds
@@ -236,10 +259,12 @@ python3 -c "import yaml; yaml.safe_load(open('.github/dependabot.yml'))" && echo
 ### 4.3 Cache Functionality
 
 **Steps**:
+
 1. Run workflow twice
 2. Check logs for cache messages
 
 **Validation Criteria**:
+
 - [ ] First run: "Cache not found" is OK
 - [ ] Second run: "Cache restored" appears
 - [ ] Second run is faster
@@ -247,11 +272,13 @@ python3 -c "import yaml; yaml.safe_load(open('.github/dependabot.yml'))" && echo
 ### 4.4 Concurrency Cancellation
 
 **Steps**:
+
 1. Trigger workflow
 2. Immediately trigger another
 3. Verify first is cancelled
 
 **Validation Criteria**:
+
 - [ ] First run shows "Cancelled" status
 - [ ] Second run completes successfully
 
@@ -264,6 +291,7 @@ python3 -c "import yaml; yaml.safe_load(open('.github/dependabot.yml'))" && echo
 Review CLAUDE.md for accuracy against actual implementation.
 
 **Validation Criteria**:
+
 - [ ] CI/CD section exists
 - [ ] Quality Gate workflow described
 - [ ] Manual trigger strategy documented
@@ -274,17 +302,20 @@ Review CLAUDE.md for accuracy against actual implementation.
 ### 5.2 Commit History
 
 **Verification Command**:
+
 ```bash
 git log --oneline -4
 ```
 
 **Expected**: 4 commits following convention:
+
 1. `feat(ci): initialize quality-gate workflow...`
 2. `feat(ci): configure dependabot...`
 3. `feat(ci): add GITHUB_TOKEN permissions...`
 4. `docs(ci): update CLAUDE.md...`
 
 **Validation Criteria**:
+
 - [ ] 4 commits for Phase 1
 - [ ] Commit messages follow convention
 - [ ] Commits are atomic (single responsibility)
@@ -296,14 +327,14 @@ git log --oneline -4
 
 ### Story 1.3 Phase 1 Acceptance Criteria
 
-| Criteria | Description | Status |
-|----------|-------------|--------|
-| Workflow Foundation | Manual trigger via workflow_dispatch | [ ] |
-| SHA Pinning | All actions pinned by SHA | [ ] |
-| Dependabot | Configured for actions and npm | [ ] |
-| Permissions | Least privilege (contents: read) | [ ] |
-| Concurrency | Cancel redundant runs | [ ] |
-| Documentation | CLAUDE.md updated | [ ] |
+| Criteria            | Description                          | Status |
+| ------------------- | ------------------------------------ | ------ |
+| Workflow Foundation | Manual trigger via workflow_dispatch | [ ]    |
+| SHA Pinning         | All actions pinned by SHA            | [ ]    |
+| Dependabot          | Configured for actions and npm       | [ ]    |
+| Permissions         | Least privilege (contents: read)     | [ ]    |
+| Concurrency         | Cancel redundant runs                | [ ]    |
+| Documentation       | CLAUDE.md updated                    | [ ]    |
 
 ---
 
@@ -322,32 +353,33 @@ Before signing off, verify:
 
 ### Validation Summary
 
-| Section | Items | Passed | Failed |
-|---------|-------|--------|--------|
-| Files Created | 3 | __ | __ |
-| Security | 6 | __ | __ |
-| Configuration | 10 | __ | __ |
-| Functionality | 12 | __ | __ |
-| Documentation | 8 | __ | __ |
-| **Total** | **39** | **__** | **__** |
+| Section       | Items  | Passed   | Failed   |
+| ------------- | ------ | -------- | -------- |
+| Files Created | 3      | \_\_     | \_\_     |
+| Security      | 6      | \_\_     | \_\_     |
+| Configuration | 10     | \_\_     | \_\_     |
+| Functionality | 12     | \_\_     | \_\_     |
+| Documentation | 8      | \_\_     | \_\_     |
+| **Total**     | **39** | **\_\_** | **\_\_** |
 
 ### Issues Found
 
 | Issue # | Description | Severity | Resolution |
-|---------|-------------|----------|------------|
-| 1 | | | |
-| 2 | | | |
-| 3 | | | |
+| ------- | ----------- | -------- | ---------- |
+| 1       |             |          |            |
+| 2       |             |          |            |
+| 3       |             |          |            |
 
 ### Sign-Off
 
 **Phase 1 Status**: [ ] APPROVED / [ ] NEEDS REWORK
 
-**Validator**: _______________
+**Validator**: **\*\***\_\_\_**\*\***
 
-**Date**: _______________
+**Date**: **\*\***\_\_\_**\*\***
 
 **Notes**:
+
 ```
 [Add any additional notes or observations here]
 ```

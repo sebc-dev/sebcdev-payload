@@ -14,6 +14,7 @@ Complete validation checklist before marking Phase 3 as complete.
 - [ ] Git history is clean and linear
 
 **Validation**:
+
 ```bash
 # Verify commit count and messages
 git log --oneline | grep "Part of Phase 3"
@@ -50,6 +51,7 @@ git log --oneline -3
   - [ ] Payload routes functional
 
 **Validation**:
+
 ```bash
 # Test Worker
 curl -I https://[worker-url]
@@ -99,6 +101,7 @@ cat wrangler.toml | grep -A5 "d1_databases\|r2_buckets"
   - [ ] Infrastructure overview section
 
 **Validation**:
+
 ```bash
 # Verify all files exist
 ls -la docs/deployment/
@@ -141,6 +144,7 @@ wc -l docs/deployment/*.md
   - [ ] Consistent terminology
 
 **Validation**:
+
 ```bash
 # Check markdown syntax (if markdownlint is available)
 # markdownlint docs/deployment/*.md
@@ -171,6 +175,7 @@ grep -r "\[TODO\]\|\[FIXME\]\|\[PLACEHOLDER\]" docs/deployment/
   - [ ] Error outputs shown for troubleshooting scenarios
 
 **Validation**:
+
 ```bash
 # Test critical commands from documentation
 # (Sample - adapt to your specific resources)
@@ -206,6 +211,7 @@ wrangler d1 info [db-name]
   - [ ] These are not secrets (public in Cloudflare dashboard)
 
 **Validation**:
+
 ```bash
 # Search for potentially exposed secrets
 git diff main -- docs/ | grep -iE "secret.*=|token.*=|password.*=|key.*="
@@ -238,6 +244,7 @@ grep -i "wrangler secret" docs/deployment/cloudflare-setup.md
   - [ ] Follows markdown best practices
 
 **Validation**:
+
 ```bash
 # Peer review (have another team member review)
 # Ask: "Can you understand the deployment process?"
@@ -263,6 +270,7 @@ grep -i "wrangler secret" docs/deployment/cloudflare-setup.md
   - [ ] Links to Cloudflare dashboard are valid
 
 **Validation**:
+
 ```bash
 # Check for broken links (manual review recommended)
 # Or use a link checker tool if available
@@ -288,6 +296,7 @@ grep -r "!\[" docs/deployment/
 - [ ] Troubleshooting guide covers common issues
 
 **Validation**:
+
 ```bash
 # Final verification of all components
 curl https://[worker-url]
@@ -319,6 +328,7 @@ cat docs/deployment/infrastructure.md | grep -i "account\|worker\|database\|buck
   - [ ] Re-review completed if needed
 
 **Reviewer Checklist**:
+
 ```markdown
 ## Peer Review - Phase 3
 
@@ -326,15 +336,18 @@ cat docs/deployment/infrastructure.md | grep -i "account\|worker\|database\|buck
 **Date**: [Date]
 
 ### Documentation Clarity
+
 - [ ] Deployment process is clear
 - [ ] Infrastructure details are easy to find
 - [ ] Troubleshooting guide is helpful
 
 ### Command Accuracy
+
 - [ ] Sample commands work as documented
 - [ ] Outputs match expectations
 
 ### Completeness
+
 - [ ] All necessary information included
 - [ ] No major gaps in documentation
 
@@ -354,6 +367,7 @@ cat docs/deployment/infrastructure.md | grep -i "account\|worker\|database\|buck
 - [ ] Ready for Story 1.2 (local development setup)
 
 **Final Commands**:
+
 ```bash
 # Verify all documentation files exist
 ls -la docs/deployment/
@@ -378,14 +392,14 @@ git log --oneline --grep="Part of Phase 3"
 
 ## 📊 Success Metrics
 
-| Metric | Target | Actual | Status |
-|--------|--------|--------|--------|
-| Commits | 3 | - | ⏳ |
-| Documentation Files | 4 (+ README update) | - | ⏳ |
-| Infrastructure Components Verified | 5 (Worker, D1, R2, Bindings, Admin) | - | ⏳ |
-| Troubleshooting Issues Documented | ≥5 | - | ⏳ |
-| Peer Review | Approved | - | ⏳ |
-| Security Check | No secrets exposed | - | ⏳ |
+| Metric                             | Target                              | Actual | Status |
+| ---------------------------------- | ----------------------------------- | ------ | ------ |
+| Commits                            | 3                                   | -      | ⏳     |
+| Documentation Files                | 4 (+ README update)                 | -      | ⏳     |
+| Infrastructure Components Verified | 5 (Worker, D1, R2, Bindings, Admin) | -      | ⏳     |
+| Troubleshooting Issues Documented  | ≥5                                  | -      | ⏳     |
+| Peer Review                        | Approved                            | -      | ⏳     |
+| Security Check                     | No secrets exposed                  | -      | ⏳     |
 
 ---
 
@@ -449,11 +463,13 @@ Select one:
 **Duration**: [Actual time spent on Phase 3]
 
 **Key Findings**:
+
 - [Note any important observations]
 - [Document any deviations from plan]
 - [Record lessons learned]
 
 **Recommendations for Future Phases**:
+
 - [Suggestions for improvement]
 - [Best practices discovered]
 

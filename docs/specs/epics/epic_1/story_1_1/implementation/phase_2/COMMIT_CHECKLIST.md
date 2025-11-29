@@ -7,6 +7,7 @@ This document provides a detailed checklist for each atomic commit of Phase 2 - 
 ## 📋 Commit 1: Wrangler Authentication & Environment Setup
 
 **Files**:
+
 - `.dev.vars` (create)
 - `docs/deployment/wrangler-auth.md` (create)
 
@@ -112,6 +113,7 @@ Part of Phase 2 - Commit 1/5"
 ## 📋 Commit 2: D1 Database Provisioning
 
 **Files**:
+
 - Cloudflare D1 database (infrastructure - not a file, but Cloudflare resource)
 - `docs/deployment/d1-setup.md` (create)
 
@@ -144,7 +146,7 @@ wrangler d1 create sebcdev-payload-db
 # Expected output:
 # ✅ Successfully created DB 'sebcdev-payload-db'
 # Created your database using D1's new storage backend.
-# 
+#
 # [[d1_databases]]
 # binding = "DB" # available in your Worker on env.DB
 # database_name = "sebcdev-payload-db"
@@ -228,6 +230,7 @@ Part of Phase 2 - Commit 2/5"
 ## 📋 Commit 3: R2 Bucket Provisioning
 
 **Files**:
+
 - Cloudflare R2 bucket (infrastructure - Cloudflare resource)
 - `docs/deployment/r2-setup.md` (create)
 
@@ -333,6 +336,7 @@ Part of Phase 2 - Commit 3/5"
 ## 📋 Commit 4: Wrangler Bindings Configuration
 
 **Files**:
+
 - `wrangler.toml` (modify - add D1 and R2 bindings)
 
 **Estimated Duration**: 45-60 minutes
@@ -454,7 +458,7 @@ binding = "DB"                              # Accessible in Worker as env.DB
 database_name = "sebcdev-payload-db"
 database_id = "<your-database-id-here>"     # From wrangler d1 create output
 
-# R2 Bucket Binding  
+# R2 Bucket Binding
 # Provides access to Cloudflare R2 (S3-compatible) for media uploads
 [[r2_buckets]]
 binding = "MEDIA_BUCKET"                    # Accessible in Worker as env.MEDIA_BUCKET
@@ -482,6 +486,7 @@ Part of Phase 2 - Commit 4/5"
 ## 📋 Commit 5: Initial Deployment & Migration Execution
 
 **Files**:
+
 - Cloudflare Worker (deployed infrastructure)
 - `docs/deployment/first-deployment.md` (create)
 - Wrangler secrets (PAYLOAD_SECRET - not a file)
@@ -647,28 +652,33 @@ wrangler d1 migrations list sebcdev-payload-db
 After deployment, verify these critical paths:
 
 **1. Homepage**
+
 - [ ] Navigate to `https://<worker-url>.workers.dev`
 - [ ] Page loads without errors
 - [ ] No broken images or resources
 - [ ] Response time is acceptable (<2 seconds)
 
 **2. Admin Panel**
+
 - [ ] Navigate to `https://<worker-url>.workers.dev/admin`
 - [ ] Login screen appears
 - [ ] Payload branding visible
 - [ ] Form fields functional (can type in username/password)
 
 **3. API Routes**
+
 - [ ] Navigate to `https://<worker-url>.workers.dev/api` (may redirect or show 404 - that's OK)
 - [ ] No 500 errors
 - [ ] CORS headers present if needed
 
 **4. Database Connection**
+
 - [ ] Check Worker logs for database query logs
 - [ ] No "database not found" errors
 - [ ] No "binding not found" errors
 
 **5. Media Storage**
+
 - [ ] R2 bucket binding accessible (check logs)
 - [ ] No "bucket not found" errors
 - [ ] Ready for media uploads (tested in Phase 3)
@@ -676,19 +686,23 @@ After deployment, verify these critical paths:
 ### Troubleshooting Common Issues
 
 **Issue: Deployment fails with "No such secret: PAYLOAD_SECRET"**
+
 - Solution: Run `wrangler secret put PAYLOAD_SECRET` before deploying
 - Verify: `wrangler secret list` (should show PAYLOAD_SECRET)
 
 **Issue: Worker returns 500 error**
+
 - Solution: Check `wrangler tail` for error details
 - Common causes: Missing bindings, migration failures, code errors
 
 **Issue: Admin panel shows blank page**
+
 - Solution: Check browser console for JavaScript errors
 - Check Worker logs for API errors
 - Verify bindings are correct in wrangler.toml
 
 **Issue: Database migrations don't run**
+
 - Solution: Migrations may run on first admin panel access
 - Manually check: `wrangler d1 migrations list sebcdev-payload-db`
 - If needed, run migrations via Payload CLI
@@ -741,7 +755,7 @@ wrangler whoami
 # Verify D1 database
 wrangler d1 list
 
-# Verify R2 bucket  
+# Verify R2 bucket
 wrangler r2 bucket list
 
 # Verify deployment
@@ -759,12 +773,12 @@ git log --all --full-history --source --all -- .dev.vars wrangler.toml | grep -i
 
 Document these details for Phase 3:
 
-| Resource | Name/ID | Status | URL/Endpoint |
-|----------|---------|--------|--------------|
-| Worker | sebcdev-payload | ✅ Active | https://<worker-url>.workers.dev |
-| D1 Database | sebcdev-payload-db | ✅ Ready | database_id: <db-id> |
-| R2 Bucket | sebcdev-payload-media | ✅ Active | bucket_name: sebcdev-payload-media |
-| PAYLOAD_SECRET | (secret) | ✅ Set | via wrangler secret |
+| Resource       | Name/ID               | Status    | URL/Endpoint                       |
+| -------------- | --------------------- | --------- | ---------------------------------- |
+| Worker         | sebcdev-payload       | ✅ Active | https://<worker-url>.workers.dev   |
+| D1 Database    | sebcdev-payload-db    | ✅ Ready  | database_id: <db-id>               |
+| R2 Bucket      | sebcdev-payload-media | ✅ Active | bucket_name: sebcdev-payload-media |
+| PAYLOAD_SECRET | (secret)              | ✅ Set    | via wrangler secret                |
 
 **Phase 2 is complete when all checkboxes are checked and infrastructure is documented! 🎉**
 
@@ -774,12 +788,12 @@ Document these details for Phase 3:
 
 After completing Phase 2, record actual metrics:
 
-| Metric | Estimated | Actual | Notes |
-|--------|-----------|--------|-------|
-| Implementation Time | 4-5h | ___ | Time spent on all 5 commits |
-| Deployment Time | ~5 min | ___ | Time for wrangler deploy to complete |
-| Issues Encountered | 0-2 | ___ | Number of problems resolved |
-| Worker Response Time | <1s | ___ | Homepage load time |
-| Database Tables Created | ~10+ | ___ | Payload core tables |
+| Metric                  | Estimated | Actual | Notes                                |
+| ----------------------- | --------- | ------ | ------------------------------------ |
+| Implementation Time     | 4-5h      | \_\_\_ | Time spent on all 5 commits          |
+| Deployment Time         | ~5 min    | \_\_\_ | Time for wrangler deploy to complete |
+| Issues Encountered      | 0-2       | \_\_\_ | Number of problems resolved          |
+| Worker Response Time    | <1s       | \_\_\_ | Homepage load time                   |
+| Database Tables Created | ~10+      | \_\_\_ | Payload core tables                  |
 
 **Next**: Proceed to Phase 3 - Configuration Validation & Documentation

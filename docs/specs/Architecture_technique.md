@@ -2,12 +2,13 @@
 created: 2025-11-27T06:30
 updated: 2025-11-27T07:08
 ---
-## Introduction et Modèle de Démarrage
 
+## Introduction et Modèle de Démarrage
 
 - **Projet :** sebc.dev
 - **Type :** Blog technique & CMS Headless (Architecture unifiée).
 - **Référence technique :** Le PRD mentionne explicitement l'utilisation du template officiel `with-cloudflare-d1`.
+
 ## Architecture de Haut Niveau
 
 ### Résumé Technique
@@ -20,10 +21,10 @@ L'architecture élimine la latence réseau interne en privilégiant les appels d
 
 - **Plateforme :** Cloudflare (Workers & Pages architecture unifiée via `@opennextjs/cloudflare`).
 - **Services Clés :**
-    - **Compute :** Cloudflare Workers (Runtime `workerd`, `nodejs_compat`).
-    - **Base de données :** Cloudflare D1 (via Drizzle ORM).
-    - **Stockage Objets :** Cloudflare R2 (via Payload Cloud Storage Plugin).
-    - **Cache/CDN :** Cloudflare Global Network + Next.js Cache API.
+  - **Compute :** Cloudflare Workers (Runtime `workerd`, `nodejs_compat`).
+  - **Base de données :** Cloudflare D1 (via Drizzle ORM).
+  - **Stockage Objets :** Cloudflare R2 (via Payload Cloud Storage Plugin).
+  - **Cache/CDN :** Cloudflare Global Network + Next.js Cache API.
 - **Régions de déploiement :** Edge (Distribué mondialement, "Smart Placement" activé pour D1 si nécessaire).
 
 ### Structure du Répertoire
@@ -35,28 +36,27 @@ Nous adoptons une structure de **Monorepo Logique (Single Repo)**. Contrairement
 
 ### Diagramme d'Architecture (Haut Niveau)
 
-
 ```mermaid
 graph TD
     User[Utilisateur / Navigateur] -->|HTTPS| CF[Cloudflare Network CDN/WAF]
-    
+
     subgraph Cloudflare_Workers [Runtime Edge - workerd]
         CF -->|Request| Next[Next.js 15 Server]
-        
+
         subgraph Logical_Monolith [Application Unifiée]
             Next -->|RSC / SSR| Front[Frontend Blog UI]
             Next -->|/admin routes| Admin[Payload Admin Panel]
-            
+
             Front -.->|Local API Calls| PayloadCore[Payload Core Logic]
             Admin -.->|Local API Calls| PayloadCore
         end
     end
-    
+
     subgraph Data_Layer [Persistance Cloudflare]
         PayloadCore -->|Drizzle ORM| D1[(Cloudflare D1 SQLite)]
         PayloadCore -->|S3 Protocol| R2[(Cloudflare R2 Bucket)]
     end
-    
+
     subgraph External_Services
         GH[GitHub Actions] -->|Deploy| CF
     end
@@ -83,13 +83,13 @@ L'optimisation des cold starts repose sur le paradigme **"Compute Avoidance"** :
 
 **Principe** : Dichotomie stricte Lecteur / Éditeur. Les utilisateurs non authentifiés (99% du trafic) doivent percevoir le site comme une application statique.
 
-| Critère de Correspondance | Action | TTL Edge | Justification |
-|---------------------------|--------|----------|---------------|
-| Cookie contient `payload-token` | **Bypass Cache** | N/A | Admins voient toujours les données en temps réel |
-| Méthode HTTP ≠ GET | **Bypass Cache** | N/A | Mutations (POST, PUT, DELETE) atteignent le Worker |
-| URI commence par `/_next/static` | **Cache** | 1 an (Immutable) | Assets versionnés par Next.js |
-| Extensions images | **Cache** | 1 an (Immutable) | Assets statiques |
-| **Défaut** (HTML, JSON RSC) | **Cache Override Origin** | 1 mois | Force le cache du HTML/JSON public |
+| Critère de Correspondance        | Action                    | TTL Edge         | Justification                                      |
+| -------------------------------- | ------------------------- | ---------------- | -------------------------------------------------- |
+| Cookie contient `payload-token`  | **Bypass Cache**          | N/A              | Admins voient toujours les données en temps réel   |
+| Méthode HTTP ≠ GET               | **Bypass Cache**          | N/A              | Mutations (POST, PUT, DELETE) atteignent le Worker |
+| URI commence par `/_next/static` | **Cache**                 | 1 an (Immutable) | Assets versionnés par Next.js                      |
+| Extensions images                | **Cache**                 | 1 an (Immutable) | Assets statiques                                   |
+| **Défaut** (HTML, JSON RSC)      | **Cache Override Origin** | 1 mois           | Force le cache du HTML/JSON public                 |
 
 > **Important** : L'option "Override Origin" est indispensable car Next.js 15 émet par défaut des headers `Cache-Control` conservateurs (`private`, `max-age=0`) pour les routes dynamiques.
 
@@ -98,15 +98,15 @@ L'optimisation des cold starts repose sur le paradigme **"Compute Avoidance"** :
 **Configuration requise** (`open-next.config.ts`) :
 
 ```typescript
-import { defineCloudflareConfig } from "@opennextjs/cloudflare";
-import kvIncrementalCache from "@opennextjs/cloudflare/overrides/incremental-cache/kv-incremental-cache";
+import { defineCloudflareConfig } from '@opennextjs/cloudflare'
+import kvIncrementalCache from '@opennextjs/cloudflare/overrides/incremental-cache/kv-incremental-cache'
 
 export default defineCloudflareConfig({
-  incrementalCache: kvIncrementalCache,  // KV pour faible latence
+  incrementalCache: kvIncrementalCache, // KV pour faible latence
   queue: {
-    type: 'durable-object',  // Fiable pour revalidation ISR
-  }
-});
+    type: 'durable-object', // Fiable pour revalidation ISR
+  },
+})
 ```
 
 **Rationale** : Workers KV offre une latence minimale (eventually consistent) idéale pour le cache HTML/JSON. Lors d'un cold start, le Worker peut servir une page pré-générée depuis KV sans réexécuter la logique de rendu.
@@ -131,6 +131,7 @@ export const getPayloadClient = async () => {
 ```
 
 **Optimisations complémentaires** :
+
 - **Lazy-loading des plugins** : Utiliser des imports dynamiques (`await import()`) dans les Hooks Payload pour différer le chargement du code lourd (traitement d'image, génération PDF).
 - **Audit du bundle** : Maintenir la taille du bundle < 1-2 Mo pour le chemin critique (limite Workers : 10 Mo compressé, mais dégradation avant).
 - **Exclusion des packages lourds** : Utiliser `serverExternalPackages` dans `next.config.js` pour les dépendances non nécessaires au bundling.
@@ -138,6 +139,7 @@ export const getPayloadClient = async () => {
 #### Couche 4 : Invalidation & Revalidation
 
 **Workflow** :
+
 1. Éditeur modifie un article dans Payload Admin
 2. Hook `afterChange` déclenche `revalidateTag('collection-posts')`
 3. OpenNext purge les entrées correspondantes dans KV
@@ -148,6 +150,7 @@ export const getPayloadClient = async () => {
 ## Tech Stack (Choix Technologiques)
 
 Cette table constitue la source de vérité unique pour les agents de développement.
+
 ### Matrice de Compatibilité et Versions Validées (Novembre 2025)
 
 | **Catégorie**       | **Composant**          | **Version Validée**  | **Configuration & Justification Critique**                                                                                     |
@@ -168,46 +171,48 @@ Cette table constitue la source de vérité unique pour les agents de développe
 ## Modèles de Données
 
 Nous définissons ici les entités principales. Le schéma Payload sera la source de vérité.
+
 ### Core Content
 
 - **Articles (Posts)**
-    - **But :** Contenu principal du blog.
-    - **Attributs Clés :**
-        - `title` (Localized, Text) : Titre H1.
-        - `slug` (Localized, Text) : URL canonique.
-        - `content` (Localized, Rich Text Lexical) : Corps de l'article.
-        - `excerpt` (Localized, Textarea) : Résumé pour les cartes.
-        - `publishedAt` (Date) : Pour le tri et la publication différée.
-        - `readingTime` (Number) : Calculé via Hook `beforeChange`.
-        - `difficulty` (Select) : 'Junior', 'Mid', 'Senior' (pour filtrage).
-    - **Relations :**
-        - `authors` (Relation -> Users, many-to-many).
-        - `category` (Relation -> Categories, many-to-one).
-        - `tags` (Relation -> Tags, many-to-many).
-        - `relatedPosts` (Relation -> Posts, many-to-many, self-referencing).
+  - **But :** Contenu principal du blog.
+  - **Attributs Clés :**
+    - `title` (Localized, Text) : Titre H1.
+    - `slug` (Localized, Text) : URL canonique.
+    - `content` (Localized, Rich Text Lexical) : Corps de l'article.
+    - `excerpt` (Localized, Textarea) : Résumé pour les cartes.
+    - `publishedAt` (Date) : Pour le tri et la publication différée.
+    - `readingTime` (Number) : Calculé via Hook `beforeChange`.
+    - `difficulty` (Select) : 'Junior', 'Mid', 'Senior' (pour filtrage).
+  - **Relations :**
+    - `authors` (Relation -> Users, many-to-many).
+    - `category` (Relation -> Categories, many-to-one).
+    - `tags` (Relation -> Tags, many-to-many).
+    - `relatedPosts` (Relation -> Posts, many-to-many, self-referencing).
 - **Pages**
-    - **But :** Pages statiques (A propos, Mentions légales, etc.).
-    - **Attributs Clés :** `title` (Loc), `slug` (Loc), `layout` (Blocks).
-    - **Note :** Utilisation de "Blocks" pour une mise en page flexible différente des articles.
+  - **But :** Pages statiques (A propos, Mentions légales, etc.).
+  - **Attributs Clés :** `title` (Loc), `slug` (Loc), `layout` (Blocks).
+  - **Note :** Utilisation de "Blocks" pour une mise en page flexible différente des articles.
 
 ### Taxonomie & Média
 
 - **Catégories (Categories)**
-    - **But :** Structure thématique principale (ex: "Tutoriel", "Rétrospective").
-    - **Attributs Clés :**
-        - `title` (Localized, Text).
-        - `slug` (Text).
-        - **Config UI :** `color` (Text/ColorPicker), `icon` (Upload/Media) pour l'identité dynamique.
+  - **But :** Structure thématique principale (ex: "Tutoriel", "Rétrospective").
+  - **Attributs Clés :**
+    - `title` (Localized, Text).
+    - `slug` (Text).
+    - **Config UI :** `color` (Text/ColorPicker), `icon` (Upload/Media) pour l'identité dynamique.
 - **Étiquettes (Tags)**
-    - **But :** Filtrage transversal (ex: "Next.js", "AI", "Cloudflare").
-    - **Attributs Clés :** `title` (Text), `slug` (Text).
+  - **But :** Filtrage transversal (ex: "Next.js", "AI", "Cloudflare").
+  - **Attributs Clés :** `title` (Text), `slug` (Text).
 - **Media**
-    - **But :** Gestion des assets (Images, Vidéos).
-    - **Stockage :** Cloudflare R2 via plugin S3.
-    - **Attributs :** `alt` (Localized, Text), `caption` (Localized, Rich Text).
+  - **But :** Gestion des assets (Images, Vidéos).
+  - **Stockage :** Cloudflare R2 via plugin S3.
+  - **Attributs :** `alt` (Localized, Text), `caption` (Localized, Rich Text).
 - **Utilisateurs (Users)**
-    - **But :** Accès Admin uniquement (V1).
-    - **Attributs :** Email, Password, Name, Role ('admin').
+  - **But :** Accès Admin uniquement (V1).
+  - **Attributs :** Email, Password, Name, Role ('admin').
+
 ## Composants Logiques
 
 Dans notre architecture "Monolithe Logique", la distinction Front/Back est floue. Nous découpons plutôt par responsabilité : **UI (RSC)**, **CMS Core** et **Shared Kernel**.
@@ -217,20 +222,20 @@ Dans notre architecture "Monolithe Logique", la distinction Front/Back est floue
 - **Root Layout (`layout.tsx`) :** Gère le `<html>`, la police (Inter/JetBrains), le `ThemeProvider` (Dark mode) et l'initialisation de l'i18n.
 - **Blog Layout :** Wrapper pour la navigation (Header/Footer) et la gestion du Scroll Progress (Story 4.2).
 - **Page Components (RSC) :**
-    - `HomePage` : Fetch les derniers articles via Local API.
-    - `PostPage` : Fetch le contenu, génère les métadonnées SEO, rend le MDX/Lexical.
-    - `SearchHub` : Client Component (seule exception majeure) pour la gestion d'état des filtres (Story 5.2).
+  - `HomePage` : Fetch les derniers articles via Local API.
+  - `PostPage` : Fetch le contenu, génère les métadonnées SEO, rend le MDX/Lexical.
+  - `SearchHub` : Client Component (seule exception majeure) pour la gestion d'état des filtres (Story 5.2).
 - **Design System (`/components/ui`) :**
-    - Implémentation atomique de `shadcn/ui` (Button, Card, Badge).
-    - Adaptation Tailwind v4 (CSS variables natives).
+  - Implémentation atomique de `shadcn/ui` (Button, Card, Badge).
+  - Adaptation Tailwind v4 (CSS variables natives).
 
 ### CMS Core (Payload Config)
 
 - **Collection Configs :** Définitions TypeScript des schémas (Articles, Pages, Users...).
 - **Lexical Adapter :** Configuration de l'éditeur riche, sérialiseurs HTML/React pour le frontend.
 - **Hooks :**
-    - `afterChange` : Déclenche `revalidateTag` (Next.js) pour purger le cache ISR.
-    - `beforeChange` : Calcule le "Temps de lecture" automatiquement.
+  - `afterChange` : Déclenche `revalidateTag` (Next.js) pour purger le cache ISR.
+  - `beforeChange` : Calcule le "Temps de lecture" automatiquement.
 - **Storage Adapter :** Connecteur R2 pour les uploads.
 
 ### Shared Kernel (`/lib`)
@@ -245,7 +250,6 @@ Le point critique ici est l'interaction **Local API**. Voici comment les donnée
 
 #### Diagramme de Séquence : Affichage d'un Article (Server-Side)
 
-
 ```mermaid
 sequenceDiagram
     participant User
@@ -256,7 +260,7 @@ sequenceDiagram
 
     User->>Edge: GET /fr/posts/mon-super-article
     Edge->>Page: Invoke Server Component
-    
+
     rect rgb(20, 20, 30)
         note right of Page: Exécution interne (Pas de HTTP)
         Page->>LocalAPI: payload.find({ slug, locale: 'fr' })
@@ -264,7 +268,7 @@ sequenceDiagram
         DB-->>LocalAPI: Raw Data (JSON)
         LocalAPI-->>Page: Typed Data (Article)
     end
-    
+
     Page->>Page: Render Lexical to JSX
     Page-->>Edge: HTML Stream
     Edge-->>User: Response (Cache-Control: public...)
@@ -314,6 +318,7 @@ Dans un projet utilisant la génération de code par IA, les vecteurs d'attaque 
 Next.js 15 (App Router) et Payload CMS 3.0 reposent sur une **inversion de contrôle** : le framework appelle votre code via des fichiers aux noms conventionnels (`page.tsx`, `layout.tsx`, `payload.config.ts`). Pour un analyseur statique comme Knip, ces fichiers apparaissent comme du code mort car aucun fichier du projet ne les importe explicitement.
 
 La configuration Knip doit donc explicitement déclarer ces **points d'entrée implicites** :
+
 - **Next.js 15** : `page.tsx`, `layout.tsx`, `route.ts`, `middleware.ts`, `instrumentation.ts`
 - **Payload CMS** : `payload.config.ts` (point d'entrée absolu de toute la logique CMS)
 - **Drizzle** : `drizzle.config.ts` + exclusion du dossier `migrations/` (fichiers SQL jamais importés)
@@ -370,13 +375,13 @@ jobs:
 
 ### 6.4 Principes de Sécurité Appliqués
 
-| Principe | Implémentation | Rationale |
-|----------|----------------|-----------|
-| **Least Privilege** | GITHUB_TOKEN en read-only par défaut | Limite le blast radius d'une compromission |
-| **Immutability** | SHA pinning des actions tierces | Garantie cryptographique de l'intégrité du code |
+| Principe             | Implémentation                                                  | Rationale                                           |
+| -------------------- | --------------------------------------------------------------- | --------------------------------------------------- |
+| **Least Privilege**  | GITHUB_TOKEN en read-only par défaut                            | Limite le blast radius d'une compromission          |
+| **Immutability**     | SHA pinning des actions tierces                                 | Garantie cryptographique de l'intégrité du code     |
 | **Defense in Depth** | 4 layers de validation (supply chain, quality, build, identity) | Une couche échouée ne compromet pas tout le système |
-| **Keyless Auth** | OIDC pour Cloudflare | Élimine le risque de vol de secrets statiques |
-| **Manual Trigger** | `workflow_dispatch` + branch protection | Évite exécutions répétées, contrôle développeur |
+| **Keyless Auth**     | OIDC pour Cloudflare                                            | Élimine le risque de vol de secrets statiques       |
+| **Manual Trigger**   | `workflow_dispatch` + branch protection                         | Évite exécutions répétées, contrôle développeur     |
 
 ### 7. Structure du Projet Unifié
 
