@@ -46,8 +46,19 @@ jobs:
           node-version: '20'
           cache: 'pnpm'
 
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+      # ============================================
+      # LAYER 1: Supply Chain Security
+      # ============================================
+
+      # Socket Firewall wraps package manager to detect malicious packages
+      # See: https://github.com/SocketDev/action
+      - name: Setup Socket Firewall
+        uses: SocketDev/action@v1
+        with:
+          mode: firewall-free
+
+      - name: Install dependencies (with Socket scan)
+        run: sfw pnpm install --frozen-lockfile
 
       # Generate CI-only fallback secret if PAYLOAD_SECRET is not configured.
       # This random value is used only for type generation and build validation
@@ -55,16 +66,6 @@ jobs:
       - name: Generate CI Payload Secret
         if: env.HAS_PAYLOAD_SECRET != 'true'
         run: echo "PAYLOAD_SECRET_CI=$(openssl rand -hex 32)" >> "$GITHUB_ENV"
-
-      # ============================================
-      # LAYER 1: Supply Chain Security
-      # ============================================
-
-      - name: Socket.dev Security Scan
-        uses: SocketDev/socket-security-action@6f55d8fa2cebd6ef40fad5e1dea9ae0edbe4ee13 # v2.0.1
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-        continue-on-error: true # Don't block if service unavailable
 
       # ============================================
       # LAYER 2: Code Quality
