@@ -2,26 +2,22 @@
 module.exports = {
   forbidden: [
     // Rule 1: Block server code in client components
+    // Convention: Client components MUST use .client.tsx extension
     {
       name: 'no-server-in-client',
-      comment: 'Server-only code should not be imported in client components',
+      comment:
+        'Client components (.client.tsx) must not import server-only code. ' +
+        'Convention: Any file with "use client" directive MUST use .client.tsx extension.',
       severity: 'error',
       from: {
-        path: '^src/app/.*\\.tsx$',
-        pathNot: [
-          '\\.server\\.tsx$',  // Exclude server components
-          'layout\\.tsx$',     // Layouts are server by default
-          'page\\.tsx$',       // Pages are server by default (unless 'use client')
-          'loading\\.tsx$',    // Loading is server
-          'error\\.tsx$',      // Error has its own client boundary
-          'not-found\\.tsx$',  // Not found is server
-        ],
+        // Only target explicitly marked client components
+        path: '\\.client\\.tsx$',
       },
       to: {
         path: [
-          '^src/collections/',  // Payload collections (server-only)
-          '^src/.*\\.server\\.',  // Explicit server files
-          'payload\\.config\\.ts$',  // Payload config
+          '^src/collections/', // Payload collections (server-only)
+          '^src/.*\\.server\\.', // Explicit server files
+          'payload\\.config\\.ts$', // Payload config
         ],
       },
     },
@@ -39,11 +35,11 @@ module.exports = {
       },
     },
 
-    // Rule 3: No orphan modules (optional, warn only)
+    // Rule 3: No orphan modules
     {
       name: 'no-orphans',
       comment: 'Modules that are not reachable from any entry point',
-      severity: 'warn',
+      severity: 'error',
       from: {
         orphan: true,
         pathNot: [
@@ -63,7 +59,7 @@ module.exports = {
     {
       name: 'no-deprecated',
       comment: 'Deprecated modules should be replaced',
-      severity: 'warn',
+      severity: 'error',
       from: {},
       to: {
         dependencyTypes: ['deprecated'],
