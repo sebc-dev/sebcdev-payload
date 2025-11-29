@@ -1,5 +1,32 @@
 import { MigrateUpArgs, MigrateDownArgs, sql } from '@payloadcms/db-d1-sqlite'
 
+/**
+ * Helper to add a column to a table, ignoring duplicate column errors.
+ * SQLite doesn't support IF NOT EXISTS for ALTER TABLE ADD COLUMN.
+ */
+async function addColumnIfNotExists(
+  db: MigrateUpArgs['db'],
+  table: string,
+  column: string,
+  definition: string,
+): Promise<void> {
+  try {
+    await db.run(sql`ALTER TABLE ${sql.raw(table)} ADD ${sql.raw(column)} ${sql.raw(definition)};`)
+  } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : String(error)
+    const errorLower = errorMessage.toLowerCase()
+    // SQLite SQLITE_ERROR (1): duplicate column name: xxx
+    // D1 may return: "already exists" or "duplicate column"
+    if (errorLower.includes('duplicate column') || errorLower.includes('already exists')) {
+      // Expected: column already exists from dev mode
+      return
+    }
+    // Unexpected error - log and rethrow
+    console.error(`Failed to add ${column} column to ${table}:`, errorMessage)
+    throw error
+  }
+}
+
 export async function up({ db, payload: _payload, req: _req }: MigrateUpArgs): Promise<void> {
   // Categories table - use IF NOT EXISTS for idempotency (dev mode may have created them)
   await db.run(sql`CREATE TABLE IF NOT EXISTS \`categories\` (
@@ -68,41 +95,19 @@ export async function up({ db, payload: _payload, req: _req }: MigrateUpArgs): P
   await db.run(
     sql`CREATE UNIQUE INDEX IF NOT EXISTS \`payload_kv_key_idx\` ON \`payload_kv\` (\`key\`);`,
   )
-  // ALTER TABLE ADD COLUMN - wrap in try/catch as SQLite doesn't support IF NOT EXISTS for columns
-  try {
-    await db.run(
-      sql`ALTER TABLE \`payload_locked_documents_rels\` ADD \`categories_id\` integer REFERENCES categories(id);`,
-    )
-  } catch (error) {
-    // Only ignore duplicate column error, rethrow other errors (connection, syntax, etc.)
-    const errorMessage = error instanceof Error ? error.message : String(error)
-    const errorLower = errorMessage.toLowerCase()
-    // SQLite SQLITE_ERROR (1): duplicate column name: xxx
-    // D1 may return: "already exists" or "duplicate column"
-    if (errorLower.includes('duplicate column') || errorLower.includes('already exists')) {
-      // Expected: column already exists from dev mode
-    } else {
-      console.error('Failed to add categories_id column:', errorMessage)
-      throw error
-    }
-  }
-  try {
-    await db.run(
-      sql`ALTER TABLE \`payload_locked_documents_rels\` ADD \`tags_id\` integer REFERENCES tags(id);`,
-    )
-  } catch (error) {
-    // Only ignore duplicate column error, rethrow other errors (connection, syntax, etc.)
-    const errorMessage = error instanceof Error ? error.message : String(error)
-    const errorLower = errorMessage.toLowerCase()
-    // SQLite SQLITE_ERROR (1): duplicate column name: xxx
-    // D1 may return: "already exists" or "duplicate column"
-    if (errorLower.includes('duplicate column') || errorLower.includes('already exists')) {
-      // Expected: column already exists from dev mode
-    } else {
-      console.error('Failed to add tags_id column:', errorMessage)
-      throw error
-    }
-  }
+  // ALTER TABLE ADD COLUMN - SQLite doesn't support IF NOT EXISTS for columns
+  await addColumnIfNotExists(
+    db,
+    '`payload_locked_documents_rels`',
+    '`categories_id`',
+    'integer REFERENCES categories(id)',
+  )
+  await addColumnIfNotExists(
+    db,
+    '`payload_locked_documents_rels`',
+    '`tags_id`',
+    'integer REFERENCES tags(id)',
+  )
   await db.run(
     sql`CREATE INDEX IF NOT EXISTS \`payload_locked_documents_rels_categories_id_idx\` ON \`payload_locked_documents_rels\` (\`categories_id\`);`,
   )
