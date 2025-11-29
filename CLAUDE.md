@@ -26,6 +26,10 @@ pnpm test                   # Run all tests
 # Code Quality
 pnpm lint                   # ESLint
 
+# Architecture Validation
+pnpm depcruise              # Run architecture validation
+pnpm depcruise:report       # Generate HTML report
+
 # Type Generation
 pnpm generate:types         # Generate both Cloudflare and Payload types
 pnpm generate:types:payload # Generate Payload types only
