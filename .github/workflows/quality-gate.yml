@@ -10,17 +10,16 @@ name: Quality Gate
 
 on:
   workflow_dispatch:
-    inputs:
-      run_mutation_tests:
-        description: 'Run Stryker mutation tests (slow, ~15min)'
-        required: false
-        type: boolean
-        default: false
 
 jobs:
   quality-gate:
     name: Quality Checks
     runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      issues: write         # For Socket.dev comments
+      pull-requests: write  # For Socket.dev PR updates
 
     steps:
       # ============================================
@@ -47,10 +46,20 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       # ============================================
+      # LAYER 1: Supply Chain Security
+      # ============================================
+
+      - name: Socket.dev Security Scan
+        uses: SocketDev/socket-security-action@6f55d8fa2cebd6ef40fad5e1dea9ae0edbe4ee13  # v2.0.1
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+        continue-on-error: true  # Don't block if service unavailable
+
+      # ============================================
       # PLACEHOLDER: Quality Checks (Future Phases)
       # ============================================
 
       - name: Placeholder - Quality checks coming soon
         run: |
-          echo "::notice::Phase 1 complete - Foundation workflow established"
-          echo "::notice::Future phases will add: Socket.dev, Knip, ESLint, Build, etc."
+          echo "::notice::Phase 1-2 complete - Foundation workflow + Socket.dev"
+          echo "::notice::Future phases will add: Knip, ESLint, Build, etc."
