@@ -338,8 +338,6 @@ git diff                 # Uncommitted changes
 **Story**: Epic 2 - Story 2.1
 **Status**: [ ] COMPLETE / [ ] INCOMPLETE
 
-**Validated By**: **\*\*\*\***\_**\*\*\*\***
-**Date**: **\*\*\*\***\_**\*\*\*\***
 
 ---
 
