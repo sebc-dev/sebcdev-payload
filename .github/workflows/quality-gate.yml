@@ -220,3 +220,45 @@ jobs:
           echo "**URL**: ${{ steps.deploy.outputs.deployment-url }}" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "**Commit**: ${{ github.sha }}" >> $GITHUB_STEP_SUMMARY
+
+      - name: Wait for Deployment Availability
+        run: |
+          URL="${{ steps.deploy.outputs.deployment-url }}"
+          echo "Waiting for $URL to become available..."
+
+          MAX_RETRIES=30
+          RETRY_INTERVAL=2
+
+          for i in $(seq 1 $MAX_RETRIES); do
+            if curl -s -f -o /dev/null "$URL"; then
+              echo "::notice::✅ Deployment is live at $URL"
+              exit 0
+            fi
+            echo "Attempt $i/$MAX_RETRIES - Waiting ${RETRY_INTERVAL}s..."
+            sleep $RETRY_INTERVAL
+          done
+
+          echo "::error::Deployment URL not reachable after $((MAX_RETRIES * RETRY_INTERVAL))s"
+          exit 1
+
+      - name: Smoke Test
+        run: |
+          URL="${{ steps.deploy.outputs.deployment-url }}"
+
+          echo "::group::Testing Homepage"
+          HTTP_STATUS=$(curl -s -o /dev/null -w "%{http_code}" "$URL")
+          if [ "$HTTP_STATUS" = "200" ]; then
+            echo "✅ Homepage returned 200 OK"
+          else
+            echo "::warning::Homepage returned $HTTP_STATUS (expected 200)"
+          fi
+          echo "::endgroup::"
+
+          echo "::group::Testing Admin Panel"
+          HTTP_STATUS=$(curl -s -o /dev/null -w "%{http_code}" "$URL/admin")
+          if [ "$HTTP_STATUS" = "200" ] || [ "$HTTP_STATUS" = "302" ]; then
+            echo "✅ Admin panel accessible (status: $HTTP_STATUS)"
+          else
+            echo "::warning::Admin panel returned $HTTP_STATUS"
+          fi
+          echo "::endgroup::"
