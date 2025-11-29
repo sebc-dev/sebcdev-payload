@@ -34,7 +34,7 @@ This epic contains **4 stories** as defined in the PRD:
 | 1.1   | Initialisation & Déploiement 1-Click  | Utiliser le template officiel pour provisionner automatiquement le Repo GitHub, la base D1, le bucket R2 et le Worker    | ✅ COMPLETED   | 3      | 3/3      |
 | 1.2   | Récupération & Configuration Locale   | Cloner le repo, installer les dépendances et configurer l'environnement local avec bindings Cloudflare                   | ✅ COMPLETED   | 2      | 2/2      |
 | 1.3   | Pipeline "Quality Gate" (AI-Shield)   | Configurer le workflow GitHub Actions avec Socket.dev, Knip, Dependency Cruiser, Stryker, Lighthouse CI, ESLint/Prettier | 🚧 IN PROGRESS | 8      | 5/8      |
-| 1.4   | Adaptation du Pipeline de Déploiement | Conditionner le déploiement Cloudflare à la réussite de la Quality Gate                                                  | 📋 NOT STARTED | -      | 0/0      |
+| 1.4   | Adaptation du Pipeline de Déploiement | Conditionner le déploiement Cloudflare à la réussite de la Quality Gate                                                  | 📋 PLANNING    | 4      | 0/4      |
 
 **Columns Explained**:
 
@@ -93,10 +93,10 @@ cat docs/specs/epics/epic_1/EPIC_TRACKING.md
 
 - **Stories Started**: 3 / 4
 - **Stories Completed**: 2 / 4
-- **Total Phases**: 13 (Story 1.1: 3, Story 1.2: 2, Story 1.3: 8)
-- **Phases Completed**: 10 / 13
+- **Total Phases**: 17 (Story 1.1: 3, Story 1.2: 2, Story 1.3: 8, Story 1.4: 4)
+- **Phases Completed**: 10 / 17
 
-**Completion**: 77% (Stories 1.1 and 1.2 complete, Story 1.3 Phase 1-5 complete)
+**Completion**: 59% (Stories 1.1 and 1.2 complete, Story 1.3 Phase 1-5 complete, Story 1.4 planned)
 
 ### Timeline
 
@@ -151,6 +151,8 @@ Track epic-level milestones here:
 
 ### Recent Updates
 
+- **2025-11-29**: Story 1.4 Phase 1 documentation generated - 7 files, 3 commits, ~800 lines (Branch Protection & Quality Gate Enforcement)
+- **2025-11-29**: Story 1.4 planning completed - 4 phases identified (Deployment Pipeline Adaptation)
 - **2025-11-29**: Story 1.3 Phase 5 ✅ COMPLETED - Next.js build validation with caching (1 commit)
 - **2025-11-29**: Story 1.3 Phase 4 ✅ COMPLETED - Knip dead code detection + Payload type sync validation (4 commits)
 - **2025-11-29**: Story 1.3 Phase 3 ✅ COMPLETED - ESLint/Prettier code quality integration (4 commits)
@@ -178,7 +180,7 @@ Track epic-level milestones here:
 - Story 1.1: `docs/specs/epics/epic_1/story_1_1/story_1.1.md` ✅ Created
 - Story 1.2: `docs/specs/epics/epic_1/story_1_2/story_1.2.md` ✅ Created
 - Story 1.3: `docs/specs/epics/epic_1/story_1_3/story_1.3.md` ✅ Created
-- Story 1.4: `docs/specs/epics/epic_1/story_1_4/story_1.4.md` (to be created via /plan-story)
+- Story 1.4: `docs/specs/epics/epic_1/story_1_4/story_1.4.md` Created
 
 ### Phase Plans
 
@@ -198,6 +200,11 @@ Track epic-level milestones here:
   - Phase 6: Architecture Validation - dependency-cruiser (to generate)
   - Phase 7: Performance & Accessibility - Lighthouse/axe (to generate)
   - Phase 8: Mutation Testing - Stryker (to generate)
+- Story 1.4: `docs/specs/epics/epic_1/story_1_4/implementation/PHASES_PLAN.md` Created (4 phases)
+  - Phase 1: `docs/specs/epics/epic_1/story_1_4/implementation/phase_1/` DOCUMENTED (7 files)
+  - Phase 2: Deployment Workflow Creation (to generate)
+  - Phase 3: OIDC Authentication Migration (to generate)
+  - Phase 4: Validation & Rollback Documentation (to generate)
 
 ### Related Documentation
 
@@ -225,7 +232,7 @@ Track epic-level milestones here:
 
 ### Epic Completion
 
-- [ ] All stories planned (3/4 planned)
+- [x] All stories planned (4/4 planned)
 - [x] At least one story in progress
 - [ ] All stories completed
 - [ ] Final review done
@@ -234,6 +241,6 @@ Track epic-level milestones here:
 ---
 
 **Epic Initialized**: 2025-11-28
-**Last Updated**: 2025-11-29
+**Last Updated**: 2025-11-29 (Story 1.4 planning)
 **Created by**: Claude Code (epic-initializer skill)
 **Story 1.1 Validated by**: Claude Code (phase-implementer validation)

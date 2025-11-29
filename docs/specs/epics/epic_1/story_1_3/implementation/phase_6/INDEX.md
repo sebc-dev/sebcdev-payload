@@ -16,12 +16,12 @@ Configure dependency-cruiser to validate architecture and enforce import boundar
 
 ### Key Deliverables
 
-| Deliverable | Description | Priority |
-|-------------|-------------|----------|
-| `.dependency-cruiser.cjs` | Architecture rules configuration | Critical |
-| `.dependency-cruiser-known-violations.json` | Baseline for existing violations (if needed) | Medium |
-| Workflow integration | Step in quality-gate.yml with GitHub Job Summary | Critical |
-| Documentation update | CLAUDE.md reference to new tool | Low |
+| Deliverable                                 | Description                                      | Priority |
+| ------------------------------------------- | ------------------------------------------------ | -------- |
+| `.dependency-cruiser.cjs`                   | Architecture rules configuration                 | Critical |
+| `.dependency-cruiser-known-violations.json` | Baseline for existing violations (if needed)     | Medium   |
+| Workflow integration                        | Step in quality-gate.yml with GitHub Job Summary | Critical |
+| Documentation update                        | CLAUDE.md reference to new tool                  | Low      |
 
 ### Success Criteria
 
@@ -37,10 +37,10 @@ Configure dependency-cruiser to validate architecture and enforce import boundar
 
 ### Dependencies
 
-| Dependency | Status | Notes |
-|------------|--------|-------|
-| Phase 1: Workflow Foundation | Completed | Base workflow exists |
-| Phase 5: Build Validation | Completed | Build must pass before arch validation |
+| Dependency                   | Status    | Notes                                  |
+| ---------------------------- | --------- | -------------------------------------- |
+| Phase 1: Workflow Foundation | Completed | Base workflow exists                   |
+| Phase 5: Build Validation    | Completed | Build must pass before arch validation |
 
 ### Blocking
 
@@ -56,24 +56,24 @@ This phase does not block any subsequent phases.
 
 ### Implementation Documents
 
-| Document | Purpose | Lines |
-|----------|---------|-------|
-| [IMPLEMENTATION_PLAN.md](./IMPLEMENTATION_PLAN.md) | Atomic commit strategy with 4 commits | ~500 |
-| [COMMIT_CHECKLIST.md](./COMMIT_CHECKLIST.md) | Detailed per-commit checklist | ~600 |
-| [ENVIRONMENT_SETUP.md](./ENVIRONMENT_SETUP.md) | Local environment configuration | ~300 |
+| Document                                           | Purpose                               | Lines |
+| -------------------------------------------------- | ------------------------------------- | ----- |
+| [IMPLEMENTATION_PLAN.md](./IMPLEMENTATION_PLAN.md) | Atomic commit strategy with 4 commits | ~500  |
+| [COMMIT_CHECKLIST.md](./COMMIT_CHECKLIST.md)       | Detailed per-commit checklist         | ~600  |
+| [ENVIRONMENT_SETUP.md](./ENVIRONMENT_SETUP.md)     | Local environment configuration       | ~300  |
 
 ### Guide Documents
 
-| Document | Purpose | Lines |
-|----------|---------|-------|
-| [guides/REVIEW.md](./guides/REVIEW.md) | Commit-by-commit review guide | ~400 |
-| [guides/TESTING.md](./guides/TESTING.md) | Testing and validation strategy | ~350 |
+| Document                                 | Purpose                         | Lines |
+| ---------------------------------------- | ------------------------------- | ----- |
+| [guides/REVIEW.md](./guides/REVIEW.md)   | Commit-by-commit review guide   | ~400  |
+| [guides/TESTING.md](./guides/TESTING.md) | Testing and validation strategy | ~350  |
 
 ### Validation Documents
 
-| Document | Purpose | Lines |
-|----------|---------|-------|
-| [validation/VALIDATION_CHECKLIST.md](./validation/VALIDATION_CHECKLIST.md) | Final phase validation | ~400 |
+| Document                                                                   | Purpose                | Lines |
+| -------------------------------------------------------------------------- | ---------------------- | ----- |
+| [validation/VALIDATION_CHECKLIST.md](./validation/VALIDATION_CHECKLIST.md) | Final phase validation | ~400  |
 
 ---
 
@@ -96,24 +96,24 @@ This phase does not block any subsequent phases.
 
 ### Files to Create/Modify
 
-| File | Action | Description |
-|------|--------|-------------|
-| `.dependency-cruiser.cjs` | Create | Architecture validation rules |
-| `.dependency-cruiser-known-violations.json` | Create (if needed) | Baseline existing violations |
-| `.github/workflows/quality-gate.yml` | Modify | Add dependency-cruiser step |
-| `package.json` | Modify | Add `depcruise` script |
-| `CLAUDE.md` | Modify | Document new tool usage |
+| File                                        | Action             | Description                   |
+| ------------------------------------------- | ------------------ | ----------------------------- |
+| `.dependency-cruiser.cjs`                   | Create             | Architecture validation rules |
+| `.dependency-cruiser-known-violations.json` | Create (if needed) | Baseline existing violations  |
+| `.github/workflows/quality-gate.yml`        | Modify             | Add dependency-cruiser step   |
+| `package.json`                              | Modify             | Add `depcruise` script        |
+| `CLAUDE.md`                                 | Modify             | Document new tool usage       |
 
 ---
 
 ## Commit Overview
 
-| # | Commit Message | Scope | Est. Time |
-|---|----------------|-------|-----------|
-| 1 | Install and configure dependency-cruiser | Package + config | 30 min |
-| 2 | Add architecture validation rules | Rules implementation | 45 min |
-| 3 | Generate baseline for existing violations | Baseline (if needed) | 20 min |
-| 4 | Integrate dependency-cruiser into CI workflow | CI integration | 30 min |
+| #   | Commit Message                                | Scope                | Est. Time |
+| --- | --------------------------------------------- | -------------------- | --------- |
+| 1   | Install and configure dependency-cruiser      | Package + config     | 30 min    |
+| 2   | Add architecture validation rules             | Rules implementation | 45 min    |
+| 3   | Generate baseline for existing violations     | Baseline (if needed) | 20 min    |
+| 4   | Integrate dependency-cruiser into CI workflow | CI integration       | 30 min    |
 
 **Total Estimated Time**: 2-2.5 hours
 
@@ -123,11 +123,11 @@ This phase does not block any subsequent phases.
 
 ### Identified Risks
 
-| Risk | Likelihood | Impact | Mitigation |
-|------|------------|--------|------------|
-| Existing violations | Medium | Low | Generate baseline to freeze technical debt |
-| Complex Next.js App Router rules | Low | Medium | Test rules locally before CI |
-| False positives on type imports | Low | Low | Use `dependencyTypesNot: ['type-only']` |
+| Risk                             | Likelihood | Impact | Mitigation                                 |
+| -------------------------------- | ---------- | ------ | ------------------------------------------ |
+| Existing violations              | Medium     | Low    | Generate baseline to freeze technical debt |
+| Complex Next.js App Router rules | Low        | Medium | Test rules locally before CI               |
+| False positives on type imports  | Low        | Low    | Use `dependencyTypesNot: ['type-only']`    |
 
 ### Contingency Plans
 

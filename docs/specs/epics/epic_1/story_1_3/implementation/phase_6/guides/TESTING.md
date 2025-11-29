@@ -231,7 +231,7 @@ Expected: No output (file is excluded).
 
 Simulate the CI step locally:
 
-```bash
+````bash
 # Simulate GitHub Step Summary (local version)
 echo "## Architecture Validation Test" > /tmp/test-summary.md
 echo "" >> /tmp/test-summary.md
@@ -247,7 +247,7 @@ fi
 
 # View result
 cat /tmp/test-summary.md
-```
+````
 
 ### Workflow Syntax Validation
 
@@ -337,34 +337,41 @@ After running tests, document results:
 **Commit**: [SHA]
 
 ### Installation Tests
+
 - [ ] Version check: PASSED/FAILED
 - [ ] Help command: PASSED/FAILED
 - [ ] Config validation: PASSED/FAILED
 
 ### Functionality Tests
+
 - [ ] Basic analysis: PASSED/FAILED
 - [ ] Verbose output: PASSED/FAILED
 - [ ] HTML report: PASSED/FAILED
 
 ### Rule Validation
+
 - [ ] no-server-in-client: PASSED/FAILED
 - [ ] no-circular: PASSED/FAILED
 - [ ] Type-only cycles allowed: PASSED/FAILED
 
 ### False Positive Tests
+
 - [ ] Server components not flagged: PASSED/FAILED
 - [ ] Layout components not flagged: PASSED/FAILED
 - [ ] Generated files excluded: PASSED/FAILED
 
 ### CI Integration
+
 - [ ] Local simulation: PASSED/FAILED
 - [ ] Workflow syntax: PASSED/FAILED
 
 ### Performance
+
 - [ ] Execution time < 30s: PASSED/FAILED
 - [ ] Cache effectiveness: PASSED/FAILED
 
 ### Notes
+
 [Any issues encountered or observations]
 ```
 
@@ -424,12 +431,12 @@ This phase does not add application code, so traditional test coverage metrics d
 
 Instead, measure:
 
-| Metric | Target |
-|--------|--------|
-| Rules implemented | 4 (all defined) |
-| False positive rate | 0% |
-| CI integration | Complete |
-| Documentation | Complete |
+| Metric              | Target          |
+| ------------------- | --------------- |
+| Rules implemented   | 4 (all defined) |
+| False positive rate | 0%              |
+| CI integration      | Complete        |
+| Documentation       | Complete        |
 
 ---
 
