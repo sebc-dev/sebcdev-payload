@@ -36,7 +36,7 @@ export default buildConfig({
   // i18n Configuration - Story 2.1 Phase 1
   localization: {
     locales: [
-      { label: 'Francais', code: 'fr' },
+      { label: 'Français', code: 'fr' },
       { label: 'English', code: 'en' },
     ],
     defaultLocale: 'fr',
