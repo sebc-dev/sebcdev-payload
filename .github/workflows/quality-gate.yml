@@ -105,10 +105,15 @@ jobs:
           path: .next/cache
           # Cache invalidates only on dependency or config changes, not source files.
           # Next.js build cache handles incremental compilation internally.
-          key: nextjs-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml', 'next.config.mjs', 'tsconfig.json') }}
+          key: nextjs-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml', 'next.config.ts', 'tsconfig.json') }}
           restore-keys: |
             nextjs-${{ runner.os }}-
 
+      # --experimental-build-mode compile: Required for No-DB builds.
+      # Cloudflare D1 is not accessible in GitHub Actions, so we use compile-only
+      # mode which validates TypeScript and generates bundles without executing
+      # runtime code that would require database connectivity.
+      # See: docs/specs/CI-CD-Security.md Section 4.1
       - name: Next.js Build (No-DB Mode)
         run: pnpm exec next build --experimental-build-mode compile
         env:
