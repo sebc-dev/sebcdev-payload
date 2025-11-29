@@ -124,7 +124,9 @@ jobs:
       # PLACEHOLDER: Future Phases
       # ============================================
 
-      - name: Placeholder - Advanced checks coming soon
+      - name: Quality Gate Summary
         run: |
-          echo "::notice::Phase 1-5 complete - Foundation + Socket.dev + ESLint/Prettier + Knip + Type Sync + Build"
-          echo "::notice::Future phases will add: dependency-cruiser, Lighthouse, Stryker"
+          echo "::notice::✅ Layer 1: Supply Chain Security (Socket Firewall)"
+          echo "::notice::✅ Layer 2: Code Quality (ESLint, Prettier, Knip, Type Sync)"
+          echo "::notice::✅ Layer 3: Build Validation (Next.js No-DB Mode)"
+          echo "::notice::⏳ Coming: dependency-cruiser, Lighthouse CI, Stryker"
