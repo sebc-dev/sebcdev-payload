@@ -3,7 +3,7 @@
 **Epic**: Epic 1 - Foundation & Cloudflare Architecture
 **Story Reference**: 1.4
 **Created**: 2025-11-29
-**Status**: Planning
+**Status**: In Progress (2/3 phases, OIDC blocked)
 
 ---
 
@@ -33,10 +33,16 @@ Cette story établit le dernier maillon de la chaîne de sécurité CI/CD en gar
 
 ### CA3: Cloudflare OIDC Authentication
 
-- [ ] L'authentification OIDC est configurée pour éliminer les secrets statiques
-- [ ] Les permissions du workflow sont définies avec `id-token: write`
-- [ ] Un fallback sur API Token est disponible si OIDC n'est pas encore configuré
-- [ ] La documentation de configuration OIDC Cloudflare est créée
+> ⏸️ **STATUS: BLOCKED** - `wrangler-action` ne supporte pas l'authentification OIDC (vérifié novembre 2025)
+>
+> **Tracking**: https://github.com/cloudflare/wrangler-action
+>
+> **Fallback actif**: API Token via GitHub Secrets (implémenté en Phase 2)
+
+- [ ] ~~L'authentification OIDC est configurée pour éliminer les secrets statiques~~ → Reporté
+- [ ] ~~Les permissions du workflow sont définies avec `id-token: write`~~ → Reporté
+- [x] Un fallback sur API Token est disponible ✅ (implémentation actuelle)
+- [ ] ~~La documentation de configuration OIDC Cloudflare est créée~~ → Reporté
 
 ### CA4: Wrangler Deploy Integration
 
@@ -142,12 +148,12 @@ Cette story garantit que:
 
 ## Success Metrics
 
-| Metric                        | Target         | Measurement                     |
-| ----------------------------- | -------------- | ------------------------------- |
-| Deployment Success Rate       | > 95%          | GitHub Actions statistics       |
-| Time to Deploy                | < 5 min        | Workflow execution time         |
-| Zero unauthorized deployments | 100%           | Branch protection audit         |
-| OIDC adoption                 | 100% (Phase 2) | No static API tokens in secrets |
+| Metric                        | Target             | Measurement                     | Status                        |
+| ----------------------------- | ------------------ | ------------------------------- | ----------------------------- |
+| Deployment Success Rate       | > 95%              | GitHub Actions statistics       | À mesurer                     |
+| Time to Deploy                | < 5 min            | Workflow execution time         | ✅ ~3 min                     |
+| Zero unauthorized deployments | 100%               | Branch protection audit         | ✅ Branch protection active   |
+| OIDC adoption                 | ~~100%~~ → Reporté | No static API tokens in secrets | ⏸️ Bloqué - API Token utilisé |
 
 ---
 
@@ -157,7 +163,8 @@ Cette story garantit que:
 - CI-CD Security: `docs/specs/CI-CD-Security.md` - Sections 5, 11
 - Quality Gate Workflow: `.github/workflows/quality-gate.yml`
 - Wrangler Config: `wrangler.jsonc`
-- Cloudflare OIDC: https://developers.cloudflare.com/workers/wrangler/ci-cd/github-actions/#oidc
+- ~~Cloudflare OIDC: https://developers.cloudflare.com/workers/wrangler/ci-cd/github-actions/#oidc~~ → **Note**: Cette URL n'existe pas - wrangler-action ne supporte pas encore OIDC (vérifié Nov 2025)
+- Wrangler Action (tracking OIDC): https://github.com/cloudflare/wrangler-action
 
 ---
 

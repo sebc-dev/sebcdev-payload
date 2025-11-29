@@ -202,7 +202,7 @@ C'est entendu. Voici la section complète des **Exigences (Requirements)**, cons
 **Sécurité Pipeline :**
 
 - SHA Pinning des actions GitHub tierces (immuabilité cryptographique)
-- OIDC pour authentification Cloudflare (élimine secrets statiques) - Phase 2
+- ~~OIDC pour authentification Cloudflare (élimine secrets statiques)~~ → **Reporté** : wrangler-action ne supporte pas encore OIDC (Nov 2025). Utilisation d'API Token avec rotation régulière.
 - Permissions GITHUB_TOKEN en read-only par défaut
 - Dependabot pour maintenance automatique des dépendances
 

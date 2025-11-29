@@ -308,8 +308,8 @@ Dans un projet utilisant la génération de code par IA, les vecteurs d'attaque 
 │ Layer 3: Build Validation (Next.js no-DB mode)         │
 │          → Garantit buildabilité sans runtime deps      │
 ├─────────────────────────────────────────────────────────┤
-│ Layer 4: Identity (OIDC)                               │
-│          → Élimine secrets statiques, limite blast      │
+│ Layer 4: Identity (API Token*)                         │
+│          → *OIDC non dispo Nov 2025, rotation manuelle  │
 └─────────────────────────────────────────────────────────┘
 ```
 
@@ -369,19 +369,19 @@ jobs:
 
   deploy:
     needs: quality-gate
-    # OIDC authentication (pas de secrets statiques)
+    # API Token authentication (OIDC non disponible - Nov 2025)
     - wrangler deploy
 ```
 
 ### 6.4 Principes de Sécurité Appliqués
 
-| Principe             | Implémentation                                                  | Rationale                                           |
-| -------------------- | --------------------------------------------------------------- | --------------------------------------------------- |
-| **Least Privilege**  | GITHUB_TOKEN en read-only par défaut                            | Limite le blast radius d'une compromission          |
-| **Immutability**     | SHA pinning des actions tierces                                 | Garantie cryptographique de l'intégrité du code     |
-| **Defense in Depth** | 4 layers de validation (supply chain, quality, build, identity) | Une couche échouée ne compromet pas tout le système |
-| **Keyless Auth**     | OIDC pour Cloudflare                                            | Élimine le risque de vol de secrets statiques       |
-| **Manual Trigger**   | `workflow_dispatch` + branch protection                         | Évite exécutions répétées, contrôle développeur     |
+| Principe             | Implémentation                                                  | Rationale                                             |
+| -------------------- | --------------------------------------------------------------- | ----------------------------------------------------- |
+| **Least Privilege**  | GITHUB_TOKEN en read-only par défaut                            | Limite le blast radius d'une compromission            |
+| **Immutability**     | SHA pinning des actions tierces                                 | Garantie cryptographique de l'intégrité du code       |
+| **Defense in Depth** | 4 layers de validation (supply chain, quality, build, identity) | Une couche échouée ne compromet pas tout le système   |
+| **Token Security**   | API Token avec rotation (OIDC non dispo Nov 2025)               | Rotation régulière + scope minimal limite les risques |
+| **Manual Trigger**   | `workflow_dispatch` + branch protection                         | Évite exécutions répétées, contrôle développeur       |
 
 ### 7. Structure du Projet Unifié
 

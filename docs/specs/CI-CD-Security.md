@@ -599,7 +599,16 @@ ESLint avec règles TypeScript est significativement plus lent que Prettier. Le 
 
 ## 5. OIDC pour Cloudflare (Phase 2 - Enhanced)
 
-### 5.1 Élimination des Secrets Statiques
+> ⏸️ **STATUS: NOT YET AVAILABLE** (Mise à jour: Novembre 2025)
+>
+> **Important**: `cloudflare/wrangler-action` ne supporte **pas encore** l'authentification OIDC.
+> La documentation ci-dessous décrit l'architecture cible une fois le support disponible.
+>
+> **Implémentation actuelle**: API Token via GitHub Secrets (voir Section 5.3)
+>
+> **Tracking**: https://github.com/cloudflare/wrangler-action
+
+### 5.1 Élimination des Secrets Statiques (Architecture Cible)
 
 **Problématique des Secrets Statiques** : Stocker `CLOUDFLARE_API_TOKEN` dans GitHub Secrets crée une surface d'attaque permanente. Si le token est exfiltré (via injection de script, logs mal configurés, ou compromission du runner), il reste valide jusqu'à révocation manuelle.
 
@@ -673,6 +682,51 @@ jobs:
 ```
 
 **Règle d'Or** : Définir **explicitement** les permissions minimales nécessaires. Si un job ne fait que lire et tester, `contents: read` suffit.
+
+### 5.3 Implémentation Actuelle: API Token (Fallback)
+
+> Cette section documente l'implémentation actuelle en attendant le support OIDC.
+
+**Configuration actuelle** :
+
+```yaml
+# .github/workflows/quality-gate.yml
+deploy:
+  runs-on: ubuntu-latest
+  permissions:
+    contents: read
+
+  steps:
+    - name: Deploy to Cloudflare Workers
+      uses: cloudflare/wrangler-action@v3
+      with:
+        apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        command: deploy
+```
+
+**Secrets requis** (GitHub Repository Settings > Secrets):
+
+| Secret                  | Description             | Permissions requises          |
+| ----------------------- | ----------------------- | ----------------------------- |
+| `CLOUDFLARE_API_TOKEN`  | Token API Cloudflare    | Workers Scripts Edit, D1 Edit |
+| `CLOUDFLARE_ACCOUNT_ID` | ID du compte Cloudflare | -                             |
+
+**Bonnes pratiques pour API Token** :
+
+1. **Scope minimal** : Uniquement les permissions nécessaires (Workers + D1)
+2. **Rotation régulière** : Tous les 90 jours recommandé
+3. **Audit** : Vérifier les logs d'utilisation dans Cloudflare Dashboard
+4. **Révocation rapide** : En cas de compromission suspectée
+
+**Migration future vers OIDC** :
+
+Quand wrangler-action supportera OIDC :
+
+1. Ajouter `id-token: write` aux permissions du workflow
+2. Supprimer `apiToken` de la configuration wrangler-action
+3. Supprimer `CLOUDFLARE_API_TOKEN` des GitHub Secrets
+4. Configurer la relation de confiance dans Cloudflare Dashboard
 
 ## 6. Pratiques de Sécurité Essentielles (Phase 1)
 
