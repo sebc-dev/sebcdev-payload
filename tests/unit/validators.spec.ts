@@ -79,7 +79,7 @@ describe('isValidHexColor', () => {
     expect(isValidHexColor(undefined)).toBe(true)
   })
 
-  it('should reject empty string', () => {
+  it('should accept empty string', () => {
     expect(isValidHexColor('')).toBe(true) // Empty string is falsy, returns true
   })
 })
