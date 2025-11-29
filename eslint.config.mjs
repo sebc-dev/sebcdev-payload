@@ -30,8 +30,17 @@ const eslintConfig = [
       ],
     },
   },
+  // IMPORTANT: eslint-config-prettier must be LAST to disable conflicting rules
+  ...compat.extends('prettier'),
   {
-    ignores: ['.next/'],
+    ignores: [
+      '.next/',
+      '.open-next/',
+      'node_modules/',
+      'src/payload-types.ts',
+      'drizzle/migrations/',
+      '.wrangler/',
+    ],
   },
 ]
 
