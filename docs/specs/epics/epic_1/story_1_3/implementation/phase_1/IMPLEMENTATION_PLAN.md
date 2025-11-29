@@ -51,9 +51,9 @@ Commit 1                    Commit 2                    Commit 3                
 feat(ci): initialize quality-gate workflow with SHA-pinned actions
 
 - Create .github/workflows/quality-gate.yml with workflow_dispatch trigger
-- Add checkout action pinned by SHA (v4.2.2)
-- Add setup-node action pinned by SHA (v4.1.0)
-- Add pnpm action-setup pinned by SHA (v4.0.0)
+- Add checkout action pinned by SHA (v6.0.0)
+- Add setup-node action pinned by SHA (v6.0.0)
+- Add pnpm action-setup pinned by SHA (v4.2.0)
 - Configure Node.js 20.x with pnpm caching
 - Add placeholder for future quality checks
 ```
@@ -105,17 +105,17 @@ jobs:
       # ============================================
 
       - name: Checkout repository
-        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683  # v4.2.2
+        uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3  # v6.0.0
         with:
           fetch-depth: 0  # Full history for git diff operations
 
       - name: Setup pnpm
-        uses: pnpm/action-setup@fe02b34f77f8bc703788d5817da081398fad5dd2  # v4.0.0
+        uses: pnpm/action-setup@41ff72655975bd51cab0327fa583b6e92b6d3061  # v4.2.0
         with:
           version: 9
 
       - name: Setup Node.js
-        uses: actions/setup-node@39370e3970a6d050c480ffad4ff0ed4d3fdee5af  # v4.1.0
+        uses: actions/setup-node@2028fbc5c25fe9cf00d9f06a71cc4710d4507903  # v6.0.0
         with:
           node-version: '20'
           cache: 'pnpm'
@@ -139,9 +139,9 @@ Current SHA values (verified 2025-11):
 
 | Action | Version | SHA |
 |--------|---------|-----|
-| `actions/checkout` | v4.2.2 | `11bd71901bbe5b1630ceea73d27597364c9af683` |
-| `actions/setup-node` | v4.1.0 | `39370e3970a6d050c480ffad4ff0ed4d3fdee5af` |
-| `pnpm/action-setup` | v4.0.0 | `fe02b34f77f8bc703788d5817da081398fad5dd2` |
+| `actions/checkout` | v6.0.0 | `1af3b93b6815bc44a9784bd300feb67ff0d1eeb3` |
+| `actions/setup-node` | v6.0.0 | `2028fbc5c25fe9cf00d9f06a71cc4710d4507903` |
+| `pnpm/action-setup` | v4.2.0 | `41ff72655975bd51cab0327fa583b6e92b6d3061` |
 
 **How to verify**: Go to the action's GitHub releases page and click on the commit SHA for the release tag.
 
@@ -366,17 +366,17 @@ jobs:
       # ============================================
 
       - name: Checkout repository
-        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683  # v4.2.2
+        uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3  # v6.0.0
         with:
           fetch-depth: 0  # Full history for git diff operations
 
       - name: Setup pnpm
-        uses: pnpm/action-setup@fe02b34f77f8bc703788d5817da081398fad5dd2  # v4.0.0
+        uses: pnpm/action-setup@41ff72655975bd51cab0327fa583b6e92b6d3061  # v4.2.0
         with:
           version: 9
 
       - name: Setup Node.js
-        uses: actions/setup-node@39370e3970a6d050c480ffad4ff0ed4d3fdee5af  # v4.1.0
+        uses: actions/setup-node@2028fbc5c25fe9cf00d9f06a71cc4710d4507903  # v6.0.0
         with:
           node-version: '20'
           cache: 'pnpm'

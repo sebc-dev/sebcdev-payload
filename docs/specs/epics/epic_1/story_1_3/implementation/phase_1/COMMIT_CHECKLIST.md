@@ -35,20 +35,20 @@ Use this checklist to track progress through each atomic commit. Each commit sho
 
 - [ ] Add Checkout step:
   - [ ] Action: `actions/checkout`
-  - [ ] SHA: `11bd71901bbe5b1630ceea73d27597364c9af683`
-  - [ ] Version comment: `# v4.2.2`
+  - [ ] SHA: `1af3b93b6815bc44a9784bd300feb67ff0d1eeb3`
+  - [ ] Version comment: `# v6.0.0`
   - [ ] Option: `fetch-depth: 0`
 
 - [ ] Add pnpm Setup step:
   - [ ] Action: `pnpm/action-setup`
-  - [ ] SHA: `fe02b34f77f8bc703788d5817da081398fad5dd2`
-  - [ ] Version comment: `# v4.0.0`
+  - [ ] SHA: `41ff72655975bd51cab0327fa583b6e92b6d3061`
+  - [ ] Version comment: `# v4.2.0`
   - [ ] Option: `version: 9`
 
 - [ ] Add Node.js Setup step:
   - [ ] Action: `actions/setup-node`
-  - [ ] SHA: `39370e3970a6d050c480ffad4ff0ed4d3fdee5af`
-  - [ ] Version comment: `# v4.1.0`
+  - [ ] SHA: `2028fbc5c25fe9cf00d9f06a71cc4710d4507903`
+  - [ ] Version comment: `# v6.0.0`
   - [ ] Options: `node-version: '20'`, `cache: 'pnpm'`
 
 - [ ] Add Install Dependencies step:
@@ -72,9 +72,9 @@ Use this checklist to track progress through each atomic commit. Each commit sho
   feat(ci): initialize quality-gate workflow with SHA-pinned actions
 
   - Create .github/workflows/quality-gate.yml with workflow_dispatch trigger
-  - Add checkout action pinned by SHA (v4.2.2)
-  - Add setup-node action pinned by SHA (v4.1.0)
-  - Add pnpm action-setup pinned by SHA (v4.0.0)
+  - Add checkout action pinned by SHA (v6.0.0)
+  - Add setup-node action pinned by SHA (v6.0.0)
+  - Add pnpm action-setup pinned by SHA (v4.2.0)
   - Configure Node.js 20.x with pnpm caching
   - Add placeholder for future quality checks
   ```
@@ -315,9 +315,9 @@ Use this checklist to track progress through each atomic commit. Each commit sho
 
 | Action | Version | SHA |
 |--------|---------|-----|
-| `actions/checkout` | v4.2.2 | `11bd71901bbe5b1630ceea73d27597364c9af683` |
-| `actions/setup-node` | v4.1.0 | `39370e3970a6d050c480ffad4ff0ed4d3fdee5af` |
-| `pnpm/action-setup` | v4.0.0 | `fe02b34f77f8bc703788d5817da081398fad5dd2` |
+| `actions/checkout` | v6.0.0 | `1af3b93b6815bc44a9784bd300feb67ff0d1eeb3` |
+| `actions/setup-node` | v6.0.0 | `2028fbc5c25fe9cf00d9f06a71cc4710d4507903` |
+| `pnpm/action-setup` | v4.2.0 | `41ff72655975bd51cab0327fa583b6e92b6d3061` |
 
 ---
 

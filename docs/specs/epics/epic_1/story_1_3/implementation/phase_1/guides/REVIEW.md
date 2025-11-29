@@ -67,9 +67,9 @@ For each action, verify:
 
 | Action | Expected SHA | Expected Version |
 |--------|--------------|------------------|
-| `actions/checkout` | `11bd71901bbe5b1630ceea73d27597364c9af683` | v4.2.2 |
-| `pnpm/action-setup` | `fe02b34f77f8bc703788d5817da081398fad5dd2` | v4.0.0 |
-| `actions/setup-node` | `39370e3970a6d050c480ffad4ff0ed4d3fdee5af` | v4.1.0 |
+| `actions/checkout` | `1af3b93b6815bc44a9784bd300feb67ff0d1eeb3` | v6.0.0 |
+| `pnpm/action-setup` | `41ff72655975bd51cab0327fa583b6e92b6d3061` | v4.2.0 |
+| `actions/setup-node` | `2028fbc5c25fe9cf00d9f06a71cc4710d4507903` | v6.0.0 |
 
 **Verification steps**:
 1. SHA is exactly 40 characters (not shortened)
@@ -78,13 +78,13 @@ For each action, verify:
 
 ```yaml
 # Correct
-- uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683  # v4.2.2
+- uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3  # v6.0.0
 
 # Incorrect - tag reference
-- uses: actions/checkout@v4
+- uses: actions/checkout@v6
 
 # Incorrect - shortened SHA
-- uses: actions/checkout@11bd719
+- uses: actions/checkout@1af3b93
 ```
 
 #### Job Configuration Review
@@ -296,20 +296,20 @@ grep 'write' .github/workflows/quality-gate.yml
 
 ```yaml
 # Wrong (7 characters)
-- uses: actions/checkout@11bd719
+- uses: actions/checkout@1af3b93
 
 # Correct (40 characters)
-- uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+- uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3
 ```
 
 ### Issue 2: Missing Version Comment
 
 ```yaml
 # Wrong (no version comment)
-- uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+- uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3
 
 # Correct (version comment for maintainability)
-- uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683  # v4.2.2
+- uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3  # v6.0.0
 ```
 
 ### Issue 3: Overly Permissive Permissions
@@ -329,10 +329,10 @@ permissions:
 
 ```yaml
 # Wrong (mutable tag)
-- uses: actions/checkout@v4
+- uses: actions/checkout@v6
 
 # Correct (immutable SHA)
-- uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683  # v4.2.2
+- uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3  # v6.0.0
 ```
 
 ### Issue 5: Missing Concurrency Control

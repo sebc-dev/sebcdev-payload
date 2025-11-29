@@ -147,9 +147,9 @@ These SHA values must be used for action pinning. Verify they are current:
 
 | Action | Version | SHA | Verify Link |
 |--------|---------|-----|-------------|
-| `actions/checkout` | v4.2.2 | `11bd71901bbe5b1630ceea73d27597364c9af683` | [Releases](https://github.com/actions/checkout/releases) |
-| `actions/setup-node` | v4.1.0 | `39370e3970a6d050c480ffad4ff0ed4d3fdee5af` | [Releases](https://github.com/actions/setup-node/releases) |
-| `pnpm/action-setup` | v4.0.0 | `fe02b34f77f8bc703788d5817da081398fad5dd2` | [Releases](https://github.com/pnpm/action-setup/releases) |
+| `actions/checkout` | v6.0.0 | `1af3b93b6815bc44a9784bd300feb67ff0d1eeb3` | [Releases](https://github.com/actions/checkout/releases) |
+| `actions/setup-node` | v6.0.0 | `2028fbc5c25fe9cf00d9f06a71cc4710d4507903` | [Releases](https://github.com/actions/setup-node/releases) |
+| `pnpm/action-setup` | v4.2.0 | `41ff72655975bd51cab0327fa583b6e92b6d3061` | [Releases](https://github.com/pnpm/action-setup/releases) |
 
 ### How to Verify SHA Values
 
@@ -159,10 +159,10 @@ These SHA values must be used for action pinning. Verify they are current:
 4. Click on the version tag
 5. Copy the full commit SHA (40 characters)
 
-Example for `actions/checkout@v4.2.2`:
+Example for `actions/checkout@v6.0.0`:
 ```
-https://github.com/actions/checkout/releases/tag/v4.2.2
-→ Commit: 11bd71901bbe5b1630ceea73d27597364c9af683
+https://github.com/actions/checkout/releases/tag/v6.0.0
+→ Commit: 1af3b93b6815bc44a9784bd300feb67ff0d1eeb3
 ```
 
 ### Updating SHA Values
@@ -171,10 +171,10 @@ If newer versions are available, update both the SHA and the version comment:
 
 ```yaml
 # Before
-- uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683  # v4.2.2
+- uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3  # v6.0.0
 
-# After (example with hypothetical v4.3.0)
-- uses: actions/checkout@abc123def456789abc123def456789abc123def4  # v4.3.0
+# After (example with hypothetical v6.1.0)
+- uses: actions/checkout@abc123def456789abc123def456789abc123def4  # v6.1.0
 ```
 
 ---
