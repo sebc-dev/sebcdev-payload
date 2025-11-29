@@ -128,8 +128,9 @@ export async function down({ db, payload: _payload, req: _req }: MigrateDownArgs
     // Begin transaction
     await db.run(sql`BEGIN TRANSACTION;`)
 
-    // Turn off foreign keys for schema changes
-    await db.run(sql`PRAGMA foreign_keys=OFF;`)
+    // Defer foreign key checks until commit (safer than disabling entirely)
+    // This allows schema changes while still validating FK integrity at commit time
+    await db.run(sql`PRAGMA defer_foreign_keys=ON;`)
 
     // Check if columns exist before attempting removal
     const tableInfo = await db.run(sql`PRAGMA table_info(\`payload_locked_documents_rels\`);`)
@@ -185,14 +186,13 @@ export async function down({ db, payload: _payload, req: _req }: MigrateDownArgs
       )
     }
 
-    // Restore foreign keys and commit
-    await db.run(sql`PRAGMA foreign_keys=ON;`)
+    // Commit transaction - defer_foreign_keys automatically resets and FK checks run here
     await db.run(sql`COMMIT;`)
   } catch (error) {
-    // Rollback transaction on error and restore foreign keys
+    // Rollback transaction on error
+    // defer_foreign_keys automatically resets on rollback, no manual cleanup needed
     try {
       await db.run(sql`ROLLBACK;`)
-      await db.run(sql`PRAGMA foreign_keys=ON;`)
     } catch (rollbackError) {
       console.error('Failed to rollback transaction:', rollbackError)
     }
