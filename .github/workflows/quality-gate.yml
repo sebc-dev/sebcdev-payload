@@ -21,6 +21,10 @@ jobs:
       issues: write # For Socket.dev comments
       pull-requests: write # For Socket.dev PR updates
 
+    env:
+      # Expose secret to env for conditional checks (secrets context not allowed in step if)
+      HAS_PAYLOAD_SECRET: ${{ secrets.PAYLOAD_SECRET != '' }}
+
     steps:
       # ============================================
       # SETUP: Checkout & Dependencies
@@ -49,7 +53,7 @@ jobs:
       # This random value is used only for type generation and build validation
       # in CI - it is never used in production. Meets 32+ char requirement.
       - name: Generate CI Payload Secret
-        if: ${{ !secrets.PAYLOAD_SECRET }}
+        if: env.HAS_PAYLOAD_SECRET != 'true'
         run: echo "PAYLOAD_SECRET_CI=$(openssl rand -hex 32)" >> "$GITHUB_ENV"
 
       # ============================================
