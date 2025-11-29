@@ -76,17 +76,9 @@ knip 5.x.x
     "src/middleware.ts"
   ],
   "project": ["src/**/*.{ts,tsx}"],
-  "ignore": [
-    "src/payload-types.ts",
-    "public/**"
-  ],
-  "ignoreDependencies": [
-    "@cloudflare/workers-types"
-  ],
-  "exclude": [
-    "drizzle/migrations/**",
-    "drizzle/meta/**"
-  ],
+  "ignore": ["src/payload-types.ts", "public/**"],
+  "ignoreDependencies": ["@cloudflare/workers-types"],
+  "exclude": ["drizzle/migrations/**", "drizzle/meta/**"],
   "next": {
     "entry": []
   },
@@ -98,16 +90,16 @@ knip 5.x.x
 
 ### Configuration Breakdown
 
-| Property             | Purpose                                            |
-| -------------------- | -------------------------------------------------- |
-| `$schema`            | Enables IDE autocompletion                         |
-| `entry`              | Files discovered by frameworks, not imported       |
-| `project`            | All files to analyze                               |
-| `ignore`             | Files to skip entirely                             |
-| `ignoreDependencies` | Dependencies used only for types                   |
-| `exclude`            | Patterns to exclude from analysis                  |
-| `next`               | Next.js plugin config (auto-detects conventions)   |
-| `drizzle`            | Drizzle plugin config                              |
+| Property             | Purpose                                          |
+| -------------------- | ------------------------------------------------ |
+| `$schema`            | Enables IDE autocompletion                       |
+| `entry`              | Files discovered by frameworks, not imported     |
+| `project`            | All files to analyze                             |
+| `ignore`             | Files to skip entirely                           |
+| `ignoreDependencies` | Dependencies used only for types                 |
+| `exclude`            | Patterns to exclude from analysis                |
+| `next`               | Next.js plugin config (auto-detects conventions) |
+| `drizzle`            | Drizzle plugin config                            |
 
 ---
 
@@ -115,9 +107,9 @@ knip 5.x.x
 
 ### Required for Type Generation
 
-| Variable         | Purpose                        | Required | Default               |
-| ---------------- | ------------------------------ | -------- | --------------------- |
-| `PAYLOAD_SECRET` | JWT secret for Payload CMS     | Yes      | None (must be set)    |
+| Variable         | Purpose                    | Required | Default            |
+| ---------------- | -------------------------- | -------- | ------------------ |
+| `PAYLOAD_SECRET` | JWT secret for Payload CMS | Yes      | None (must be set) |
 
 ### CI Environment
 
@@ -163,9 +155,9 @@ Add these scripts to `package.json`:
 
 ### Secrets Required
 
-| Secret           | Purpose                    | Required | Set By  |
-| ---------------- | -------------------------- | -------- | ------- |
-| `PAYLOAD_SECRET` | Type generation in CI      | Optional | DevOps  |
+| Secret           | Purpose               | Required | Set By |
+| ---------------- | --------------------- | -------- | ------ |
+| `PAYLOAD_SECRET` | Type generation in CI | Optional | DevOps |
 
 **Note**: If `PAYLOAD_SECRET` is not set as a GitHub secret, the fallback value in the workflow is used.
 
@@ -404,21 +396,21 @@ Complete this checklist before starting implementation:
 
 ### Commands
 
-| Command                           | Purpose                    |
-| --------------------------------- | -------------------------- |
-| `pnpm exec knip`                  | Full dead code analysis    |
-| `pnpm exec knip --production`     | Production mode (for CI)   |
-| `pnpm exec knip --debug`          | Debug output               |
-| `pnpm generate:types:payload`     | Regenerate Payload types   |
-| `git diff src/payload-types.ts`   | Check for type drift       |
+| Command                         | Purpose                  |
+| ------------------------------- | ------------------------ |
+| `pnpm exec knip`                | Full dead code analysis  |
+| `pnpm exec knip --production`   | Production mode (for CI) |
+| `pnpm exec knip --debug`        | Debug output             |
+| `pnpm generate:types:payload`   | Regenerate Payload types |
+| `git diff src/payload-types.ts` | Check for type drift     |
 
 ### Files
 
-| File                  | Purpose                        |
-| --------------------- | ------------------------------ |
-| `knip.json`           | Knip configuration             |
-| `src/payload-types.ts`| Generated Payload types        |
-| `package.json`        | Scripts: knip, generate:types  |
+| File                   | Purpose                       |
+| ---------------------- | ----------------------------- |
+| `knip.json`            | Knip configuration            |
+| `src/payload-types.ts` | Generated Payload types       |
+| `package.json`         | Scripts: knip, generate:types |
 
 ---
 

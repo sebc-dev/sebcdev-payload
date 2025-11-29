@@ -11,11 +11,11 @@ Phase 4 focuses on static analysis tools that don't have traditional unit tests.
 
 ### Test Categories
 
-| Category               | Purpose                              | Tools            |
-| ---------------------- | ------------------------------------ | ---------------- |
-| Configuration Testing  | Validate tool configs are correct    | CLI, manual      |
-| Integration Testing    | Verify CI workflow works             | GitHub Actions   |
-| Regression Testing     | Ensure no false positives            | Manual review    |
+| Category              | Purpose                           | Tools          |
+| --------------------- | --------------------------------- | -------------- |
+| Configuration Testing | Validate tool configs are correct | CLI, manual    |
+| Integration Testing   | Verify CI workflow works          | GitHub Actions |
+| Regression Testing    | Ensure no false positives         | Manual review  |
 
 ---
 
@@ -286,10 +286,10 @@ time pnpm exec knip --production
 
 **Benchmarks**:
 
-| Mode        | Target Time | Acceptable |
-| ----------- | ----------- | ---------- |
-| Full        | < 30s       | < 60s      |
-| Production  | < 15s       | < 30s      |
+| Mode       | Target Time | Acceptable |
+| ---------- | ----------- | ---------- |
+| Full       | < 30s       | < 60s      |
+| Production | < 15s       | < 30s      |
 
 ### Type Generation Time
 
@@ -305,15 +305,15 @@ time pnpm generate:types:payload
 
 ### Before Each Commit
 
-| Test                          | Commit 1 | Commit 2 | Commit 3 | Commit 4 |
-| ----------------------------- | -------- | -------- | -------- | -------- |
-| JSON syntax valid             | ✓        | -        | -        | -        |
-| Knip runs without errors      | ✓        | ✓        | ✓        | ✓        |
-| No false positives            | ✓        | ✓        | ✓        | ✓        |
-| YAML syntax valid             | -        | ✓        | ✓        | -        |
-| Type generation works         | -        | -        | ✓        | ✓        |
-| Type sync check works         | -        | -        | ✓        | ✓        |
-| Documentation accurate        | -        | -        | -        | ✓        |
+| Test                     | Commit 1 | Commit 2 | Commit 3 | Commit 4 |
+| ------------------------ | -------- | -------- | -------- | -------- |
+| JSON syntax valid        | ✓        | -        | -        | -        |
+| Knip runs without errors | ✓        | ✓        | ✓        | ✓        |
+| No false positives       | ✓        | ✓        | ✓        | ✓        |
+| YAML syntax valid        | -        | ✓        | ✓        | -        |
+| Type generation works    | -        | -        | ✓        | ✓        |
+| Type sync check works    | -        | -        | ✓        | ✓        |
+| Documentation accurate   | -        | -        | -        | ✓        |
 
 ### After Phase Complete
 
@@ -376,16 +376,16 @@ NODE_DEBUG=* pnpm generate:types:payload 2>&1 | head -50
 
 ## Test Coverage Summary
 
-| Component            | Test Type          | Automated | Manual |
-| -------------------- | ------------------ | --------- | ------ |
-| knip.json            | Syntax validation  | ✓         | -      |
-| knip.json            | Entry points       | -         | ✓      |
-| knip.json            | Ignore patterns    | -         | ✓      |
-| Type generation      | Execution          | ✓         | -      |
-| Type sync            | Diff detection     | ✓         | -      |
-| Workflow YAML        | Syntax             | ✓         | -      |
-| Workflow             | End-to-end         | -         | ✓      |
-| Documentation        | Accuracy           | -         | ✓      |
+| Component       | Test Type         | Automated | Manual |
+| --------------- | ----------------- | --------- | ------ |
+| knip.json       | Syntax validation | ✓         | -      |
+| knip.json       | Entry points      | -         | ✓      |
+| knip.json       | Ignore patterns   | -         | ✓      |
+| Type generation | Execution         | ✓         | -      |
+| Type sync       | Diff detection    | ✓         | -      |
+| Workflow YAML   | Syntax            | ✓         | -      |
+| Workflow        | End-to-end        | -         | ✓      |
+| Documentation   | Accuracy          | -         | ✓      |
 
 ---
 

@@ -23,11 +23,11 @@ This guide helps reviewers efficiently validate Phase 4 implementation. Each com
 
 ### Review Focus
 
-| Area               | Priority | Time     |
-| ------------------ | -------- | -------- |
-| Entry points       | Critical | 10 min   |
-| Ignore patterns    | High     | 5 min    |
-| Schema & syntax    | Medium   | 5 min    |
+| Area            | Priority | Time   |
+| --------------- | -------- | ------ |
+| Entry points    | Critical | 10 min |
+| Ignore patterns | High     | 5 min  |
+| Schema & syntax | Medium   | 5 min  |
 
 ### Checklist
 
@@ -76,11 +76,11 @@ This guide helps reviewers efficiently validate Phase 4 implementation. Each com
 
 ### Review Focus
 
-| Area               | Priority | Time     |
-| ------------------ | -------- | -------- |
-| Step placement     | Critical | 5 min    |
-| Mode configuration | High     | 3 min    |
-| Error handling     | Medium   | 5 min    |
+| Area               | Priority | Time  |
+| ------------------ | -------- | ----- |
+| Step placement     | Critical | 5 min |
+| Mode configuration | High     | 3 min |
+| Error handling     | Medium   | 5 min |
 
 ### Checklist
 
@@ -122,11 +122,11 @@ This guide helps reviewers efficiently validate Phase 4 implementation. Each com
 
 ### Review Focus
 
-| Area               | Priority | Time     |
-| ------------------ | -------- | -------- |
-| Security           | Critical | 10 min   |
-| Error handling     | High     | 5 min    |
-| User experience    | Medium   | 5 min    |
+| Area            | Priority | Time   |
+| --------------- | -------- | ------ |
+| Security        | Critical | 10 min |
+| Error handling  | High     | 5 min  |
+| User experience | Medium   | 5 min  |
 
 ### Checklist
 
@@ -177,11 +177,11 @@ This guide helps reviewers efficiently validate Phase 4 implementation. Each com
 
 ### Review Focus
 
-| Area               | Priority | Time     |
-| ------------------ | -------- | -------- |
-| Accuracy           | Critical | 10 min   |
-| Completeness       | High     | 5 min    |
-| Clarity            | Medium   | 5 min    |
+| Area         | Priority | Time   |
+| ------------ | -------- | ------ |
+| Accuracy     | Critical | 10 min |
+| Completeness | High     | 5 min  |
+| Clarity      | Medium   | 5 min  |
 
 ### Checklist
 

@@ -93,9 +93,9 @@ pnpm knip --help
 pnpm knip:production
 ```
 
-| Script             | Works | Notes |
-| ------------------ | ----- | ----- |
-| `pnpm knip`        | [ ]   |       |
+| Script                 | Works | Notes |
+| ---------------------- | ----- | ----- |
+| `pnpm knip`            | [ ]   |       |
 | `pnpm knip:production` | [ ]   |       |
 
 ---
@@ -140,11 +140,11 @@ grep -E "^      - name:" .github/workflows/quality-gate.yml
 
 ### Step Configuration
 
-| Step                    | Has Error Handling | Correct Command |
-| ----------------------- | ------------------ | --------------- |
-| Knip                    | [ ] No continue-on-error | [ ] `--production` |
-| Generate Payload Types  | [ ] Has PAYLOAD_SECRET env | [ ] Correct fallback |
-| Verify Type Sync        | [ ] Has exit 1 on failure | [ ] Clear message |
+| Step                   | Has Error Handling         | Correct Command      |
+| ---------------------- | -------------------------- | -------------------- |
+| Knip                   | [ ] No continue-on-error   | [ ] `--production`   |
+| Generate Payload Types | [ ] Has PAYLOAD_SECRET env | [ ] Correct fallback |
+| Verify Type Sync       | [ ] Has exit 1 on failure  | [ ] Clear message    |
 
 ---
 
@@ -168,11 +168,11 @@ grep -A3 "Generate Payload Types" .github/workflows/quality-gate.yml
 pnpm generate:types:payload
 ```
 
-| Result                      | Status |
-| --------------------------- | ------ |
-| Command succeeds            | [ ]    |
-| `payload-types.ts` updated  | [ ]    |
-| No errors in output         | [ ]    |
+| Result                     | Status |
+| -------------------------- | ------ |
+| Command succeeds           | [ ]    |
+| `payload-types.ts` updated | [ ]    |
+| No errors in output        | [ ]    |
 
 ### Sync Check
 
@@ -197,14 +197,14 @@ git diff --exit-code src/payload-types.ts && echo "✅ Synced" || echo "❌ Not 
 
 ### CI Results
 
-| Step                          | Passes | Time     |
-| ----------------------------- | ------ | -------- |
-| Socket.dev Security Scan      | [ ]    |          |
-| ESLint                        | [ ]    |          |
-| Prettier Check                | [ ]    |          |
-| Knip - Dead Code Detection    | [ ]    |          |
-| Generate Payload Types        | [ ]    |          |
-| Verify Type Sync              | [ ]    |          |
+| Step                       | Passes | Time |
+| -------------------------- | ------ | ---- |
+| Socket.dev Security Scan   | [ ]    |      |
+| ESLint                     | [ ]    |      |
+| Prettier Check             | [ ]    |      |
+| Knip - Dead Code Detection | [ ]    |      |
+| Generate Payload Types     | [ ]    |      |
+| Verify Type Sync           | [ ]    |      |
 
 ### Error Messages
 
@@ -236,12 +236,12 @@ pnpm generate:types:payload
 git diff --exit-code src/payload-types.ts
 ```
 
-| Command from Docs        | Works |
-| ------------------------ | ----- |
-| `pnpm exec knip`         | [ ]   |
+| Command from Docs             | Works |
+| ----------------------------- | ----- |
+| `pnpm exec knip`              | [ ]   |
 | `pnpm exec knip --production` | [ ]   |
 | `pnpm generate:types:payload` | [ ]   |
-| `git diff` command       | [ ]   |
+| `git diff` command            | [ ]   |
 
 ---
 
@@ -293,18 +293,18 @@ From PHASES_PLAN.md, Phase 4 must satisfy:
 time pnpm exec knip --production
 ```
 
-| Metric             | Target   | Actual |
-| ------------------ | -------- | ------ |
-| Production mode    | < 15s    |        |
-| Full mode          | < 30s    |        |
+| Metric          | Target | Actual |
+| --------------- | ------ | ------ |
+| Production mode | < 15s  |        |
+| Full mode       | < 30s  |        |
 
 ### CI Execution Time
 
-| Step                          | Target   | Actual |
-| ----------------------------- | -------- | ------ |
-| Knip                          | < 30s    |        |
-| Type Generation               | < 15s    |        |
-| Type Sync Check               | < 5s     |        |
+| Step            | Target | Actual |
+| --------------- | ------ | ------ |
+| Knip            | < 30s  |        |
+| Type Generation | < 15s  |        |
+| Type Sync Check | < 5s   |        |
 
 ---
 
@@ -321,13 +321,13 @@ pnpm format:check
 pnpm lint && pnpm format:check && pnpm exec knip --production
 ```
 
-| Check                 | Passes |
-| --------------------- | ------ |
-| ESLint                | [ ]    |
-| Prettier              | [ ]    |
-| Knip                  | [ ]    |
-| Type Generation       | [ ]    |
-| Type Sync             | [ ]    |
+| Check           | Passes |
+| --------------- | ------ |
+| ESLint          | [ ]    |
+| Prettier        | [ ]    |
+| Knip            | [ ]    |
+| Type Generation | [ ]    |
+| Type Sync       | [ ]    |
 
 ---
 
@@ -358,13 +358,13 @@ git log --oneline -4
 
 ### Critical Items (All Must Pass)
 
-| Item                              | Status |
-| --------------------------------- | ------ |
-| Knip configuration correct        | [ ]    |
-| No false positives                | [ ]    |
-| Type sync validation works        | [ ]    |
-| CI workflow passes                | [ ]    |
-| No security issues                | [ ]    |
+| Item                       | Status |
+| -------------------------- | ------ |
+| Knip configuration correct | [ ]    |
+| No false positives         | [ ]    |
+| Type sync validation works | [ ]    |
+| CI workflow passes         | [ ]    |
+| No security issues         | [ ]    |
 
 ### Phase Completion
 
@@ -379,11 +379,11 @@ git log --oneline -4
 
 ## Sign-Off
 
-| Role         | Name | Date | Signature |
-| ------------ | ---- | ---- | --------- |
-| Developer    |      |      |           |
-| Reviewer     |      |      |           |
-| Tech Lead    |      |      |           |
+| Role      | Name | Date | Signature |
+| --------- | ---- | ---- | --------- |
+| Developer |      |      |           |
+| Reviewer  |      |      |           |
+| Tech Lead |      |      |           |
 
 ---
 

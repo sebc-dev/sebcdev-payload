@@ -8,12 +8,7 @@
     "src/middleware.ts"
   ],
   "project": ["src/**/*.{ts,tsx}"],
-  "ignore": [
-    "src/payload-types.ts",
-    "public/**",
-    "drizzle/migrations/**",
-    "drizzle/meta/**"
-  ],
+  "ignore": ["src/payload-types.ts", "public/**", "drizzle/migrations/**", "drizzle/meta/**"],
   "ignoreDependencies": [
     "@cloudflare/workers-types",
     "@opennextjs/cloudflare",

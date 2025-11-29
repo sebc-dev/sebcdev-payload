@@ -85,10 +85,28 @@ jobs:
           fi
 
       # ============================================
-      # PLACEHOLDER: Quality Checks (Future Phases)
+      # LAYER 3: Build Validation
       # ============================================
 
-      - name: Placeholder - Quality checks coming soon
+      - name: Cache Next.js Build
+        uses: actions/cache@5a3ec84eff668545956fd18022155c47e93e2684 # v4.2.3
+        with:
+          path: .next/cache
+          key: nextjs-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}-${{ hashFiles('**/*.ts', '**/*.tsx', '**/*.js', '**/*.jsx') }}
+          restore-keys: |
+            nextjs-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}-
+            nextjs-${{ runner.os }}-
+
+      - name: Next.js Build (No-DB Mode)
+        run: pnpm exec next build --experimental-build-mode compile
+        env:
+          PAYLOAD_SECRET: ${{ secrets.PAYLOAD_SECRET || 'ci-build-dummy-secret-32-chars-minimum!!' }}
+
+      # ============================================
+      # PLACEHOLDER: Future Phases
+      # ============================================
+
+      - name: Placeholder - Advanced checks coming soon
         run: |
-          echo "::notice::Phase 1-4 complete - Foundation + Socket.dev + ESLint/Prettier + Knip + Type Sync"
-          echo "::notice::Future phases will add: Build, dependency-cruiser, Lighthouse, Stryker"
+          echo "::notice::Phase 1-5 complete - Foundation + Socket.dev + ESLint/Prettier + Knip + Type Sync + Build"
+          echo "::notice::Future phases will add: dependency-cruiser, Lighthouse, Stryker"
