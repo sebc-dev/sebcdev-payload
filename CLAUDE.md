@@ -82,7 +82,11 @@ Exemples:
 
 Le projet utilise un pipeline CI/CD "AI-Shield" avec validation multi-couches pour détecter les hallucinations IA et garantir la qualité du code.
 
-**Stratégie de déclenchement** : Workflows déclenchés **manuellement** (`workflow_dispatch`) mais **obligatoires** pour merger via branch protection.
+**Stratégie de déclenchement** :
+
+- Exécution automatique sur `pull_request` vers `main`
+- Déclenchement manuel disponible via `workflow_dispatch`
+- **Requis pour merger** : Status check via branch protection
 
 ```bash
 # Checks locaux avant push (recommandé)
@@ -119,10 +123,65 @@ Déclenchement manuel via : **Actions > Quality Gate > Run workflow** (sélectio
 **Performance & Déploiement :**
 
 - **Lighthouse CI** : Budgets performance (≥90), A11y (=100), SEO (=100)
-- **OIDC Cloudflare** : Authentification sans secrets statiques
 - **Permissions** : GITHUB_TOKEN en read-only par défaut (least privilege)
 
 > **Documentation complète :** [CI-CD Security Architecture](docs/specs/CI-CD-Security.md)
+
+### Deployment Pipeline
+
+Déploiement automatique après succès de la Quality Gate sur la branche `main`:
+
+```
+Quality Gate ✓ → D1 Migrations → Wrangler Deploy → Validation (URL + Smoke Tests)
+```
+
+**Commandes de déploiement manuel**:
+
+```bash
+# Exécuter les migrations D1
+pnpm payload migrate
+
+# Déployer manuellement
+pnpm exec wrangler deploy
+
+# Lister les déploiements récents
+pnpm exec wrangler deployments list
+
+# Voir les détails d'un déploiement
+pnpm exec wrangler deployments view <deployment-id>
+
+# Rollback à un déploiement spécifique
+pnpm exec wrangler rollback <deployment-id>
+
+# Rollback au déploiement précédent
+pnpm exec wrangler rollback
+```
+
+Pour plus de détails, voir [DEPLOYMENT.md](docs/guides/DEPLOYMENT.md).
+
+### Authentication & Secrets
+
+Le déploiement utilise un **API Token Cloudflare** via GitHub Secrets:
+
+- **CLOUDFLARE_API_TOKEN** : Token avec permissions Workers Scripts (Edit) + D1 (Edit)
+- **CLOUDFLARE_ACCOUNT_ID** : Identifiant du compte Cloudflare
+
+**Sécurité API Token** :
+
+- Rotation recommandée tous les 90 jours
+- Scope minimal (principle of least privilege)
+- Audit disponible dans Cloudflare Dashboard > Audit Log
+
+Pour les bonnes pratiques de rotation et d'audit, voir [DEPLOYMENT.md - API Token Security](docs/guides/DEPLOYMENT.md#api-token-security-best-practices).
+
+> **Note**: OIDC n'est pas encore supporté par `wrangler-action` (à partir de novembre 2025).
+> Tracking : https://github.com/cloudflare/wrangler-action
+
+### Documentation
+
+- [DEPLOYMENT.md](docs/guides/DEPLOYMENT.md) - Guide complet de déploiement et rollback
+- [DEVELOPER_WORKFLOW.md](docs/guides/DEVELOPER_WORKFLOW.md) - Workflow développeur end-to-end
+- [CI-CD Security Architecture](docs/specs/CI-CD-Security.md) - Architecture de sécurité détaillée
 
 ## Architecture
 
