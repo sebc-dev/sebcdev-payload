@@ -68,11 +68,27 @@ jobs:
       - name: Knip - Dead Code Detection
         run: pnpm exec knip --production
 
+      - name: Generate Payload Types
+        env:
+          PAYLOAD_SECRET: ${{ secrets.PAYLOAD_SECRET || 'ci-placeholder-secret-minimum-32chars!!' }}
+        run: pnpm generate:types:payload
+
+      - name: Verify Type Sync
+        run: |
+          if git diff --exit-code src/payload-types.ts; then
+            echo "✅ Payload types are synchronized"
+          else
+            echo "❌ ERROR: Payload types are out of sync!"
+            echo "Run 'pnpm generate:types:payload' and commit the changes"
+            git diff src/payload-types.ts
+            exit 1
+          fi
+
       # ============================================
       # PLACEHOLDER: Quality Checks (Future Phases)
       # ============================================
 
       - name: Placeholder - Quality checks coming soon
         run: |
-          echo "::notice::Phase 1-4 complete - Foundation + Socket.dev + ESLint/Prettier + Knip"
-          echo "::notice::Future phases will add: Type Sync, Build, dependency-cruiser, etc."
+          echo "::notice::Phase 1-4 complete - Foundation + Socket.dev + ESLint/Prettier + Knip + Type Sync"
+          echo "::notice::Future phases will add: Build, dependency-cruiser, Lighthouse, Stryker"
