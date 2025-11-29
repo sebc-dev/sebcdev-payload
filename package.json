@@ -21,6 +21,7 @@
     "knip": "knip",
     "knip:production": "knip --production",
     "lint": "cross-env NODE_OPTIONS=--no-deprecation next lint",
+    "lint-staged": "lint-staged",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "payload": "cross-env NODE_OPTIONS=--no-deprecation payload",
