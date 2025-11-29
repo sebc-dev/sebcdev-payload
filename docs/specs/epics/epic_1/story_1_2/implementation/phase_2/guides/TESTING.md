@@ -23,13 +23,13 @@ Phase 2 produces **documentation only** - no code changes. Testing focuses on:
 
 ### Test Types for Documentation
 
-| Test Type | Purpose | Method |
-|-----------|---------|--------|
-| **Content Review** | Verify accuracy | Manual review |
-| **Link Testing** | Verify all links work | Automated + manual |
-| **Command Testing** | Verify commands work | Execute in terminal |
-| **Walkthrough Testing** | Verify usability | Follow guide step-by-step |
-| **Cross-Reference Testing** | Verify consistency | Compare with source files |
+| Test Type                   | Purpose               | Method                    |
+| --------------------------- | --------------------- | ------------------------- |
+| **Content Review**          | Verify accuracy       | Manual review             |
+| **Link Testing**            | Verify all links work | Automated + manual        |
+| **Command Testing**         | Verify commands work  | Execute in terminal       |
+| **Walkthrough Testing**     | Verify usability      | Follow guide step-by-step |
+| **Cross-Reference Testing** | Verify consistency    | Compare with source files |
 
 ---
 
@@ -173,6 +173,7 @@ done
 ### Manual Link Verification
 
 Check each document for:
+
 - [ ] QUICKSTART.md links work
 - [ ] COMMANDS.md links work
 - [ ] ENVIRONMENT.md links work
@@ -236,13 +237,13 @@ grep -rE "pnpm (dev|build|test|lint)" docs/development/
 
 ### Source File Comparison
 
-| Document | Compare With |
-|----------|--------------|
-| QUICKSTART.md | .env.example, package.json |
-| COMMANDS.md | package.json scripts |
-| ENVIRONMENT.md | .env.example |
-| TROUBLESHOOTING.md | Real error messages |
-| IDE_SETUP.md | .vscode/settings.json |
+| Document           | Compare With               |
+| ------------------ | -------------------------- |
+| QUICKSTART.md      | .env.example, package.json |
+| COMMANDS.md        | package.json scripts       |
+| ENVIRONMENT.md     | .env.example               |
+| TROUBLESHOOTING.md | Real error messages        |
+| IDE_SETUP.md       | .vscode/settings.json      |
 
 ---
 
@@ -264,6 +265,7 @@ grep -rE "pnpm (dev|build|test|lint)" docs/development/
 ### Visual Verification
 
 Open each file in VSCode with Markdown preview:
+
 - [ ] Headers render correctly
 - [ ] Code blocks are highlighted
 - [ ] Tables render properly
@@ -280,57 +282,57 @@ Open each file in VSCode with Markdown preview:
 
 #### QUICKSTART.md
 
-| Test | Result | Notes |
-|------|--------|-------|
-| Prerequisites accurate | PASS/FAIL | |
-| Commands work | PASS/FAIL | |
-| Expected outputs match | PASS/FAIL | |
-| Links work | PASS/FAIL | |
-| Walkthrough successful | PASS/FAIL | |
+| Test                   | Result    | Notes |
+| ---------------------- | --------- | ----- |
+| Prerequisites accurate | PASS/FAIL |       |
+| Commands work          | PASS/FAIL |       |
+| Expected outputs match | PASS/FAIL |       |
+| Links work             | PASS/FAIL |       |
+| Walkthrough successful | PASS/FAIL |       |
 
 #### COMMANDS.md
 
-| Test | Result | Notes |
-|------|--------|-------|
-| All scripts documented | PASS/FAIL | |
-| Commands work | PASS/FAIL | |
-| Descriptions accurate | PASS/FAIL | |
-| Links work | PASS/FAIL | |
+| Test                   | Result    | Notes |
+| ---------------------- | --------- | ----- |
+| All scripts documented | PASS/FAIL |       |
+| Commands work          | PASS/FAIL |       |
+| Descriptions accurate  | PASS/FAIL |       |
+| Links work             | PASS/FAIL |       |
 
 #### ENVIRONMENT.md
 
-| Test | Result | Notes |
-|------|--------|-------|
-| All vars documented | PASS/FAIL | |
-| Required vs optional clear | PASS/FAIL | |
-| Setup instructions work | PASS/FAIL | |
-| Links work | PASS/FAIL | |
+| Test                       | Result    | Notes |
+| -------------------------- | --------- | ----- |
+| All vars documented        | PASS/FAIL |       |
+| Required vs optional clear | PASS/FAIL |       |
+| Setup instructions work    | PASS/FAIL |       |
+| Links work                 | PASS/FAIL |       |
 
 #### TROUBLESHOOTING.md
 
-| Test | Result | Notes |
-|------|--------|-------|
-| Solutions work | PASS/FAIL | |
-| Commands accurate | PASS/FAIL | |
-| Common issues covered | PASS/FAIL | |
-| Links work | PASS/FAIL | |
+| Test                  | Result    | Notes |
+| --------------------- | --------- | ----- |
+| Solutions work        | PASS/FAIL |       |
+| Commands accurate     | PASS/FAIL |       |
+| Common issues covered | PASS/FAIL |       |
+| Links work            | PASS/FAIL |       |
 
 #### IDE_SETUP.md
 
-| Test | Result | Notes |
-|------|--------|-------|
-| Settings valid | PASS/FAIL | |
-| Extension IDs correct | PASS/FAIL | |
-| Install command works | PASS/FAIL | |
-| Links work | PASS/FAIL | |
+| Test                  | Result    | Notes |
+| --------------------- | --------- | ----- |
+| Settings valid        | PASS/FAIL |       |
+| Extension IDs correct | PASS/FAIL |       |
+| Install command works | PASS/FAIL |       |
+| Links work            | PASS/FAIL |       |
 
 #### Overall
 
-| Metric | Result |
-|--------|--------|
-| All tests passed | YES/NO |
-| Blocking issues | 0/X |
-| Minor issues | 0/X |
+| Metric             | Result |
+| ------------------ | ------ |
+| All tests passed   | YES/NO |
+| Blocking issues    | 0/X    |
+| Minor issues       | 0/X    |
 | Ready for approval | YES/NO |
 
 ---
@@ -339,21 +341,21 @@ Open each file in VSCode with Markdown preview:
 
 ### Story 1.2 AC6 Verification
 
-| Acceptance Criterion | Test | Status |
-|---------------------|------|--------|
-| Guide de démarrage rapide | QUICKSTART.md exists and is complete | [ ] |
-| Liste des commandes | COMMANDS.md has all scripts | [ ] |
-| Procédure de résolution | TROUBLESHOOTING.md covers common issues | [ ] |
-| Configuration IDE | IDE_SETUP.md has VSCode setup | [ ] |
+| Acceptance Criterion      | Test                                    | Status |
+| ------------------------- | --------------------------------------- | ------ |
+| Guide de démarrage rapide | QUICKSTART.md exists and is complete    | [ ]    |
+| Liste des commandes       | COMMANDS.md has all scripts             | [ ]    |
+| Procédure de résolution   | TROUBLESHOOTING.md covers common issues | [ ]    |
+| Configuration IDE         | IDE_SETUP.md has VSCode setup           | [ ]    |
 
 ### Success Metrics
 
-| Metric | Target | Actual |
-|--------|--------|--------|
-| New developer setup time | < 15 minutes | TBD |
-| Commands documented | 100% | TBD |
-| Env vars documented | 100% | TBD |
-| Issues covered | Top 5 | TBD |
+| Metric                   | Target       | Actual |
+| ------------------------ | ------------ | ------ |
+| New developer setup time | < 15 minutes | TBD    |
+| Commands documented      | 100%         | TBD    |
+| Env vars documented      | 100%         | TBD    |
+| Issues covered           | Top 5        | TBD    |
 
 ---
 
@@ -395,12 +397,12 @@ kill $DEV_PID
 
 ### Common Documentation Issues
 
-| Issue | Resolution |
-|-------|------------|
+| Issue            | Resolution                   |
+| ---------------- | ---------------------------- |
 | Outdated command | Update to match package.json |
-| Missing variable | Add to ENVIRONMENT.md |
-| Broken link | Fix path or remove link |
-| Wrong version | Update to match package.json |
+| Missing variable | Add to ENVIRONMENT.md        |
+| Broken link      | Fix path or remove link      |
+| Wrong version    | Update to match package.json |
 
 ### Issue Tracking
 
@@ -408,6 +410,7 @@ Document any issues found during testing:
 
 ```markdown
 ### Issue 1: [Title]
+
 - **File**: docs/development/XXXX.md
 - **Section**: [Section name]
 - **Issue**: [Description]

@@ -18,8 +18,12 @@ jobs:
 
     permissions:
       contents: read
-      issues: write         # For Socket.dev comments
-      pull-requests: write  # For Socket.dev PR updates
+      issues: write # For Socket.dev comments
+      pull-requests: write # For Socket.dev PR updates
+
+    env:
+      # Expose secret to env for conditional checks (secrets context not allowed in step if)
+      HAS_PAYLOAD_SECRET: ${{ secrets.PAYLOAD_SECRET != '' }}
 
     steps:
       # ============================================
@@ -27,39 +31,102 @@ jobs:
       # ============================================
 
       - name: Checkout repository
-        uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3  # v6.0.0
+        uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3 # v6.0.0
         with:
-          fetch-depth: 0  # Full history for git diff operations
+          fetch-depth: 0 # Full history for git diff operations
 
       - name: Setup pnpm
-        uses: pnpm/action-setup@41ff72655975bd51cab0327fa583b6e92b6d3061  # v4.2.0
+        uses: pnpm/action-setup@41ff72655975bd51cab0327fa583b6e92b6d3061 # v4.2.0
         with:
           version: 9
 
       - name: Setup Node.js
-        uses: actions/setup-node@2028fbc5c25fe9cf00d9f06a71cc4710d4507903  # v6.0.0
+        uses: actions/setup-node@2028fbc5c25fe9cf00d9f06a71cc4710d4507903 # v6.0.0
         with:
           node-version: '20'
           cache: 'pnpm'
-
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
 
       # ============================================
       # LAYER 1: Supply Chain Security
       # ============================================
 
-      - name: Socket.dev Security Scan
-        uses: SocketDev/socket-security-action@6f55d8fa2cebd6ef40fad5e1dea9ae0edbe4ee13  # v2.0.1
+      # Socket Firewall wraps package manager to detect malicious packages
+      # See: https://github.com/SocketDev/action
+      - name: Setup Socket Firewall
+        uses: SocketDev/action@4337a545deecc20f19a909e52db7a2f6ba292f42 # v1.2.0
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-        continue-on-error: true  # Don't block if service unavailable
+          mode: firewall-free
+
+      - name: Install dependencies (with Socket scan)
+        run: sfw pnpm install --frozen-lockfile
+
+      # Generate CI-only fallback secret if PAYLOAD_SECRET is not configured.
+      # This random value is used only for type generation and build validation
+      # in CI - it is never used in production. Meets 32+ char requirement.
+      - name: Generate CI Payload Secret
+        if: env.HAS_PAYLOAD_SECRET != 'true'
+        run: echo "PAYLOAD_SECRET_CI=$(openssl rand -hex 32)" >> "$GITHUB_ENV"
 
       # ============================================
-      # PLACEHOLDER: Quality Checks (Future Phases)
+      # LAYER 2: Code Quality
       # ============================================
 
-      - name: Placeholder - Quality checks coming soon
+      - name: ESLint
+        run: pnpm lint --format stylish
+
+      - name: Prettier Check
+        run: pnpm exec prettier --check .
+
+      - name: Knip - Dead Code Detection
+        run: pnpm exec knip --production
+
+      - name: Generate Payload Types
+        env:
+          PAYLOAD_SECRET: ${{ secrets.PAYLOAD_SECRET || env.PAYLOAD_SECRET_CI }}
+        run: pnpm generate:types:payload
+
+      - name: Verify Type Sync
         run: |
-          echo "::notice::Phase 1-2 complete - Foundation workflow + Socket.dev"
-          echo "::notice::Future phases will add: Knip, ESLint, Build, etc."
+          if git diff --exit-code src/payload-types.ts; then
+            echo "✅ Payload types are synchronized"
+          else
+            echo "❌ ERROR: Payload types are out of sync!"
+            echo "Run 'pnpm generate:types:payload' and commit the changes"
+            git diff src/payload-types.ts
+            exit 1
+          fi
+
+      # ============================================
+      # LAYER 3: Build Validation
+      # ============================================
+
+      - name: Cache Next.js Build
+        uses: actions/cache@5a3ec84eff668545956fd18022155c47e93e2684 # v4.2.3
+        with:
+          path: .next/cache
+          # Cache invalidates only on dependency or config changes, not source files.
+          # Next.js build cache handles incremental compilation internally.
+          key: nextjs-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml', 'next.config.ts', 'tsconfig.json') }}
+          restore-keys: |
+            nextjs-${{ runner.os }}-
+
+      # --experimental-build-mode compile: Required for No-DB builds.
+      # Cloudflare D1 is not accessible in GitHub Actions, so we use compile-only
+      # mode which validates TypeScript and generates bundles without executing
+      # runtime code that would require database connectivity.
+      # See: docs/specs/CI-CD-Security.md Section 4.1
+      - name: Next.js Build (No-DB Mode)
+        run: pnpm exec next build --experimental-build-mode compile
+        env:
+          PAYLOAD_SECRET: ${{ secrets.PAYLOAD_SECRET || env.PAYLOAD_SECRET_CI }}
+
+      # ============================================
+      # PLACEHOLDER: Future Phases
+      # ============================================
+
+      - name: Quality Gate Summary
+        run: |
+          echo "::notice::✅ Layer 1: Supply Chain Security (Socket Firewall)"
+          echo "::notice::✅ Layer 2: Code Quality (ESLint, Prettier, Knip, Type Sync)"
+          echo "::notice::✅ Layer 3: Build Validation (Next.js No-DB Mode)"
+          echo "::notice::⏳ Coming: dependency-cruiser, Lighthouse CI, Stryker"

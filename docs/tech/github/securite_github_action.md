@@ -27,20 +27,21 @@ Les workflows GitHub Actions sont définis en YAML. Lorsqu'une exécution de wor
 Considérons la configuration vulnérable suivante, identifiée fréquemment dans les audits de sécurité :
 
 ```yaml
-- name: Vérifier le titre de la PR  
- run: |  
- title="${{ github.event.pull_request.title }}"  
- if [[ $title =~ ^octocat ]]; then  
- echo "Titre Valide"  
+- name: Vérifier le titre de la PR
+ run: |
+ title="${{ github.event.pull_request.title }}"
+ if [[ $title =~ ^octocat ]]; then
+ echo "Titre Valide"
  fi
 ```
-Dans ce scénario, le développeur présume que le titre est une simple chaîne alphanumérique. Cependant, un attaquant peut créer une Pull Request avec le titre spécifiquement forgé : a"; ls $GITHUB_WORKSPACE".  
-Puisque GitHub substitue la valeur _avant_ que le shell ne la voie, le runner reçoit et exécute la commande suivante :
 
+Dans ce scénario, le développeur présume que le titre est une simple chaîne alphanumérique. Cependant, un attaquant peut créer une Pull Request avec le titre spécifiquement forgé : a"; ls $GITHUB*WORKSPACE".  
+Puisque GitHub substitue la valeur \_avant* que le shell ne la voie, le runner reçoit et exécute la commande suivante :
 
 ```bash
 title="a"; ls $GITHUB_WORKSPACE""
 ```
+
 Le shell interprète le premier guillemet comme la fermeture de la chaîne, exécute ls $GITHUB_WORKSPACE (révélant le contenu du répertoire, et potentiellement des fichiers sensibles), puis continue. Un attaquant sophistiqué remplacerait ls par des commandes pour exfiltrer le contenu des variables d'environnement (incluant potentiellement le GITHUB_TOKEN ou d'autres secrets) vers un serveur externe via curl.
 
 ### **2.2 Stratégies de Mitigation par Variables d'Environnement Intermédiaires**
@@ -49,14 +50,15 @@ L'architecture défensive requise pour neutraliser cette vulnérabilité consist
 L'implémentation sécurisée de l'exemple précédent se présente ainsi :
 
 ```yaml
-- name: Vérifier le titre de la PR  
- env:  
- TITLE: ${{ github.event.pull_request.title }}  
- run: |  
- if]; then  
- echo "Titre Valide"  
+- name: Vérifier le titre de la PR
+ env:
+ TITLE: ${{ github.event.pull_request.title }}
+ run: |
+ if]; then
+ echo "Titre Valide"
  fi
 ```
+
 Dans cette configuration durcie, si l'attaquant envoie la charge utile malveillante, la variable d'environnement TITLE contiendra simplement la chaîne littérale a"; ls $GITHUB_WORKSPACE". Le shell traite cela comme de la donnée brute, neutralisant l'attaque. Ce principe de "sanitization" par l'environnement doit s'appliquer à toutes les entrées non fiables, incluant github.event.issue.body, github.event.pull_request.head.ref, et github.event.comment.body.
 
 ### **2.3 Injections dans les Actions Personnalisées**
@@ -136,17 +138,18 @@ Le standard moderne pour l'authentification cloud dans GitHub Actions est OpenID
 Pour activer cela, le workflow doit impérativement posséder la permission id-token: write.
 
 ```yaml
-permissions:  
- id-token: write  
+permissions:
+ id-token: write
  contents: read
 
-steps:  
- - name: Configurer les Identifiants AWS  
- uses: aws-actions/configure-aws-credentials@v4  
- with:  
- role-to-assume: arn:aws:iam::123456789012:role/mon-role-github  
+steps:
+ - name: Configurer les Identifiants AWS
+ uses: aws-actions/configure-aws-credentials@v4
+ with:
+ role-to-assume: arn:aws:iam::123456789012:role/mon-role-github
  aws-region: us-east-1
 ```
+
 Cette approche garantit que même si un runner est compromis, l'attaquant n'obtient qu'un jeton qui expire automatiquement (généralement sous une heure) et qui est strictement scopé aux permissions du rôle assumé.
 
 ### **4.3 Le Principe de Moindre Privilège (GITHUB_TOKEN)**
@@ -155,11 +158,12 @@ Le GITHUB_TOKEN par défaut est généré automatiquement pour chaque exécution
 Les organisations doivent appliquer le principe de **Moindre Privilège** en définissant les permissions par défaut des workflows sur read-only au niveau de l'organisation ou du dépôt.1 Au sein du YAML, les permissions doivent être déclarées explicitement. Si un job a seulement besoin de lire le contenu, il ne doit pas avoir accès en écriture aux issues ou aux déploiements :
 
 ```
-# Bonne Pratique : Définition explicite des permissions minimales  
-permissions:  
- contents: read  
+# Bonne Pratique : Définition explicite des permissions minimales
+permissions:
+ contents: read
  pull-requests: write # Uniquement si nécessaire pour commenter
 ```
+
 Cette pratique limite drastiquement le "rayon d'explosion" (blast radius) si le jeton est récupéré par un attaquant.
 
 ## **5 Sécurité de la Chaîne d'Approvisionnement : Le Dilemme des Dépendances**
@@ -176,8 +180,9 @@ La seule méthode garantissant l'immuabilité est d'épingler les Actions à leu
 **Configuration Sécurisée :**
 
 ```yaml
-- uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744 
+- uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744
 ```
+
 # v3.6.0
 
 L'épinglage assure que même si le tag v3 est détourné ou le dépôt compromis, le workflow continue d'utiliser la version connue et vérifiée du code.
@@ -239,7 +244,7 @@ Pour gérer la complexité de la sécurité GitHub Actions, les organisations do
 
 ### **8.1 Analyse Statique : Zizmor**
 
-Zizmor est un outil d'analyse statique spécifiquement conçu pour auditer les workflows GitHub Actions. Il analyse les fichiers YAML pour identifier les modèles non sécurisés avant qu'ils ne soient commis. 
+Zizmor est un outil d'analyse statique spécifiquement conçu pour auditer les workflows GitHub Actions. Il analyse les fichiers YAML pour identifier les modèles non sécurisés avant qu'ils ne soient commis.
 Les capacités incluent la détection de :
 
 - Risques d'injection de script (interpolation d'entrées utilisateur).

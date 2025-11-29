@@ -18,6 +18,7 @@
 Cloner le nouveau repo, installer les dépendances (`pnpm`) et vérifier les bindings dans `wrangler.toml`, afin de disposer d'un environnement de développement local fonctionnel connecté à Cloudflare.
 
 **Acceptance Criteria**:
+
 - Le repository peut être cloné et les dépendances installées avec `pnpm install`
 - Les variables d'environnement sont configurées (`.env` avec `PAYLOAD_SECRET`)
 - Les bindings Wrangler (D1, R2) sont vérifiés et fonctionnels
@@ -52,6 +53,7 @@ This story is decomposed into **2 atomic phases** based on:
 ### Atomic Phase Principles
 
 Each phase follows these principles:
+
 - **Independent**: Can be implemented and tested separately
 - **Deliverable**: Produces tangible, working functionality
 - **Sized appropriately**: 0.5-1 day of work (simple validation/documentation story)
@@ -69,6 +71,7 @@ Validation               Documentation
 ```
 
 **Rationale for 2 Phases**:
+
 - This is a **validation-focused story** - the infrastructure already exists
 - Phase 1 validates everything works correctly (verify before documenting)
 - Phase 2 creates documentation so any developer can replicate the setup
@@ -79,19 +82,20 @@ Validation               Documentation
 
 Based on project analysis, the following is **already in place**:
 
-| Component | Status | Notes |
-|-----------|--------|-------|
-| Repository cloned | ✅ Complete | Working directory: `/home/negus/dev/sebcdev-payload` |
-| Dependencies installed | ✅ Complete | `pnpm install` executed |
-| `wrangler.jsonc` configured | ✅ Complete | D1 and R2 bindings present |
-| `.env` file | ✅ Exists | Need to verify completeness |
-| `.env.example` | ✅ Exists | Template for new developers |
-| `payload-types.ts` | ✅ Generated | Types present |
-| `cloudflare-env.d.ts` | ⚠️ Verify | Need to confirm generation |
-| Development server | ⚠️ Verify | Need to test `pnpm dev` |
-| Developer documentation | ❌ Missing | Needs creation |
+| Component                   | Status       | Notes                                                |
+| --------------------------- | ------------ | ---------------------------------------------------- |
+| Repository cloned           | ✅ Complete  | Working directory: `/home/negus/dev/sebcdev-payload` |
+| Dependencies installed      | ✅ Complete  | `pnpm install` executed                              |
+| `wrangler.jsonc` configured | ✅ Complete  | D1 and R2 bindings present                           |
+| `.env` file                 | ✅ Exists    | Need to verify completeness                          |
+| `.env.example`              | ✅ Exists    | Template for new developers                          |
+| `payload-types.ts`          | ✅ Generated | Types present                                        |
+| `cloudflare-env.d.ts`       | ⚠️ Verify    | Need to confirm generation                           |
+| Development server          | ⚠️ Verify    | Need to test `pnpm dev`                              |
+| Developer documentation     | ❌ Missing   | Needs creation                                       |
 
 **What remains**:
+
 1. **Validate** all components work together correctly
 2. **Document** the setup process for team onboarding
 
@@ -104,6 +108,7 @@ Based on project analysis, the following is **already in place**:
 **Objective**: Verify all local development components are correctly configured and synchronized with Cloudflare infrastructure
 
 **Scope**:
+
 - Validate Wrangler authentication and bindings
 - Verify D1 database connection works locally
 - Verify R2 bucket binding is accessible
@@ -113,9 +118,11 @@ Based on project analysis, the following is **already in place**:
 - Ensure no TypeScript or ESLint errors
 
 **Dependencies**:
+
 - **Requires Story 1.1**: Infrastructure must be deployed (✅ Completed)
 
 **Key Deliverables**:
+
 - [ ] Wrangler authentication verified (`wrangler whoami`)
 - [ ] D1 binding tested and functional
 - [ ] R2 binding tested and functional
@@ -128,6 +135,7 @@ Based on project analysis, the following is **already in place**:
 - [ ] No ESLint errors (`pnpm lint`)
 
 **Files Affected** (~5 files):
+
 - `cloudflare-env.d.ts` (regenerate/verify)
 - `src/payload-types.ts` (regenerate/verify)
 - `.env` (verify completeness)
@@ -141,16 +149,19 @@ Based on project analysis, the following is **already in place**:
 **Risk Level**: 🟢 Low
 
 **Risk Factors**:
+
 - Wrangler authentication may have expired
 - Local D1 simulation might have issues
 - TypeScript configuration might need adjustments
 
 **Mitigation Strategies**:
+
 - Re-authenticate with `wrangler login` if needed
 - Use `wrangler d1 execute` to test D1 directly
 - Check Wrangler and Payload versions match documentation
 
 **Success Criteria**:
+
 - [ ] All bindings verified as functional
 - [ ] Development server starts in < 30 seconds
 - [ ] No console errors on homepage load
@@ -159,12 +170,14 @@ Based on project analysis, the following is **already in place**:
 - [ ] ESLint passes with no errors
 
 **Technical Notes**:
+
 - Wrangler simulates D1 and R2 locally via `wrangler dev`
 - The `pnpm dev` script uses Next.js dev server with Wrangler bindings
 - Types must be regenerated after any schema changes
 - The admin panel requires database connection for first-user setup
 
 **Commits Breakdown**:
+
 1. **Commit 1.1**: Verify Wrangler authentication and bindings
    - Run `wrangler whoami` to verify authentication
    - Test D1 connection: `wrangler d1 execute D1 --command "SELECT name FROM sqlite_master WHERE type='table'" --local`
@@ -189,6 +202,7 @@ Based on project analysis, the following is **already in place**:
 **Objective**: Create comprehensive documentation enabling any developer to set up and maintain the local development environment
 
 **Scope**:
+
 - Create quick-start guide for new developers
 - Document all essential commands and scripts
 - Create troubleshooting guide for common issues
@@ -197,9 +211,11 @@ Based on project analysis, the following is **already in place**:
 - Create environment variables reference
 
 **Dependencies**:
+
 - **Requires Phase 1**: Environment must be validated before documenting
 
 **Key Deliverables**:
+
 - [ ] Quick-start guide created (`docs/development/QUICKSTART.md`)
 - [ ] Commands reference documented (`docs/development/COMMANDS.md`)
 - [ ] Troubleshooting guide created (`docs/development/TROUBLESHOOTING.md`)
@@ -208,6 +224,7 @@ Based on project analysis, the following is **already in place**:
 - [ ] CLAUDE.md updated with development workflow
 
 **Files Created** (~5 new files):
+
 - `docs/development/QUICKSTART.md` (new - onboarding guide)
 - `docs/development/COMMANDS.md` (new - command reference)
 - `docs/development/TROUBLESHOOTING.md` (new - common issues)
@@ -215,6 +232,7 @@ Based on project analysis, the following is **already in place**:
 - `docs/development/ENVIRONMENT.md` (new - env vars reference)
 
 **Files Modified** (~1 file):
+
 - `CLAUDE.md` (update with development workflow if needed)
 
 **Estimated Complexity**: 🟢 Low
@@ -224,15 +242,18 @@ Based on project analysis, the following is **already in place**:
 **Risk Level**: 🟢 Low
 
 **Risk Factors**:
+
 - Documentation might miss edge cases
 - Some issues might only appear on different OS/environments
 
 **Mitigation Strategies**:
+
 - Test documentation steps on clean environment if possible
 - Include OS-specific notes where relevant (Windows, macOS, Linux)
 - Request team review of documentation
 
 **Success Criteria**:
+
 - [ ] New developer can start in < 15 minutes following guide
 - [ ] All common commands documented with examples
 - [ ] Top 5 common issues covered in troubleshooting
@@ -241,12 +262,14 @@ Based on project analysis, the following is **already in place**:
 - [ ] Documentation reviewed by at least one team member
 
 **Technical Notes**:
+
 - Documentation should be concise and actionable
 - Include command examples that can be copy-pasted
 - Reference official documentation where appropriate
 - Keep troubleshooting guide updated as new issues are discovered
 
 **Commits Breakdown**:
+
 1. **Commit 2.1**: Create quick-start guide
    - Create `docs/development/QUICKSTART.md`
    - Document prerequisites (Node.js, pnpm, Wrangler)
@@ -286,6 +309,7 @@ Phase 2 (Developer Documentation)
 ### Critical Path
 
 **Must follow this order**:
+
 1. Phase 1 → Phase 2
 
 **Cannot be parallelized**: Documentation should not be written until environment is validated.
@@ -293,6 +317,7 @@ Phase 2 (Developer Documentation)
 ### Blocking Dependencies
 
 **Phase 1 blocks**:
+
 - Phase 2: Cannot document processes that haven't been validated
 
 **No external blocking dependencies** - Story 1.1 (prerequisite) is already completed.
@@ -303,33 +328,36 @@ Phase 2 (Developer Documentation)
 
 ### Overall Estimates
 
-| Metric                   | Estimate           | Notes                                    |
-| ------------------------ | ------------------ | ---------------------------------------- |
-| **Total Phases**         | 2                  | Validation + Documentation               |
-| **Total Duration**       | 1 day              | Based on sequential implementation       |
-| **Parallel Duration**    | N/A                | Phases are sequential                    |
-| **Total Commits**        | ~6-7               | Across all phases                        |
-| **Total Files**          | ~6 new, ~3 modified| Mostly documentation                     |
-| **Test Coverage Target** | Manual validation  | Configuration story, not code            |
+| Metric                   | Estimate            | Notes                              |
+| ------------------------ | ------------------- | ---------------------------------- |
+| **Total Phases**         | 2                   | Validation + Documentation         |
+| **Total Duration**       | 1 day               | Based on sequential implementation |
+| **Parallel Duration**    | N/A                 | Phases are sequential              |
+| **Total Commits**        | ~6-7                | Across all phases                  |
+| **Total Files**          | ~6 new, ~3 modified | Mostly documentation               |
+| **Test Coverage Target** | Manual validation   | Configuration story, not code      |
 
 ### Per-Phase Timeline
 
-| Phase | Duration | Commits | Start After | Blocks   |
-|-------|----------|---------|-------------|----------|
-| 1. Environment Validation | 0.5d | 2-3 | Story 1.1 | Phase 2 |
-| 2. Developer Documentation | 0.5d | 3-4 | Phase 1 | - |
+| Phase                      | Duration | Commits | Start After | Blocks  |
+| -------------------------- | -------- | ------- | ----------- | ------- |
+| 1. Environment Validation  | 0.5d     | 2-3     | Story 1.1   | Phase 2 |
+| 2. Developer Documentation | 0.5d     | 3-4     | Phase 1     | -       |
 
 ### Resource Requirements
 
 **Team Composition**:
+
 - 1 developer familiar with the codebase
 - 1 reviewer for documentation quality
 
 **External Dependencies**:
+
 - Cloudflare account access (for Wrangler authentication)
 - None other (all infrastructure already provisioned)
 
 **Required Tools**:
+
 - Node.js ^18.20.2 or >=20.9.0
 - pnpm ^9 or ^10
 - Wrangler CLI (included in devDependencies)
@@ -345,12 +373,12 @@ Phase 2 (Developer Documentation)
 
 ### Overall Story Risks
 
-| Risk | Likelihood | Impact | Mitigation |
-|------|------------|--------|------------|
-| Wrangler authentication expired | Low | Low | Re-authenticate with `wrangler login` |
-| TypeScript errors after type generation | Low | Medium | Check for schema changes, fix any issues |
-| Development server fails to start | Low | Medium | Check logs, verify bindings, restart |
-| Documentation becomes outdated | Medium | Low | Review documentation periodically |
+| Risk                                    | Likelihood | Impact | Mitigation                               |
+| --------------------------------------- | ---------- | ------ | ---------------------------------------- |
+| Wrangler authentication expired         | Low        | Low    | Re-authenticate with `wrangler login`    |
+| TypeScript errors after type generation | Low        | Medium | Check for schema changes, fix any issues |
+| Development server fails to start       | Low        | Medium | Check logs, verify bindings, restart     |
+| Documentation becomes outdated          | Medium     | Low    | Review documentation periodically        |
 
 ---
 
@@ -358,10 +386,10 @@ Phase 2 (Developer Documentation)
 
 ### Test Coverage by Phase
 
-| Phase | Manual Tests | Verification Steps | Automated Tests |
-|-------|--------------|-------------------|-----------------|
-| 1. Environment Validation | 6 checks | Wrangler auth, D1, R2, types, server, admin | TypeScript, ESLint |
-| 2. Developer Documentation | 4 checks | Follow own docs, completeness, accuracy, review | None |
+| Phase                      | Manual Tests | Verification Steps                              | Automated Tests    |
+| -------------------------- | ------------ | ----------------------------------------------- | ------------------ |
+| 1. Environment Validation  | 6 checks     | Wrangler auth, D1, R2, types, server, admin     | TypeScript, ESLint |
+| 2. Developer Documentation | 4 checks     | Follow own docs, completeness, accuracy, review | None               |
 
 ### Test Milestones
 
@@ -371,6 +399,7 @@ Phase 2 (Developer Documentation)
 ### Quality Gates
 
 Each phase must pass:
+
 - [ ] All acceptance criteria met
 - [ ] No blocking errors
 - [ ] Documentation updated
@@ -383,6 +412,7 @@ Each phase must pass:
 ### Documentation to Generate per Phase
 
 For each phase, use the `phase-doc-generator` skill to create:
+
 1. INDEX.md - Phase overview and quick reference
 2. IMPLEMENTATION_PLAN.md - Detailed commit-by-commit plan
 3. COMMIT_CHECKLIST.md - Checklist for each atomic commit
@@ -396,6 +426,7 @@ For each phase, use the `phase-doc-generator` skill to create:
 ### Story-Level Documentation
 
 **This document** (PHASES_PLAN.md):
+
 - Strategic overview of the 2 phases
 - Phase coordination and dependencies
 - Cross-phase timeline and milestones
@@ -413,6 +444,7 @@ For each phase, use the `phase-doc-generator` skill to create:
    - Identify any missing tasks
 
 2. **Verify prerequisites**
+
    ```bash
    # Verify Wrangler authentication
    wrangler whoami
@@ -476,30 +508,34 @@ This story is considered complete when:
 
 ### Quality Metrics
 
-| Metric | Target | Actual |
-|--------|--------|--------|
-| Environment Validation Success | 100% | ✅ 100% |
-| TypeScript Compilation | 0 errors | ✅ 0 errors |
-| ESLint Validation | 0 errors | ✅ 0 errors |
-| Documentation Completeness | 100% | ✅ 100% |
-| Developer Onboarding Time | < 15 minutes | ✅ < 15 min |
+| Metric                         | Target       | Actual      |
+| ------------------------------ | ------------ | ----------- |
+| Environment Validation Success | 100%         | ✅ 100%     |
+| TypeScript Compilation         | 0 errors     | ✅ 0 errors |
+| ESLint Validation              | 0 errors     | ✅ 0 errors |
+| Documentation Completeness     | 100%         | ✅ 100%     |
+| Developer Onboarding Time      | < 15 minutes | ✅ < 15 min |
 
 ---
 
 ## 📚 Reference Documents
 
 ### Story Specification
+
 - Original spec: `docs/specs/epics/epic_1/story_1_2/story_1.2.md`
 
 ### Epic Documentation
+
 - Epic tracking: `docs/specs/epics/epic_1/EPIC_TRACKING.md`
 
 ### Related Documentation
+
 - PRD: `docs/specs/PRD.md` (Story 1.2 section, lines 299-301)
 - CLAUDE.md: Project-level instructions
 - Story 1.1: `docs/specs/epics/epic_1/story_1_1/` (prerequisite - completed)
 
 ### External Resources
+
 - [Wrangler CLI Documentation](https://developers.cloudflare.com/workers/wrangler/)
 - [Cloudflare D1 Documentation](https://developers.cloudflare.com/d1/)
 - [Cloudflare R2 Documentation](https://developers.cloudflare.com/r2/)
@@ -518,12 +554,14 @@ This story is considered complete when:
 ### Why Only 2 Phases?
 
 This is a **configuration and validation story**, not a feature development story:
+
 - The infrastructure is already provisioned (Story 1.1 complete)
 - The repository is already cloned and configured
 - Dependencies are already installed
 - The main work is **validation** (Phase 1) and **documentation** (Phase 2)
 
 **2 phases is optimal** because:
+
 1. Phase 1 focuses on verification - ensuring everything works
 2. Phase 2 focuses on knowledge transfer - enabling team onboarding
 3. Clear separation of concerns (validate, then document)
@@ -532,6 +570,7 @@ This is a **configuration and validation story**, not a feature development stor
 ### Existing Project State
 
 The project already has:
+
 - ✅ Repository cloned at `/home/negus/dev/sebcdev-payload`
 - ✅ Dependencies installed via `pnpm install`
 - ✅ `wrangler.jsonc` with D1 and R2 bindings
@@ -540,6 +579,7 @@ The project already has:
 - ✅ Build and test scripts configured
 
 **What this story adds**:
+
 - Verified working development environment
 - Comprehensive developer documentation
 - Troubleshooting resources

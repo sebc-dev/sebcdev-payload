@@ -8,28 +8,28 @@ Ce document centralise les informations de l'infrastructure Cloudflare pour le p
 
 ### Worker
 
-| Propriété | Valeur |
-|-----------|--------|
-| **Name** | `sebcdev-payload` |
-| **URL** | `https://sebcdev-payload.<account>.workers.dev` |
-| **Compatibility Date** | `2025-11-27` |
+| Propriété               | Valeur                                          |
+| ----------------------- | ----------------------------------------------- |
+| **Name**                | `sebcdev-payload`                               |
+| **URL**                 | `https://sebcdev-payload.<account>.workers.dev` |
+| **Compatibility Date**  | `2025-11-27`                                    |
 | **Compatibility Flags** | `nodejs_compat`, `global_fetch_strictly_public` |
 
 ### D1 Database
 
-| Propriété | Valeur |
-|-----------|--------|
-| **Database Name** | `sebcdev` |
-| **Database ID** | `d558666f-e7e9-4ff7-a972-dbc0d8bea923` |
-| **Binding** | `D1` |
-| **Remote** | `true` |
+| Propriété         | Valeur                                 |
+| ----------------- | -------------------------------------- |
+| **Database Name** | `sebcdev`                              |
+| **Database ID**   | `d558666f-e7e9-4ff7-a972-dbc0d8bea923` |
+| **Binding**       | `D1`                                   |
+| **Remote**        | `true`                                 |
 
 ### R2 Bucket
 
-| Propriété | Valeur |
-|-----------|--------|
-| **Bucket Name** | `sebcdev-payload-cache` |
-| **Binding** | `R2` |
+| Propriété          | Valeur                  |
+| ------------------ | ----------------------- |
+| **Bucket Name**    | `sebcdev-payload-cache` |
+| **Binding**        | `R2`                    |
 | **Preview Bucket** | `sebcdev-payload-cache` |
 
 ---
@@ -38,16 +38,16 @@ Ce document centralise les informations de l'infrastructure Cloudflare pour le p
 
 ### Requises
 
-| Variable | Description | Où la définir |
-|----------|-------------|---------------|
+| Variable         | Description                    | Où la définir                        |
+| ---------------- | ------------------------------ | ------------------------------------ |
 | `PAYLOAD_SECRET` | Secret Payload CMS (32+ chars) | `wrangler secret put PAYLOAD_SECRET` |
 
 ### Optionnelles
 
-| Variable | Description | Défaut |
-|----------|-------------|--------|
+| Variable         | Description         | Défaut       |
+| ---------------- | ------------------- | ------------ |
 | `CLOUDFLARE_ENV` | Environnement cible | `production` |
-| `NODE_ENV` | Mode Node.js | `production` |
+| `NODE_ENV`       | Mode Node.js        | `production` |
 
 ### Fichier Local (`.dev.vars`)
 
@@ -155,15 +155,15 @@ Le fichier `wrangler.jsonc` contient la configuration complète :
       "binding": "D1",
       "database_id": "d558666f-e7e9-4ff7-a972-dbc0d8bea923",
       "database_name": "sebcdev",
-      "remote": true
-    }
+      "remote": true,
+    },
   ],
   "r2_buckets": [
     {
       "binding": "R2",
-      "bucket_name": "sebcdev-payload-cache"
-    }
-  ]
+      "bucket_name": "sebcdev-payload-cache",
+    },
+  ],
 }
 ```
 

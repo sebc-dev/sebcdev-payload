@@ -8,15 +8,16 @@ Get your local development environment running in under 15 minutes.
 
 ### Required Software
 
-| Software | Version | Check Command |
-|----------|---------|---------------|
-| Node.js | ^18.20.2 or >=20.9.0 | `node --version` |
-| pnpm | ^9 or ^10 | `pnpm --version` |
-| Git | Any recent | `git --version` |
+| Software | Version              | Check Command    |
+| -------- | -------------------- | ---------------- |
+| Node.js  | ^18.20.2 or >=20.9.0 | `node --version` |
+| pnpm     | ^9 or ^10            | `pnpm --version` |
+| Git      | Any recent           | `git --version`  |
 
 **Install Node.js**: [nodejs.org](https://nodejs.org/) or use [nvm](https://github.com/nvm-sh/nvm)
 
 **Install pnpm**:
+
 ```bash
 npm install -g pnpm
 ```
@@ -37,6 +38,7 @@ cd sebcdev-payload
 ```
 
 **Expected Output**:
+
 ```
 Cloning into 'sebcdev-payload'...
 remote: Counting objects: ...
@@ -50,6 +52,7 @@ pnpm install
 ```
 
 **Expected Output**:
+
 ```
 Packages: +XXX
 Progress: resolved XXX, reused XXX, downloaded X, added XXX, done
@@ -72,6 +75,7 @@ openssl rand -base64 32
 ```
 
 Edit `.env` and add the generated secret:
+
 ```bash
 # Edit with your preferred editor
 nano .env
@@ -80,6 +84,7 @@ code .env
 ```
 
 **Set this variable**:
+
 ```env
 PAYLOAD_SECRET=<your-generated-secret>
 ```
@@ -98,11 +103,13 @@ wrangler login
 This opens a browser window for Cloudflare authentication. Authorize the CLI to access your account.
 
 **Verify Authentication**:
+
 ```bash
 wrangler whoami
 ```
 
 **Expected Output**:
+
 ```
 ✓ Logged in to Cloudflare account <your-email>
 ```
@@ -114,10 +121,12 @@ pnpm generate:types
 ```
 
 This generates:
+
 - `cloudflare-env.d.ts` - Cloudflare bindings types
 - `src/payload-types.ts` - Payload CMS types
 
 **Expected Output**:
+
 ```
 ✓ Generated cloudflare-env.d.ts
 ✓ Generated src/payload-types.ts
@@ -130,6 +139,7 @@ pnpm dev
 ```
 
 **Expected Output**:
+
 ```
   ▲ Next.js 15.x.x
 

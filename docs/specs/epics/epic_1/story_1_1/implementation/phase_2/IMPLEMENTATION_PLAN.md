@@ -32,6 +32,7 @@ The implementation is split into **5 independent commits** to:
 ### Commit 1: Wrangler Authentication & Environment Setup
 
 **Files**:
+
 - `.dev.vars` (create - local development secrets)
 - `docs/deployment/wrangler-auth.md` (new - authentication guide)
 
@@ -39,6 +40,7 @@ The implementation is split into **5 independent commits** to:
 **Duration**: 20-30 min (implementation) + 10-15 min (review)
 
 **Content**:
+
 - Authenticate Wrangler CLI with Cloudflare account via `wrangler login`
 - Verify account access and permissions (Workers, D1, R2)
 - Create `.dev.vars` file for local development secrets
@@ -47,12 +49,14 @@ The implementation is split into **5 independent commits** to:
 - Test Wrangler connectivity
 
 **Why it's atomic**:
+
 - Single responsibility: Establish Wrangler authentication and local environment
 - No external dependencies (first step in deployment process)
 - Can be validated independently by checking `wrangler whoami`
 - Foundational step that all subsequent commits depend on
 
 **Technical Validation**:
+
 ```bash
 # Verify Wrangler authentication
 wrangler whoami
@@ -68,6 +72,7 @@ cat .dev.vars
 **Expected Result**: Wrangler CLI authenticated, account verified, local secrets file created
 
 **Review Criteria**:
+
 - [ ] `wrangler whoami` shows correct account
 - [ ] `.dev.vars` contains PAYLOAD_SECRET (32+ characters)
 - [ ] `.dev.vars` added to `.gitignore` (security check)
@@ -79,6 +84,7 @@ cat .dev.vars
 ### Commit 2: D1 Database Provisioning
 
 **Files**:
+
 - Cloudflare D1 database (infrastructure)
 - `docs/deployment/d1-setup.md` (new - D1 provisioning guide)
 
@@ -86,6 +92,7 @@ cat .dev.vars
 **Duration**: 30-45 min (implementation) + 15-20 min (review)
 
 **Content**:
+
 - Create Cloudflare D1 database using `wrangler d1 create`
 - Name database: `sebcdev-payload-db` (or project-appropriate name)
 - Capture database ID and name for configuration
@@ -94,12 +101,14 @@ cat .dev.vars
 - Test database connectivity with simple query
 
 **Why it's atomic**:
+
 - Single responsibility: Provision D1 database only
 - Depends only on Wrangler authentication (Commit 1)
 - Can be validated independently by querying database
 - Database exists as standalone resource before binding configuration
 
 **Technical Validation**:
+
 ```bash
 # Create D1 database
 wrangler d1 create sebcdev-payload-db
@@ -124,6 +133,7 @@ wrangler d1 execute sebcdev-payload-db --command "SELECT 1 as test"
 **Expected Result**: D1 database created, accessible, and queryable. Database ID and name documented.
 
 **Review Criteria**:
+
 - [ ] D1 database created successfully
 - [ ] Database ID captured and documented
 - [ ] Database name follows project naming convention
@@ -136,6 +146,7 @@ wrangler d1 execute sebcdev-payload-db --command "SELECT 1 as test"
 ### Commit 3: R2 Bucket Provisioning
 
 **Files**:
+
 - Cloudflare R2 bucket (infrastructure)
 - `docs/deployment/r2-setup.md` (new - R2 provisioning guide)
 
@@ -143,6 +154,7 @@ wrangler d1 execute sebcdev-payload-db --command "SELECT 1 as test"
 **Duration**: 30-45 min (implementation) + 15-20 min (review)
 
 **Content**:
+
 - Create Cloudflare R2 bucket using `wrangler r2 bucket create`
 - Name bucket: `sebcdev-payload-media` (or project-appropriate name)
 - Capture bucket name for configuration
@@ -151,12 +163,14 @@ wrangler d1 execute sebcdev-payload-db --command "SELECT 1 as test"
 - Test bucket accessibility by listing objects (should be empty)
 
 **Why it's atomic**:
+
 - Single responsibility: Provision R2 bucket only
 - Depends only on Wrangler authentication (Commit 1)
 - Can be validated independently by listing bucket
 - Bucket exists as standalone resource before binding configuration
 
 **Technical Validation**:
+
 ```bash
 # Create R2 bucket
 wrangler r2 bucket create sebcdev-payload-media
@@ -181,6 +195,7 @@ wrangler r2 object list sebcdev-payload-media
 **Expected Result**: R2 bucket created, accessible, and can list objects. Bucket name documented.
 
 **Review Criteria**:
+
 - [ ] R2 bucket created successfully
 - [ ] Bucket name follows project naming convention
 - [ ] Bucket appears in Cloudflare dashboard
@@ -193,12 +208,14 @@ wrangler r2 object list sebcdev-payload-media
 ### Commit 4: Wrangler Bindings Configuration
 
 **Files**:
+
 - `wrangler.toml` (modify - add bindings for D1 and R2)
 
 **Size**: ~120 lines (modifications to wrangler.toml)
 **Duration**: 45-60 min (implementation) + 20-30 min (review)
 
 **Content**:
+
 - Update `wrangler.toml` with D1 binding (database_id from Commit 2)
 - Update `wrangler.toml` with R2 binding (bucket name from Commit 3)
 - Configure binding names: `DB` for D1, `MEDIA_BUCKET` for R2
@@ -207,12 +224,14 @@ wrangler r2 object list sebcdev-payload-media
 - Document binding configuration in comments
 
 **Why it's atomic**:
+
 - Single responsibility: Configure bindings between Worker and services
 - Depends on D1 database (Commit 2) and R2 bucket (Commit 3)
 - Can be validated independently by checking `wrangler.toml` syntax
 - Configuration file changes isolated from deployment
 
 **Technical Validation**:
+
 ```bash
 # Validate wrangler.toml syntax
 wrangler deploy --dry-run
@@ -237,6 +256,7 @@ cat wrangler.toml | grep "compatibility_flags"
 **Expected Result**: `wrangler.toml` updated with D1 and R2 bindings, configuration validated
 
 **Review Criteria**:
+
 - [ ] `wrangler.toml` has `[[d1_databases]]` section with correct database_id
 - [ ] `wrangler.toml` has `[[r2_buckets]]` section with correct bucket name
 - [ ] Binding names match code expectations (DB, MEDIA_BUCKET)
@@ -245,6 +265,7 @@ cat wrangler.toml | grep "compatibility_flags"
 - [ ] Bindings documented in inline comments
 
 **Example wrangler.toml bindings**:
+
 ```toml
 # D1 Database Binding
 [[d1_databases]]
@@ -266,6 +287,7 @@ compatibility_flags = ["nodejs_compat"]
 ### Commit 5: Initial Deployment & Migration Execution
 
 **Files**:
+
 - Cloudflare Worker (deployed infrastructure)
 - `docs/deployment/first-deployment.md` (new - deployment guide)
 - Wrangler secrets (PAYLOAD_SECRET)
@@ -274,6 +296,7 @@ compatibility_flags = ["nodejs_compat"]
 **Duration**: 1-1.5h (implementation + waiting for deployment) + 30-45 min (review)
 
 **Content**:
+
 - Set `PAYLOAD_SECRET` as Wrangler secret using `wrangler secret put`
 - Execute initial deployment using `wrangler deploy`
 - Monitor deployment progress and logs
@@ -285,12 +308,14 @@ compatibility_flags = ["nodejs_compat"]
 - Document deployment process and first deployment timestamp
 
 **Why it's atomic**:
+
 - Single responsibility: Deploy application and execute migrations
 - Depends on all previous commits (auth, D1, R2, bindings)
 - Can be validated independently by accessing Workers URL
 - Represents final integration of all infrastructure components
 
 **Technical Validation**:
+
 ```bash
 # Set PAYLOAD_SECRET as Wrangler secret
 wrangler secret put PAYLOAD_SECRET
@@ -330,6 +355,7 @@ wrangler tail
 **Expected Result**: Worker deployed, migrations executed, application accessible via public URL
 
 **Review Criteria**:
+
 - [ ] PAYLOAD_SECRET set as Wrangler secret (never in git)
 - [ ] `wrangler deploy` completes successfully
 - [ ] Worker shows "Active" status in Cloudflare dashboard
@@ -373,6 +399,7 @@ wrangler tail
 ### Validation at Each Step
 
 After each commit:
+
 ```bash
 # Verify Wrangler is authenticated (all commits)
 wrangler whoami
@@ -397,14 +424,14 @@ All must pass before moving to next commit.
 
 ## 📊 Commit Metrics
 
-| Commit | Files | Lines | Implementation | Review | Total |
-|--------|-------|-------|----------------|--------|-------|
-| 1. Wrangler Auth | 2 | ~50 | 25 min | 15 min | 40 min |
-| 2. D1 Provisioning | 1 | ~100 | 40 min | 20 min | 60 min |
-| 3. R2 Provisioning | 1 | ~80 | 40 min | 20 min | 60 min |
-| 4. Bindings Config | 1 | ~120 | 50 min | 25 min | 75 min |
-| 5. Deploy & Migrate | 2 | ~150 | 90 min | 40 min | 130 min |
-| **TOTAL** | **7** | **~500** | **4-5h** | **2h** | **6-7h** |
+| Commit              | Files | Lines    | Implementation | Review | Total    |
+| ------------------- | ----- | -------- | -------------- | ------ | -------- |
+| 1. Wrangler Auth    | 2     | ~50      | 25 min         | 15 min | 40 min   |
+| 2. D1 Provisioning  | 1     | ~100     | 40 min         | 20 min | 60 min   |
+| 3. R2 Provisioning  | 1     | ~80      | 40 min         | 20 min | 60 min   |
+| 4. Bindings Config  | 1     | ~120     | 50 min         | 25 min | 75 min   |
+| 5. Deploy & Migrate | 2     | ~150     | 90 min         | 40 min | 130 min  |
+| **TOTAL**           | **7** | **~500** | **4-5h**       | **2h** | **6-7h** |
 
 ---
 
@@ -438,6 +465,7 @@ All must pass before moving to next commit.
 ### Commit Messages
 
 Format:
+
 ```
 type(scope): short description (max 50 chars)
 
@@ -451,6 +479,7 @@ Part of Phase 2 - Commit X/5
 Types: `chore` (infrastructure), `feat` (new capability), `docs` (documentation)
 
 **Examples**:
+
 ```
 chore(deploy): configure Wrangler authentication
 
@@ -511,11 +540,13 @@ Before committing:
 ### High-Risk Areas
 
 **Commit 2 & 3 (D1/R2 Provisioning)**:
+
 - **Risk**: Quota limits reached on free Cloudflare plan
 - **Mitigation**: Check account quotas before provisioning (`wrangler limits`)
 - **Contingency**: Upgrade plan or use different account
 
 **Commit 5 (Deployment)**:
+
 - **Risk**: Deployment fails due to build errors or missing secrets
 - **Mitigation**: Run `wrangler deploy --dry-run` first, verify PAYLOAD_SECRET set
 - **Contingency**: Check Worker logs (`wrangler tail`), review build output

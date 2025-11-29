@@ -69,6 +69,7 @@ git config --global user.email "your.email@example.com"
 Set up authentication for GitHub access:
 
 **Option A: GitHub CLI (Recommended)**
+
 ```bash
 # Authenticate with GitHub
 gh auth login
@@ -83,6 +84,7 @@ gh auth status
 ```
 
 **Option B: SSH Key (Alternative)**
+
 ```bash
 # Generate SSH key (if you don't have one)
 ssh-keygen -t ed25519 -C "your.email@example.com"
@@ -102,6 +104,7 @@ ssh -T git@github.com
 ```
 
 **Option C: Personal Access Token (Alternative)**
+
 ```bash
 # Generate token at: https://github.com/settings/tokens
 # Select scopes: repo, workflow
@@ -125,6 +128,7 @@ node --version
 **If version is too old**:
 
 **Using nvm (Node Version Manager) - Recommended**:
+
 ```bash
 # Install nvm: https://github.com/nvm-sh/nvm
 
@@ -138,6 +142,7 @@ node --version
 ```
 
 **Using official installer**:
+
 - Download from https://nodejs.org/
 - Install the LTS version
 
@@ -156,6 +161,7 @@ pnpm --version
 ```
 
 **Why pnpm?**
+
 - Faster than npm
 - More efficient disk space usage
 - Better dependency resolution
@@ -187,12 +193,14 @@ gh api user --jq .login
 Verify you can access the Payload CMS template:
 
 **Via Browser**:
+
 1. Navigate to: https://github.com/payloadcms/payload
 2. Go to: `templates/` directory
 3. Locate: `with-cloudflare-d1` template
 4. Verify template README is visible
 
 **Via GitHub CLI**:
+
 ```bash
 # View template repository
 gh repo view payloadcms/payload
@@ -228,6 +236,7 @@ pwd
 Before starting Phase 1 implementation, verify all prerequisites:
 
 ### Tools Installed
+
 - [ ] Git installed and version ≥ 2.30
 - [ ] GitHub account created and accessible
 - [ ] GitHub CLI (`gh`) installed (or SSH/token configured)
@@ -236,21 +245,25 @@ Before starting Phase 1 implementation, verify all prerequisites:
 - [ ] Text editor/IDE ready
 
 ### Git Configuration
+
 - [ ] Git user.name configured
 - [ ] Git user.email configured
 - [ ] Git credential helper configured (or SSH)
 
 ### GitHub Authentication
+
 - [ ] GitHub CLI authenticated (`gh auth status` succeeds)
 - [ ] Can list repositories (`gh repo list` works)
 - [ ] Can access Payload CMS template repository
 
 ### Workspace
+
 - [ ] Workspace directory created
 - [ ] Sufficient disk space (≥ 2 GB free)
 - [ ] Terminal open in workspace directory
 
 ### Internet Connection
+
 - [ ] Stable internet connection available
 - [ ] Can access github.com
 - [ ] Can access npmjs.com (for package downloads)
@@ -266,6 +279,7 @@ Before starting Phase 1 implementation, verify all prerequisites:
 **Solutions**:
 
 **macOS**:
+
 ```bash
 # Install via Xcode Command Line Tools
 xcode-select --install
@@ -275,16 +289,19 @@ brew install git
 ```
 
 **Linux (Ubuntu/Debian)**:
+
 ```bash
 sudo apt update
 sudo apt install git
 ```
 
 **Windows**:
+
 - Download from https://git-scm.com/download/win
 - Or use WSL2 with Linux installation method
 
 **Verify**:
+
 ```bash
 git --version
 ```
@@ -298,6 +315,7 @@ git --version
 **Solutions**:
 
 1. **Re-authenticate**:
+
    ```bash
    gh auth logout
    gh auth login
@@ -311,6 +329,7 @@ git --version
    - Paste token when prompted
 
 **Verify**:
+
 ```bash
 gh auth status
 ```
@@ -324,6 +343,7 @@ gh auth status
 **Solutions**:
 
 **Using nvm (recommended)**:
+
 ```bash
 # Install nvm
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash
@@ -338,10 +358,12 @@ nvm alias default 20
 ```
 
 **Using official installer**:
+
 - Download from https://nodejs.org/
 - Install LTS version (20.x)
 
 **Verify**:
+
 ```bash
 node --version  # Should be v20.x.x or v18.x.x
 ```
@@ -368,6 +390,7 @@ source ~/.bashrc  # or ~/.zshrc
 ```
 
 **Verify**:
+
 ```bash
 pnpm --version
 ```
@@ -394,6 +417,7 @@ pnpm --version
    - Verify it includes D1 and R2 support
 
 **Verify**:
+
 ```bash
 gh repo view payloadcms/payload
 ```
@@ -407,11 +431,13 @@ gh repo view payloadcms/payload
 **Solutions**:
 
 1. **Check available space**:
+
    ```bash
    df -h
    ```
 
 2. **Free up space**:
+
    ```bash
    # Clear package manager cache
    pnpm store prune
@@ -425,6 +451,7 @@ gh repo view payloadcms/payload
 3. **Use different directory** (on drive with more space)
 
 **Verify**:
+
 ```bash
 df -h  # Check you have at least 2 GB free
 ```
@@ -436,6 +463,7 @@ df -h  # Check you have at least 2 GB free
 Complete this checklist before starting Commit 1:
 
 ### Installation
+
 - [ ] Git installed and working
 - [ ] GitHub account accessible
 - [ ] GitHub CLI configured and authenticated
@@ -444,23 +472,27 @@ Complete this checklist before starting Commit 1:
 - [ ] Text editor ready
 
 ### Configuration
+
 - [ ] Git user.name set
 - [ ] Git user.email set
 - [ ] GitHub authentication working
 - [ ] Can create repositories (verify permissions)
 
 ### Workspace
+
 - [ ] Workspace directory created
 - [ ] Terminal open in workspace
 - [ ] Disk space sufficient (≥ 2 GB)
 
 ### Network
+
 - [ ] Internet connection stable
 - [ ] Can access github.com
 - [ ] Can access npmjs.com
 - [ ] Can access Payload CMS template
 
 ### Verification Commands
+
 ```bash
 # Run all these - they should all succeed
 git --version
@@ -478,6 +510,7 @@ df -h | grep -E "/$"  # Check disk space
 ## 🔗 Reference Links
 
 ### Official Documentation
+
 - [Git Documentation](https://git-scm.com/doc)
 - [GitHub CLI Manual](https://cli.github.com/manual/)
 - [Node.js Documentation](https://nodejs.org/docs/)
@@ -485,10 +518,12 @@ df -h | grep -E "/$"  # Check disk space
 - [Payload CMS Documentation](https://payloadcms.com/docs)
 
 ### Templates
+
 - [Payload CMS Templates](https://github.com/payloadcms/payload/tree/main/templates)
 - [Cloudflare D1 Template](https://github.com/payloadcms/payload/tree/main/templates/with-cloudflare-d1)
 
 ### Installation Guides
+
 - [nvm Installation](https://github.com/nvm-sh/nvm#installing-and-updating)
 - [GitHub CLI Installation](https://github.com/cli/cli#installation)
 - [pnpm Installation](https://pnpm.io/installation)

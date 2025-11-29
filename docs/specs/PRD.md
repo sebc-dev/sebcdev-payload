@@ -2,6 +2,7 @@
 created: 2025-11-26T06:50
 updated: 2025-11-26T22:01
 ---
+
 ## Objectifs et Contexte
 
 ### Objectifs
@@ -33,7 +34,6 @@ C'est entendu. Voici la section complète des **Exigences (Requirements)**, cons
 - **CA2** : La gestion des utilisateurs est restreinte à un profil auteur unique pour la V1.
 - **CA3** : Un script de "seed" initialise la base de données avec les 9 catégories canoniques (Actualités, Tutoriel, Rétrospective, etc.) définies dans la stratégie de contenu.
 
-
 #### EF2 — Expérience d'Édition Riche & Structurée
 
 **Description** : L'éditeur de contenu (Lexical) produit un format structuré permettant des fonctionnalités de lecture avancées côté Front-end.
@@ -43,7 +43,6 @@ C'est entendu. Voici la section complète des **Exigences (Requirements)**, cons
 - **CA1** : L'éditeur supporte le texte riche, les blocs de code, les citations et les uploads d'images.
 - **CA2** : Le système génère automatiquement une Table des Matières (TOC) basée sur la hiérarchie des titres (h2, h3) du JSON Lexical.
 - **CA3** : Le système calcule et persiste le "Temps de lecture estimé" (global) lors de la sauvegarde de l'article.
-
 
 #### EF3 — Internationalisation Native (i18n)
 
@@ -168,6 +167,7 @@ C'est entendu. Voici la section complète des **Exigences (Requirements)**, cons
 **Critères d'acceptation (Organisation par phase) :**
 
 **Phase 1 - MVP (Essentials) :**
+
 - **CA1 (Sécurité Supply Chain)** : Action **Socket.dev** avec politique de sécurité différenciée :
   - **BLOCK** : Malware connu, typosquatting, scripts d'installation suspects (frontend)
   - **WARN** : Télémetrie, code natif (esbuild, fsevents légitimes)
@@ -183,6 +183,7 @@ C'est entendu. Voici la section complète des **Exigences (Requirements)**, cons
 - **CA5 (Style)** : Prettier + plugin Tailwind (ordre déterministe).
 
 **Phase 2 - Enhanced (Monitoring & Performance) :**
+
 - **CA6 (A11y)** : Tests Playwright + `axe-core`.
 - **CA7 (Architecture)** : Intégration de **dependency-cruiser** pour interdire les imports non conformes (ex: code serveur importé dans un composant client).
 - **CA9 (Performance Shield)** : Intégration de **Lighthouse CI** avec assertions sur métriques brutes (plus stables que les scores abstraits en CI) :
@@ -195,9 +196,11 @@ C'est entendu. Voici la section complète des **Exigences (Requirements)**, cons
   - Synchronisation obligatoire avec preview URLs Cloudflare (pattern `wait-for-url`)
 
 **Phase 3 - Advanced (Robustness) :**
+
 - **CA8 (Robustesse des Tests)** : Intégration de **Stryker** (Mutation Testing) exécuté sur les fichiers critiques (`src/lib/`, Server Actions).
 
 **Sécurité Pipeline :**
+
 - SHA Pinning des actions GitHub tierces (immuabilité cryptographique)
 - OIDC pour authentification Cloudflare (élimine secrets statiques) - Phase 2
 - Permissions GITHUB_TOKEN en read-only par défaut
@@ -224,18 +227,14 @@ Voici la proposition :
 ### Branding & Style Guide
 
 - **Palette de Couleurs :**
-    
-    - **Fond :** Gris anthracite profond (`#1A1D23`) pour réduire la fatigue oculaire.
-    - **Accent Primaire :** Vert canard lumineux (`#14B8A6`) pour les actions principales et liens.
-    - **Code couleur Catégories :** Une palette secondaire définie pour les 9 catégories canoniques.
+  - **Fond :** Gris anthracite profond (`#1A1D23`) pour réduire la fatigue oculaire.
+  - **Accent Primaire :** Vert canard lumineux (`#14B8A6`) pour les actions principales et liens.
+  - **Code couleur Catégories :** Une palette secondaire définie pour les 9 catégories canoniques.
 
 - **Typographie :**
-    
-    - **Corps/Titres :** `Inter` ou `Nunito Sans` pour une lisibilité maximale.
-    - **Code/Technique :** `JetBrains Mono` pour tous les blocs de code et terminologies techniques.
-        
+  - **Corps/Titres :** `Inter` ou `Nunito Sans` pour une lisibilité maximale.
+  - **Code/Technique :** `JetBrains Mono` pour tous les blocs de code et terminologies techniques.
 - **Composants UI :** Base `shadcn/ui` (Radix UI) personnalisée pour correspondre à l'identité "Dark mode", avec des bordures subtiles et des micro-interactions soignées.
-    
 
 ### Écrans Clés
 
@@ -259,16 +258,13 @@ Voici la proposition :
 ## Structure du Répertoire
 
 - **Type :** **Monorepo Logique** (Single Repo).
-    
 - **Organisation :** Application Next.js 15 standard.
-    
-    - `/app` : Routes Front-end (App Router).
-    - `/app/(payload)/admin` : Routes du Back-office Payload.
-    - `/src/payload.config.ts` : Configuration du CMS (Collections, Globals).
-    - `/src/lib` : Code partagé, utilitaires, composants UI.
-        
+  - `/app` : Routes Front-end (App Router).
+  - `/app/(payload)/admin` : Routes du Back-office Payload.
+  - `/src/payload.config.ts` : Configuration du CMS (Collections, Globals).
+  - `/src/lib` : Code partagé, utilitaires, composants UI.
 - **Rationale :** Simplifie le déploiement sur Cloudflare Workers (un seul Worker pour tout gérer) et partage le code (types Drizzle, composants) entre le Front et le CMS sans packages complexes.
-    
+
 ### Architecture de Service
 
 - **Style :** **Serverless / Edge-First**.
@@ -290,92 +286,93 @@ Voici la proposition :
 - **Cache :** Utilisation de l'API Cache de Next.js (`unstable_cache`, `revalidateTag`) couplée aux Hooks `afterChange` de Payload pour purger le cache (ISR) lors des mises à jour de contenu.
 
 ## Liste des Épics et User Stories
+
 ### 🧱 Epic 1 : Foundation & Cloudflare Architecture
 
 _Objectif : Déployer le socle technique via le template officiel et sécuriser le pipeline CI/CD._
 
 - **Story 1.1 : Initialisation & Déploiement 1-Click**
-    - **En tant que** Développeur, **je veux** utiliser le bouton "Deploy to Cloudflare" du template officiel `with-cloudflare-d1`, **afin de** provisionner automatiquement le Repo GitHub, la base D1, le bucket R2 et le Worker.
+  - **En tant que** Développeur, **je veux** utiliser le bouton "Deploy to Cloudflare" du template officiel `with-cloudflare-d1`, **afin de** provisionner automatiquement le Repo GitHub, la base D1, le bucket R2 et le Worker.
 - **Story 1.2 : Récupération & Configuration Locale**
-    - **En tant que** Développeur, **je veux** cloner le nouveau repo, installer les dépendances (`pnpm`) et vérifier les bindings dans `wrangler.toml`, **afin de** disposer d'un environnement de développement local fonctionnel connecté à Cloudflare.
+  - **En tant que** Développeur, **je veux** cloner le nouveau repo, installer les dépendances (`pnpm`) et vérifier les bindings dans `wrangler.toml`, **afin de** disposer d'un environnement de développement local fonctionnel connecté à Cloudflare.
 - **Story 1.3 : Pipeline "Quality Gate" (AI-Shield)**
-    - **En tant que** Lead Tech, **je veux** configurer un workflow GitHub Actions exhaustif comprenant :
-        1. **Socket.dev** (Sécurité Supply Chain).
-        2. **Knip** (Nettoyage code mort).
-        3. **Dependency Cruiser** (Validation architecture).
-        4. **Stryker** (Mutation Testing sur modules critiques).
-        5. **Lighthouse CI** (Audit Performance & SEO bloquant).
-        6. **ESLint/Prettier** & Sync des Types Payload.
-    - **Afin de** garantir une base de code saine, sécurisée et performante avant toute fusion.
+  - **En tant que** Lead Tech, **je veux** configurer un workflow GitHub Actions exhaustif comprenant :
+    1. **Socket.dev** (Sécurité Supply Chain).
+    2. **Knip** (Nettoyage code mort).
+    3. **Dependency Cruiser** (Validation architecture).
+    4. **Stryker** (Mutation Testing sur modules critiques).
+    5. **Lighthouse CI** (Audit Performance & SEO bloquant).
+    6. **ESLint/Prettier** & Sync des Types Payload.
+  - **Afin de** garantir une base de code saine, sécurisée et performante avant toute fusion.
 - **Story 1.4 : Adaptation du Pipeline de Déploiement**
-    - **En tant que** DevOps, **je veux** conditionner le script de déploiement Cloudflare (`wrangler deploy`) à la réussite préalable de la "Quality Gate", **afin d'** empêcher toute mise en production de code non conforme ou insécurisé.
+  - **En tant que** DevOps, **je veux** conditionner le script de déploiement Cloudflare (`wrangler deploy`) à la réussite préalable de la "Quality Gate", **afin d'** empêcher toute mise en production de code non conforme ou insécurisé.
 
 ### 📝 Epic 2 : Content Management System (CMS) Core
 
 _Objectif : Configurer le métier du blog sur l'infrastructure Payload._
 
 - **Story 2.1 : Configuration des Collections Blog & i18n**
-    - **En tant qu'** Auteur, **je veux** créer les collections `Articles` et `Pages` avec l'option `localized: true` sur les champs de contenu (Titre, Corps, SEO), **afin de** gérer mon contenu en Français et Anglais.
+  - **En tant qu'** Auteur, **je veux** créer les collections `Articles` et `Pages` avec l'option `localized: true` sur les champs de contenu (Titre, Corps, SEO), **afin de** gérer mon contenu en Français et Anglais.
 - **Story 2.2 : Validation du Stockage R2**
-    - **En tant qu'** Auteur, **je veux** uploader une image test depuis le panneau admin et vérifier sa présence dans le bucket R2, **afin de** valider que le plugin Cloud Storage est correctement configuré par le template.
+  - **En tant qu'** Auteur, **je veux** uploader une image test depuis le panneau admin et vérifier sa présence dans le bucket R2, **afin de** valider que le plugin Cloud Storage est correctement configuré par le template.
 - **Story 2.3 : Éditeur Lexical & Seed Data**
-    - **En tant qu'** Auteur, **je veux** disposer d'un éditeur Lexical configuré avec les blocs "Code", "Citation" et "Image", et exécuter un script de seed pour créer les 9 catégories canoniques, **afin de** commencer à rédiger du contenu structuré immédiatement.
+  - **En tant qu'** Auteur, **je veux** disposer d'un éditeur Lexical configuré avec les blocs "Code", "Citation" et "Image", et exécuter un script de seed pour créer les 9 catégories canoniques, **afin de** commencer à rédiger du contenu structuré immédiatement.
 
 ### 🎨 Epic 3 : Frontend Core & Design System
 
 _Objectif : Construire l'identité visuelle et la navigation bilingue._
 
 - **Story 3.1 : Routing i18n & Middleware**
-    - **En tant qu'** Utilisateur, **je veux** que l'URL reflète ma langue (`/fr` ou `/en`) et que ma préférence soit sauvegardée, **afin de** naviguer dans une interface localisée via `next-intl`.
+  - **En tant qu'** Utilisateur, **je veux** que l'URL reflète ma langue (`/fr` ou `/en`) et que ma préférence soit sauvegardée, **afin de** naviguer dans une interface localisée via `next-intl`.
 - **Story 3.2 : Intégration Design System (Dark Mode)**
-    - **En tant que** Développeur, **je veux** installer **Tailwind 4** et **shadcn/ui** et appliquer la charte graphique "Anthracite & Vert Canard", **afin de** remplacer le style par défaut du template par l'identité de la marque.
+  - **En tant que** Développeur, **je veux** installer **Tailwind 4** et **shadcn/ui** et appliquer la charte graphique "Anthracite & Vert Canard", **afin de** remplacer le style par défaut du template par l'identité de la marque.
 - **Story 3.3 : Layout Global & Navigation**
-    - **En tant qu'** Utilisateur, **je veux** voir un Header et un Footer cohérents sur toutes les pages, incluant un sélecteur de langue fonctionnel, **afin de** naviguer aisément dans le site.
+  - **En tant qu'** Utilisateur, **je veux** voir un Header et un Footer cohérents sur toutes les pages, incluant un sélecteur de langue fonctionnel, **afin de** naviguer aisément dans le site.
 
 ### 📖 Epic 4 : Article Reading Experience
 
 _Objectif : Offrir un confort de lecture optimal pour les articles techniques._
 
 - **Story 4.1 : Rendu Article & MDX**
-    - **En tant que** Lecteur, **je veux** voir le contenu riche (code syntax-highlighted, images, mise en forme) s'afficher correctement via les React Server Components, **afin de** lire les articles techniques confortablement.
+  - **En tant que** Lecteur, **je veux** voir le contenu riche (code syntax-highlighted, images, mise en forme) s'afficher correctement via les React Server Components, **afin de** lire les articles techniques confortablement.
 - **Story 4.2 : Table des Matières (TOC) & Progression**
-    - **En tant que** Lecteur, **je veux** voir une barre de progression de lecture en haut de page et une Table des Matières cliquable, **afin de** me repérer dans les contenus longs.
+  - **En tant que** Lecteur, **je veux** voir une barre de progression de lecture en haut de page et une Table des Matières cliquable, **afin de** me repérer dans les contenus longs.
 - **Story 4.3 : Live Preview**
-    - **En tant qu'** Auteur, **je veux** utiliser le mode "Live Preview" de Payload pour voir mes modifications en temps réel sur le frontend Next.js (écran scindé), **afin d'** ajuster la mise en page avant publication.
+  - **En tant qu'** Auteur, **je veux** utiliser le mode "Live Preview" de Payload pour voir mes modifications en temps réel sur le frontend Next.js (écran scindé), **afin d'** ajuster la mise en page avant publication.
 
 ### 🔍 Epic 5 : Search & Discovery Hub
 
 _Objectif : Faciliter la découverte et le filtrage des contenus._
 
 - **Story 5.1 : API de Recherche (Payload Local)**
-    - **En tant que** Développeur, **je veux** implémenter des fonctions de recherche utilisant l'API Locale de Payload (`payload.find`), **afin de** requêter le contenu sans latence réseau HTTP.
+  - **En tant que** Développeur, **je veux** implémenter des fonctions de recherche utilisant l'API Locale de Payload (`payload.find`), **afin de** requêter le contenu sans latence réseau HTTP.
 - **Story 5.2 : Interface de Filtrage Dynamique**
-    - **En tant qu'** Utilisateur, **je veux** filtrer les articles par Catégorie, Complexité, Durée et Date sans rechargement de page (via URL Search Params), **afin de** trouver rapidement un sujet précis.
+  - **En tant qu'** Utilisateur, **je veux** filtrer les articles par Catégorie, Complexité, Durée et Date sans rechargement de page (via URL Search Params), **afin de** trouver rapidement un sujet précis.
 - **Story 5.3 : Cartes Articles & Pagination**
-    - **En tant qu'** Utilisateur, **je veux** consulter les résultats sous forme de cartes riches (Titre, Extrait, Badges) avec une pagination fluide, **afin de** parcourir le catalogue efficacement.
+  - **En tant qu'** Utilisateur, **je veux** consulter les résultats sous forme de cartes riches (Titre, Extrait, Badges) avec une pagination fluide, **afin de** parcourir le catalogue efficacement.
 
 ### 🚀 Epic 6 : SEO & Performance Optimization
 
 _Objectif : Maximiser la visibilité moteur et la vitesse de chargement._
 
 - **Story 6.1 : Méta-données & Sitemap**
-    - **En tant que** Moteur de Recherche, **je veux** accéder à un `sitemap.xml` dynamique et lire des balises Méta/OpenGraph optimisées sur chaque page, **afin d'** indexer correctement le site.
+  - **En tant que** Moteur de Recherche, **je veux** accéder à un `sitemap.xml` dynamique et lire des balises Méta/OpenGraph optimisées sur chaque page, **afin d'** indexer correctement le site.
 - **Story 6.2 : Optimisation Images (Cloudflare Loader)**
-    - **En tant qu'** Utilisateur, **je veux** que les images soient servies au format WebP/AVIF et redimensionnées via Cloudflare Images (loader `next/image` custom), **afin de** réduire le temps de chargement et la consommation de données.
+  - **En tant qu'** Utilisateur, **je veux** que les images soient servies au format WebP/AVIF et redimensionnées via Cloudflare Images (loader `next/image` custom), **afin de** réduire le temps de chargement et la consommation de données.
 - **Story 6.3 : Stratégie de Cache ISR & Cold Start Optimization**
-    - **En tant qu'** Utilisateur, **je veux** que les pages soient servies depuis le cache Edge (avec revalidation via les Hooks Payload), **afin d'** obtenir un affichage quasi-instantané (Time-to-Value < 60s).
-    - **Sous-tâches techniques** :
-        1. Configurer `open-next.config.ts` avec `kvIncrementalCache` pour le cache incrémental sur Workers KV.
-        2. Créer les Cache Rules Cloudflare : bypass par cookie `payload-token`, méthodes non-GET, et "Override Origin" pour HTML/JSON RSC.
-        3. Implémenter le pattern Singleton dans `src/lib/payload.ts` pour `getPayload()`.
-        4. Configurer les Hooks `afterChange` sur les collections pour appeler `revalidateTag()`.
-        5. Auditer la taille du bundle et configurer `serverExternalPackages` si nécessaire.
+  - **En tant qu'** Utilisateur, **je veux** que les pages soient servies depuis le cache Edge (avec revalidation via les Hooks Payload), **afin d'** obtenir un affichage quasi-instantané (Time-to-Value < 60s).
+  - **Sous-tâches techniques** :
+    1. Configurer `open-next.config.ts` avec `kvIncrementalCache` pour le cache incrémental sur Workers KV.
+    2. Créer les Cache Rules Cloudflare : bypass par cookie `payload-token`, méthodes non-GET, et "Override Origin" pour HTML/JSON RSC.
+    3. Implémenter le pattern Singleton dans `src/lib/payload.ts` pour `getPayload()`.
+    4. Configurer les Hooks `afterChange` sur les collections pour appeler `revalidateTag()`.
+    5. Auditer la taille du bundle et configurer `serverExternalPackages` si nécessaire.
 
 ### 🛡️ Epic 7 : Quality Assurance & Hardening
 
 _Objectif : Valider la robustesse et la sécurité avant lancement._
 
 - **Story 7.1 : Tests E2E (Parcours Critiques)**
-    - **En tant que** QA, **je veux** exécuter des tests Playwright sur les parcours critiques (Navigation, Recherche, Lecture), **afin de** garantir l'absence de régressions fonctionnelles.
+  - **En tant que** QA, **je veux** exécuter des tests Playwright sur les parcours critiques (Navigation, Recherche, Lecture), **afin de** garantir l'absence de régressions fonctionnelles.
 - **Story 7.2 : Audit Sécurité & Accessibilité**
-    - **En tant qu'** Auditeur, **je veux** vérifier que le site respecte les normes WCAG (Accessibilité) et applique une CSP stricte, **afin de** garantir un site sûr et inclusif pour tous.
+  - **En tant qu'** Auditeur, **je veux** vérifier que le site respecte les normes WCAG (Accessibilité) et applique une CSP stricte, **afin de** garantir un site sûr et inclusif pour tous.

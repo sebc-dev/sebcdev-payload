@@ -14,11 +14,13 @@ Ce document définit l'architecture de sécurité CI/CD pour un projet présenta
 ### 1.2 Menaces Réelles vs Théoriques
 
 **Menaces Critiques pour ce Projet :**
+
 1. **Supply Chain Attacks** : Injection de dépendances malveillantes via hallucinations IA ou typosquatting
 2. **Code Quality Drift** : Accumulation de code mort, imports cassés, violations d'architecture générés par l'IA
 3. **Secret Exposure** : Fuite de credentials Cloudflare (API tokens, account ID) dans les logs ou via secrets statiques
 
 **Menaces Théoriques (Risque Négligeable) :**
+
 - ❌ Pull Request malveillantes (repo privé solo)
 - ❌ Exploitation de runners auto-hébergés (utilisation de GitHub-hosted runners uniquement)
 - ❌ Cache poisoning multi-branches (workflow simple, une seule branche principale)
@@ -55,18 +57,18 @@ Le pipeline CI/CD implémente une stratégie de **défense en profondeur** en 4 
 
 **Triggers Obligatoires** :
 
-| Événement | Configuration | Justification |
-|-----------|---------------|---------------|
-| `push` | `branches: ["main"]` | Maintient une ligne de base de sécurité propre |
-| `pull_request` | `types: [opened, synchronize, reopened]` | Rescanne après chaque nouveau commit |
-| `issue_comment` | `types: [created]` | **Critique** : Permet `@SocketSecurity ignore` pour débloquer les PRs |
+| Événement       | Configuration                            | Justification                                                         |
+| --------------- | ---------------------------------------- | --------------------------------------------------------------------- |
+| `push`          | `branches: ["main"]`                     | Maintient une ligne de base de sécurité propre                        |
+| `pull_request`  | `types: [opened, synchronize, reopened]` | Rescanne après chaque nouveau commit                                  |
+| `issue_comment` | `types: [created]`                       | **Critique** : Permet `@SocketSecurity ignore` pour débloquer les PRs |
 
 **Gestion de la Concurrence** :
 
 ```yaml
 concurrency:
   group: socket-${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true  # Annule les scans obsolètes
+  cancel-in-progress: true # Annule les scans obsolètes
 ```
 
 **Permissions Granulaires** :
@@ -76,16 +78,16 @@ jobs:
   socket-security:
     runs-on: ubuntu-latest
     permissions:
-      contents: read        # Cloner le code
-      issues: write         # Commenter sur les PRs
-      pull-requests: write  # Mettre à jour les statuts
+      contents: read # Cloner le code
+      issues: write # Commenter sur les PRs
+      pull-requests: write # Mettre à jour les statuts
     steps:
       - uses: actions/checkout@v4
       - name: Socket Security Scan
-        uses: SocketDev/action@v1  # ⚠️ Épingler par SHA en production
+        uses: SocketDev/action@v1 # ⚠️ Épingler par SHA en production
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          use-cache: true  # Évite le re-téléchargement du CLI à chaque run
+          use-cache: true # Évite le re-téléchargement du CLI à chaque run
 ```
 
 #### 2.1.2 Configuration socket.yml (Version 2)
@@ -98,20 +100,20 @@ version: 2
 
 # Exclusion des dossiers non-production (évite les faux positifs)
 projectIgnorePaths:
-  - "tests/fixtures/**"
-  - "docs/**"
-  - "**/__tests__/fixtures/**"
+  - 'tests/fixtures/**'
+  - 'docs/**'
+  - '**/__tests__/fixtures/**'
 
 # Optimisation monorepo : ne scanne que si les dépendances changent
 triggerPaths:
-  - "package.json"
-  - "**/package.json"      # Workspaces imbriqués
-  - "pnpm-lock.yaml"
-  - "socket.yml"
+  - 'package.json'
+  - '**/package.json' # Workspaces imbriqués
+  - 'pnpm-lock.yaml'
+  - 'socket.yml'
 
 # Désactivation contextuelle de règles (si build tools légitimes)
 issueRules:
-  unsafe-eval: false       # Désactiver si bundler utilise eval() légitimement
+  unsafe-eval: false # Désactiver si bundler utilise eval() légitimement
   # native-code: true      # Garder actif par défaut
 
 # Intégration GitHub App
@@ -122,25 +124,26 @@ githubApp:
 # Politique de licence (conformité légale)
 licensePolicies:
   deny:
-    - "GPL-2.0-only"
-    - "GPL-3.0-only"
-    - "AGPL-3.0-only"
+    - 'GPL-2.0-only'
+    - 'GPL-3.0-only'
+    - 'AGPL-3.0-only'
 ```
 
 **Rationale des exclusions** :
-- **`tests/fixtures/**`** : Peut contenir des dépendances volontairement malveillantes pour les tests de détection
+
+- **`tests/fixtures/**`\*\* : Peut contenir des dépendances volontairement malveillantes pour les tests de détection
 - **`triggerPaths`** : Évite les scans inutiles lors de modifications de code métier (économie de minutes CI)
 
 #### 2.1.3 Matrice de Politique de Sécurité
 
-| Catégorie de Menace | Action | Justification |
-|---------------------|--------|---------------|
-| **Malware Connu** | **BLOCK** | Risque existentiel immédiat |
-| **Typosquatting** | **BLOCK** | Presque toujours une erreur ou attaque |
-| **Scripts d'Installation** | **BLOCK** (Frontend) / **WARN** (Backend) | Vecteur n°1 des malwares npm (90%+) |
-| **Télémetrie** | **WARN** | Problème de confidentialité, revue humaine requise |
-| **Code Natif** | **WARN** | Légitime souvent (esbuild, fsevents), ne pas bloquer aveuglément |
-| **Non Maintenu** (> 2 ans) | **MONITOR** | Dette technique, pas une faille active |
+| Catégorie de Menace        | Action                                    | Justification                                                    |
+| -------------------------- | ----------------------------------------- | ---------------------------------------------------------------- |
+| **Malware Connu**          | **BLOCK**                                 | Risque existentiel immédiat                                      |
+| **Typosquatting**          | **BLOCK**                                 | Presque toujours une erreur ou attaque                           |
+| **Scripts d'Installation** | **BLOCK** (Frontend) / **WARN** (Backend) | Vecteur n°1 des malwares npm (90%+)                              |
+| **Télémetrie**             | **WARN**                                  | Problème de confidentialité, revue humaine requise               |
+| **Code Natif**             | **WARN**                                  | Légitime souvent (esbuild, fsevents), ne pas bloquer aveuglément |
+| **Non Maintenu** (> 2 ans) | **MONITOR**                               | Dette technique, pas une faille active                           |
 
 **Règle d'Or Install Scripts** : En frontend pur, les `postinstall` sont rarement justifiés. Adopter une approche **Whitelisting** : bloquer par défaut, autoriser explicitement via `@SocketSecurity ignore`.
 
@@ -174,7 +177,7 @@ Quand une alerte bloque une PR mais est jugée acceptable (faux positif ou risqu
 
 ```yaml
 # ✅ CORRECT : Épinglage par SHA complet
-- uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744  # v3.6.0
+- uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744 # v3.6.0
 
 # ❌ INCORRECT : Tag mutable
 - uses: actions/checkout@v3
@@ -182,11 +185,11 @@ Quand une alerte bloque une PR mais est jugée acceptable (faux positif ou risqu
 
 **Tableau de Comparaison** :
 
-| Méthode     | Syntaxe                        | Sécurité                                    | Maintenabilité                               | Recommandation                             |
-| :---------- | :----------------------------- | :------------------------------------------ | :------------------------------------------- | :----------------------------------------- |
-| **Tag**     | `uses: actions/checkout@v3`    | **Faible** (Mutable, sujet au détournement) | **Élevée** (Mises à jour mineures auto)      | À éviter pour workflows critiques          |
-| **Branche** | `uses: actions/checkout@main`  | **Très Faible** (Instable et mutable)       | **Élevée** (Toujours à jour)                 | Ne jamais utiliser                         |
-| **SHA**     | `uses: actions/checkout@f43a...` | **Élevée** (Immuable, vérifiable)         | **Faible** (Mises à jour manuelles requises) | **Fortement Recommandé** (avec Dependabot) |
+| Méthode     | Syntaxe                          | Sécurité                                    | Maintenabilité                               | Recommandation                             |
+| :---------- | :------------------------------- | :------------------------------------------ | :------------------------------------------- | :----------------------------------------- |
+| **Tag**     | `uses: actions/checkout@v3`      | **Faible** (Mutable, sujet au détournement) | **Élevée** (Mises à jour mineures auto)      | À éviter pour workflows critiques          |
+| **Branche** | `uses: actions/checkout@main`    | **Très Faible** (Instable et mutable)       | **Élevée** (Toujours à jour)                 | Ne jamais utiliser                         |
+| **SHA**     | `uses: actions/checkout@f43a...` | **Élevée** (Immuable, vérifiable)           | **Faible** (Mises à jour manuelles requises) | **Fortement Recommandé** (avec Dependabot) |
 
 **Exception** : Les actions officielles GitHub (`actions/checkout`, `actions/setup-node`) peuvent rester en tags pour simplicité, car elles bénéficient d'un audit de sécurité continu par GitHub.
 
@@ -201,29 +204,30 @@ Quand une alerte bloque une PR mais est jugée acceptable (faux positif ou risqu
 version: 2
 updates:
   # Surveillance des GitHub Actions
-  - package-ecosystem: "github-actions"
-    directory: "/"
+  - package-ecosystem: 'github-actions'
+    directory: '/'
     schedule:
-      interval: "weekly"
+      interval: 'weekly'
     open-pull-requests-limit: 10
 
   # Surveillance des dépendances npm
-  - package-ecosystem: "npm"
-    directory: "/"
+  - package-ecosystem: 'npm'
+    directory: '/'
     schedule:
-      interval: "weekly"
+      interval: 'weekly'
     open-pull-requests-limit: 10
     groups:
       # Regroupe les mises à jour mineures pour réduire le bruit
       minor-updates:
         patterns:
-          - "*"
+          - '*'
         update-types:
-          - "minor"
-          - "patch"
+          - 'minor'
+          - 'patch'
 ```
 
 **Bénéfices** :
+
 - Maintenance **zero-touch** des SHA épinglés
 - Détection automatique des CVE dans les dépendances npm
 - Réduction du bruit via grouping des mises à jour mineures
@@ -272,6 +276,7 @@ fi
 ```
 
 **Avantages** :
+
 - **Zéro dépendance tierce** : Élimine complètement le risque de supply chain attack
 - **Performance** : Ne lint que les fichiers réellement modifiés
 - **Transparence** : Code visible et auditable directement dans le workflow
@@ -285,6 +290,7 @@ fi
 ### 3.1 Knip - Détection de Code Mort
 
 **Problématique Spécifique IA** : Les outils de génération de code créent souvent des fichiers, fonctions ou imports qui ne sont jamais utilisés. Knip détecte :
+
 - Fichiers non importés
 - Exports non utilisés
 - Dépendances npm installées mais jamais importées
@@ -296,11 +302,11 @@ Next.js 15 (App Router) et Payload CMS 3.0 reposent sur une **inversion de contr
 
 **Points d'entrée implicites critiques :**
 
-| Framework | Fichiers conventionnels |
-|-----------|------------------------|
-| **Next.js 15** | `page.tsx`, `layout.tsx`, `loading.tsx`, `error.tsx`, `not-found.tsx`, `route.ts`, `middleware.ts`, `instrumentation.ts` |
-| **Payload CMS** | `payload.config.ts` (point d'entrée absolu de toute la logique CMS) |
-| **Drizzle** | `drizzle.config.ts` (détecté par le plugin Knip) |
+| Framework       | Fichiers conventionnels                                                                                                  |
+| --------------- | ------------------------------------------------------------------------------------------------------------------------ |
+| **Next.js 15**  | `page.tsx`, `layout.tsx`, `loading.tsx`, `error.tsx`, `not-found.tsx`, `route.ts`, `middleware.ts`, `instrumentation.ts` |
+| **Payload CMS** | `payload.config.ts` (point d'entrée absolu de toute la logique CMS)                                                      |
+| **Drizzle**     | `drizzle.config.ts` (détecté par le plugin Knip)                                                                         |
 
 **Exports Next.js protégés** : Le plugin Next.js de Knip reconnaît nativement les exports de configuration (`metadata`, `generateMetadata`, `dynamic`, `revalidate`, `viewport`). Ces exports ne seront pas marqués comme inutilisés.
 
@@ -312,32 +318,33 @@ Next.js 15 (App Router) et Payload CMS 3.0 reposent sur une **inversion de contr
   "$schema": "https://unpkg.com/knip@5/schema.json",
   "entry": [
     "next.config.ts",
-    "payload.config.ts",           // Point d'entrée Payload (critique)
-    "src/instrumentation.ts",      // Observabilité Next.js 15
-    "src/middleware.ts"
+    "payload.config.ts", // Point d'entrée Payload (critique)
+    "src/instrumentation.ts", // Observabilité Next.js 15
+    "src/middleware.ts",
   ],
   "project": ["src/**/*.{ts,tsx}"],
   "ignore": [
-    "src/payload-types.ts",        // Types auto-générés par Payload
-    "public/**"                    // Assets statiques (référencés par chaînes)
+    "src/payload-types.ts", // Types auto-générés par Payload
+    "public/**", // Assets statiques (référencés par chaînes)
   ],
   "exclude": [
-    "drizzle/migrations/**",       // Fichiers SQL critiques, jamais importés
-    "drizzle/meta/**"
+    "drizzle/migrations/**", // Fichiers SQL critiques, jamais importés
+    "drizzle/meta/**",
   ],
   "ignoreDependencies": [
-    "@cloudflare/workers-types"    // Types utilisés uniquement pour LSP
+    "@cloudflare/workers-types", // Types utilisés uniquement pour LSP
   ],
   "next": {
-    "entry": []                    // Plugin auto-détecte les conventions App Router
+    "entry": [], // Plugin auto-détecte les conventions App Router
   },
   "drizzle": {
-    "config": ["drizzle.config.ts"]
-  }
+    "config": ["drizzle.config.ts"],
+  },
 }
 ```
 
 **Rationale des exclusions :**
+
 - **`payload-types.ts`** : Fichier auto-généré par `pnpm generate:types:payload`. Peut contenir des types exportés mais non utilisés (normal pour un fichier généré).
 - **`drizzle/migrations/**`** : Fichiers SQL accumulés par `drizzle-kit generate`. Critiques pour l'intégrité DB mais jamais importés par le code applicatif.
 - **`public/**`** : Fichiers référencés uniquement via chaînes (`<Image src="/logo.png" />`), invisibles pour l'analyse statique.
@@ -423,28 +430,28 @@ Next.js 15 ne fournit pas encore de configuration Flat Config native. L'utilisat
 
 ```javascript
 // eslint.config.mjs
-import { FlatCompat } from '@eslint/eslintrc';
-import js from '@eslint/js';
-import typescriptEslint from 'typescript-eslint';
-import prettierConfig from 'eslint-config-prettier';
-import path from 'path';
-import { fileURLToPath } from 'url';
+import { FlatCompat } from '@eslint/eslintrc'
+import js from '@eslint/js'
+import typescriptEslint from 'typescript-eslint'
+import prettierConfig from 'eslint-config-prettier'
+import path from 'path'
+import { fileURLToPath } from 'url'
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-const compat = new FlatCompat({ baseDirectory: __dirname });
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
+const compat = new FlatCompat({ baseDirectory: __dirname })
 
 export default [
   // 1. Ignorances Globales (Performance)
   {
     ignores: [
-      ".next/**",
-      "node_modules/**",
-      "build/**",
-      "dist/**",
-      "**/*.d.ts",
-      "src/payload-types.ts", // ⚠️ CRITIQUE : Fichier généré par Payload
-      "coverage/**"
+      '.next/**',
+      'node_modules/**',
+      'build/**',
+      'dist/**',
+      '**/*.d.ts',
+      'src/payload-types.ts', // ⚠️ CRITIQUE : Fichier généré par Payload
+      'coverage/**',
     ],
   },
 
@@ -459,19 +466,20 @@ export default [
 
   // 5. Overrides Spécifiques Payload
   {
-    files: ["src/payload.config.ts", "src/scripts/*.ts"],
+    files: ['src/payload.config.ts', 'src/scripts/*.ts'],
     rules: {
-      "no-console": "off",     // Scripts serveur nécessitent des logs
-      "no-process-env": "off"  // Payload repose sur les variables d'env
-    }
+      'no-console': 'off', // Scripts serveur nécessitent des logs
+      'no-process-env': 'off', // Payload repose sur les variables d'env
+    },
   },
 
   // 6. Prettier (DOIT être en dernier)
   prettierConfig,
-];
+]
 ```
 
 **Points critiques** :
+
 - **`src/payload-types.ts` exclu** : Fichier généré automatiquement par Payload, linter ce fichier consomme des ressources CPU pour une valeur nulle
 - **Format `.mjs`** : Force le mode ESM, aligné avec `next.config.mjs`
 - **Ordre séquentiel** : Le tableau est traité dans l'ordre, `prettierConfig` doit être en dernier pour écraser les conflits
@@ -489,12 +497,13 @@ const config = {
   printWidth: 100,
   plugins: ['prettier-plugin-tailwindcss'],
   tailwindFunctions: ['cn', 'cva'],
-};
+}
 
-export default config;
+export default config
 ```
 
 **Bénéfices Tailwind Plugin** :
+
 - Ordre déterministe des classes Tailwind (réduit les conflicts git)
 - Détecte les classes dupliquées (ex: `p-4 padding-4`)
 
@@ -554,6 +563,7 @@ ESLint avec règles TypeScript est significativement plus lent que Prettier. Le 
 ```
 
 **Rationale des clés** :
+
 - `hashFiles('pnpm-lock.yaml')` : Une mise à jour d'ESLint ou de ses plugins invalide le cache
 - `hashFiles('**/*.[jt]s', '**/*.[jt]sx')` : Le contenu source exact pour maximiser les hits
 - `restore-keys` : Permet de récupérer un cache partiel depuis `main`, accélérant le linting des PRs (seuls les fichiers modifiés sont revérifiés)
@@ -574,11 +584,12 @@ ESLint avec règles TypeScript est significativement plus lent que Prettier. Le 
   run: pnpm exec next build --experimental-build-mode compile
   env:
     # Variables factices pour satisfaire les validations Payload
-    PAYLOAD_SECRET: "ci-build-dummy-secret-32-chars-min"
-    DATABASE_URI: "file:./dummy.db"
+    PAYLOAD_SECRET: 'ci-build-dummy-secret-32-chars-min'
+    DATABASE_URI: 'file:./dummy.db'
 ```
 
 **Ce que ce build valide** :
+
 - ✅ Compilation TypeScript réussie (pas d'erreurs de types)
 - ✅ Résolution de tous les imports (pas de modules manquants)
 - ✅ Génération des bundles client/serveur sans crash
@@ -617,7 +628,7 @@ ESLint avec règles TypeScript est significativement plus lent que Prettier. Le 
 ```yaml
 # .github/workflows/deploy.yml
 permissions:
-  id-token: write  # ⚠️ CRITIQUE : Permet la génération du JWT
+  id-token: write # ⚠️ CRITIQUE : Permet la génération du JWT
   contents: read
 
 jobs:
@@ -635,6 +646,7 @@ jobs:
 ```
 
 **Bénéfices** :
+
 - **Blast Radius Limité** : Token expiré automatiquement après 1h
 - **Auditabilité** : Chaque échange OIDC est loggé avec le SHA du commit déclencheur
 - **Zero Rotation** : Pas de rotation manuelle de secrets
@@ -650,8 +662,8 @@ jobs:
 ```yaml
 # .github/workflows/quality-gate.yml
 permissions:
-  contents: read      # Lecture seule du code
-  pull-requests: write  # Uniquement si commentaires de bot nécessaires
+  contents: read # Lecture seule du code
+  pull-requests: write # Uniquement si commentaires de bot nécessaires
   # Pas de 'issues: write', 'packages: write', etc.
 
 jobs:
@@ -698,6 +710,7 @@ jobs:
 **Principe** : Les variables d'environnement sont stockées dans la mémoire du processus. Le shell les référence **comme données**, pas comme code exécutable.
 
 **Inputs Non Fiables** :
+
 - `github.event.pull_request.title`
 - `github.event.pull_request.body`
 - `github.event.issue.body`
@@ -709,6 +722,7 @@ jobs:
 ### 6.2 Secrets Management
 
 **Règles Absolues** :
+
 1. ❌ **Jamais** de secrets inline dans le YAML (ex: `API_KEY: "sk-proj-abc123..."`)
 2. ❌ **Jamais** de secrets commités dans `.env` ou fichiers de config
 3. ✅ Utiliser exclusivement GitHub Secrets (`${{ secrets.CLOUDFLARE_API_TOKEN }}`)
@@ -717,6 +731,7 @@ jobs:
 **Masquage des Secrets dans les Logs** :
 
 GitHub masque automatiquement les valeurs de `secrets.*` dans les logs, **mais** :
+
 - Données structurées (JSON) échouent souvent au masquage
 - L'encodage (base64, hex) contourne le masquage
 - Les secrets dans les variables d'environnement custom ne sont pas automatiquement masqués
@@ -794,19 +809,20 @@ module.exports = {
       target: 'temporary-public-storage', // Gratuit, URLs publiques immédiates (7 jours)
     },
   },
-};
+}
 ```
 
 #### Tableau des Seuils d'Assertion Recommandés
 
-| Métrique | ID Lighthouse | Seuil Warn (Soft) | Seuil Error (Hard) | Justification |
-|----------|---------------|-------------------|--------------------| --------------|
-| **First Contentful Paint** | `first-contentful-paint` | > 1800 ms | > 3000 ms | Latence réseau CI gonfle le FCP |
-| **Largest Contentful Paint** | `largest-contentful-paint` | > 2500 ms | > 4000 ms | Sensible à Cloudflare Images et temps serveur |
-| **Cumulative Layout Shift** | `cumulative-layout-shift` | > 0.1 | > 0.25 | Doit être ~0 pour pages Next.js statiques |
-| **Total Blocking Time** | `total-blocking-time` | > 200 ms | > 600 ms | TBT élevé = problème d'hydratation React 19 |
+| Métrique                     | ID Lighthouse              | Seuil Warn (Soft) | Seuil Error (Hard) | Justification                                 |
+| ---------------------------- | -------------------------- | ----------------- | ------------------ | --------------------------------------------- |
+| **First Contentful Paint**   | `first-contentful-paint`   | > 1800 ms         | > 3000 ms          | Latence réseau CI gonfle le FCP               |
+| **Largest Contentful Paint** | `largest-contentful-paint` | > 2500 ms         | > 4000 ms          | Sensible à Cloudflare Images et temps serveur |
+| **Cumulative Layout Shift**  | `cumulative-layout-shift`  | > 0.1             | > 0.25             | Doit être ~0 pour pages Next.js statiques     |
+| **Total Blocking Time**      | `total-blocking-time`      | > 200 ms          | > 600 ms           | TBT élevé = problème d'hydratation React 19   |
 
 **Rationale Warn vs Error** :
+
 - **Error (Bloquant)** : Limites larges représentant des dégradations inacceptables
 - **Warn (Non-bloquant)** : Limites strictes représentant l'état cible idéal
 
@@ -849,41 +865,41 @@ Pour auditer le panneau d'administration (`/admin`), un script Puppeteer doit é
 ```javascript
 // scripts/lighthouse-auth.js
 module.exports = async (browser, context) => {
-  const page = await browser.newPage();
-  const baseUrl = new URL(context.url).origin;
-  const loginUrl = `${baseUrl}/admin/login`;
+  const page = await browser.newPage()
+  const baseUrl = new URL(context.url).origin
+  const loginUrl = `${baseUrl}/admin/login`
 
-  await page.goto(loginUrl, { waitUntil: 'networkidle0' });
+  await page.goto(loginUrl, { waitUntil: 'networkidle0' })
 
   // Sélecteurs Payload CMS 3.x
-  const emailSelector = 'input[name="email"]';
-  const passwordSelector = 'input[name="password"]';
+  const emailSelector = 'input[name="email"]'
+  const passwordSelector = 'input[name="password"]'
 
   // Attente hydratation React (CRITIQUE pour Payload)
-  await page.waitForSelector(emailSelector, { visible: true, timeout: 15000 });
+  await page.waitForSelector(emailSelector, { visible: true, timeout: 15000 })
 
   // Identifiants depuis variables d'environnement (JAMAIS en dur)
-  const email = process.env.ADMIN_EMAIL;
-  const password = process.env.ADMIN_PASSWORD;
+  const email = process.env.ADMIN_EMAIL
+  const password = process.env.ADMIN_PASSWORD
 
   if (!email || !password) {
-    throw new Error('ADMIN_EMAIL et ADMIN_PASSWORD requis pour audit admin');
+    throw new Error('ADMIN_EMAIL et ADMIN_PASSWORD requis pour audit admin')
   }
 
-  await page.type(emailSelector, email, { delay: 10 });
-  await page.type(passwordSelector, password, { delay: 10 });
+  await page.type(emailSelector, email, { delay: 10 })
+  await page.type(passwordSelector, password, { delay: 10 })
 
   await Promise.all([
     page.click('button[type="submit"]'),
     page.waitForNavigation({ waitUntil: 'networkidle0' }),
-  ]);
+  ])
 
   if (page.url().includes('/login')) {
-    throw new Error(`Échec login Payload. URL: ${page.url()}`);
+    throw new Error(`Échec login Payload. URL: ${page.url()}`)
   }
 
-  await page.close();
-};
+  await page.close()
+}
 ```
 
 **Note** : Ce script n'est nécessaire que si vous auditez les routes `/admin/*`. Pour le site public, il peut être omis.
@@ -893,6 +909,7 @@ module.exports = async (browser, context) => {
 Les runners GitHub Actions ont une performance CPU variable, causant des échecs non déterministes.
 
 **Mitigations** :
+
 1. **`numberOfRuns: 3`** : LHCI agrège en médiane pour lisser la variance
 2. **`throttlingMethod: 'devtools'`** : Évite le throttling CPU composé sur runners faibles
 3. **Assertions sur métriques brutes** : Plus stables que les scores abstraits
@@ -929,20 +946,16 @@ import { test, expect } from '@playwright/test'
 import AxeBuilder from '@axe-core/playwright'
 
 test.describe('Accessibilité', () => {
-  test('Page d\'accueil FR - WCAG 2.1 AA', async ({ page }) => {
+  test("Page d'accueil FR - WCAG 2.1 AA", async ({ page }) => {
     await page.goto('/')
-    const results = await new AxeBuilder({ page })
-      .withTags(['wcag2a', 'wcag2aa'])
-      .analyze()
+    const results = await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa']).analyze()
 
     expect(results.violations).toEqual([])
   })
 
-  test('Page d\'accueil EN - WCAG 2.1 AA', async ({ page }) => {
+  test("Page d'accueil EN - WCAG 2.1 AA", async ({ page }) => {
     await page.goto('/en')
-    const results = await new AxeBuilder({ page })
-      .withTags(['wcag2a', 'wcag2aa'])
-      .analyze()
+    const results = await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa']).analyze()
 
     expect(results.violations).toEqual([])
   })
@@ -950,6 +963,7 @@ test.describe('Accessibilité', () => {
 ```
 
 **Détections** :
+
 - Contraste insuffisant (couleurs)
 - Images sans `alt`
 - Formulaires sans labels
@@ -961,6 +975,7 @@ test.describe('Accessibilité', () => {
 ### 8.1 dependency-cruiser
 
 **Objectif** : Interdire les violations architecturales typiques dans une app Next.js + Payload :
+
 - Code serveur importé dans un composant client (`'use client'`)
 - Imports circulaires
 - Dépendances non autorisées (ex: composant UI important directement depuis Payload)
@@ -976,7 +991,7 @@ module.exports = {
       severity: 'error',
       from: { path: '^src/app/.*\\.tsx$', pathNot: '\\.server\\.tsx$' },
       to: { path: '^src/(collections|lib)/.*server.*' },
-      comment: 'Code serveur ne doit pas être importé dans composants clients'
+      comment: 'Code serveur ne doit pas être importé dans composants clients',
     },
     {
       name: 'no-circular',
@@ -985,10 +1000,10 @@ module.exports = {
       to: {
         circular: true,
         // Ignore les cycles qui ne sont QUE des imports de types (TypeScript)
-        dependencyTypesNot: ['type-only']
-      }
-    }
-  ]
+        dependencyTypesNot: ['type-only'],
+      },
+    },
+  ],
 }
 ```
 
@@ -1046,7 +1061,7 @@ function calculateTotal(items: Item[]) {
 
 // Mutation 1 : Stryker remplace '+' par '-'
 function calculateTotal(items: Item[]) {
-  return items.reduce((sum, item) => sum - item.price, 0)  // ⚠️ Mutant
+  return items.reduce((sum, item) => sum - item.price, 0) // ⚠️ Mutant
 }
 ```
 
@@ -1057,15 +1072,10 @@ Si le test passe toujours après la mutation, c'est un **test superficiel**.
 ```javascript
 // stryker.config.mjs
 export default {
-  mutate: [
-    'src/lib/**/*.ts',
-    'src/app/**/*.server.ts',
-    '!**/*.test.ts',
-    '!**/*.spec.ts'
-  ],
+  mutate: ['src/lib/**/*.ts', 'src/app/**/*.server.ts', '!**/*.test.ts', '!**/*.spec.ts'],
   testRunner: 'vitest',
   coverageAnalysis: 'perTest',
-  thresholds: { high: 80, low: 60, break: 50 }
+  thresholds: { high: 80, low: 60, break: 50 },
 }
 ```
 
@@ -1073,14 +1083,14 @@ export default {
 
 ## 10. Anti-Patterns à Éviter
 
-| Anti-Pattern | Pourquoi c'est dangereux | Contexte Projet |
-|--------------|--------------------------|-----------------|
-| **pull_request_target** | Exécute code non fiable avec secrets | ❌ Inutile (repo privé solo, pas de forks) |
-| **Runners auto-hébergés** | Persistance malware, mouvement latéral réseau | ❌ Inutile (GitHub-hosted runners suffisants) |
-| **Secrets réutilisables** | Un secret compromis = tous les workflows compromis | ✅ Pertinent : un secret par scope |
-| **Permissions GITHUB_TOKEN en write par défaut** | Blast radius maximal si compromission | ✅ Pertinent : définir read-only par défaut |
-| **Actions épinglées par tag** | Tags mutables, détournement supply chain | ✅ Pertinent : épingler par SHA |
-| **Cache partagé multi-branches** | Empoisonnement de cache cross-branch | ❌ Risque faible (une seule branche principale) |
+| Anti-Pattern                                     | Pourquoi c'est dangereux                           | Contexte Projet                                 |
+| ------------------------------------------------ | -------------------------------------------------- | ----------------------------------------------- |
+| **pull_request_target**                          | Exécute code non fiable avec secrets               | ❌ Inutile (repo privé solo, pas de forks)      |
+| **Runners auto-hébergés**                        | Persistance malware, mouvement latéral réseau      | ❌ Inutile (GitHub-hosted runners suffisants)   |
+| **Secrets réutilisables**                        | Un secret compromis = tous les workflows compromis | ✅ Pertinent : un secret par scope              |
+| **Permissions GITHUB_TOKEN en write par défaut** | Blast radius maximal si compromission              | ✅ Pertinent : définir read-only par défaut     |
+| **Actions épinglées par tag**                    | Tags mutables, détournement supply chain           | ✅ Pertinent : épingler par SHA                 |
+| **Cache partagé multi-branches**                 | Empoisonnement de cache cross-branch               | ❌ Risque faible (une seule branche principale) |
 
 ## 11. Implémentation CI/CD Complète
 
@@ -1103,12 +1113,14 @@ on:
 ```
 
 **Pourquoi ce choix ?**
+
 - ✅ Évite les exécutions répétées à chaque commit/push pendant le développement
 - ✅ Le développeur lance le workflow quand il est prêt (après plusieurs commits locaux)
 - ✅ Branch protection garantit qu'aucune PR ne peut être mergée sans workflow validé
 - ✅ Économie de minutes GitHub Actions
 
 **Configuration Branch Protection (Settings > Branches > main)** :
+
 ```
 ☑ Require status checks to pass before merging
   ☑ Require branches to be up to date before merging
@@ -1120,26 +1132,31 @@ on:
 ### 11.2 Checklist d'Implémentation
 
 #### Supply Chain Security
+
 - [ ] **Socket.dev** : Bloquer les paquets malveillants (typosquatting, scripts suspects)
 - [ ] **SHA pinning** : Épingler toutes les actions tierces par SHA complet
 - [ ] **Dependabot** : Automatiser mises à jour de sécurité (actions + npm)
 
 #### Code Quality Gates
+
 - [ ] **Knip** : Détecter code mort et imports orphelins (hallucinations IA)
 - [ ] **Type sync** : Valider synchronisation Payload ↔ TypeScript
 - [ ] **ESLint + Prettier** : Formatage et linting strict (includes Tailwind ordering)
 - [ ] **dependency-cruiser** : Validation architecture (imports serveur/client)
 
 #### Build & Tests
+
 - [ ] **Next.js build no-DB** : `next build --experimental-build-mode compile` (sans D1)
 - [ ] **Vitest** : Tests unitaires et d'intégration
 - [ ] **Playwright + axe-core** : Tests E2E et accessibilité WCAG 2.1 AA (FR/EN)
 - [ ] **Stryker** : Mutation testing sur modules critiques (optionnel via input)
 
 #### Performance & Accessibilité
+
 - [ ] **Lighthouse CI** : Budgets stricts (Performance ≥90, A11y =100, SEO =100)
 
 #### Sécurité & Déploiement
+
 - [ ] **OIDC Cloudflare** : Authentification sans secrets statiques
 - [ ] **Permissions GITHUB_TOKEN** : Définir explicitement en read-only par défaut
 
@@ -1160,7 +1177,7 @@ on:
 
 permissions:
   contents: read
-  id-token: write  # Pour OIDC Cloudflare
+  id-token: write # Pour OIDC Cloudflare
 
 jobs:
   quality-gate:
@@ -1188,7 +1205,7 @@ jobs:
       # 5. Build
       - run: pnpm exec next build --experimental-build-mode compile
         env:
-          PAYLOAD_SECRET: "ci-build-dummy-secret-32-chars-min"
+          PAYLOAD_SECRET: 'ci-build-dummy-secret-32-chars-min'
 
       # 6. Tests
       - run: pnpm test:int
@@ -1238,10 +1255,12 @@ jobs:
 ## 12. Références
 
 ### Documentation Technique Détaillée
+
 - [Recherche Sécurité GitHub Actions (400+ lignes)](../tech/github/securite_github_action.md)
 - [Spécificités Payload CMS + Next.js CI/CD](../tech/github/github-actions-nextjs-payload.md)
 
 ### Documentation Outils Individuels
+
 - [Socket.dev CI](../tech/github/socket-dev-CI.md)
 - [Knip CI](../tech/github/knip-CI.md)
 - [Lighthouse CLI](../tech/github/ligthouse-cli-CI.md)
@@ -1249,6 +1268,7 @@ jobs:
 - [dependency-cruiser CI](../tech/github/dependancy-cruiser-CI.md)
 
 ### Ressources Externes
+
 - [GitHub Actions Security Best Practices (Officiel)](https://docs.github.com/en/actions/security-guides/security-hardening-for-github-actions)
 - [OWASP Top 10 CI/CD Security Risks](https://owasp.org/www-project-top-10-ci-cd-security-risks/)
 - [OpenSSF Best Practices Badge](https://www.bestpractices.dev/)

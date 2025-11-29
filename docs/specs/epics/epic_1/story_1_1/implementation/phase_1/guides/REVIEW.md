@@ -25,11 +25,13 @@ Validate that the implementation:
 Phase 1 is split into **3 logical commits/steps**. You can:
 
 **Option A: Step-by-step review** (recommended)
+
 - Easier to verify each setup stage
 - Progressive validation
 - Targeted feedback (10-20 min per step)
 
 **Option B: Complete review at once**
+
 - Faster overall (40-60 min total)
 - Immediate overview
 - Requires focus on all aspects
@@ -48,6 +50,7 @@ Phase 1 is split into **3 logical commits/steps**. You can:
 #### Review Checklist
 
 ##### Repository Configuration
+
 - [ ] Repository exists at the documented URL
 - [ ] Repository name is `sebcdev-payload` (or documented alternative)
 - [ ] Description is appropriate: "Payload CMS application on Cloudflare Workers with D1 and R2"
@@ -56,9 +59,11 @@ Phase 1 is split into **3 logical commits/steps**. You can:
 - [ ] Default branch is `main` or `master`
 
 ##### Template Files Present (via GitHub UI)
+
 Navigate to the repository on GitHub and verify these files exist:
 
 **Root Configuration**:
+
 - [ ] `README.md` (template's original README)
 - [ ] `package.json` (contains Payload and Cloudflare dependencies)
 - [ ] `wrangler.toml` (Cloudflare Workers configuration)
@@ -68,6 +73,7 @@ Navigate to the repository on GitHub and verify these files exist:
 - [ ] `.gitignore` (properly configured for Node.js, Next.js, Cloudflare)
 
 **Source Directory**:
+
 - [ ] `src/` directory exists
 - [ ] `src/payload.config.ts` (Payload CMS configuration)
 - [ ] `src/app/` (Next.js App Router structure)
@@ -75,12 +81,14 @@ Navigate to the repository on GitHub and verify these files exist:
 - [ ] `src/migrations/` (database migrations)
 
 ##### Security Verification
+
 - [ ] NO `.env` files visible in repository
 - [ ] NO `.env.local` or similar files
 - [ ] NO API keys or secrets in any files
 - [ ] `.gitignore` properly excludes sensitive files
 
 ##### Template Version
+
 - [ ] Check template last update date (on GitHub)
 - [ ] Verify it's relatively recent (within last 6 months ideally)
 - [ ] Note any "outdated" warnings
@@ -115,6 +123,7 @@ gh api repos/[username]/sebcdev-payload | jq '{name, description, private, templ
 #### Review Checklist
 
 ##### Git Clone Verification
+
 - [ ] Repository cloned to documented location
 - [ ] Git remote configured correctly:
   ```bash
@@ -125,6 +134,7 @@ gh api repos/[username]/sebcdev-payload | jq '{name, description, private, templ
 - [ ] Working directory is clean (no uncommitted changes from clone)
 
 ##### Directory Structure
+
 - [ ] All template files present locally (match GitHub)
 - [ ] Directory structure matches expected layout:
   ```
@@ -146,9 +156,11 @@ gh api repos/[username]/sebcdev-payload | jq '{name, description, private, templ
 ##### Configuration Files Review
 
 **wrangler.toml**:
+
 ```bash
 cat wrangler.toml
 ```
+
 - [ ] Contains `name =` (worker name)
 - [ ] Contains `compatibility_flags = ["nodejs_compat"]`
 - [ ] Contains `[[d1_databases]]` section
@@ -157,9 +169,11 @@ cat wrangler.toml
 - [ ] R2 binding name present (usually `MEDIA_BUCKET` or `R2`)
 
 **payload.config.ts**:
+
 ```bash
 cat src/payload.config.ts
 ```
+
 - [ ] Database adapter imported (`@payloadcms/db-sqlite` or `@payloadcms/db-d1-sqlite`)
 - [ ] Storage adapter imported (`@payloadcms/storage-r2`)
 - [ ] Collections defined (at least `Users`, `Media`)
@@ -167,9 +181,11 @@ cat src/payload.config.ts
 - [ ] Sharp disabled or using compatible implementation (required for Workers)
 
 **package.json**:
+
 ```bash
 cat package.json
 ```
+
 - [ ] Has correct project name
 - [ ] Contains `payload` dependency (version 3.x+)
 - [ ] Contains `@payloadcms/db-sqlite` or `@payloadcms/db-d1-sqlite`
@@ -181,21 +197,26 @@ cat package.json
 - [ ] Has type generation script
 
 **next.config.mjs**:
+
 ```bash
 cat next.config.mjs
 ```
+
 - [ ] Configured for OpenNext
 - [ ] No conflicting settings
 
 **tsconfig.json**:
+
 ```bash
 cat tsconfig.json
 ```
+
 - [ ] Has path aliases (`@/*` mapping)
 - [ ] Proper module resolution
 - [ ] Includes `src/` directory
 
 ##### Security Review
+
 - [ ] `.gitignore` exists and includes:
   ```
   node_modules/
@@ -247,6 +268,7 @@ cat .gitignore | grep -E "node_modules|\.env|\.next|\.wrangler"
 #### Review Checklist
 
 ##### Dependency Installation
+
 - [ ] `node_modules/` directory created
 - [ ] `pnpm-lock.yaml` created (or `package-lock.json` if using npm)
 - [ ] Lock file is ready to be committed (tracked in git)
@@ -255,12 +277,14 @@ cat .gitignore | grep -E "node_modules|\.env|\.next|\.wrangler"
 - [ ] No high-severity security vulnerabilities
 
 ##### Critical Packages Verification
+
 ```bash
 cd sebcdev-payload
 pnpm list --depth=0
 ```
 
 Verify these packages are installed:
+
 - [ ] `payload@3.x+`
 - [ ] `@payloadcms/db-sqlite` or `@payloadcms/db-d1-sqlite`
 - [ ] `@payloadcms/storage-r2`
@@ -271,6 +295,7 @@ Verify these packages are installed:
 - [ ] `typescript@5.x+`
 
 ##### TypeScript Configuration
+
 ```bash
 pnpm tsc --noEmit
 ```
@@ -281,11 +306,13 @@ pnpm tsc --noEmit
 - [ ] Errors only related to missing Cloudflare bindings are acceptable (fixed in Phase 2)
 
 ##### Node Version Compatibility
+
 - [ ] Node.js version used: `node --version`
 - [ ] Version is 18.x or 20.x+ (required for Payload)
 - [ ] Documented in commit notes
 
 ##### Git Tracking
+
 - [ ] `node_modules/` is NOT tracked (in .gitignore)
 - [ ] Lock file (`pnpm-lock.yaml`) IS tracked
 - [ ] Only lock file should be staged for commit
@@ -331,29 +358,34 @@ git status
 After reviewing all 3 steps:
 
 ### Overall Architecture & Setup
+
 - [ ] Repository follows Payload CMS + Cloudflare best practices
 - [ ] Template structure unmodified (no premature customizations)
 - [ ] Configuration files properly set for D1, R2, and Workers
 - [ ] Clear separation between template defaults and future customizations
 
 ### Documentation
+
 - [ ] Repository URL documented
 - [ ] Setup steps documented
 - [ ] Any deviations from template noted
 - [ ] Node version and tool versions documented
 
 ### Reproducibility
+
 - [ ] Another developer could follow the same steps
 - [ ] Lock file ensures consistent dependency versions
 - [ ] Environment requirements clearly documented
 
 ### Security
+
 - [ ] No secrets or credentials committed
 - [ ] `.gitignore` properly configured
 - [ ] Security audit shows no critical vulnerabilities
 - [ ] Template source is trusted (official Payload CMS)
 
 ### Readiness for Phase 2
+
 - [ ] All template files present
 - [ ] Dependencies installed
 - [ ] TypeScript setup validated
@@ -381,16 +413,19 @@ Use this template for feedback:
 ### 🔧 Required Changes
 
 #### Step 1: Repository Creation
+
 1. **[Issue]**: [Description]
    - **Why**: [Explanation]
    - **Suggestion**: [How to fix]
 
 #### Step 2: Clone & Verify
+
 1. **[Issue]**: [Description]
    - **Why**: [Explanation]
    - **Suggestion**: [How to fix]
 
 #### Step 3: Dependencies
+
 1. **[Issue]**: [Description]
    - **Why**: [Explanation]
    - **Suggestion**: [How to fix]
@@ -413,6 +448,7 @@ Use this template for feedback:
 ---
 
 **Reviewed Files**:
+
 - Repository: https://github.com/[username]/sebcdev-payload
 - Local clone: [path]
 - Lock file: pnpm-lock.yaml
@@ -455,18 +491,21 @@ Use this template for feedback:
 ## 🚨 Common Issues to Watch For
 
 ### Repository Issues
+
 - ❌ Wrong template used (not `with-cloudflare-d1`)
 - ❌ Repository name inconsistent with documentation
 - ❌ Template is outdated (>6 months old)
 - ❌ Visibility setting not aligned with project needs
 
 ### Structure Issues
+
 - ❌ Missing critical files (wrangler.toml, payload.config.ts)
 - ❌ Template files modified prematurely
 - ❌ Incorrect directory structure
 - ❌ Missing .gitignore or incomplete
 
 ### Dependency Issues
+
 - ❌ Wrong package manager used (npm when pnpm expected)
 - ❌ No lock file committed
 - ❌ Critical security vulnerabilities
@@ -474,12 +513,14 @@ Use this template for feedback:
 - ❌ node_modules committed to repository
 
 ### Security Issues
+
 - ❌ `.env` files committed
 - ❌ Secrets or API keys in configuration
 - ❌ .gitignore doesn't exclude sensitive files
 - ❌ Credentials in git history
 
 ### TypeScript Issues
+
 - ❌ Syntax errors in template files
 - ❌ Configuration errors in tsconfig.json
 - ❌ Missing type declarations

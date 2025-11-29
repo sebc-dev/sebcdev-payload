@@ -39,6 +39,7 @@ Create GitHub      Clone & Verify      Install & Validate
 **Duration**: 20-30 min (implementation) + 10 min (review)
 
 **Content**:
+
 - Navigate to Payload CMS GitHub templates repository
 - Locate `with-cloudflare-d1` template
 - Click "Use this template" → "Create a new repository"
@@ -51,12 +52,14 @@ Create GitHub      Clone & Verify      Install & Validate
 - Verify repository appears in GitHub account
 
 **Why it's atomic**:
+
 - Single responsibility: Create the repository
 - No local dependencies
 - Can be validated independently via GitHub UI
 - Doesn't modify any code, just provisions the repository
 
 **Technical Validation**:
+
 ```bash
 # Verify repository exists (run after creation)
 gh repo view [your-github-username]/sebcdev-payload
@@ -65,6 +68,7 @@ gh repo view [your-github-username]/sebcdev-payload
 **Expected Result**: Repository visible on GitHub with all template files
 
 **Review Criteria**:
+
 - [ ] Repository created successfully
 - [ ] Repository name is `sebcdev-payload` (or agreed alternative)
 - [ ] All template files visible in GitHub UI
@@ -81,6 +85,7 @@ gh repo view [your-github-username]/sebcdev-payload
 **Duration**: 20-30 min (implementation) + 15-20 min (review)
 
 **Content**:
+
 - Clone repository to local machine
 - Navigate to project directory
 - List all files and verify structure
@@ -95,12 +100,14 @@ gh repo view [your-github-username]/sebcdev-payload
 - Document the repository structure in a temporary note
 
 **Why it's atomic**:
+
 - Single responsibility: Clone and verify
 - No modifications, only verification
 - Can be validated by checking file presence
 - Independent of dependency installation
 
 **Technical Validation**:
+
 ```bash
 # Clone repository
 git clone https://github.com/[your-username]/sebcdev-payload.git
@@ -123,11 +130,12 @@ find . -type f | wc -l
 **Expected Result**: Repository cloned successfully, all key files present
 
 **Review Criteria**:
+
 - [ ] Repository cloned without errors
 - [ ] All key configuration files present
 - [ ] `src/` directory contains expected structure (app, collections, migrations)
 - [ ] `wrangler.toml` contains D1 and R2 binding placeholders
-- [ ] `package.json` contains expected dependencies (@payloadcms/*, @opennextjs/cloudflare, etc.)
+- [ ] `package.json` contains expected dependencies (@payloadcms/\*, @opennextjs/cloudflare, etc.)
 - [ ] `.gitignore` file present and appropriate
 - [ ] `README.md` contains deployment instructions
 - [ ] No `.env` files in repository (security check)
@@ -141,6 +149,7 @@ find . -type f | wc -l
 **Duration**: 30-60 min (implementation, depends on network) + 15-20 min (review)
 
 **Content**:
+
 - Install Node.js dependencies using pnpm
 - Verify all packages installed successfully
 - Check for dependency conflicts or warnings
@@ -153,12 +162,14 @@ find . -type f | wc -l
 - Create initial `.env.example` documentation (if needed)
 
 **Why it's atomic**:
+
 - Single responsibility: Install and validate dependencies
 - No code modifications
 - Can be validated by running build/type checks
 - Creates reproducible lock file for team
 
 **Technical Validation**:
+
 ```bash
 # Install dependencies
 pnpm install
@@ -182,6 +193,7 @@ pnpm run --help
 **Expected Result**: All dependencies installed, TypeScript compiles (though runtime may require Phase 2 infrastructure)
 
 **Review Criteria**:
+
 - [ ] `pnpm install` completed without errors
 - [ ] `node_modules/` directory created
 - [ ] `pnpm-lock.yaml` created
@@ -221,12 +233,14 @@ pnpm run --help
 ### Validation at Each Step
 
 **After Commit 1**:
+
 ```bash
 # Verify repository on GitHub
 gh repo view [username]/sebcdev-payload --web
 ```
 
 **After Commit 2**:
+
 ```bash
 # Verify local repository
 git status
@@ -235,6 +249,7 @@ ls -la
 ```
 
 **After Commit 3**:
+
 ```bash
 # Verify dependencies and setup
 pnpm list
@@ -248,12 +263,12 @@ All validations must pass before proceeding to Phase 2.
 
 ## 📊 Commit Metrics
 
-| Commit | Files | Lines | Implementation | Review | Total |
-|--------|-------|-------|----------------|--------|-------|
-| 1. Create Repository | N/A (GitHub) | N/A | 20-30 min | 10 min | 30-40 min |
-| 2. Clone & Verify | ~50-100 | ~5000-8000 | 20-30 min | 15-20 min | 35-50 min |
-| 3. Install Dependencies | ~500+ MB | N/A | 30-60 min | 15-20 min | 45-80 min |
-| **TOTAL** | **~100** | **~5000-8000** | **1.5-2h** | **40-50 min** | **2-3h** |
+| Commit                  | Files        | Lines          | Implementation | Review        | Total     |
+| ----------------------- | ------------ | -------------- | -------------- | ------------- | --------- |
+| 1. Create Repository    | N/A (GitHub) | N/A            | 20-30 min      | 10 min        | 30-40 min |
+| 2. Clone & Verify       | ~50-100      | ~5000-8000     | 20-30 min      | 15-20 min     | 35-50 min |
+| 3. Install Dependencies | ~500+ MB     | N/A            | 30-60 min      | 15-20 min     | 45-80 min |
+| **TOTAL**               | **~100**     | **~5000-8000** | **1.5-2h**     | **40-50 min** | **2-3h**  |
 
 ---
 
@@ -286,17 +301,21 @@ All validations must pass before proceeding to Phase 2.
 ### Documentation Format
 
 For each commit, document:
+
 ```markdown
 ## Commit X: [Title]
 
 **What was done**:
+
 - [Action 1]
 - [Action 2]
 
 **Verification**:
+
 - [How it was validated]
 
 **Issues encountered**:
+
 - [Any problems and how they were resolved]
 
 **Repository URL** (Commit 1): https://github.com/[username]/sebcdev-payload
@@ -305,6 +324,7 @@ For each commit, document:
 ### Review Checklist
 
 Before marking phase complete:
+
 - [ ] All 3 commits documented
 - [ ] Repository accessible to team
 - [ ] All files verified present
@@ -342,6 +362,7 @@ Before marking phase complete:
 **Symptoms**: Can't locate `with-cloudflare-d1` template
 
 **Solutions**:
+
 1. Navigate to https://github.com/payloadcms/payload/tree/main/templates
 2. Search for "cloudflare" in templates list
 3. Verify template name (may have changed)
@@ -352,6 +373,7 @@ Before marking phase complete:
 **Symptoms**: "Repository name already exists"
 
 **Solutions**:
+
 1. Choose alternative name: `sebcdev-payload-cms` or `payload-sebcdev`
 2. Update all documentation to reflect new name
 3. Inform team of name change
@@ -361,6 +383,7 @@ Before marking phase complete:
 **Symptoms**: `pnpm install` errors or warnings
 
 **Solutions**:
+
 1. Verify Node.js version (should be 18.x or 20.x+)
 2. Clear cache: `pnpm store prune`
 3. Retry installation: `pnpm install --force`
@@ -373,6 +396,7 @@ Before marking phase complete:
 **Symptoms**: `pnpm tsc --noEmit` shows errors
 
 **Solutions**:
+
 1. Verify all dependencies installed: `pnpm list`
 2. Regenerate Payload types: `pnpm generate:types:payload`
 3. Clear TypeScript cache: `rm -rf .next .open-next`

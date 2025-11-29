@@ -36,6 +36,7 @@ gh repo view [your-username]/sebcdev-payload
 ```
 
 **Expected Result**:
+
 - Repository visible on GitHub
 - Shows "generated from payloadcms/payload" badge
 - Contains all template files
@@ -44,6 +45,7 @@ gh repo view [your-username]/sebcdev-payload
 ### Review Checklist
 
 #### Repository Configuration
+
 - [ ] Repository name is exactly `sebcdev-payload` (or documented alternative)
 - [ ] Description accurately describes the project
 - [ ] Visibility setting is appropriate (Public recommended for open source)
@@ -51,7 +53,9 @@ gh repo view [your-username]/sebcdev-payload
 - [ ] Default branch is set (usually `main`)
 
 #### Template Files Present
+
 Verify these files exist via GitHub UI:
+
 - [ ] `README.md` (template's original README)
 - [ ] `package.json` (Payload CMS dependencies)
 - [ ] `wrangler.toml` (Cloudflare configuration)
@@ -63,6 +67,7 @@ Verify these files exist via GitHub UI:
 - [ ] `src/` directory visible
 
 #### Security
+
 - [ ] No `.env` files visible in repository
 - [ ] No sensitive data in any file
 - [ ] `.gitignore` properly configured
@@ -80,6 +85,7 @@ Document the following information for the team:
 **Template Version**: [Check template last update date]
 
 **Notes**:
+
 - [Any observations or issues encountered]
 ```
 
@@ -155,6 +161,7 @@ cat wrangler.toml
 ```
 
 **Expected content** (verify these sections exist):
+
 - [ ] `name =` (worker name, usually project name)
 - [ ] `compatibility_flags = ["nodejs_compat"]` (required for Payload)
 - [ ] `[[d1_databases]]` section (D1 binding configuration)
@@ -170,6 +177,7 @@ cat src/payload.config.ts
 ```
 
 **Expected content**:
+
 - [ ] Database adapter imported: `@payloadcms/db-sqlite` or `@payloadcms/db-d1-sqlite`
 - [ ] Storage adapter imported: `@payloadcms/storage-r2`
 - [ ] Collections defined (at least `Users`, `Media`)
@@ -184,6 +192,7 @@ cat package.json
 ```
 
 **Expected dependencies** (verify presence):
+
 - [ ] `payload` (latest version, likely 3.x+)
 - [ ] `@payloadcms/db-sqlite` or `@payloadcms/db-d1-sqlite`
 - [ ] `@payloadcms/storage-r2`
@@ -193,6 +202,7 @@ cat package.json
 - [ ] `wrangler` (Cloudflare CLI)
 
 **Expected scripts**:
+
 - [ ] `dev` (development server)
 - [ ] `build` (production build)
 - [ ] `deploy` (Cloudflare deployment)
@@ -218,6 +228,7 @@ git log --oneline --all
 ```
 
 **Expected Result**:
+
 - 50-100+ files present
 - Git configured correctly
 - Remote points to GitHub repository
@@ -227,6 +238,7 @@ git log --oneline --all
 ### Review Checklist
 
 #### Directory Structure
+
 - [ ] `src/app/` exists (Next.js App Router structure)
 - [ ] `src/collections/` exists (Payload collections)
 - [ ] `src/migrations/` exists (database migrations)
@@ -234,6 +246,7 @@ git log --oneline --all
 - [ ] Configuration files at root level
 
 #### Configuration Files
+
 - [ ] `wrangler.toml` properly configured with nodejs_compat
 - [ ] `payload.config.ts` has database and storage adapters
 - [ ] `next.config.mjs` configured for OpenNext
@@ -241,12 +254,14 @@ git log --oneline --all
 - [ ] `tsconfig.json` has proper paths and settings
 
 #### Git Configuration
+
 - [ ] Remote URL is correct
 - [ ] On default branch
 - [ ] No uncommitted changes (clean working directory)
 - [ ] Git history shows template origin
 
 #### Security Check
+
 - [ ] `.gitignore` exists and includes:
   - [ ] `node_modules/`
   - [ ] `.env*` (but not `.env.example` if present)
@@ -268,6 +283,7 @@ git log --oneline --all
 **Template Version**: [Git log initial commit date]
 
 **Key Files Verified**:
+
 - ✅ wrangler.toml
 - ✅ payload.config.ts
 - ✅ next.config.mjs
@@ -357,6 +373,7 @@ pnpm tsc --noEmit
 ```
 
 **Expected Result**:
+
 - TypeScript compiles successfully, OR
 - Errors only related to missing Cloudflare bindings (which will be fixed in Phase 2)
 - No syntax errors or configuration errors
@@ -389,6 +406,7 @@ pnpm build || echo "⚠️ Build may fail until Cloudflare infrastructure exists
 ### Review Checklist
 
 #### Dependency Installation
+
 - [ ] `pnpm install` completed without errors
 - [ ] `node_modules/` directory created
 - [ ] `pnpm-lock.yaml` created (critical - must be committed)
@@ -397,7 +415,9 @@ pnpm build || echo "⚠️ Build may fail until Cloudflare infrastructure exists
 - [ ] No high-severity security vulnerabilities (check `pnpm audit`)
 
 #### Critical Packages Installed
+
 Verify these key packages are in node_modules:
+
 - [ ] `payload` (version 3.x+)
 - [ ] `@payloadcms/db-sqlite` or `@payloadcms/db-d1-sqlite`
 - [ ] `@payloadcms/storage-r2`
@@ -408,19 +428,23 @@ Verify these key packages are in node_modules:
 - [ ] `typescript`
 
 #### TypeScript Configuration
+
 - [ ] `pnpm tsc --noEmit` runs (errors about bindings are OK)
 - [ ] No TypeScript configuration errors
 - [ ] No syntax errors in template files
 - [ ] Type checking validates project structure
 
 #### File System
+
 - [ ] `node_modules/` is NOT committed to git
 - [ ] `pnpm-lock.yaml` IS ready to commit (tracked file)
 - [ ] `.gitignore` properly excludes `node_modules/`
 - [ ] Disk space sufficient (check with `df -h`)
 
 #### Scripts Validation
+
 Verify these scripts are callable (don't need to succeed, just exist):
+
 ```bash
 pnpm run dev --help || echo "dev script exists"
 pnpm run build --help || echo "build script exists"
@@ -438,6 +462,7 @@ pnpm run deploy --help || echo "deploy script exists"
 **Total Packages**: [Number from pnpm list]
 
 **Key Packages Installed**:
+
 - payload: [version]
 - next: [version]
 - @payloadcms/db-sqlite: [version]
@@ -447,6 +472,7 @@ pnpm run deploy --help || echo "deploy script exists"
 **TypeScript Check**: [✅ Passed / ⚠️ Warnings / ❌ Errors]
 
 **Issues Encountered**:
+
 - [List any warnings or errors]
 - [Note if they're expected (e.g., Cloudflare bindings missing)]
 ```
@@ -521,6 +547,7 @@ git push origin main
 **When all checkboxes above are checked**, Phase 1 is complete! ✅
 
 ### Success Criteria Met
+
 - [✓] GitHub repository created from official template
 - [✓] Repository cloned locally
 - [✓] All template files verified present

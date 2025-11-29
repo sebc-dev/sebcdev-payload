@@ -9,14 +9,14 @@
 
 ## Navigation
 
-| Document | Description |
-|----------|-------------|
-| [IMPLEMENTATION_PLAN.md](./IMPLEMENTATION_PLAN.md) | Atomic commit strategy and implementation order |
-| [COMMIT_CHECKLIST.md](./COMMIT_CHECKLIST.md) | Detailed checklist per commit |
-| [ENVIRONMENT_SETUP.md](./ENVIRONMENT_SETUP.md) | Environment and prerequisites configuration |
-| [guides/REVIEW.md](./guides/REVIEW.md) | Code review guide (commit-by-commit) |
-| [guides/TESTING.md](./guides/TESTING.md) | Testing strategy and validation |
-| [validation/VALIDATION_CHECKLIST.md](./validation/VALIDATION_CHECKLIST.md) | Final validation checklist |
+| Document                                                                   | Description                                     |
+| -------------------------------------------------------------------------- | ----------------------------------------------- |
+| [IMPLEMENTATION_PLAN.md](./IMPLEMENTATION_PLAN.md)                         | Atomic commit strategy and implementation order |
+| [COMMIT_CHECKLIST.md](./COMMIT_CHECKLIST.md)                               | Detailed checklist per commit                   |
+| [ENVIRONMENT_SETUP.md](./ENVIRONMENT_SETUP.md)                             | Environment and prerequisites configuration     |
+| [guides/REVIEW.md](./guides/REVIEW.md)                                     | Code review guide (commit-by-commit)            |
+| [guides/TESTING.md](./guides/TESTING.md)                                   | Testing strategy and validation                 |
+| [validation/VALIDATION_CHECKLIST.md](./validation/VALIDATION_CHECKLIST.md) | Final validation checklist                      |
 
 ---
 
@@ -46,12 +46,12 @@ Create the foundational GitHub Actions workflow structure with security best pra
 
 ## Key Deliverables
 
-| Deliverable | File | Status |
-|-------------|------|--------|
-| Main workflow file | `.github/workflows/quality-gate.yml` | PENDING |
-| Dependabot config | `.github/dependabot.yml` | PENDING |
-| CI script (optional) | `package.json` script | PENDING |
-| Documentation update | `CLAUDE.md` | PENDING |
+| Deliverable          | File                                 | Status  |
+| -------------------- | ------------------------------------ | ------- |
+| Main workflow file   | `.github/workflows/quality-gate.yml` | PENDING |
+| Dependabot config    | `.github/dependabot.yml`             | PENDING |
+| CI script (optional) | `package.json` script                | PENDING |
+| Documentation update | `CLAUDE.md`                          | PENDING |
 
 ---
 
@@ -59,11 +59,11 @@ Create the foundational GitHub Actions workflow structure with security best pra
 
 ### Prerequisites
 
-| Dependency | Status | Notes |
-|------------|--------|-------|
+| Dependency        | Status   | Notes                      |
+| ----------------- | -------- | -------------------------- |
 | GitHub repository | Required | Already exists (Story 1.1) |
-| pnpm configured | Required | Already in package.json |
-| Node.js 20+ | Required | Defined in engines |
+| pnpm configured   | Required | Already in package.json    |
+| Node.js 20+       | Required | Defined in engines         |
 
 ### Blocked By
 
@@ -85,12 +85,12 @@ Create the foundational GitHub Actions workflow structure with security best pra
 
 This phase is implemented through **4 atomic commits**:
 
-| # | Commit | Description | Est. Time |
-|---|--------|-------------|-----------|
-| 1 | `feat(ci): initialize quality-gate workflow with SHA-pinned actions` | Create workflow file with checkout, setup-node, pnpm install | 30-45 min |
-| 2 | `feat(ci): configure dependabot for actions and npm packages` | Create dependabot.yml with weekly schedule and grouping | 20-30 min |
-| 3 | `feat(ci): add GITHUB_TOKEN permissions and concurrency config` | Add permissions block and concurrency group | 15-20 min |
-| 4 | `docs(ci): update CLAUDE.md with quality gate workflow documentation` | Document the manual trigger workflow | 15-20 min |
+| #   | Commit                                                                | Description                                                  | Est. Time |
+| --- | --------------------------------------------------------------------- | ------------------------------------------------------------ | --------- |
+| 1   | `feat(ci): initialize quality-gate workflow with SHA-pinned actions`  | Create workflow file with checkout, setup-node, pnpm install | 30-45 min |
+| 2   | `feat(ci): configure dependabot for actions and npm packages`         | Create dependabot.yml with weekly schedule and grouping      | 20-30 min |
+| 3   | `feat(ci): add GITHUB_TOKEN permissions and concurrency config`       | Add permissions block and concurrency group                  | 15-20 min |
+| 4   | `docs(ci): update CLAUDE.md with quality gate workflow documentation` | Document the manual trigger workflow                         | 15-20 min |
 
 **Total Estimated Time**: 1.5-2 hours
 
@@ -129,7 +129,7 @@ All third-party actions must be pinned by full SHA with version comment:
 
 ```yaml
 # Correct
-- uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3  # v6.0.0
+- uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3 # v6.0.0
 
 # Incorrect
 - uses: actions/checkout@v4
@@ -142,8 +142,8 @@ Minor and patch updates are grouped to reduce PR noise:
 ```yaml
 groups:
   minor-updates:
-    patterns: ["*"]
-    update-types: ["minor", "patch"]
+    patterns: ['*']
+    update-types: ['minor', 'patch']
 ```
 
 ### Workflow Dispatch Configuration
@@ -165,11 +165,11 @@ on:
 
 ## Risk Assessment
 
-| Risk | Likelihood | Impact | Mitigation |
-|------|------------|--------|------------|
-| Incorrect SHA causes checkout failure | Low | High | Verify SHA from GitHub releases page |
-| Dependabot PR flood | Medium | Low | Group updates, set limit to 10 PRs |
-| Workflow syntax errors | Medium | Medium | Use VS Code YAML extension, test locally with `act` |
+| Risk                                  | Likelihood | Impact | Mitigation                                          |
+| ------------------------------------- | ---------- | ------ | --------------------------------------------------- |
+| Incorrect SHA causes checkout failure | Low        | High   | Verify SHA from GitHub releases page                |
+| Dependabot PR flood                   | Medium     | Low    | Group updates, set limit to 10 PRs                  |
+| Workflow syntax errors                | Medium     | Medium | Use VS Code YAML extension, test locally with `act` |
 
 ---
 
@@ -183,11 +183,11 @@ on:
 
 ## Quick Links
 
-| Action | Link |
-|--------|------|
+| Action               | Link                                               |
+| -------------------- | -------------------------------------------------- |
 | Start Implementation | [IMPLEMENTATION_PLAN.md](./IMPLEMENTATION_PLAN.md) |
-| Review Checklist | [COMMIT_CHECKLIST.md](./COMMIT_CHECKLIST.md) |
-| Setup Environment | [ENVIRONMENT_SETUP.md](./ENVIRONMENT_SETUP.md) |
+| Review Checklist     | [COMMIT_CHECKLIST.md](./COMMIT_CHECKLIST.md)       |
+| Setup Environment    | [ENVIRONMENT_SETUP.md](./ENVIRONMENT_SETUP.md)     |
 
 ---
 

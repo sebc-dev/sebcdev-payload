@@ -8,6 +8,7 @@
 ## Testing Overview
 
 Phase 2 focuses on Socket.dev configuration and integration. Testing primarily involves:
+
 - Configuration validation
 - Workflow execution verification
 - Security policy testing
@@ -18,12 +19,12 @@ There are no unit tests for this phase as it's configuration-only.
 
 ## Test Categories
 
-| Category | Type | Automation |
-|----------|------|------------|
-| YAML Syntax | Local | Automated (linter) |
-| Workflow Execution | CI | Manual trigger |
-| Security Policy | CI | Manual verification |
-| Ignore Mechanism | CI | Optional manual test |
+| Category           | Type  | Automation           |
+| ------------------ | ----- | -------------------- |
+| YAML Syntax        | Local | Automated (linter)   |
+| Workflow Execution | CI    | Manual trigger       |
+| Security Policy    | CI    | Manual verification  |
+| Ignore Mechanism   | CI    | Optional manual test |
 
 ---
 
@@ -47,6 +48,7 @@ python -c "import yaml; yaml.safe_load(open('socket.yml'))"
 ### VS Code Validation
 
 If using VS Code with YAML extension:
+
 1. Open `socket.yml`
 2. Check for red squiggles (syntax errors)
 3. Hover over issues for details
@@ -72,6 +74,7 @@ Error: yaml: line 5: found character that cannot start any token
 **Purpose**: Verify Socket.dev step executes correctly
 
 **Steps**:
+
 1. Push all commits to GitHub
 2. Navigate to Actions tab
 3. Select "Quality Gate" workflow
@@ -79,6 +82,7 @@ Error: yaml: line 5: found character that cannot start any token
 5. Select branch and run
 
 **Expected Results**:
+
 - [ ] Workflow starts successfully
 - [ ] All setup steps complete (checkout, pnpm, node)
 - [ ] Socket.dev step appears in job log
@@ -90,10 +94,12 @@ Error: yaml: line 5: found character that cannot start any token
 **Purpose**: Verify Socket.dev doesn't slow down the pipeline
 
 **Steps**:
+
 1. Run workflow as in Test 1
 2. Check Socket.dev step duration
 
 **Expected Results**:
+
 - [ ] Socket.dev step completes in < 30 seconds
 - [ ] Total workflow time remains < 2 minutes
 
@@ -102,10 +108,12 @@ Error: yaml: line 5: found character that cannot start any token
 **Purpose**: Verify Socket CLI caching works
 
 **Steps**:
+
 1. Run workflow twice
 2. Compare Socket.dev step logs between runs
 
 **Expected Results**:
+
 - [ ] Second run shows cache hit message
 - [ ] Second run is faster for Socket step
 
@@ -118,10 +126,12 @@ Error: yaml: line 5: found character that cannot start any token
 **Purpose**: Verify no false positives on existing dependencies
 
 **Steps**:
+
 1. Run workflow on current codebase
 2. Review Socket.dev step output
 
 **Expected Results**:
+
 - [ ] No blocking alerts
 - [ ] Any warnings are expected (review manually)
 - [ ] Step passes (green or yellow, not red)
@@ -133,6 +143,7 @@ Error: yaml: line 5: found character that cannot start any token
 **Method**: Review-based (not automated)
 
 **Verification Steps**:
+
 1. Open `socket.yml`
 2. Verify `licensePolicies.deny` includes:
    - `GPL-2.0-only`
@@ -143,6 +154,7 @@ Error: yaml: line 5: found character that cannot start any token
    - `AGPL-3.0-or-later`
 
 **Expected Results**:
+
 - [ ] All GPL variants listed
 - [ ] All AGPL variants listed
 
@@ -153,6 +165,7 @@ Error: yaml: line 5: found character that cannot start any token
 **Warning**: This test temporarily adds a GPL package. Revert immediately.
 
 **Steps**:
+
 ```bash
 # Create test branch
 git checkout -b test/license-policy
@@ -170,10 +183,12 @@ git push origin test/license-policy
 ```
 
 **Expected Results**:
+
 - [ ] Socket.dev detects GPL license
 - [ ] Alert shows blocking severity
 
 **Cleanup**:
+
 ```bash
 git checkout story_1_3
 git branch -D test/license-policy
@@ -189,16 +204,19 @@ git push origin --delete test/license-policy
 **Purpose**: Verify the ignore mechanism works
 
 **Prerequisites**:
+
 - Socket.dev GitHub App installed
 - PR context (not just push)
 
 **Steps**:
+
 1. Create a PR with an alert-triggering package
 2. Note the package name and version from alert
 3. Post comment: `@SocketSecurity ignore <package>@<version>`
 4. Wait for Socket.dev to re-scan
 
 **Expected Results**:
+
 - [ ] Socket.dev bot responds to comment
 - [ ] Re-scan occurs
 - [ ] Alert is ignored
@@ -217,11 +235,13 @@ git push origin --delete test/license-policy
 **Method**: Review-based
 
 **Verification**:
+
 1. Check workflow file has `continue-on-error: true`
 2. Confirm step is non-blocking
 
 **Expected Behavior**:
 If Socket.dev service is unavailable:
+
 - [ ] Step completes with warning (yellow)
 - [ ] Workflow continues to next step
 - [ ] Overall workflow can still pass
@@ -231,6 +251,7 @@ If Socket.dev service is unavailable:
 **Purpose**: Verify error handling for bad config
 
 **Steps**:
+
 ```bash
 # Create test branch
 git checkout -b test/invalid-config
@@ -243,10 +264,12 @@ yq eval 'true' socket.yml
 ```
 
 **Expected Results**:
+
 - [ ] Local validation catches error
 - [ ] Clear error message shown
 
 **Cleanup**:
+
 ```bash
 git checkout story_1_3
 git branch -D test/invalid-config
@@ -259,14 +282,17 @@ git branch -D test/invalid-config
 After all commits are complete, run this integration test:
 
 ### Pre-Test Checklist
+
 - [ ] All 4 commits pushed to GitHub
 - [ ] Branch is up to date
 
 ### Execution
+
 - [ ] Trigger "Quality Gate" workflow manually
 - [ ] Wait for completion
 
 ### Verification Points
+
 - [ ] Workflow completes successfully
 - [ ] Socket.dev step appears in logs
 - [ ] Socket.dev analysis runs
@@ -275,6 +301,7 @@ After all commits are complete, run this integration test:
 - [ ] Total workflow duration < 2 minutes
 
 ### Post-Test
+
 - [ ] Review any warnings in Socket.dev output
 - [ ] Document any expected warnings
 
@@ -293,24 +320,29 @@ Use this template to document test results:
 **Workflow Run**: [Link to run]
 
 ### YAML Syntax Tests
+
 - [ ] socket.yml validates: PASS/FAIL
 - [ ] quality-gate.yml validates: PASS/FAIL
 
 ### Workflow Execution Tests
+
 - [ ] Test 1 (Manual Trigger): PASS/FAIL
-- [ ] Test 2 (Timing): PASS/FAIL (Duration: __s)
+- [ ] Test 2 (Timing): PASS/FAIL (Duration: \_\_s)
 - [ ] Test 3 (Cache): PASS/FAIL
 
 ### Security Policy Tests
+
 - [ ] Test 4 (Clean Scan): PASS/FAIL
 - [ ] Test 5 (License Config): PASS/FAIL
 - [ ] Test 6 (License Functional): PASS/FAIL/SKIPPED
 
 ### Error Scenario Tests
+
 - [ ] Test 8 (continue-on-error): VERIFIED
 - [ ] Test 9 (Invalid Config): PASS/FAIL
 
 ### Notes
+
 [Any observations or issues]
 ```
 
@@ -323,6 +355,7 @@ Use this template to document test results:
 **Symptom**: Red X on Socket.dev step
 
 **Diagnosis**:
+
 1. Check step logs for error message
 2. Common causes:
    - Invalid `socket.yml` syntax
@@ -330,6 +363,7 @@ Use this template to document test results:
    - Service outage
 
 **Resolution**:
+
 - Fix configuration issue
 - Verify permissions in workflow
 - Check [Socket.dev status](https://status.socket.dev/)
@@ -339,11 +373,13 @@ Use this template to document test results:
 **Symptom**: Workflow not appearing in Actions tab
 
 **Diagnosis**:
+
 1. Check YAML syntax of workflow file
 2. Verify file is in `.github/workflows/`
 3. Check GitHub Actions is enabled
 
 **Resolution**:
+
 - Fix YAML syntax errors
 - Move file to correct location
 - Enable Actions in repository settings
@@ -353,10 +389,12 @@ Use this template to document test results:
 **Symptom**: Blocking alert on expected package
 
 **Diagnosis**:
+
 1. Review alert details
 2. Check if legitimate concern or false positive
 
 **Resolution**:
+
 - If false positive: Use `@SocketSecurity ignore`
 - If legitimate: Replace package or accept risk
 
@@ -366,14 +404,15 @@ Use this template to document test results:
 
 ### Expected Timings
 
-| Step | Expected Duration | Warning Threshold |
-|------|-------------------|-------------------|
-| Socket.dev Scan | < 30s | > 60s |
-| Total Workflow | < 2 min | > 5 min |
+| Step            | Expected Duration | Warning Threshold |
+| --------------- | ----------------- | ----------------- |
+| Socket.dev Scan | < 30s             | > 60s             |
+| Total Workflow  | < 2 min           | > 5 min           |
 
 ### Monitoring
 
 Track these metrics over time:
+
 - Socket.dev step duration
 - Number of alerts per run
 - Cache hit rate

@@ -80,13 +80,13 @@ Le projet utilise Wrangler pour simuler localement les bindings D1 et R2, permet
 
 ### Key Files
 
-| File | Purpose |
-|------|---------|
-| `wrangler.jsonc` | Configuration des bindings Cloudflare |
-| `.env` | Variables d'environnement locales |
-| `cloudflare-env.d.ts` | Types TypeScript pour l'environnement Cloudflare |
-| `src/payload-types.ts` | Types générés par Payload CMS |
-| `package.json` | Scripts et dépendances |
+| File                   | Purpose                                          |
+| ---------------------- | ------------------------------------------------ |
+| `wrangler.jsonc`       | Configuration des bindings Cloudflare            |
+| `.env`                 | Variables d'environnement locales                |
+| `cloudflare-env.d.ts`  | Types TypeScript pour l'environnement Cloudflare |
+| `src/payload-types.ts` | Types générés par Payload CMS                    |
+| `package.json`         | Scripts et dépendances                           |
 
 ### Commands
 
@@ -127,12 +127,12 @@ pnpm devsafe
 
 ### Risks
 
-| Risk | Likelihood | Impact | Mitigation |
-|------|------------|--------|------------|
-| Problèmes d'authentification Wrangler | Medium | High | Documenter la procédure `wrangler login` |
-| Incompatibilité de version Node.js | Low | Medium | Spécifier versions exactes, utiliser nvm |
-| Erreurs de bindings locaux | Medium | Medium | Tester chaque binding individuellement |
-| Conflits de ports locaux | Low | Low | Documenter comment changer le port |
+| Risk                                  | Likelihood | Impact | Mitigation                               |
+| ------------------------------------- | ---------- | ------ | ---------------------------------------- |
+| Problèmes d'authentification Wrangler | Medium     | High   | Documenter la procédure `wrangler login` |
+| Incompatibilité de version Node.js    | Low        | Medium | Spécifier versions exactes, utiliser nvm |
+| Erreurs de bindings locaux            | Medium     | Medium | Tester chaque binding individuellement   |
+| Conflits de ports locaux              | Low        | Low    | Documenter comment changer le port       |
 
 ### Technical Debt Considerations
 

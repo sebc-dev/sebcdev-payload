@@ -29,14 +29,15 @@ Cette épique garantit que le projet démarre sur des bases solides avec une inf
 
 This epic contains **4 stories** as defined in the PRD:
 
-| Story | Title | Description | Status | Phases | Progress |
-|-------|-------|-------------|--------|--------|----------|
-| 1.1 | Initialisation & Déploiement 1-Click | Utiliser le template officiel pour provisionner automatiquement le Repo GitHub, la base D1, le bucket R2 et le Worker | ✅ COMPLETED | 3 | 3/3 |
-| 1.2 | Récupération & Configuration Locale | Cloner le repo, installer les dépendances et configurer l'environnement local avec bindings Cloudflare | ✅ COMPLETED | 2 | 2/2 |
-| 1.3 | Pipeline "Quality Gate" (AI-Shield) | Configurer le workflow GitHub Actions avec Socket.dev, Knip, Dependency Cruiser, Stryker, Lighthouse CI, ESLint/Prettier | 🚧 IN PROGRESS | 8 | 2/8 |
-| 1.4 | Adaptation du Pipeline de Déploiement | Conditionner le déploiement Cloudflare à la réussite de la Quality Gate | 📋 NOT STARTED | - | 0/0 |
+| Story | Title                                 | Description                                                                                                              | Status         | Phases | Progress |
+| ----- | ------------------------------------- | ------------------------------------------------------------------------------------------------------------------------ | -------------- | ------ | -------- |
+| 1.1   | Initialisation & Déploiement 1-Click  | Utiliser le template officiel pour provisionner automatiquement le Repo GitHub, la base D1, le bucket R2 et le Worker    | ✅ COMPLETED   | 3      | 3/3      |
+| 1.2   | Récupération & Configuration Locale   | Cloner le repo, installer les dépendances et configurer l'environnement local avec bindings Cloudflare                   | ✅ COMPLETED   | 2      | 2/2      |
+| 1.3   | Pipeline "Quality Gate" (AI-Shield)   | Configurer le workflow GitHub Actions avec Socket.dev, Knip, Dependency Cruiser, Stryker, Lighthouse CI, ESLint/Prettier | 🚧 IN PROGRESS | 8      | 5/8      |
+| 1.4   | Adaptation du Pipeline de Déploiement | Conditionner le déploiement Cloudflare à la réussite de la Quality Gate                                                  | 📋 NOT STARTED | -      | 0/0      |
 
 **Columns Explained**:
+
 - **Story**: Reference ID (e.g., 1.1, 1.2)
 - **Title**: Story name from PRD
 - **Description**: One-line summary of what the story delivers
@@ -93,9 +94,9 @@ cat docs/specs/epics/epic_1/EPIC_TRACKING.md
 - **Stories Started**: 3 / 4
 - **Stories Completed**: 2 / 4
 - **Total Phases**: 13 (Story 1.1: 3, Story 1.2: 2, Story 1.3: 8)
-- **Phases Completed**: 7 / 13
+- **Phases Completed**: 10 / 13
 
-**Completion**: 54% (Stories 1.1 and 1.2 complete, Story 1.3 Phase 1-2 complete)
+**Completion**: 77% (Stories 1.1 and 1.2 complete, Story 1.3 Phase 1-5 complete)
 
 ### Timeline
 
@@ -150,6 +151,9 @@ Track epic-level milestones here:
 
 ### Recent Updates
 
+- **2025-11-29**: Story 1.3 Phase 5 ✅ COMPLETED - Next.js build validation with caching (1 commit)
+- **2025-11-29**: Story 1.3 Phase 4 ✅ COMPLETED - Knip dead code detection + Payload type sync validation (4 commits)
+- **2025-11-29**: Story 1.3 Phase 3 ✅ COMPLETED - ESLint/Prettier code quality integration (4 commits)
 - **2025-11-29**: Story 1.3 Phase 2 ✅ COMPLETED - Socket.dev supply chain security fully implemented (4 commits)
 - **2025-11-28**: Story 1.3 Phase 2 documentation generated - 7 files, 4 commits, ~600 lines (Supply Chain Security - Socket.dev)
 - **2025-11-28**: Story 1.3 Phase 1 ✅ COMPLETED - quality-gate.yml foundation with SHA-pinned actions
@@ -188,9 +192,9 @@ Track epic-level milestones here:
 - Story 1.3: `docs/specs/epics/epic_1/story_1_3/implementation/PHASES_PLAN.md` ✅ Created (8 phases)
   - Phase 1: `docs/specs/epics/epic_1/story_1_3/implementation/phase_1/` ✅ COMPLETED
   - Phase 2: `docs/specs/epics/epic_1/story_1_3/implementation/phase_2/` ✅ COMPLETED
-  - Phase 3: Code Quality - ESLint/Prettier (to generate)
-  - Phase 4: Code Quality - Knip/Type Sync (to generate)
-  - Phase 5: Build Validation (to generate)
+  - Phase 3: `docs/specs/epics/epic_1/story_1_3/implementation/phase_3/` ✅ COMPLETED
+  - Phase 4: `docs/specs/epics/epic_1/story_1_3/implementation/phase_4/` ✅ COMPLETED
+  - Phase 5: `docs/specs/epics/epic_1/story_1_3/implementation/phase_5/` ✅ COMPLETED
   - Phase 6: Architecture Validation - dependency-cruiser (to generate)
   - Phase 7: Performance & Accessibility - Lighthouse/axe (to generate)
   - Phase 8: Mutation Testing - Stryker (to generate)

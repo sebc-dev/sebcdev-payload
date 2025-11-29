@@ -20,24 +20,28 @@ Use this checklist to verify each commit before and after implementation.
 ### Implementation Checklist
 
 #### Wrangler Authentication
+
 - [ ] Run `wrangler whoami`
 - [ ] Output shows authenticated account
 - [ ] Account name and ID are displayed
 - [ ] If not authenticated, run `wrangler login`
 
 #### D1 Database Binding
+
 - [ ] Run `wrangler d1 execute D1 --command "SELECT name FROM sqlite_master WHERE type='table'" --local`
 - [ ] Query executes successfully
 - [ ] Tables are listed (users, media, payload_migrations, etc.)
 - [ ] No connection errors
 
 #### R2 Binding Configuration
+
 - [ ] Review `wrangler.jsonc` file
 - [ ] R2 binding "R2" is configured
 - [ ] Bucket name "sebcdev-payload-cache" is correct
 - [ ] Preview bucket is configured
 
 #### Documentation
+
 - [ ] Create `.notes/phase1-commit1-validation.md` (optional)
 - [ ] Document authentication status
 - [ ] Document database status
@@ -54,6 +58,7 @@ Use this checklist to verify each commit before and after implementation.
 ### Commit Details
 
 **Message**:
+
 ```
 ✅ Verify Wrangler authentication and Cloudflare bindings
 
@@ -81,30 +86,35 @@ Part of Story 1.2 Phase 1: Environment Validation
 ### Implementation Checklist
 
 #### Cloudflare Types
+
 - [ ] Run `pnpm generate:types:cloudflare`
 - [ ] Command completes successfully
 - [ ] `cloudflare-env.d.ts` is updated
 - [ ] File contains D1, R2, ASSETS interfaces
 
 #### Payload Types
+
 - [ ] Run `pnpm generate:types:payload`
 - [ ] Command completes successfully
 - [ ] `src/payload-types.ts` is updated
 - [ ] File contains User, Media, Config types
 
 #### TypeScript Validation
+
 - [ ] Run `npx tsc --noEmit`
 - [ ] Command exits with code 0
 - [ ] No type errors reported
 - [ ] If errors, fix and re-run
 
 #### ESLint Validation
+
 - [ ] Run `pnpm lint`
 - [ ] Command exits successfully
 - [ ] No lint errors reported
 - [ ] If errors, fix and re-run
 
 #### Git Staging
+
 - [ ] Run `git status`
 - [ ] Check if type files are modified
 - [ ] Stage files: `git add cloudflare-env.d.ts src/payload-types.ts`
@@ -121,6 +131,7 @@ Part of Story 1.2 Phase 1: Environment Validation
 ### Commit Details
 
 **Message**:
+
 ```
 ✅ Regenerate and validate TypeScript types
 
@@ -153,12 +164,14 @@ Part of Story 1.2 Phase 1: Environment Validation
 ### Implementation Checklist
 
 #### Development Server
+
 - [ ] Run `pnpm dev`
 - [ ] Wait for "Ready" message
 - [ ] Note startup time
 - [ ] No critical errors in terminal
 
 #### Homepage Validation
+
 - [ ] Open `http://localhost:3000` in browser
 - [ ] Page loads successfully
 - [ ] Open DevTools (F12)
@@ -167,6 +180,7 @@ Part of Story 1.2 Phase 1: Environment Validation
 - [ ] No critical errors found
 
 #### Admin Panel Validation
+
 - [ ] Navigate to `http://localhost:3000/admin`
 - [ ] Login screen appears
 - [ ] No JavaScript errors in console
@@ -174,12 +188,14 @@ Part of Story 1.2 Phase 1: Environment Validation
 - [ ] Forms are interactive
 
 #### Browser Console Check
+
 - [ ] Console tab reviewed
 - [ ] No red error messages
 - [ ] Warnings are acceptable (development mode)
 - [ ] No database connection errors
 
 #### Documentation
+
 - [ ] Create `.notes/phase1-commit3-validation.md` (optional)
 - [ ] Document server startup time
 - [ ] Document homepage status
@@ -187,6 +203,7 @@ Part of Story 1.2 Phase 1: Environment Validation
 - [ ] Document overall phase status
 
 #### Cleanup
+
 - [ ] Stop development server (Ctrl+C)
 - [ ] Verify server stopped cleanly
 
@@ -202,6 +219,7 @@ Part of Story 1.2 Phase 1: Environment Validation
 ### Commit Details
 
 **Message**:
+
 ```
 ✅ Validate development server and application accessibility
 
@@ -224,6 +242,7 @@ Story 1.2 Phase 1 COMPLETE
 After all commits are complete:
 
 ### Validation
+
 - [ ] All 3 commits completed
 - [ ] Wrangler authentication working
 - [ ] D1 database accessible locally
@@ -236,16 +255,19 @@ After all commits are complete:
 - [ ] Admin panel accessible
 
 ### Documentation Updates
+
 - [ ] PHASES_PLAN.md updated with Phase 1 completion
 - [ ] EPIC_TRACKING.md updated (Progress: 1/2)
 - [ ] Validation notes documented (optional)
 
 ### Git
+
 - [ ] All commits made with proper messages
 - [ ] Commit history is clean
 - [ ] Ready for review if needed
 
 ### Next Phase
+
 - [ ] Phase 1 blockers resolved (none expected)
 - [ ] Ready to proceed to Phase 2
 - [ ] Phase 2 docs generated
@@ -283,14 +305,14 @@ git commit -m "message"
 
 ## Troubleshooting Quick Reference
 
-| Issue | Solution |
-|-------|----------|
-| Wrangler not authenticated | `wrangler login` |
-| D1 query fails | Check `wrangler.jsonc` binding name |
-| TypeScript errors | Fix errors, regenerate types |
-| ESLint errors | Fix errors or update config |
-| Port 3000 in use | `lsof -i :3000` then `kill <PID>` |
-| Server won't start | `pnpm devsafe` (clean start) |
+| Issue                      | Solution                            |
+| -------------------------- | ----------------------------------- |
+| Wrangler not authenticated | `wrangler login`                    |
+| D1 query fails             | Check `wrangler.jsonc` binding name |
+| TypeScript errors          | Fix errors, regenerate types        |
+| ESLint errors              | Fix errors or update config         |
+| Port 3000 in use           | `lsof -i :3000` then `kill <PID>`   |
+| Server won't start         | `pnpm devsafe` (clean start)        |
 
 ---
 

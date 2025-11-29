@@ -2,8 +2,8 @@
 
 **Phase**: Environment Validation & Type Synchronization
 **Story**: 1.2 - Récupération & Configuration Locale
-**Date**: ____________
-**Validator**: ____________
+**Date**: \***\*\_\_\_\_\*\***
+**Validator**: \***\*\_\_\_\_\*\***
 
 Complete this checklist to confirm Phase 1 is ready for completion.
 
@@ -24,14 +24,15 @@ Before starting validation, confirm:
 
 ### 1.1 Wrangler CLI Authentication
 
-| Check | Status | Notes |
-|-------|--------|-------|
-| `wrangler whoami` executes | [ ] Pass / [ ] Fail | |
-| Account name displayed | [ ] Pass / [ ] Fail | Account: __________ |
-| Account ID displayed | [ ] Pass / [ ] Fail | ID: __________ |
-| No authentication errors | [ ] Pass / [ ] Fail | |
+| Check                      | Status              | Notes                     |
+| -------------------------- | ------------------- | ------------------------- |
+| `wrangler whoami` executes | [ ] Pass / [ ] Fail |                           |
+| Account name displayed     | [ ] Pass / [ ] Fail | Account: \***\*\_\_\*\*** |
+| Account ID displayed       | [ ] Pass / [ ] Fail | ID: \***\*\_\_\*\***      |
+| No authentication errors   | [ ] Pass / [ ] Fail |                           |
 
 **Command Output**:
+
 ```
 [Paste wrangler whoami output here]
 ```
@@ -48,32 +49,34 @@ Before starting validation, confirm:
 
 ### 2.1 D1 Local Connection
 
-| Check | Status | Notes |
-|-------|--------|-------|
-| Local D1 query executes | [ ] Pass / [ ] Fail | |
-| Tables are returned | [ ] Pass / [ ] Fail | Count: __________ |
-| No connection errors | [ ] Pass / [ ] Fail | |
+| Check                   | Status              | Notes                   |
+| ----------------------- | ------------------- | ----------------------- |
+| Local D1 query executes | [ ] Pass / [ ] Fail |                         |
+| Tables are returned     | [ ] Pass / [ ] Fail | Count: \***\*\_\_\*\*** |
+| No connection errors    | [ ] Pass / [ ] Fail |                         |
 
 **Query Used**:
+
 ```bash
 wrangler d1 execute D1 --command "SELECT name FROM sqlite_master WHERE type='table'" --local
 ```
 
 **Tables Found**:
+
 - [ ] users
 - [ ] media
 - [ ] payload_locked_documents
 - [ ] payload_migrations
 - [ ] payload_preferences
-- [ ] _users_rels
+- [ ] \_users_rels
 
 ### 2.2 D1 Configuration
 
-| Check | Status | Notes |
-|-------|--------|-------|
-| Binding name is "D1" | [ ] Pass / [ ] Fail | |
-| Database ID matches | [ ] Pass / [ ] Fail | |
-| Database name is "sebcdev" | [ ] Pass / [ ] Fail | |
+| Check                      | Status              | Notes |
+| -------------------------- | ------------------- | ----- |
+| Binding name is "D1"       | [ ] Pass / [ ] Fail |       |
+| Database ID matches        | [ ] Pass / [ ] Fail |       |
+| Database name is "sebcdev" | [ ] Pass / [ ] Fail |       |
 
 ---
 
@@ -81,14 +84,15 @@ wrangler d1 execute D1 --command "SELECT name FROM sqlite_master WHERE type='tab
 
 ### 3.1 R2 Configuration
 
-| Check | Status | Notes |
-|-------|--------|-------|
-| R2 binding exists in wrangler.jsonc | [ ] Pass / [ ] Fail | |
-| Binding name is "R2" | [ ] Pass / [ ] Fail | |
-| Bucket name is correct | [ ] Pass / [ ] Fail | Name: __________ |
-| Preview bucket configured | [ ] Pass / [ ] Fail | |
+| Check                               | Status              | Notes                  |
+| ----------------------------------- | ------------------- | ---------------------- |
+| R2 binding exists in wrangler.jsonc | [ ] Pass / [ ] Fail |                        |
+| Binding name is "R2"                | [ ] Pass / [ ] Fail |                        |
+| Bucket name is correct              | [ ] Pass / [ ] Fail | Name: \***\*\_\_\*\*** |
+| Preview bucket configured           | [ ] Pass / [ ] Fail |                        |
 
 **wrangler.jsonc R2 Section**:
+
 ```json
 [Paste r2_buckets section here]
 ```
@@ -99,40 +103,40 @@ wrangler d1 execute D1 --command "SELECT name FROM sqlite_master WHERE type='tab
 
 ### 4.1 Cloudflare Types
 
-| Check | Status | Notes |
-|-------|--------|-------|
-| `pnpm generate:types:cloudflare` succeeds | [ ] Pass / [ ] Fail | |
-| cloudflare-env.d.ts exists | [ ] Pass / [ ] Fail | |
-| CloudflareEnv interface present | [ ] Pass / [ ] Fail | |
-| D1 binding typed (D1Database) | [ ] Pass / [ ] Fail | |
-| R2 binding typed (R2Bucket) | [ ] Pass / [ ] Fail | |
-| ASSETS binding typed (Fetcher) | [ ] Pass / [ ] Fail | |
+| Check                                     | Status              | Notes |
+| ----------------------------------------- | ------------------- | ----- |
+| `pnpm generate:types:cloudflare` succeeds | [ ] Pass / [ ] Fail |       |
+| cloudflare-env.d.ts exists                | [ ] Pass / [ ] Fail |       |
+| CloudflareEnv interface present           | [ ] Pass / [ ] Fail |       |
+| D1 binding typed (D1Database)             | [ ] Pass / [ ] Fail |       |
+| R2 binding typed (R2Bucket)               | [ ] Pass / [ ] Fail |       |
+| ASSETS binding typed (Fetcher)            | [ ] Pass / [ ] Fail |       |
 
 ### 4.2 Payload Types
 
-| Check | Status | Notes |
-|-------|--------|-------|
-| `pnpm generate:types:payload` succeeds | [ ] Pass / [ ] Fail | |
-| src/payload-types.ts exists | [ ] Pass / [ ] Fail | |
-| Config interface present | [ ] Pass / [ ] Fail | |
-| User type defined | [ ] Pass / [ ] Fail | |
-| Media type defined | [ ] Pass / [ ] Fail | |
+| Check                                  | Status              | Notes |
+| -------------------------------------- | ------------------- | ----- |
+| `pnpm generate:types:payload` succeeds | [ ] Pass / [ ] Fail |       |
+| src/payload-types.ts exists            | [ ] Pass / [ ] Fail |       |
+| Config interface present               | [ ] Pass / [ ] Fail |       |
+| User type defined                      | [ ] Pass / [ ] Fail |       |
+| Media type defined                     | [ ] Pass / [ ] Fail |       |
 
 ### 4.3 TypeScript Compilation
 
-| Check | Status | Notes |
-|-------|--------|-------|
-| `npx tsc --noEmit` succeeds | [ ] Pass / [ ] Fail | |
-| Exit code is 0 | [ ] Pass / [ ] Fail | |
-| No type errors | [ ] Pass / [ ] Fail | Error count: __________ |
+| Check                       | Status              | Notes                         |
+| --------------------------- | ------------------- | ----------------------------- |
+| `npx tsc --noEmit` succeeds | [ ] Pass / [ ] Fail |                               |
+| Exit code is 0              | [ ] Pass / [ ] Fail |                               |
+| No type errors              | [ ] Pass / [ ] Fail | Error count: \***\*\_\_\*\*** |
 
 ### 4.4 ESLint Validation
 
-| Check | Status | Notes |
-|-------|--------|-------|
-| `pnpm lint` succeeds | [ ] Pass / [ ] Fail | |
-| No lint errors | [ ] Pass / [ ] Fail | Error count: __________ |
-| Warnings acceptable | [ ] Pass / [ ] Fail | Warning count: __________ |
+| Check                | Status              | Notes                           |
+| -------------------- | ------------------- | ------------------------------- |
+| `pnpm lint` succeeds | [ ] Pass / [ ] Fail |                                 |
+| No lint errors       | [ ] Pass / [ ] Fail | Error count: \***\*\_\_\*\***   |
+| Warnings acceptable  | [ ] Pass / [ ] Fail | Warning count: \***\*\_\_\*\*** |
 
 ---
 
@@ -140,31 +144,31 @@ wrangler d1 execute D1 --command "SELECT name FROM sqlite_master WHERE type='tab
 
 ### 5.1 Server Startup
 
-| Check | Status | Notes |
-|-------|--------|-------|
-| `pnpm dev` starts | [ ] Pass / [ ] Fail | |
-| "Ready" message appears | [ ] Pass / [ ] Fail | |
-| No crash on startup | [ ] Pass / [ ] Fail | |
-| Startup time < 30s | [ ] Pass / [ ] Fail | Time: __________ seconds |
+| Check                   | Status              | Notes                          |
+| ----------------------- | ------------------- | ------------------------------ |
+| `pnpm dev` starts       | [ ] Pass / [ ] Fail |                                |
+| "Ready" message appears | [ ] Pass / [ ] Fail |                                |
+| No crash on startup     | [ ] Pass / [ ] Fail |                                |
+| Startup time < 30s      | [ ] Pass / [ ] Fail | Time: \***\*\_\_\*\*** seconds |
 
 ### 5.2 Application Accessibility
 
-| Check | Status | Notes |
-|-------|--------|-------|
-| Homepage loads (localhost:3000) | [ ] Pass / [ ] Fail | |
-| HTTP 200 response | [ ] Pass / [ ] Fail | |
-| Content renders | [ ] Pass / [ ] Fail | |
-| No console errors | [ ] Pass / [ ] Fail | |
+| Check                           | Status              | Notes |
+| ------------------------------- | ------------------- | ----- |
+| Homepage loads (localhost:3000) | [ ] Pass / [ ] Fail |       |
+| HTTP 200 response               | [ ] Pass / [ ] Fail |       |
+| Content renders                 | [ ] Pass / [ ] Fail |       |
+| No console errors               | [ ] Pass / [ ] Fail |       |
 
 ### 5.3 Admin Panel
 
-| Check | Status | Notes |
-|-------|--------|-------|
-| Admin loads (localhost:3000/admin) | [ ] Pass / [ ] Fail | |
-| Login screen renders | [ ] Pass / [ ] Fail | |
-| UI components interactive | [ ] Pass / [ ] Fail | |
-| No database errors | [ ] Pass / [ ] Fail | |
-| No console errors | [ ] Pass / [ ] Fail | |
+| Check                              | Status              | Notes |
+| ---------------------------------- | ------------------- | ----- |
+| Admin loads (localhost:3000/admin) | [ ] Pass / [ ] Fail |       |
+| Login screen renders               | [ ] Pass / [ ] Fail |       |
+| UI components interactive          | [ ] Pass / [ ] Fail |       |
+| No database errors                 | [ ] Pass / [ ] Fail |       |
+| No console errors                  | [ ] Pass / [ ] Fail |       |
 
 ---
 
@@ -172,19 +176,19 @@ wrangler d1 execute D1 --command "SELECT name FROM sqlite_master WHERE type='tab
 
 ### 6.1 Generated Files
 
-| File | Exists | Valid | Notes |
-|------|--------|-------|-------|
-| cloudflare-env.d.ts | [ ] Yes / [ ] No | [ ] Yes / [ ] No | |
-| src/payload-types.ts | [ ] Yes / [ ] No | [ ] Yes / [ ] No | |
+| File                 | Exists           | Valid            | Notes |
+| -------------------- | ---------------- | ---------------- | ----- |
+| cloudflare-env.d.ts  | [ ] Yes / [ ] No | [ ] Yes / [ ] No |       |
+| src/payload-types.ts | [ ] Yes / [ ] No | [ ] Yes / [ ] No |       |
 
 ### 6.2 Configuration Files
 
-| File | Exists | Valid | Notes |
-|------|--------|-------|-------|
-| .env | [ ] Yes / [ ] No | [ ] Yes / [ ] No | |
-| wrangler.jsonc | [ ] Yes / [ ] No | [ ] Yes / [ ] No | |
-| tsconfig.json | [ ] Yes / [ ] No | [ ] Yes / [ ] No | |
-| package.json | [ ] Yes / [ ] No | [ ] Yes / [ ] No | |
+| File           | Exists           | Valid            | Notes |
+| -------------- | ---------------- | ---------------- | ----- |
+| .env           | [ ] Yes / [ ] No | [ ] Yes / [ ] No |       |
+| wrangler.jsonc | [ ] Yes / [ ] No | [ ] Yes / [ ] No |       |
+| tsconfig.json  | [ ] Yes / [ ] No | [ ] Yes / [ ] No |       |
+| package.json   | [ ] Yes / [ ] No | [ ] Yes / [ ] No |       |
 
 ---
 
@@ -192,11 +196,11 @@ wrangler d1 execute D1 --command "SELECT name FROM sqlite_master WHERE type='tab
 
 ### 7.1 Commits Completed
 
-| Commit | Status | Commit Hash |
-|--------|--------|-------------|
-| 1.1: Wrangler Auth & Bindings | [ ] Done / [ ] Pending | __________ |
-| 1.2: TypeScript Types | [ ] Done / [ ] Pending | __________ |
-| 1.3: Dev Server Validation | [ ] Done / [ ] Pending | __________ |
+| Commit                        | Status                 | Commit Hash      |
+| ----------------------------- | ---------------------- | ---------------- |
+| 1.1: Wrangler Auth & Bindings | [ ] Done / [ ] Pending | \***\*\_\_\*\*** |
+| 1.2: TypeScript Types         | [ ] Done / [ ] Pending | \***\*\_\_\*\*** |
+| 1.3: Dev Server Validation    | [ ] Done / [ ] Pending | \***\*\_\_\*\*** |
 
 ### 7.2 Git Status
 
@@ -211,24 +215,24 @@ wrangler d1 execute D1 --command "SELECT name FROM sqlite_master WHERE type='tab
 
 ### 8.1 Phase Success Criteria
 
-| Criterion | Met | Notes |
-|-----------|-----|-------|
-| All bindings verified as functional | [ ] Yes / [ ] No | |
-| Development server starts < 30s | [ ] Yes / [ ] No | |
-| No console errors on homepage | [ ] Yes / [ ] No | |
-| Admin login screen renders | [ ] Yes / [ ] No | |
-| TypeScript compilation succeeds | [ ] Yes / [ ] No | |
-| ESLint passes with no errors | [ ] Yes / [ ] No | |
+| Criterion                           | Met              | Notes |
+| ----------------------------------- | ---------------- | ----- |
+| All bindings verified as functional | [ ] Yes / [ ] No |       |
+| Development server starts < 30s     | [ ] Yes / [ ] No |       |
+| No console errors on homepage       | [ ] Yes / [ ] No |       |
+| Admin login screen renders          | [ ] Yes / [ ] No |       |
+| TypeScript compilation succeeds     | [ ] Yes / [ ] No |       |
+| ESLint passes with no errors        | [ ] Yes / [ ] No |       |
 
 ### 8.2 Quality Metrics
 
-| Metric | Target | Actual | Status |
-|--------|--------|--------|--------|
-| TypeScript errors | 0 | _____ | [ ] Met |
-| ESLint errors | 0 | _____ | [ ] Met |
-| Server startup time | < 30s | _____ s | [ ] Met |
-| Console errors (homepage) | 0 | _____ | [ ] Met |
-| Console errors (admin) | 0 | _____ | [ ] Met |
+| Metric                    | Target | Actual   | Status  |
+| ------------------------- | ------ | -------- | ------- |
+| TypeScript errors         | 0      | **\_**   | [ ] Met |
+| ESLint errors             | 0      | **\_**   | [ ] Met |
+| Server startup time       | < 30s  | **\_** s | [ ] Met |
+| Console errors (homepage) | 0      | **\_**   | [ ] Met |
+| Console errors (admin)    | 0      | **\_**   | [ ] Met |
 
 ---
 
@@ -236,18 +240,18 @@ wrangler d1 execute D1 --command "SELECT name FROM sqlite_master WHERE type='tab
 
 ### 9.1 Issues Found
 
-| # | Issue | Severity | Resolution | Status |
-|---|-------|----------|------------|--------|
-| 1 | | [ ] High / [ ] Medium / [ ] Low | | [ ] Resolved / [ ] Open |
-| 2 | | [ ] High / [ ] Medium / [ ] Low | | [ ] Resolved / [ ] Open |
-| 3 | | [ ] High / [ ] Medium / [ ] Low | | [ ] Resolved / [ ] Open |
+| #   | Issue | Severity                        | Resolution | Status                  |
+| --- | ----- | ------------------------------- | ---------- | ----------------------- |
+| 1   |       | [ ] High / [ ] Medium / [ ] Low |            | [ ] Resolved / [ ] Open |
+| 2   |       | [ ] High / [ ] Medium / [ ] Low |            | [ ] Resolved / [ ] Open |
+| 3   |       | [ ] High / [ ] Medium / [ ] Low |            | [ ] Resolved / [ ] Open |
 
 ### 9.2 Blockers for Phase 2
 
 - [ ] No blockers identified
 - [ ] Blockers exist (list below):
-  1. ____________________________________________
-  2. ____________________________________________
+  1. ***
+  2. ***
 
 ---
 
@@ -262,16 +266,16 @@ wrangler d1 execute D1 --command "SELECT name FROM sqlite_master WHERE type='tab
 
 ### 10.2 Sign-Off
 
-| Role | Name | Date | Signature |
-|------|------|------|-----------|
-| Implementer | | | |
-| Reviewer | | | |
+| Role        | Name | Date | Signature |
+| ----------- | ---- | ---- | --------- |
+| Implementer |      |      |           |
+| Reviewer    |      |      |           |
 
 ### 10.3 Phase Status
 
 **Phase 1 Status**: [ ] COMPLETE / [ ] INCOMPLETE
 
-**Reason if incomplete**: ____________________________________________
+**Reason if incomplete**: **\*\*\*\***\*\*\*\***\*\*\*\***\_\_\_\_**\*\*\*\***\*\*\*\***\*\*\*\***
 
 ### 10.4 Next Steps
 

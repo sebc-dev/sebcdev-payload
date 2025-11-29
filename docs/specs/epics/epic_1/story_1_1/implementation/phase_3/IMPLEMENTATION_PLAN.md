@@ -36,6 +36,7 @@ The implementation is split into **3 independent commits** to:
 **Duration**: 60-90 min (implementation) + 30-45 min (review)
 
 **Content**:
+
 - Test Cloudflare Worker accessibility (HTTP request to Worker URL)
 - Verify D1 database connection and list tables
 - Verify R2 bucket connection and list objects/permissions
@@ -45,11 +46,13 @@ The implementation is split into **3 independent commits** to:
 - Create infrastructure verification report
 
 **Why it's atomic**:
+
 - Single responsibility: Verify all infrastructure components are functional
 - No external dependencies beyond Phase 2 deployment
 - Can be validated independently via manual testing
 
 **Technical Validation**:
+
 ```bash
 # Test Worker accessibility
 curl https://[worker-url]
@@ -67,6 +70,7 @@ wrangler tail [worker-name]
 **Expected Result**: All infrastructure components respond correctly, admin panel is accessible, no errors in logs
 
 **Review Criteria**:
+
 - [ ] Worker URL returns valid HTTP response (200 or expected status)
 - [ ] D1 database contains Payload core tables (users, media, payload_migrations)
 - [ ] R2 bucket is accessible and empty (or contains test objects from deployment)
@@ -84,6 +88,7 @@ wrangler tail [worker-name]
 **Duration**: 90-120 min (implementation) + 45-60 min (review)
 
 **Content**:
+
 - Create comprehensive deployment guide for team
 - Document all infrastructure details:
   - Cloudflare account ID
@@ -98,11 +103,13 @@ wrangler tail [worker-name]
 - Document credential storage and security best practices
 
 **Why it's atomic**:
+
 - Single responsibility: Create deployment documentation
 - Depends on Commit 1 verification results
 - Can be reviewed independently for completeness and accuracy
 
 **Technical Validation**:
+
 ```bash
 # Verify documentation files exist
 ls docs/deployment/
@@ -117,6 +124,7 @@ ls docs/deployment/
 **Expected Result**: Complete deployment guide that allows another team member to understand and replicate the deployment process
 
 **Review Criteria**:
+
 - [ ] Documentation is comprehensive (covers all infrastructure components)
 - [ ] All resource names, IDs, and URLs are documented
 - [ ] Commands are accurate and tested
@@ -134,6 +142,7 @@ ls docs/deployment/
 **Duration**: 60-90 min (implementation) + 30-45 min (review)
 
 **Content**:
+
 - Create troubleshooting guide for common issues:
   - Worker not responding (cold starts, routing issues)
   - D1 connection errors
@@ -150,11 +159,13 @@ ls docs/deployment/
   - Links to Cloudflare dashboard and resources
 
 **Why it's atomic**:
+
 - Single responsibility: Create troubleshooting documentation and update README
 - Depends on understanding from Commits 1 and 2
 - Can be validated independently by testing documented solutions
 
 **Technical Validation**:
+
 ```bash
 # Verify troubleshooting guide covers common scenarios
 cat docs/deployment/troubleshooting.md
@@ -169,6 +180,7 @@ cat README.md
 **Expected Result**: Comprehensive troubleshooting guide and updated README that empowers team to resolve common issues independently
 
 **Review Criteria**:
+
 - [ ] Troubleshooting guide covers at least 5 common issues
 - [ ] Each issue includes symptoms, diagnostic commands, and solutions
 - [ ] Solutions are tested and accurate
@@ -199,6 +211,7 @@ cat README.md
 ### Validation at Each Step
 
 After each commit:
+
 ```bash
 # Verify documentation files exist
 ls -la docs/deployment/
@@ -218,12 +231,12 @@ All documentation must be accurate and tested before moving to next commit.
 
 ## 📊 Commit Metrics
 
-| Commit | Files | Lines | Implementation | Review | Total |
-|--------|-------|-------|----------------|--------|-------|
-| 1. Infrastructure Verification | 1 | ~150 | 60-90 min | 30-45 min | 90-135 min |
-| 2. Deployment Documentation | 2 | ~250 | 90-120 min | 45-60 min | 135-180 min |
-| 3. Troubleshooting & README | 2 | ~200 | 60-90 min | 30-45 min | 90-135 min |
-| **TOTAL** | **5** | **~600** | **3-5h** | **2-3h** | **5-8h** |
+| Commit                         | Files | Lines    | Implementation | Review    | Total       |
+| ------------------------------ | ----- | -------- | -------------- | --------- | ----------- |
+| 1. Infrastructure Verification | 1     | ~150     | 60-90 min      | 30-45 min | 90-135 min  |
+| 2. Deployment Documentation    | 2     | ~250     | 90-120 min     | 45-60 min | 135-180 min |
+| 3. Troubleshooting & README    | 2     | ~200     | 60-90 min      | 30-45 min | 90-135 min  |
+| **TOTAL**                      | **5** | **~600** | **3-5h**       | **2-3h**  | **5-8h**    |
 
 **Note**: Implementation time includes manual testing and verification, not just documentation writing.
 
@@ -256,6 +269,7 @@ All documentation must be accurate and tested before moving to next commit.
 ### Commit Messages
 
 Format:
+
 ```
 type(scope): short description (max 50 chars)
 
@@ -269,6 +283,7 @@ Part of Phase 3 - Commit X/3
 Types: `docs`, `test`, `chore`
 
 **Examples**:
+
 - `docs(deployment): verify infrastructure and document results`
 - `docs(deployment): create comprehensive deployment guide`
 - `docs(deployment): add troubleshooting guide and update README`
@@ -276,6 +291,7 @@ Types: `docs`, `test`, `chore`
 ### Review Checklist
 
 Before committing:
+
 - [ ] Documentation is accurate and tested
 - [ ] All commands execute successfully
 - [ ] Screenshots are clear and relevant

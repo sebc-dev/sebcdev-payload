@@ -11,12 +11,12 @@ This document describes the prerequisites and environment configuration required
 
 ### Required Software
 
-| Software | Required Version | Check Command | Notes |
-|----------|------------------|---------------|-------|
-| Node.js | ^18.20.2 or >=20.9.0 | `node --version` | LTS recommended |
-| pnpm | ^9 or ^10 | `pnpm --version` | Package manager |
-| Git | Any recent | `git --version` | Version control |
-| Wrangler | ~4.42.0 | `wrangler --version` | Cloudflare CLI (in devDeps) |
+| Software | Required Version     | Check Command        | Notes                       |
+| -------- | -------------------- | -------------------- | --------------------------- |
+| Node.js  | ^18.20.2 or >=20.9.0 | `node --version`     | LTS recommended             |
+| pnpm     | ^9 or ^10            | `pnpm --version`     | Package manager             |
+| Git      | Any recent           | `git --version`      | Version control             |
+| Wrangler | ~4.42.0              | `wrangler --version` | Cloudflare CLI (in devDeps) |
 
 ### Verify Installation
 
@@ -41,6 +41,7 @@ npx wrangler --version
 ### Install Missing Software
 
 **Node.js** (via nvm):
+
 ```bash
 # Install nvm (if not installed)
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash
@@ -51,6 +52,7 @@ nvm use 20
 ```
 
 **pnpm**:
+
 ```bash
 # Install pnpm globally
 npm install -g pnpm
@@ -76,14 +78,14 @@ pnpm install
 
 ### Key Dependencies
 
-| Dependency | Version | Purpose |
-|------------|---------|---------|
-| `next` | 15.4.7 | React framework |
-| `payload` | 3.63.0 | CMS |
-| `@payloadcms/db-d1-sqlite` | 3.63.0 | D1 database adapter |
-| `@payloadcms/storage-r2` | 3.63.0 | R2 storage adapter |
-| `wrangler` | ~4.42.0 | Cloudflare CLI |
-| `typescript` | 5.7.3 | TypeScript compiler |
+| Dependency                 | Version | Purpose             |
+| -------------------------- | ------- | ------------------- |
+| `next`                     | 15.4.7  | React framework     |
+| `payload`                  | 3.63.0  | CMS                 |
+| `@payloadcms/db-d1-sqlite` | 3.63.0  | D1 database adapter |
+| `@payloadcms/storage-r2`   | 3.63.0  | R2 storage adapter  |
+| `wrangler`                 | ~4.42.0 | Cloudflare CLI      |
+| `typescript`               | 5.7.3   | TypeScript compiler |
 
 ---
 
@@ -93,11 +95,11 @@ pnpm install
 
 This phase assumes Story 1.1 has been completed and the following resources exist:
 
-| Resource | Name | Status |
-|----------|------|--------|
-| D1 Database | `sebcdev` | Provisioned |
-| R2 Bucket | `sebcdev-payload-cache` | Provisioned |
-| Worker | `sebcdev-payload` | Deployed |
+| Resource    | Name                    | Status      |
+| ----------- | ----------------------- | ----------- |
+| D1 Database | `sebcdev`               | Provisioned |
+| R2 Bucket   | `sebcdev-payload-cache` | Provisioned |
+| Worker      | `sebcdev-payload`       | Deployed    |
 
 ### Wrangler Configuration
 
@@ -107,25 +109,22 @@ The `wrangler.jsonc` file should contain:
 {
   "name": "sebcdev-payload",
   "compatibility_date": "2025-11-27",
-  "compatibility_flags": [
-    "nodejs_compat",
-    "global_fetch_strictly_public"
-  ],
+  "compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
   "d1_databases": [
     {
       "binding": "D1",
       "database_id": "d558666f-e7e9-4ff7-a972-dbc0d8bea923",
       "database_name": "sebcdev",
-      "remote": true
-    }
+      "remote": true,
+    },
   ],
   "r2_buckets": [
     {
       "binding": "R2",
       "bucket_name": "sebcdev-payload-cache",
-      "preview_bucket_name": "sebcdev-payload-cache"
-    }
-  ]
+      "preview_bucket_name": "sebcdev-payload-cache",
+    },
+  ],
 }
 ```
 
@@ -223,8 +222,8 @@ ls -la src/payload.config.ts src/payload-types.ts
 
 ### Local Ports
 
-| Port | Service | Usage |
-|------|---------|-------|
+| Port | Service            | Usage       |
+| ---- | ------------------ | ----------- |
 | 3000 | Next.js Dev Server | Application |
 
 ### Check Port Availability
@@ -243,6 +242,7 @@ PORT=3001 pnpm dev
 ### Internet Connection
 
 Required for:
+
 - Wrangler authentication check
 - Remote D1 database access (if testing remote)
 - npm package resolution (if needed)
@@ -255,11 +255,11 @@ Required for:
 
 For the best development experience, install these extensions:
 
-| Extension | ID | Purpose |
-|-----------|-----|---------|
-| ESLint | `dbaeumer.vscode-eslint` | Linting |
-| Prettier | `esbenp.prettier-vscode` | Formatting |
-| TypeScript | Built-in | Type checking |
+| Extension    | ID                          | Purpose          |
+| ------------ | --------------------------- | ---------------- |
+| ESLint       | `dbaeumer.vscode-eslint`    | Linting          |
+| Prettier     | `esbenp.prettier-vscode`    | Formatting       |
+| TypeScript   | Built-in                    | Type checking    |
 | Tailwind CSS | `bradlc.vscode-tailwindcss` | CSS IntelliSense |
 
 ### VSCode Settings
@@ -347,6 +347,7 @@ echo "=== Verification Complete ==="
 ```
 
 Save as `verify-env.sh` and run:
+
 ```bash
 chmod +x verify-env.sh
 ./verify-env.sh

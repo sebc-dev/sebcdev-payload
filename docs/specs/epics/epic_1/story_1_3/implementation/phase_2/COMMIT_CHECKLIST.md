@@ -23,21 +23,22 @@ Use this checklist to track progress through each atomic commit. Each commit sho
 ### Implementation Checklist
 
 - [ ] Create `socket.yml` at repository root:
+
   ```yaml
   # socket.yml
   version: 2
 
   projectIgnorePaths:
-    - "tests/**"
-    - "docs/**"
-    - "**/__tests__/**"
-    - "**/fixtures/**"
+    - 'tests/**'
+    - 'docs/**'
+    - '**/__tests__/**'
+    - '**/fixtures/**'
 
   triggerPaths:
-    - "package.json"
-    - "**/package.json"
-    - "pnpm-lock.yaml"
-    - "socket.yml"
+    - 'package.json'
+    - '**/package.json'
+    - 'pnpm-lock.yaml'
+    - 'socket.yml'
 
   githubApp:
     enabled: true
@@ -62,6 +63,7 @@ Use this checklist to track progress through each atomic commit. Each commit sho
 - [ ] Stage file: `git add socket.yml`
 - [ ] Verify staged changes: `git diff --cached`
 - [ ] Commit with message:
+
   ```
   feat(security): add socket.yml configuration for supply chain scanning
 
@@ -92,24 +94,26 @@ Use this checklist to track progress through each atomic commit. Each commit sho
 - [ ] Open `.github/workflows/quality-gate.yml` for editing
 
 - [ ] Add permissions for Socket.dev (if not already present):
+
   ```yaml
   permissions:
     contents: read
-    issues: write         # For Socket.dev comments
-    pull-requests: write  # For Socket.dev PR updates
+    issues: write # For Socket.dev comments
+    pull-requests: write # For Socket.dev PR updates
   ```
 
 - [ ] Add Socket.dev step after `pnpm install`:
+
   ```yaml
   # ============================================
   # LAYER 1: Supply Chain Security
   # ============================================
 
   - name: Socket.dev Security Scan
-    uses: SocketDev/socket-security-action@6f55d8fa2cebd6ef40fad5e1dea9ae0edbe4ee13  # v2.0.1
+    uses: SocketDev/socket-security-action@6f55d8fa2cebd6ef40fad5e1dea9ae0edbe4ee13 # v2.0.1
     with:
       github-token: ${{ secrets.GITHUB_TOKEN }}
-    continue-on-error: true  # Don't block if service unavailable
+    continue-on-error: true # Don't block if service unavailable
   ```
 
 - [ ] Verify step placement:
@@ -131,6 +135,7 @@ Use this checklist to track progress through each atomic commit. Each commit sho
 - [ ] Stage file: `git add .github/workflows/quality-gate.yml`
 - [ ] Verify staged changes: `git diff --cached`
 - [ ] Commit with message:
+
   ```
   feat(security): integrate Socket.dev supply chain scanning
 
@@ -161,6 +166,7 @@ Use this checklist to track progress through each atomic commit. Each commit sho
 - [ ] Open `socket.yml` for editing
 
 - [ ] Add `issueRules` section:
+
   ```yaml
   # Issue-specific rule configuration
   issueRules:
@@ -170,16 +176,17 @@ Use this checklist to track progress through each atomic commit. Each commit sho
   ```
 
 - [ ] Add `licensePolicies` section:
+
   ```yaml
   # License compliance - block viral licenses
   licensePolicies:
     deny:
-      - "GPL-2.0-only"
-      - "GPL-2.0-or-later"
-      - "GPL-3.0-only"
-      - "GPL-3.0-or-later"
-      - "AGPL-3.0-only"
-      - "AGPL-3.0-or-later"
+      - 'GPL-2.0-only'
+      - 'GPL-2.0-or-later'
+      - 'GPL-3.0-only'
+      - 'GPL-3.0-or-later'
+      - 'AGPL-3.0-only'
+      - 'AGPL-3.0-or-later'
   ```
 
 - [ ] Verify complete file structure:
@@ -202,6 +209,7 @@ Use this checklist to track progress through each atomic commit. Each commit sho
 - [ ] Stage file: `git add socket.yml`
 - [ ] Verify staged changes: `git diff --cached`
 - [ ] Commit with message:
+
   ```
   feat(security): configure Socket.dev security and license policies
 
@@ -229,6 +237,7 @@ Use this checklist to track progress through each atomic commit. Each commit sho
 ### Implementation Checklist
 
 - [ ] Create directory if needed:
+
   ```bash
   mkdir -p docs/guides
   ```
@@ -250,11 +259,11 @@ Use this checklist to track progress through each atomic commit. Each commit sho
 
   ## Security Levels
 
-  | Level | Meaning | Action |
-  |-------|---------|--------|
-  | **Block** | Critical security issue | Must resolve before merge |
-  | **Warn** | Potential concern | Review and decide |
-  | **Monitor** | Informational | No action required |
+  | Level       | Meaning                 | Action                    |
+  | ----------- | ----------------------- | ------------------------- |
+  | **Block**   | Critical security issue | Must resolve before merge |
+  | **Warn**    | Potential concern       | Review and decide         |
+  | **Monitor** | Informational           | No action required        |
 
   ## Handling Alerts
 
@@ -264,9 +273,11 @@ Use this checklist to track progress through each atomic commit. Each commit sho
 
   1. Review the alert reason in the PR check
   2. If it's a false positive, add a PR comment:
-     ```
-     @SocketSecurity ignore <package>@<version>
-     ```
+  ```
+
+  @SocketSecurity ignore <package>@<version>
+
+  ```
   3. Explain why it's acceptable
   4. Socket.dev will re-scan and allow the package
 
@@ -313,6 +324,7 @@ Use this checklist to track progress through each atomic commit. Each commit sho
 - [ ] Stage file: `git add docs/guides/socket-security.md`
 - [ ] Verify staged changes: `git diff --cached`
 - [ ] Commit with message:
+
   ```
   docs(security): add Socket.dev security guide for developers
 
@@ -372,9 +384,9 @@ Use this checklist to track progress through each atomic commit. Each commit sho
 
 ## Quick Reference: SHA Values
 
-| Action | Version | SHA |
-|--------|---------|-----|
-| `SocketDev/socket-security-action` | v2.0.1 | `6f55d8fa2cebd6ef40fad5e1dea9ae0edbe4ee13` |
+| Action                             | Version | SHA                                        |
+| ---------------------------------- | ------- | ------------------------------------------ |
+| `SocketDev/socket-security-action` | v2.0.1  | `6f55d8fa2cebd6ef40fad5e1dea9ae0edbe4ee13` |
 
 ### How to Verify SHA
 

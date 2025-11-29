@@ -7,6 +7,7 @@ Complete validation checklist before marking Phase 1 as complete.
 ## ✅ 1. Repository Creation and Configuration
 
 ### GitHub Repository
+
 - [ ] Repository created successfully on GitHub
 - [ ] Repository name is `sebcdev-payload` (or documented alternative)
 - [ ] Description: "Payload CMS application on Cloudflare Workers with D1 and R2"
@@ -16,11 +17,13 @@ Complete validation checklist before marking Phase 1 as complete.
 - [ ] Repository is accessible to team members
 
 ### Repository URL Documentation
+
 - [ ] Repository URL documented: `https://github.com/[username]/sebcdev-payload`
 - [ ] URL added to project documentation
 - [ ] Team members can access repository
 
 **Validation**:
+
 ```bash
 gh repo view [username]/sebcdev-payload
 gh repo view [username]/sebcdev-payload --web
@@ -31,6 +34,7 @@ gh repo view [username]/sebcdev-payload --web
 ## ✅ 2. Template Files Integrity
 
 ### Core Configuration Files
+
 - [ ] `wrangler.toml` exists and contains:
   - [ ] Worker name defined
   - [ ] `compatibility_flags = ["nodejs_compat"]`
@@ -47,6 +51,7 @@ gh repo view [username]/sebcdev-payload --web
 - [ ] `.gitignore` exists and properly configured
 
 ### Source Directory Structure
+
 - [ ] `src/` directory exists
 - [ ] `src/app/` directory exists (Next.js App Router)
 - [ ] `src/collections/` directory exists (Payload collections)
@@ -54,11 +59,13 @@ gh repo view [username]/sebcdev-payload --web
 - [ ] `public/` directory exists (static assets)
 
 ### Documentation
+
 - [ ] `README.md` exists (template's original README)
 - [ ] README contains deployment instructions
 - [ ] No custom modifications to template files
 
 **Validation**:
+
 ```bash
 # Verify all critical files exist
 test -f wrangler.toml && echo "✅ wrangler.toml"
@@ -77,6 +84,7 @@ test -d src/app && test -d src/collections && test -d src/migrations && echo "�
 ## ✅ 3. Local Repository Clone
 
 ### Git Configuration
+
 - [ ] Repository cloned to local machine
 - [ ] Git remote configured correctly (points to GitHub repository)
 - [ ] On default branch (`main` or `master`)
@@ -84,11 +92,13 @@ test -d src/app && test -d src/collections && test -d src/migrations && echo "�
 - [ ] Git history shows template origin
 
 ### File Count
+
 - [ ] 50-100+ files present locally (excluding .git and node_modules)
 - [ ] File count matches GitHub repository
 - [ ] No missing or corrupted files
 
 **Validation**:
+
 ```bash
 cd sebcdev-payload
 
@@ -107,6 +117,7 @@ find . -type f -not -path "./.git/*" -not -path "./node_modules/*" | wc -l
 ## ✅ 4. Dependencies Installation
 
 ### Package Installation
+
 - [ ] `pnpm install` completed without critical errors
 - [ ] `node_modules/` directory created
 - [ ] `pnpm-lock.yaml` created (lock file)
@@ -114,6 +125,7 @@ find . -type f -not -path "./.git/*" -not -path "./node_modules/*" | wc -l
 - [ ] No critical dependency conflicts
 
 ### Critical Packages Installed
+
 - [ ] `payload` (version 3.x+)
 - [ ] `@payloadcms/db-sqlite` or `@payloadcms/db-d1-sqlite`
 - [ ] `@payloadcms/storage-r2`
@@ -125,11 +137,13 @@ find . -type f -not -path "./.git/*" -not -path "./node_modules/*" | wc -l
 - [ ] `typescript` (version 5.x+)
 
 ### Node.js Environment
+
 - [ ] Node.js version is 18.x or 20.x+ (required for Payload)
 - [ ] pnpm version is 8.x+ (or appropriate package manager)
 - [ ] Environment documented (Node version, pnpm version)
 
 **Validation**:
+
 ```bash
 # Verify dependencies
 test -d node_modules && echo "✅ node_modules exists"
@@ -152,18 +166,21 @@ pnpm --version
 ## ✅ 5. TypeScript Configuration
 
 ### Compilation
+
 - [ ] TypeScript compiles: `pnpm tsc --noEmit` runs successfully
 - [ ] No syntax errors in template files
 - [ ] No TypeScript configuration errors
 - [ ] Errors only related to missing Cloudflare bindings (acceptable until Phase 2)
 
 ### Type Definitions
+
 - [ ] TypeScript properly configured in `tsconfig.json`
 - [ ] Path aliases work (`@/*` maps to `./src/*`)
 - [ ] Include paths are correct
 - [ ] Module resolution is proper
 
 **Validation**:
+
 ```bash
 # Run TypeScript compiler
 pnpm tsc --noEmit
@@ -180,6 +197,7 @@ pnpm tsc --noEmit
 ## ✅ 6. Security Verification
 
 ### No Sensitive Data Committed
+
 - [ ] No `.env` files in repository (local or GitHub)
 - [ ] No `.env.local` or `.env.development` files committed
 - [ ] No API keys or secrets in any configuration files
@@ -187,6 +205,7 @@ pnpm tsc --noEmit
 - [ ] `.gitignore` properly excludes `.env*` (except `.env.example`)
 
 ### .gitignore Configuration
+
 - [ ] `.gitignore` includes `node_modules/`
 - [ ] `.gitignore` includes `.env*` (with `!.env.example` if needed)
 - [ ] `.gitignore` includes `.next/`
@@ -195,12 +214,14 @@ pnpm tsc --noEmit
 - [ ] `.gitignore` includes build artifacts (`dist/`, `build/`)
 
 ### Security Audit
+
 - [ ] `pnpm audit` run successfully
 - [ ] No critical vulnerabilities
 - [ ] No high vulnerabilities (or documented and acceptable)
 - [ ] Low/moderate vulnerabilities documented for future fixing
 
 **Validation**:
+
 ```bash
 # Check for .env files (should have no results)
 find . -name ".env*" -not -name ".env.example" -not -path "./node_modules/*"
@@ -217,16 +238,19 @@ pnpm audit --json | jq '.metadata.vulnerabilities'
 ## ✅ 7. Git Tracking and Version Control
 
 ### Lock File Management
+
 - [ ] `pnpm-lock.yaml` is tracked by git (will be committed)
 - [ ] `node_modules/` is NOT tracked (in .gitignore)
 - [ ] Lock file is ready to commit if this is first local commit
 
 ### Git Status Clean
+
 - [ ] Working directory is clean OR only lock file to commit
 - [ ] No untracked files except lock file (if first commit)
 - [ ] No uncommitted modifications to template files
 
 **Validation**:
+
 ```bash
 # Check git status
 git status
@@ -242,6 +266,7 @@ git status
 ## ✅ 8. Scripts and Commands Verification
 
 ### Package.json Scripts
+
 - [ ] `dev` script exists (development server)
 - [ ] `build` script exists (production build)
 - [ ] `deploy` script exists (Cloudflare deployment)
@@ -249,6 +274,7 @@ git status
 - [ ] All scripts are callable (even if they fail without infrastructure)
 
 **Validation**:
+
 ```bash
 # Verify scripts exist
 pnpm run dev --help || echo "dev script exists"
@@ -263,18 +289,21 @@ pnpm run deploy --help || echo "deploy script exists"
 ## ✅ 9. Documentation and Tracking
 
 ### Phase Documentation
+
 - [ ] Phase 1 implementation steps documented
 - [ ] Repository URL recorded
 - [ ] Any deviations from template noted
 - [ ] Issues encountered and resolved documented
 
 ### Project Tracking
+
 - [ ] Phase 1 status updated in INDEX.md
 - [ ] EPIC_TRACKING.md updated with Phase 1 completion
 - [ ] Story 1.1 progress recorded
 
 **Validation**:
 Check and update these files:
+
 - `docs/specs/epics/epic_1/story_1_1/implementation/phase_1/INDEX.md`
 - `docs/specs/epics/epic_1/EPIC_TRACKING.md`
 
@@ -283,6 +312,7 @@ Check and update these files:
 ## ✅ 10. Readiness for Phase 2
 
 ### Prerequisites Met
+
 - [ ] Repository exists and is accessible
 - [ ] All template files present and unmodified
 - [ ] Dependencies installed successfully
@@ -291,12 +321,14 @@ Check and update these files:
 - [ ] No blockers for Cloudflare deployment
 
 ### Cloudflare Configuration Ready
+
 - [ ] `wrangler.toml` has D1 and R2 binding placeholders
 - [ ] Bindings structure correct (will be populated in Phase 2)
 - [ ] Worker configuration appropriate
 - [ ] Compatibility flags include `nodejs_compat`
 
 **Validation**:
+
 ```bash
 # Verify Cloudflare configuration structure
 cat wrangler.toml | grep -A 5 "d1_databases"
@@ -343,15 +375,15 @@ pnpm --version
 
 ## 📊 Success Metrics
 
-| Metric | Target | Actual | Status |
-|--------|--------|--------|--------|
-| Repository Created | ✅ Yes | - | ⏳ |
-| All Files Present | 100% | - | ⏳ |
-| Dependencies Installed | 100% | - | ⏳ |
-| TypeScript Compiles | ✅ Yes | - | ⏳ |
-| No Security Issues | ✅ Yes | - | ⏳ |
-| Lock File Created | ✅ Yes | - | ⏳ |
-| Ready for Phase 2 | ✅ Yes | - | ⏳ |
+| Metric                 | Target | Actual | Status |
+| ---------------------- | ------ | ------ | ------ |
+| Repository Created     | ✅ Yes | -      | ⏳     |
+| All Files Present      | 100%   | -      | ⏳     |
+| Dependencies Installed | 100%   | -      | ⏳     |
+| TypeScript Compiles    | ✅ Yes | -      | ⏳     |
+| No Security Issues     | ✅ Yes | -      | ⏳     |
+| Lock File Created      | ✅ Yes | -      | ⏳     |
+| Ready for Phase 2      | ✅ Yes | -      | ⏳     |
 
 ---
 
@@ -376,6 +408,7 @@ Select one:
    - [ ] Add completion date
 
 2. **Commit Lock File** (if not already committed):
+
    ```bash
    git add pnpm-lock.yaml
    git commit -m "chore(setup): add dependency lock file
@@ -395,6 +428,7 @@ Select one:
    - [ ] Add completion date and metrics
 
 4. **Document Results**:
+
    ```markdown
    ## Phase 1 Completion Summary
 
@@ -403,12 +437,14 @@ Select one:
    **Repository URL**: https://github.com/[username]/sebcdev-payload
 
    **Metrics**:
+
    - Total files: [count]
    - Dependencies: [package count]
    - Node version: [version]
    - Template version: [date from git log]
 
    **Issues Resolved**:
+
    - [List any issues and resolutions]
 
    **Ready for Phase 2**: ✅ YES
@@ -456,17 +492,20 @@ Select one:
 Before marking as complete, verify none of these issues exist:
 
 ### Repository Issues
+
 - [ ] ❌ Wrong template used (not `with-cloudflare-d1`)
 - [ ] ❌ Repository name incorrect or inconsistent
 - [ ] ❌ Template version is very outdated (>6 months)
 - [ ] ❌ Repository visibility not aligned with team decision
 
 ### File Issues
+
 - [ ] ❌ Missing critical files (wrangler.toml, payload.config.ts, etc.)
 - [ ] ❌ Template files prematurely modified
 - [ ] ❌ Incorrect directory structure
 
 ### Dependency Issues
+
 - [ ] ❌ Dependencies not installed or installation failed
 - [ ] ❌ Critical packages missing
 - [ ] ❌ Lock file not created or not committed
@@ -474,16 +513,19 @@ Before marking as complete, verify none of these issues exist:
 - [ ] ❌ Critical security vulnerabilities
 
 ### Security Issues
+
 - [ ] ❌ `.env` files committed
 - [ ] ❌ Secrets or API keys in configuration
 - [ ] ❌ `.gitignore` missing or incomplete
 
 ### TypeScript Issues
+
 - [ ] ❌ Syntax errors in template files
 - [ ] ❌ Configuration errors in tsconfig.json
 - [ ] ❌ Compilation fails (not just binding errors)
 
 ### Documentation Issues
+
 - [ ] ❌ Repository URL not documented
 - [ ] ❌ Setup not reproducible
 - [ ] ❌ Issues not documented

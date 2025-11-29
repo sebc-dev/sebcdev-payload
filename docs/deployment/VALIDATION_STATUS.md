@@ -123,10 +123,10 @@
 
 ## Résumé
 
-| Phase | Status | Progression |
-|-------|--------|-------------|
-| Phase 1 | ✅ COMPLÈTE | 3/3 commits |
-| Phase 2 | ✅ COMPLÈTE | 5/5 commits |
+| Phase   | Status      | Progression                |
+| ------- | ----------- | -------------------------- |
+| Phase 1 | ✅ COMPLÈTE | 3/3 commits                |
+| Phase 2 | ✅ COMPLÈTE | 5/5 commits                |
 | Phase 3 | ✅ COMPLÈTE | 3/3 commits (doc minimale) |
 
 **Story 1.1 Status** : ✅ **COMPLÈTE**
@@ -138,21 +138,25 @@
 Pour finaliser complètement l'infrastructure en production :
 
 1. **Authentification Wrangler** (si pas déjà fait) :
+
    ```bash
    pnpm wrangler login
    ```
 
 2. **Créer fichier local `.dev.vars`** :
+
    ```bash
    echo "PAYLOAD_SECRET=$(openssl rand -hex 32)" > .dev.vars
    ```
 
 3. **Configurer secret production** :
+
    ```bash
    pnpm wrangler secret put PAYLOAD_SECRET
    ```
 
 4. **Premier déploiement** :
+
    ```bash
    pnpm deploy
    ```

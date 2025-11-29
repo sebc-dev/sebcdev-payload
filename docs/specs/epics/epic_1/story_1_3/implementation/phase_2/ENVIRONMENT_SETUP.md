@@ -9,20 +9,20 @@
 
 ### Required Access
 
-| Requirement | Status | Notes |
-|-------------|--------|-------|
-| GitHub repository access | Required | Push access to repository |
-| Socket.dev account | Optional | Free tier available, enhances features |
-| Socket.dev GitHub App | Recommended | Install for full PR integration |
+| Requirement              | Status      | Notes                                  |
+| ------------------------ | ----------- | -------------------------------------- |
+| GitHub repository access | Required    | Push access to repository              |
+| Socket.dev account       | Optional    | Free tier available, enhances features |
+| Socket.dev GitHub App    | Recommended | Install for full PR integration        |
 
 ### Local Development Environment
 
-| Tool | Minimum Version | Purpose |
-|------|-----------------|---------|
-| Node.js | 20.x | Runtime |
-| pnpm | 9.x | Package manager |
-| Git | 2.x | Version control |
-| VS Code | Latest | YAML editing with syntax highlighting |
+| Tool    | Minimum Version | Purpose                               |
+| ------- | --------------- | ------------------------------------- |
+| Node.js | 20.x            | Runtime                               |
+| pnpm    | 9.x             | Package manager                       |
+| Git     | 2.x             | Version control                       |
+| VS Code | Latest          | YAML editing with syntax highlighting |
 
 ---
 
@@ -31,6 +31,7 @@
 ### Why Create an Account?
 
 While Socket.dev works without an account, creating one enables:
+
 - Custom security policies at organization level
 - Detailed scan history and analytics
 - Custom ignore rules that persist across PRs
@@ -39,6 +40,7 @@ While Socket.dev works without an account, creating one enables:
 ### Account Creation Steps
 
 1. **Navigate to Socket.dev**
+
    ```
    https://socket.dev/
    ```
@@ -60,6 +62,7 @@ While Socket.dev works without an account, creating one enables:
 ### Why Install the GitHub App?
 
 The Socket.dev GitHub App provides:
+
 - Automatic PR comments with scan results
 - Dependency overview in repository
 - `@SocketSecurity ignore` command support
@@ -68,6 +71,7 @@ The Socket.dev GitHub App provides:
 ### Installation Steps
 
 1. **Access GitHub Marketplace**
+
    ```
    https://github.com/apps/socket-security
    ```
@@ -87,12 +91,12 @@ The Socket.dev GitHub App provides:
 
 The Socket.dev app requires these permissions:
 
-| Permission | Level | Purpose |
-|------------|-------|---------|
-| Contents | Read | Analyze package.json and lockfile |
-| Pull Requests | Read/Write | Post comments and update status |
-| Issues | Read/Write | Handle `@SocketSecurity ignore` commands |
-| Checks | Read/Write | Create check runs for scans |
+| Permission    | Level      | Purpose                                  |
+| ------------- | ---------- | ---------------------------------------- |
+| Contents      | Read       | Analyze package.json and lockfile        |
+| Pull Requests | Read/Write | Post comments and update status          |
+| Issues        | Read/Write | Handle `@SocketSecurity ignore` commands |
+| Checks        | Read/Write | Create check runs for scans              |
 
 ---
 
@@ -127,9 +131,9 @@ npx yaml lint socket.yml
 
 Install these extensions for better YAML editing:
 
-| Extension | ID | Purpose |
-|-----------|-----|---------|
-| YAML | `redhat.vscode-yaml` | YAML language support |
+| Extension      | ID                             | Purpose                      |
+| -------------- | ------------------------------ | ---------------------------- |
+| YAML           | `redhat.vscode-yaml`           | YAML language support        |
 | GitHub Actions | `github.vscode-github-actions` | Workflow syntax highlighting |
 
 ---
@@ -162,9 +166,9 @@ SHA pinning prevents supply chain attacks via compromised GitHub Actions. Always
 
 ### Current Phase SHAs
 
-| Action | Version | SHA (verified 2025-11-28) |
-|--------|---------|---------------------------|
-| `SocketDev/socket-security-action` | v2.0.1 | `6f55d8fa2cebd6ef40fad5e1dea9ae0edbe4ee13` |
+| Action                             | Version | SHA (verified 2025-11-28)                  |
+| ---------------------------------- | ------- | ------------------------------------------ |
+| `SocketDev/socket-security-action` | v2.0.1  | `6f55d8fa2cebd6ef40fad5e1dea9ae0edbe4ee13` |
 
 ---
 
@@ -174,11 +178,11 @@ SHA pinning prevents supply chain attacks via compromised GitHub Actions. Always
 
 These environment variables are available in the GitHub Actions workflow:
 
-| Variable | Source | Purpose |
-|----------|--------|---------|
-| `GITHUB_TOKEN` | Automatic | Authentication for GitHub API |
-| `GITHUB_REPOSITORY` | Automatic | Repository name (owner/repo) |
-| `GITHUB_REF` | Automatic | Git reference (branch/tag) |
+| Variable            | Source    | Purpose                       |
+| ------------------- | --------- | ----------------------------- |
+| `GITHUB_TOKEN`      | Automatic | Authentication for GitHub API |
+| `GITHUB_REPOSITORY` | Automatic | Repository name (owner/repo)  |
+| `GITHUB_REF`        | Automatic | Git reference (branch/tag)    |
 
 ### Local Testing (Optional)
 
@@ -203,12 +207,12 @@ npx @socketsecurity/cli scan .
 
 The Socket.dev action requires outbound HTTPS access to:
 
-| Domain | Purpose |
-|--------|---------|
-| `api.socket.dev` | Socket.dev API |
-| `socket.dev` | Socket.dev web interface |
-| `github.com` | GitHub API |
-| `registry.npmjs.org` | NPM package metadata |
+| Domain               | Purpose                  |
+| -------------------- | ------------------------ |
+| `api.socket.dev`     | Socket.dev API           |
+| `socket.dev`         | Socket.dev web interface |
+| `github.com`         | GitHub API               |
+| `registry.npmjs.org` | NPM package metadata     |
 
 ### Corporate Proxy Considerations
 
@@ -227,6 +231,7 @@ If your CI runners are behind a corporate proxy:
 **Symptom**: Socket.dev app not showing in repository integrations
 
 **Solution**:
+
 1. Re-visit `https://github.com/apps/socket-security`
 2. Click "Configure"
 3. Ensure repository is in selected list
@@ -237,6 +242,7 @@ If your CI runners are behind a corporate proxy:
 **Symptom**: "Resource not accessible by integration"
 
 **Solution**:
+
 1. Verify workflow permissions:
    ```yaml
    permissions:
@@ -252,6 +258,7 @@ If your CI runners are behind a corporate proxy:
 **Symptom**: Socket.dev step passes but shows no analysis
 
 **Solution**:
+
 1. Verify `socket.yml` exists at repository root
 2. Check `triggerPaths` includes your lockfile
 3. Ensure lockfile is not in `projectIgnorePaths`
@@ -261,6 +268,7 @@ If your CI runners are behind a corporate proxy:
 **Symptom**: "API rate limit exceeded"
 
 **Solution**:
+
 1. Create Socket.dev account for higher limits
 2. Add `SOCKET_SECURITY_API_KEY` secret if using API key
 3. Contact Socket.dev support for enterprise limits
@@ -285,11 +293,11 @@ If your CI runners are behind a corporate proxy:
 
 Recommended security settings:
 
-| Setting | Location | Recommended Value |
-|---------|----------|-------------------|
-| Branch protection | Settings > Branches | Enable for main |
-| Required checks | Branch protection | Add "Quality Gate" |
-| Signed commits | Branch protection | Recommended for production |
+| Setting           | Location            | Recommended Value          |
+| ----------------- | ------------------- | -------------------------- |
+| Branch protection | Settings > Branches | Enable for main            |
+| Required checks   | Branch protection   | Add "Quality Gate"         |
+| Signed commits    | Branch protection   | Recommended for production |
 
 ---
 

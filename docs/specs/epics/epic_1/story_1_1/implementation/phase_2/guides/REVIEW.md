@@ -22,11 +22,13 @@ Validate that the Cloudflare infrastructure deployment:
 Phase 2 is split into **5 atomic commits**. You can:
 
 **Option A: Commit-by-commit review** (recommended)
+
 - Easier to digest (10-40 min per commit)
 - Progressive validation of infrastructure
 - Targeted feedback on specific provisioning steps
 
 **Option B: Global review at once**
+
 - Faster (1.5-2h total)
 - Immediate overview of complete infrastructure
 - Requires more focus and verification steps

@@ -21,10 +21,12 @@ Use this checklist to verify each commit before and after implementation.
 ### Implementation Checklist
 
 #### Create Directory
+
 - [ ] Run `mkdir -p docs/development`
 - [ ] Directory created successfully
 
 #### Create QUICKSTART.md
+
 - [ ] Create file `docs/development/QUICKSTART.md`
 - [ ] Include prerequisites section
 - [ ] Include software requirements table
@@ -40,6 +42,7 @@ Use this checklist to verify each commit before and after implementation.
 - [ ] Add "Next Steps" section with links
 
 #### Content Verification
+
 - [ ] All commands are copy-paste ready
 - [ ] Expected outputs are included
 - [ ] Time estimates added
@@ -56,6 +59,7 @@ Use this checklist to verify each commit before and after implementation.
 ### Commit Details
 
 **Message**:
+
 ```
 📝 Add quick-start guide for developer onboarding
 
@@ -87,6 +91,7 @@ Part of Story 1.2 Phase 2: Developer Documentation
 ### Implementation Checklist
 
 #### Create COMMANDS.md
+
 - [ ] Create file `docs/development/COMMANDS.md`
 - [ ] Document Development commands (dev, devsafe)
 - [ ] Document Build & Deploy commands
@@ -98,11 +103,13 @@ Part of Story 1.2 Phase 2: Developer Documentation
 - [ ] Add "See Also" section
 
 #### Cross-Reference with package.json
+
 - [ ] Run `cat package.json | jq '.scripts'`
 - [ ] Verify all scripts are documented
 - [ ] No scripts missing from documentation
 
 #### Create ENVIRONMENT.md
+
 - [ ] Create file `docs/development/ENVIRONMENT.md`
 - [ ] Document required variables (PAYLOAD_SECRET)
 - [ ] Document optional variables
@@ -112,6 +119,7 @@ Part of Story 1.2 Phase 2: Developer Documentation
 - [ ] Add "See Also" section
 
 #### Cross-Reference with .env.example
+
 - [ ] Review `.env.example` content
 - [ ] All variables documented
 - [ ] Required vs optional clearly marked
@@ -128,6 +136,7 @@ Part of Story 1.2 Phase 2: Developer Documentation
 ### Commit Details
 
 **Message**:
+
 ```
 📝 Add commands reference and environment variables documentation
 
@@ -160,6 +169,7 @@ Part of Story 1.2 Phase 2: Developer Documentation
 ### Implementation Checklist
 
 #### Create TROUBLESHOOTING.md
+
 - [ ] Create file `docs/development/TROUBLESHOOTING.md`
 - [ ] Document authentication issues section
   - [ ] Wrangler not authenticated
@@ -184,6 +194,7 @@ Part of Story 1.2 Phase 2: Developer Documentation
 - [ ] Add "See Also" section
 
 #### Create IDE_SETUP.md
+
 - [ ] Create file `docs/development/IDE_SETUP.md`
 - [ ] Document VSCode workspace settings
 - [ ] Document essential extensions (ESLint, Prettier, TypeScript)
@@ -209,6 +220,7 @@ Part of Story 1.2 Phase 2: Developer Documentation
 ### Commit Details
 
 **Message**:
+
 ```
 📝 Add troubleshooting guide and IDE setup documentation
 
@@ -240,6 +252,7 @@ Part of Story 1.2 Phase 2: Developer Documentation
 ### Implementation Checklist
 
 #### Review All Documentation
+
 - [ ] Run `ls -la docs/development/`
 - [ ] All 5 files present (QUICKSTART, COMMANDS, ENVIRONMENT, TROUBLESHOOTING, IDE_SETUP)
 - [ ] Review QUICKSTART.md for accuracy
@@ -249,23 +262,27 @@ Part of Story 1.2 Phase 2: Developer Documentation
 - [ ] Review IDE_SETUP.md - verify settings are current
 
 #### Check Internal Links
+
 - [ ] Run link check command
 - [ ] All internal links work
 - [ ] No broken references
 
 #### Update CLAUDE.md (If Needed)
+
 - [ ] Review current CLAUDE.md
 - [ ] Determine if updates needed
 - [ ] Add documentation links section (if missing)
 - [ ] Add any new workflow tips discovered
 
 #### Update EPIC_TRACKING.md
+
 - [ ] Open `docs/specs/epics/epic_1/EPIC_TRACKING.md`
 - [ ] Update Story 1.2 Status to ✅ COMPLETED
 - [ ] Update Story 1.2 Progress to 2/2
 - [ ] Add "Recent Updates" entry for Phase 2 completion
 
 #### Update PHASES_PLAN.md
+
 - [ ] Open `docs/specs/epics/epic_1/story_1_2/implementation/PHASES_PLAN.md`
 - [ ] Mark Phase 2 checkbox as complete
 - [ ] Add actual duration
@@ -284,6 +301,7 @@ Part of Story 1.2 Phase 2: Developer Documentation
 ### Commit Details
 
 **Message**:
+
 ```
 📝 Complete Story 1.2 documentation and update tracking
 
@@ -310,6 +328,7 @@ Story 1.2 COMPLETE
 After all commits are complete:
 
 ### Documentation Validation
+
 - [ ] All 5 documentation files created
 - [ ] QUICKSTART.md - Complete and accurate
 - [ ] COMMANDS.md - All scripts documented
@@ -318,6 +337,7 @@ After all commits are complete:
 - [ ] IDE_SETUP.md - VSCode configured
 
 ### Quality Checks
+
 - [ ] All internal links work
 - [ ] Commands are copy-paste ready
 - [ ] Expected outputs included
@@ -325,22 +345,26 @@ After all commits are complete:
 - [ ] No placeholder text remaining
 
 ### Tracking Updates
+
 - [ ] PHASES_PLAN.md updated with Phase 2 completion
 - [ ] EPIC_TRACKING.md updated (Progress: 2/2, Status: COMPLETED)
 - [ ] story_1.2.md status can be updated
 
 ### Git
+
 - [ ] All 4 commits made with proper messages
 - [ ] Commit history is clean
 - [ ] Ready for review if needed
 
 ### Story Completion
+
 - [ ] All acceptance criteria met
 - [ ] New developer can start in < 15 minutes
 - [ ] Documentation is comprehensive
 - [ ] Story 1.2 COMPLETED
 
 ### Next Phase
+
 - [ ] Story 1.2 blockers resolved (none expected)
 - [ ] Ready to proceed to Story 1.3
 - [ ] Run `/plan-story Epic 1 Story 1.3`
@@ -377,14 +401,14 @@ git commit -m "message"
 
 ## Documentation Files Summary
 
-| File | Purpose | Lines (approx) |
-|------|---------|----------------|
-| QUICKSTART.md | New developer onboarding | ~150 |
-| COMMANDS.md | Script reference | ~200 |
-| ENVIRONMENT.md | Env vars reference | ~100 |
-| TROUBLESHOOTING.md | Issue solutions | ~250 |
-| IDE_SETUP.md | VSCode setup | ~200 |
-| **Total** | | **~900** |
+| File               | Purpose                  | Lines (approx) |
+| ------------------ | ------------------------ | -------------- |
+| QUICKSTART.md      | New developer onboarding | ~150           |
+| COMMANDS.md        | Script reference         | ~200           |
+| ENVIRONMENT.md     | Env vars reference       | ~100           |
+| TROUBLESHOOTING.md | Issue solutions          | ~250           |
+| IDE_SETUP.md       | VSCode setup             | ~200           |
+| **Total**          |                          | **~900**       |
 
 ---
 

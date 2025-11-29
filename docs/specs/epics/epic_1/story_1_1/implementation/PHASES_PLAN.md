@@ -18,6 +18,7 @@
 Utiliser le template officiel Payload CMS `with-cloudflare-d1` pour provisionner automatiquement toute l'infrastructure Cloudflare nécessaire au projet, incluant le repository GitHub, la base de données D1, le bucket R2 pour les médias, et le Worker Cloudflare.
 
 **Acceptance Criteria**:
+
 - Le repository GitHub est créé à partir du template avec tous les fichiers
 - L'infrastructure Cloudflare (D1, R2, Worker) est provisionnée automatiquement
 - L'application est accessible via l'URL Cloudflare Workers
@@ -49,6 +50,7 @@ This story is decomposed into **3 atomic phases** based on:
 ### Atomic Phase Principles
 
 Each phase follows these principles:
+
 - **Independent**: Can be implemented and tested separately
 - **Deliverable**: Produces tangible, working functionality
 - **Sized appropriately**: 0.5-1 day of work (simple story)
@@ -65,6 +67,7 @@ Creation    & Config    & Documentation
 ```
 
 **Rationale for 3 Phases**:
+
 - This is a **simple story** focused on using an existing template
 - Most work is automated by the template deployment process
 - 3 phases provide logical breakpoints: setup, deploy, verify
@@ -79,6 +82,7 @@ Creation    & Config    & Documentation
 **Objective**: Create a new GitHub repository from the official Payload CMS template `with-cloudflare-d1`
 
 **Scope**:
+
 - Navigate to Payload CMS templates repository
 - Use "Deploy to Cloudflare" button or GitHub template creation
 - Configure repository name (`sebcdev-payload`)
@@ -86,15 +90,18 @@ Creation    & Config    & Documentation
 - Verify all template files are present
 
 **Dependencies**:
+
 - None (Foundation phase)
 
 **Key Deliverables**:
+
 - [ ] GitHub repository created from template
 - [ ] All template files present in repository
 - [ ] Repository accessible and clonable
 - [ ] Initial README.md reviewed
 
 **Files Affected** (~5 files reviewed):
+
 - `README.md` (review)
 - `package.json` (review)
 - `wrangler.toml` (review structure)
@@ -108,15 +115,18 @@ Creation    & Config    & Documentation
 **Risk Level**: 🟢 Low
 
 **Risk Factors**:
+
 - Template could be outdated or incompatible
 - GitHub permissions issues
 
 **Mitigation Strategies**:
+
 - Verify template version before creation
 - Check Payload CMS documentation for latest recommended template
 - Ensure GitHub account has proper permissions
 
 **Success Criteria**:
+
 - [ ] Repository exists on GitHub
 - [ ] Can clone repository locally
 - [ ] All expected template files present
@@ -124,6 +134,7 @@ Creation    & Config    & Documentation
 - [ ] README contains deployment instructions
 
 **Technical Notes**:
+
 - The template includes pre-configured `wrangler.toml`, Next.js config, and Payload config
 - Initial migration files should be present in `src/migrations/`
 - The template uses `@opennextjs/cloudflare` adapter
@@ -136,6 +147,7 @@ Creation    & Config    & Documentation
 **Objective**: Deploy the application to Cloudflare Workers and provision D1 database and R2 bucket automatically
 
 **Scope**:
+
 - Connect repository to Cloudflare account
 - Execute the deployment process (via "Deploy to Cloudflare" or manual `wrangler deploy`)
 - Provision Cloudflare D1 database automatically
@@ -144,9 +156,11 @@ Creation    & Config    & Documentation
 - Run initial database migrations
 
 **Dependencies**:
+
 - **Requires Phase 1**: Repository must exist with template files
 
 **Key Deliverables**:
+
 - [ ] Cloudflare Worker deployed and running
 - [ ] D1 database created and accessible
 - [ ] R2 bucket created and accessible
@@ -155,6 +169,7 @@ Creation    & Config    & Documentation
 - [ ] Application accessible via Workers URL
 
 **Files Affected** (~3 files):
+
 - `wrangler.toml` (verify bindings auto-configured)
 - `.dev.vars` (create with local secrets)
 - Environment variables (set PAYLOAD_SECRET)
@@ -166,12 +181,14 @@ Creation    & Config    & Documentation
 **Risk Level**: 🟡 Medium
 
 **Risk Factors**:
+
 - Deployment could fail due to Cloudflare account limits
 - D1 or R2 provisioning could fail
 - Migration errors could prevent database initialization
 - Missing environment variables could cause runtime errors
 
 **Mitigation Strategies**:
+
 - Verify Cloudflare account quotas before deployment
 - Check Wrangler CLI is up to date
 - Review deployment logs carefully
@@ -179,6 +196,7 @@ Creation    & Config    & Documentation
 - Use Cloudflare dashboard to verify resource creation
 
 **Success Criteria**:
+
 - [ ] Worker status shows "Active" in Cloudflare dashboard
 - [ ] D1 database appears in Cloudflare dashboard
 - [ ] R2 bucket appears in Cloudflare dashboard
@@ -188,6 +206,7 @@ Creation    & Config    & Documentation
 - [ ] Can access Worker URL in browser
 
 **Technical Notes**:
+
 - The deployment process should use `wrangler deploy` command
 - D1 database name format: `[project-name]-db` or auto-generated
 - R2 bucket name format: `[project-name]-media` or auto-generated
@@ -202,6 +221,7 @@ Creation    & Config    & Documentation
 **Objective**: Verify all infrastructure components are correctly configured and document the setup for the team
 
 **Scope**:
+
 - Verify Worker, D1, and R2 bindings are functional
 - Test basic application routes (homepage, admin panel access)
 - Document infrastructure details (URLs, resource names)
@@ -211,9 +231,11 @@ Creation    & Config    & Documentation
 - Verify template README instructions are accurate
 
 **Dependencies**:
+
 - **Requires Phase 2**: Infrastructure must be deployed
 
 **Key Deliverables**:
+
 - [ ] All bindings verified as functional
 - [ ] Application homepage loads successfully
 - [ ] Admin panel accessible (at `/admin`)
@@ -223,6 +245,7 @@ Creation    & Config    & Documentation
 - [ ] Troubleshooting FAQ documented
 
 **Files Affected** (~4 files):
+
 - `docs/deployment/cloudflare-setup.md` (new - deployment docs)
 - `docs/deployment/infrastructure.md` (new - infrastructure details)
 - `docs/deployment/troubleshooting.md` (new - common issues)
@@ -235,15 +258,18 @@ Creation    & Config    & Documentation
 **Risk Level**: 🟢 Low
 
 **Risk Factors**:
+
 - Hidden configuration issues might only appear during validation
 - Documentation might be incomplete or unclear
 
 **Mitigation Strategies**:
+
 - Test all critical paths (admin access, database connection, media upload)
 - Have another team member review documentation
 - Include screenshots in documentation where helpful
 
 **Success Criteria**:
+
 - [ ] Homepage accessible and renders without errors
 - [ ] Admin panel login screen accessible
 - [ ] No console errors in browser
@@ -256,6 +282,7 @@ Creation    & Config    & Documentation
 - [ ] Troubleshooting guide covers common issues
 
 **Technical Notes**:
+
 - Test admin panel access at `[worker-url]/admin`
 - Verify database tables exist: `wrangler d1 execute [db-name] --command "SELECT name FROM sqlite_master WHERE type='table'"`
 - Verify R2 bucket: `wrangler r2 bucket list`
@@ -282,6 +309,7 @@ Phase 3 (Validation & Documentation)
 ### Critical Path
 
 **Must follow this order**:
+
 1. Phase 1 → Phase 2 → Phase 3
 
 **Cannot be parallelized**: All phases are sequential, each depends on the previous one completing successfully.
@@ -289,10 +317,12 @@ Phase 3 (Validation & Documentation)
 ### Blocking Dependencies
 
 **Phase 1 blocks**:
+
 - Phase 2: Cannot deploy without repository
 - Phase 3: Cannot validate without deployment
 
 **Phase 2 blocks**:
+
 - Phase 3: Cannot document infrastructure that doesn't exist
 
 **No external blocking dependencies** between this story and other stories (this is the first story in the epic).
@@ -303,36 +333,39 @@ Phase 3 (Validation & Documentation)
 
 ### Overall Estimates
 
-| Metric                   | Estimate           | Notes                                    |
-| ------------------------ | ------------------ | ---------------------------------------- |
-| **Total Phases**         | 3                  | Atomic, sequential phases                |
-| **Total Duration**       | 2 days             | Based on sequential implementation       |
-| **Parallel Duration**    | N/A                | No parallelization possible              |
-| **Total Commits**        | ~9-12              | Across all phases                        |
-| **Total Files**          | ~5 new, ~5 modified| Mostly documentation and config          |
-| **Test Coverage Target** | Manual testing     | Infrastructure setup, not code           |
+| Metric                   | Estimate            | Notes                              |
+| ------------------------ | ------------------- | ---------------------------------- |
+| **Total Phases**         | 3                   | Atomic, sequential phases          |
+| **Total Duration**       | 2 days              | Based on sequential implementation |
+| **Parallel Duration**    | N/A                 | No parallelization possible        |
+| **Total Commits**        | ~9-12               | Across all phases                  |
+| **Total Files**          | ~5 new, ~5 modified | Mostly documentation and config    |
+| **Test Coverage Target** | Manual testing      | Infrastructure setup, not code     |
 
 ### Per-Phase Timeline
 
-| Phase | Duration | Commits | Start After | Blocks   |
-|-------|----------|---------|-------------|----------|
-| 1. Repository Creation | 0.5d | 2-3 | - | Phase 2, 3 |
-| 2. Cloudflare Deployment | 1d | 4-5 | Phase 1 | Phase 3 |
-| 3. Validation & Documentation | 0.5d | 3-4 | Phase 2 | - |
+| Phase                         | Duration | Commits | Start After | Blocks     |
+| ----------------------------- | -------- | ------- | ----------- | ---------- |
+| 1. Repository Creation        | 0.5d     | 2-3     | -           | Phase 2, 3 |
+| 2. Cloudflare Deployment      | 1d       | 4-5     | Phase 1     | Phase 3    |
+| 3. Validation & Documentation | 0.5d     | 3-4     | Phase 2     | -          |
 
 ### Resource Requirements
 
 **Team Composition**:
+
 - 1 developer with Cloudflare and Payload CMS experience
 - 1 reviewer familiar with infrastructure deployment
 - Access to Cloudflare account with permissions for Workers, D1, and R2
 
 **External Dependencies**:
+
 - Cloudflare account with Workers, D1, and R2 access
 - GitHub account for repository creation
 - Template availability: `payloadcms/payload` repository with `with-cloudflare-d1` template
 
 **Required Accounts & Permissions**:
+
 - GitHub: Repository creation permission
 - Cloudflare: Workers admin, D1 admin, R2 admin
 - Wrangler CLI: Installed and authenticated
@@ -359,13 +392,13 @@ Phase 3 (Validation & Documentation)
 
 ### Overall Story Risks
 
-| Risk | Likelihood | Impact | Mitigation |
-|------|------------|--------|------------|
-| Template outdated or broken | Low | High | Verify template version, check Payload CMS changelog, use specific stable tag |
-| Cloudflare quota limits reached | Medium | High | Check quotas before deployment, upgrade plan if needed, use different account |
-| Deployment fails due to config error | Low | Medium | Follow template instructions exactly, review logs, use Wrangler troubleshooting |
-| Missing credentials or permissions | Low | Medium | Verify all accounts and permissions before starting, document requirements |
-| Network/connectivity issues during deployment | Low | Low | Retry deployment, check Cloudflare status page |
+| Risk                                          | Likelihood | Impact | Mitigation                                                                      |
+| --------------------------------------------- | ---------- | ------ | ------------------------------------------------------------------------------- |
+| Template outdated or broken                   | Low        | High   | Verify template version, check Payload CMS changelog, use specific stable tag   |
+| Cloudflare quota limits reached               | Medium     | High   | Check quotas before deployment, upgrade plan if needed, use different account   |
+| Deployment fails due to config error          | Low        | Medium | Follow template instructions exactly, review logs, use Wrangler troubleshooting |
+| Missing credentials or permissions            | Low        | Medium | Verify all accounts and permissions before starting, document requirements      |
+| Network/connectivity issues during deployment | Low        | Low    | Retry deployment, check Cloudflare status page                                  |
 
 ---
 
@@ -373,11 +406,11 @@ Phase 3 (Validation & Documentation)
 
 ### Test Coverage by Phase
 
-| Phase | Manual Tests | Verification Steps | Automated Tests |
-|-------|--------------|-------------------|-----------------|
-| 1. Repository Creation | 3 checks | Clone repo, verify files, review config | - |
-| 2. Cloudflare Deployment | 5 checks | Worker status, D1 exists, R2 exists, bindings, migrations | - |
-| 3. Validation & Documentation | 7 checks | Homepage, admin access, database query, R2 list, docs complete | - |
+| Phase                         | Manual Tests | Verification Steps                                             | Automated Tests |
+| ----------------------------- | ------------ | -------------------------------------------------------------- | --------------- |
+| 1. Repository Creation        | 3 checks     | Clone repo, verify files, review config                        | -               |
+| 2. Cloudflare Deployment      | 5 checks     | Worker status, D1 exists, R2 exists, bindings, migrations      | -               |
+| 3. Validation & Documentation | 7 checks     | Homepage, admin access, database query, R2 list, docs complete | -               |
 
 ### Test Milestones
 
@@ -388,6 +421,7 @@ Phase 3 (Validation & Documentation)
 ### Quality Gates
 
 Each phase must pass:
+
 - [ ] All acceptance criteria met
 - [ ] No blocking errors in logs
 - [ ] Configuration files valid and complete
@@ -404,6 +438,7 @@ Each phase must pass:
 ### Documentation to Generate per Phase
 
 For each phase, use the `phase-doc-generator` skill to create:
+
 1. INDEX.md - Phase overview and quick reference
 2. IMPLEMENTATION_PLAN.md - Detailed commit-by-commit plan
 3. COMMIT_CHECKLIST.md - Checklist for each atomic commit
@@ -417,12 +452,14 @@ For each phase, use the `phase-doc-generator` skill to create:
 ### Story-Level Documentation
 
 **This document** (PHASES_PLAN.md):
+
 - Strategic overview of the 3 phases
 - Phase coordination and dependencies
 - Cross-phase timeline and milestones
 - Overall story success criteria
 
 **Phase-level documentation** (generated separately):
+
 - Tactical implementation details for each phase
 - Specific commit-by-commit instructions
 - Detailed technical validations
@@ -441,6 +478,7 @@ For each phase, use the `phase-doc-generator` skill to create:
    - Verify Cloudflare account access and permissions
 
 2. **Prepare prerequisites**
+
    ```bash
    # Verify GitHub account access
    gh auth status
@@ -529,31 +567,35 @@ This story is considered complete when:
 
 ### Quality Metrics
 
-| Metric | Target | Actual |
-|--------|--------|--------|
-| Repository Creation Success | 100% | - |
-| Infrastructure Provisioning Success | 100% | - |
-| Bindings Configuration Accuracy | 100% | - |
-| Application Accessibility | 100% (homepage + admin) | - |
-| Documentation Completeness | 100% (all sections) | - |
-| Deployment Time | < 30 minutes (after Phase 1) | - |
+| Metric                              | Target                       | Actual |
+| ----------------------------------- | ---------------------------- | ------ |
+| Repository Creation Success         | 100%                         | -      |
+| Infrastructure Provisioning Success | 100%                         | -      |
+| Bindings Configuration Accuracy     | 100%                         | -      |
+| Application Accessibility           | 100% (homepage + admin)      | -      |
+| Documentation Completeness          | 100% (all sections)          | -      |
+| Deployment Time                     | < 30 minutes (after Phase 1) | -      |
 
 ---
 
 ## 📚 Reference Documents
 
 ### Story Specification
+
 - Original spec: `docs/specs/epics/epic_1/story_1_1/story_1.1.md`
 
 ### Epic Documentation
+
 - Epic tracking: `docs/specs/epics/epic_1/EPIC_TRACKING.md`
 
 ### Related Documentation
+
 - PRD: `docs/specs/PRD.md` (Story 1.1 section)
 - Architecture: `docs/specs/Architecture.md`
 - Brief: `docs/specs/Brief.md`
 
 ### External Resources
+
 - [Payload CMS Templates](https://github.com/payloadcms/payload/tree/main/templates)
 - [Cloudflare D1 Documentation](https://developers.cloudflare.com/d1/)
 - [Cloudflare R2 Documentation](https://developers.cloudflare.com/r2/)
@@ -573,11 +615,13 @@ This story is considered complete when:
 ### Why Only 3 Phases?
 
 This is a **simple story** that primarily leverages existing automation:
+
 - The template already contains all necessary configuration
 - The "Deploy to Cloudflare" button automates most infrastructure provisioning
 - The actual development work is minimal (mostly verification and documentation)
 
 **3 phases is optimal** because:
+
 1. Each phase represents a distinct milestone (create, deploy, verify)
 2. Each phase is independently testable
 3. Phases are short enough to avoid overhead but long enough to be meaningful
@@ -586,6 +630,7 @@ This is a **simple story** that primarily leverages existing automation:
 ### Template vs. Custom Setup
 
 This story **explicitly uses the official template** to:
+
 - Leverage tested, production-ready configuration
 - Follow Payload CMS and Cloudflare best practices
 - Avoid reinventing the wheel
@@ -597,6 +642,7 @@ This story **explicitly uses the official template** to:
 ### Deployment Automation
 
 The template includes a "Deploy to Cloudflare" button that:
+
 - Creates the GitHub repository
 - Connects it to Cloudflare
 - Provisions D1 and R2 automatically
