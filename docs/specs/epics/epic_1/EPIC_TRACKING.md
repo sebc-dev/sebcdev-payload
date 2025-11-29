@@ -29,12 +29,12 @@ Cette épique garantit que le projet démarre sur des bases solides avec une inf
 
 This epic contains **4 stories** as defined in the PRD:
 
-| Story | Title                                 | Description                                                                                                              | Status         | Phases         | Progress |
-| ----- | ------------------------------------- | ------------------------------------------------------------------------------------------------------------------------ | -------------- | -------------- | -------- |
-| 1.1   | Initialisation & Déploiement 1-Click  | Utiliser le template officiel pour provisionner automatiquement le Repo GitHub, la base D1, le bucket R2 et le Worker    | ✅ COMPLETED   | 3              | 3/3      |
-| 1.2   | Récupération & Configuration Locale   | Cloner le repo, installer les dépendances et configurer l'environnement local avec bindings Cloudflare                   | ✅ COMPLETED   | 2              | 2/2      |
-| 1.3   | Pipeline "Quality Gate" (AI-Shield)   | Configurer le workflow GitHub Actions avec Socket.dev, Knip, Dependency Cruiser, Stryker, Lighthouse CI, ESLint/Prettier | 🚧 IN PROGRESS | 8              | 5/8      |
-| 1.4   | Adaptation du Pipeline de Déploiement | Conditionner le déploiement Cloudflare à la réussite de la Quality Gate                                                  | 🚧 IN PROGRESS | 3 (+1 blocked) | 2/3      |
+| Story | Title                                 | Description                                                                                                              | Status         | Phases | Progress |
+| ----- | ------------------------------------- | ------------------------------------------------------------------------------------------------------------------------ | -------------- | ------ | -------- |
+| 1.1   | Initialisation & Déploiement 1-Click  | Utiliser le template officiel pour provisionner automatiquement le Repo GitHub, la base D1, le bucket R2 et le Worker    | ✅ COMPLETED   | 3      | 3/3      |
+| 1.2   | Récupération & Configuration Locale   | Cloner le repo, installer les dépendances et configurer l'environnement local avec bindings Cloudflare                   | ✅ COMPLETED   | 2      | 2/2      |
+| 1.3   | Pipeline "Quality Gate" (AI-Shield)   | Configurer le workflow GitHub Actions avec Socket.dev, Knip, Dependency Cruiser, Stryker, Lighthouse CI, ESLint/Prettier | 🚧 IN PROGRESS | 8      | 5/8      |
+| 1.4   | Adaptation du Pipeline de Déploiement | Conditionner le déploiement Cloudflare à la réussite de la Quality Gate                                                  | ✅ COMPLETED   | 3      | 3/3      |
 
 **Columns Explained**:
 
@@ -92,13 +92,13 @@ cat docs/specs/epics/epic_1/EPIC_TRACKING.md
 ### Progress Summary
 
 - **Stories Started**: 4 / 4
-- **Stories Completed**: 2 / 4
+- **Stories Completed**: 3 / 4
 - **Total Phases**: 16 active (+1 blocked) (Story 1.1: 3, Story 1.2: 2, Story 1.3: 8, Story 1.4: 3 active + 1 OIDC blocked)
-- **Phases Completed**: 12 / 16 active
+- **Phases Completed**: 13 / 16 active
 
-**Completion**: 75% of active phases (Stories 1.1 and 1.2 complete, Story 1.3 Phase 1-5 complete, Story 1.4 Phase 1-2 complete)
+**Completion**: 81% of active phases (Stories 1.1, 1.2 and 1.4 complete, Story 1.3 Phase 1-5 complete)
 
-**Note**: Story 1.4 Phase OIDC est bloquée (wrangler-action ne supporte pas OIDC). Phase 4 fusionnée en Phase 3.
+**Note**: Story 1.4 Phase OIDC est bloquée (wrangler-action ne supporte pas OIDC). Phase 3 (fusionnée) maintenant complète.
 
 ### Timeline
 
@@ -153,6 +153,7 @@ Track epic-level milestones here:
 
 ### Recent Updates
 
+- **2025-11-29**: Story 1.4 Phase 3 ✅ COMPLETED - Security documentation and CI/CD guide finalized (3 commits, ~300 lines)
 - **2025-11-29**: Story 1.4 RESTRUCTURED - Phase 3 OIDC ⏸️ BLOCKED (wrangler-action ne supporte pas OIDC), Phase 4 fusionnée en nouvelle Phase 3
 - **2025-11-29**: Story 1.4 Phase 2 ✅ COMPLETED - Deployment workflow with D1 migrations, wrangler deploy, validation (4 commits, ~185 lines)
 - **2025-11-29**: Story 1.4 Phase 1 ✅ COMPLETED - Branch protection configured via GitHub UI with documentation
@@ -209,7 +210,7 @@ Track epic-level milestones here:
   - Phase 1: `docs/specs/epics/epic_1/story_1_4/implementation/phase_1/` ✅ COMPLETED
   - Phase 2: `docs/specs/epics/epic_1/story_1_4/implementation/phase_2/` ✅ COMPLETED
   - ~~Phase 3 (OIDC)~~: ⏸️ BLOCKED - wrangler-action ne supporte pas OIDC
-  - Phase 3 (fusionnée): Security Best Practices & Validation (to generate)
+  - Phase 3 (fusionnée): `docs/specs/epics/epic_1/story_1_4/implementation/phase_3/` ✅ COMPLETED - Security Best Practices & Validation
 
 ### Related Documentation
 
