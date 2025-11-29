@@ -201,6 +201,9 @@ export async function down({ db, payload: _payload, req: _req }: MigrateDownArgs
       await db.run(
         sql`CREATE INDEX IF NOT EXISTS \`payload_locked_documents_rels_media_id_idx\` ON \`payload_locked_documents_rels\` (\`media_id\`);`,
       )
+
+      // Update query planner statistics after index recreation
+      await db.run(sql`PRAGMA optimize;`)
     }
 
     // Drop locale tables first (child tables with FKs) before parent tables
