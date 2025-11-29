@@ -33,6 +33,10 @@ describe('validateTaxonomySlug', () => {
     expect(validateTaxonomySlug(undefined)).toBe(true)
   })
 
+  it('should allow empty string', () => {
+    expect(validateTaxonomySlug('')).toBe(true)
+  })
+
   it('should use custom entity name in error message', () => {
     const result = validateTaxonomySlug('INVALID', 'tag')
     expect(result).toContain('my-tag-name')
