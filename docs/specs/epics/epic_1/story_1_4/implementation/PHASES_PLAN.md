@@ -3,7 +3,7 @@
 **Story**: Adaptation du Pipeline de Déploiement
 **Epic**: Epic 1 - Foundation & Cloudflare Architecture
 **Created**: 2025-11-29
-**Status**: In Progress (Phase 2 Completed)
+**Status**: In Progress (Phase 2 Completed, Phase 3 OIDC Blocked)
 
 ---
 
@@ -30,9 +30,18 @@
 
 ## Phase Breakdown Strategy
 
-### Why 4 Phases?
+### Why 3 Phases? (Originally 4)
 
-Cette story est décomposée en **4 phases atomiques** basées sur:
+Cette story est décomposée en **3 phases atomiques** (initialement 4). **La Phase 3 OIDC a été reportée** car `wrangler-action` ne supporte pas encore l'authentification OIDC (vérifié novembre 2025).
+
+**Restructuration:**
+
+- Phase 1: Branch Protection ✅
+- Phase 2: Deployment Workflow ✅
+- Phase 3 (ancienne): OIDC Migration → ⏸️ **BLOCKED**
+- Phase 4 (ancienne) → **Devient Phase 3**: Security Best Practices & Validation
+
+Raisons de la décomposition initiale:
 
 **Technical dependencies**: Configuration progressive depuis les protections jusqu'au déploiement complet
 **Risk mitigation**: Chaque phase est testable indépendamment
@@ -53,20 +62,24 @@ Chaque phase suit ces principes:
 ### Implementation Approach
 
 ```
-[Phase 1] → [Phase 2] → [Phase 3] → [Phase 4]
-    ↓           ↓           ↓           ↓
-Branch      Deploy      OIDC        Docs &
-Protection  Workflow    Auth        Validation
+[Phase 1] → [Phase 2] → [Phase 3]
+    ↓           ↓           ↓
+Branch      Deploy      Security &
+Protection  Workflow    Validation
+    ✅          ✅       (fusionnée)
+
+[OIDC Migration] → ⏸️ BLOCKED (waiting for wrangler-action support)
 ```
 
 ### Complexity Assessment
 
-**Story Complexity**: Medium (4 phases)
+**Story Complexity**: Low-Medium (3 phases, OIDC blocked)
 
 - Configuration workflow principalement
 - Pas de code applicatif nouveau
 - Intégration avec services externes (Cloudflare, GitHub)
 - Documentation importante requise
+- Phase OIDC reportée (dépendance externe non disponible)
 
 ---
 
@@ -180,11 +193,17 @@ Protection  Workflow    Auth        Validation
 
 ---
 
-### Phase 3: OIDC Authentication Migration
+### Phase 3 (BLOCKED): OIDC Authentication Migration
 
-**Objective**: Migrer de l'API Token statique vers l'authentification OIDC pour éliminer les secrets longue durée.
+> ⏸️ **STATUS: BLOCKED** - `wrangler-action` ne supporte pas l'authentification OIDC (vérifié novembre 2025)
+>
+> **Tracking**: Surveiller https://github.com/cloudflare/wrangler-action pour le support OIDC
+>
+> **Fallback actuel**: API Token via GitHub Secrets (implémenté en Phase 2)
 
-**Scope**:
+**Objective (différé)**: Migrer de l'API Token statique vers l'authentification OIDC pour éliminer les secrets longue durée.
+
+**Scope prévu**:
 
 - Configuration de l'Identity Provider Cloudflare
 - Mise à jour du workflow avec `id-token: write` permission
@@ -192,169 +211,155 @@ Protection  Workflow    Auth        Validation
 - Fallback gracieux si OIDC non configuré
 - Test de l'authentification OIDC
 
-**Dependencies**:
+**Blockers**:
 
-- Phase 2 (Deployment workflow fonctionnel)
-- Accès admin au compte Cloudflare
+- `cloudflare/wrangler-action` ne supporte que l'API Token authentication
+- Aucune documentation officielle Cloudflare pour OIDC avec GitHub Actions
+- Feature request à suivre sur le repo wrangler-action
 
-**Key Deliverables**:
+**Key Deliverables (différés)**:
 
-- [ ] Guide de configuration OIDC Cloudflare
-- [ ] Workflow mis à jour avec `id-token: write`
-- [ ] Job deploy utilisant OIDC (ou fallback API Token)
-- [ ] Validation que le déploiement fonctionne avec OIDC
+- [ ] ~~Guide de configuration OIDC Cloudflare~~ → Reporté
+- [ ] ~~Workflow mis à jour avec `id-token: write`~~ → Reporté
+- [ ] ~~Job deploy utilisant OIDC~~ → Reporté
 
-**Files Affected** (~3 files):
+**Next Steps**:
 
-- `.github/workflows/quality-gate.yml` (modified - OIDC permissions)
-- `docs/guides/CLOUDFLARE_OIDC.md` (new)
-- `docs/guides/DEPLOYMENT.md` (updated)
-
-**Estimated Complexity**: Medium
-**Estimated Duration**: 1-2 days (3-4 commits)
-**Risk Level**: Medium
-
-**Risk Factors**:
-
-- Configuration OIDC côté Cloudflare peut être complexe
-- Permissions JWT peuvent être mal configurées
-
-**Mitigation Strategies**:
-
-- Fallback conditionnel: si OIDC échoue, utiliser API Token
-- Documentation pas-à-pas avec screenshots
-- Test sur branche feature avant merge
-
-**Success Criteria**:
-
-- [ ] Déploiement réussi via OIDC (sans API Token)
-- [ ] Logs montrent l'utilisation du JWT éphémère
-- [ ] Documentation OIDC complète et testée
-
-**Technical Notes**:
-
-- Cloudflare OIDC provider: `https://cloudflare.com/cdn-cgi/access/oidc`
-- Audience: `cloudflare-workers`
-- Claims requis: `iss`, `sub`, `aud`, `exp`
-- Token lifetime: ~1h (suffisant pour un déploiement)
-- Référence: docs/specs/CI-CD-Security.md Section 5.1
+1. Surveiller les releases de `cloudflare/wrangler-action`
+2. Reprendre cette phase quand le support OIDC sera disponible
+3. Continuer avec Phase 3 (fusionnée) en attendant
 
 ---
 
-### Phase 4: Validation & Rollback Documentation
+### Phase 3: Security Best Practices & Validation Documentation (Fusionnée)
 
-**Objective**: Finaliser la pipeline avec des validations supplémentaires, documenter la stratégie de rollback, et créer un guide complet du workflow développeur.
+> **Note**: Cette phase fusionne l'ancienne Phase 4 avec les éléments de sécurité utiles en attendant l'OIDC.
+
+**Objective**: Finaliser la pipeline avec les bonnes pratiques de sécurité API Token, documenter la stratégie de rollback complète, et créer un guide du workflow développeur.
 
 **Scope**:
 
-- Ajout de smoke tests post-déploiement
-- Documentation de la stratégie de rollback
-- Guide du workflow développeur complet
-- Mise à jour du CLAUDE.md avec les nouvelles commandes
-- Validation E2E du pipeline complet
+- **Sécurité API Token** (en attendant OIDC):
+  - Guide de rotation des tokens Cloudflare
+  - Bonnes pratiques de scope minimal
+  - Documentation des permissions requises
+- **Documentation complète**:
+  - Stratégie de rollback détaillée
+  - Guide du workflow développeur
+  - Mise à jour CLAUDE.md section CI/CD
+- **Validation pipeline**:
+  - Vérification smoke tests existants
+  - Validation E2E du pipeline complet
+- **Préparation OIDC future**:
+  - Note documentant l'état actuel et le tracking
 
 **Dependencies**:
 
-- Phase 3 (OIDC configuré)
+- Phase 2 (Deployment workflow fonctionnel) ✅
 
 **Key Deliverables**:
 
-- [ ] Smoke test validant les endpoints critiques
-- [ ] Documentation rollback (manuel via Cloudflare dashboard)
-- [ ] Guide workflow développeur
-- [ ] CLAUDE.md mis à jour
-- [ ] Pipeline validé de bout en bout
+- [ ] Guide rotation API Token + bonnes pratiques sécurité
+- [ ] Documentation rollback complète (CLI + Dashboard)
+- [ ] Guide workflow développeur de bout en bout
+- [ ] CLAUDE.md mis à jour avec section CI/CD
+- [ ] Note OIDC future dans la documentation
 
 **Files Affected** (~5 files):
 
-- `.github/workflows/quality-gate.yml` (modified - smoke tests)
-- `docs/guides/ROLLBACK.md` (new)
-- `docs/guides/DEVELOPER_WORKFLOW.md` (new or updated)
+- `docs/guides/DEPLOYMENT.md` (updated - security section + rollback)
+- `docs/guides/DEVELOPER_WORKFLOW.md` (new)
 - `CLAUDE.md` (updated - CI/CD section)
-- `docs/specs/epics/epic_1/story_1_4/` (validation docs)
+- `docs/specs/epics/epic_1/story_1_4/` (phase docs)
 
 **Estimated Complexity**: Low
-**Estimated Duration**: 1 day (2-3 commits)
+**Estimated Duration**: 0.5-1 day (2-3 commits)
 **Risk Level**: Low
 
 **Success Criteria**:
 
-- [ ] Smoke tests vérifient `/` et `/admin` accessibles
-- [ ] Documentation rollback claire et testée
+- [ ] Guide de rotation API Token documenté
+- [ ] Documentation rollback claire (CLI + Dashboard)
 - [ ] Workflow développeur documenté de bout en bout
-- [ ] CLAUDE.md reflète les nouveaux workflows
+- [ ] CLAUDE.md reflète le pipeline complet
+- [ ] Note OIDC future visible pour suivi
 
 **Technical Notes**:
 
-- Smoke test: simple curl avec retry
-- Rollback: via Cloudflare Dashboard > Workers > Deployments
-- Ne pas implémenter de rollback automatique (out of scope)
-- Focus sur la documentation et la maintenabilité
+- Rotation API Token: via Cloudflare Dashboard > API Tokens
+- Rollback: via `wrangler rollback` CLI ou Dashboard
+- Scope minimal recommandé: Workers Scripts Edit + D1 Edit
+- OIDC tracking: https://github.com/cloudflare/wrangler-action
 
 ---
 
 ## Implementation Order & Dependencies
 
-### Dependency Graph
+### Dependency Graph (Révisé)
 
 ```
-Phase 1 (Branch Protection)
+Phase 1 (Branch Protection) ✅ COMPLETED
     ↓
-Phase 2 (Deploy Workflow)
+Phase 2 (Deploy Workflow) ✅ COMPLETED
     ↓
-Phase 3 (OIDC Migration)
-    ↓
-Phase 4 (Validation & Docs)
+Phase 3 (Security & Validation) ← CURRENT
+
+[OIDC Migration] ⏸️ BLOCKED (external dependency)
 ```
 
 ### Critical Path
 
-**Strict sequential order required**:
+**Order révisé** (3 phases actives):
 
-1. Phase 1 → Phase 2 → Phase 3 → Phase 4
+1. Phase 1 → Phase 2 → Phase 3
 
 Chaque phase dépend de la précédente car:
 
-- Phase 2 teste sur une branche protégée (Phase 1)
-- Phase 3 modifie le workflow créé en Phase 2
-- Phase 4 documente l'ensemble du système
+- Phase 2 teste sur une branche protégée (Phase 1) ✅
+- Phase 3 documente l'ensemble du système (Phase 2) ← Current
+
+**Phase OIDC bloquée**:
+
+- Dépendance externe: `wrangler-action` OIDC support
+- Sera reprise quand le support sera disponible
 
 ### Blocking Dependencies
 
-**Phase 1 blocks**:
+**Phase 1 blocks**: ✅ Résolu
 
 - Phase 2: Le déploiement doit être testé avec branch protection active
 
-**Phase 2 blocks**:
+**Phase 2 blocks**: ✅ Résolu
 
-- Phase 3: L'OIDC remplace l'API Token configuré en Phase 2
+- Phase 3: La documentation finale reflète le workflow actuel
 
-**Phase 3 blocks**:
+**External Blocker** (OIDC):
 
-- Phase 4: La documentation finale doit refléter la configuration OIDC
+- `cloudflare/wrangler-action` ne supporte pas OIDC
+- Tracking: https://github.com/cloudflare/wrangler-action
 
 ---
 
 ## Timeline & Resource Estimation
 
-### Overall Estimates
+### Overall Estimates (Révisé)
 
-| Metric                   | Estimate            | Notes                          |
-| ------------------------ | ------------------- | ------------------------------ |
-| **Total Phases**         | 4                   | Sequential, tight dependencies |
-| **Total Duration**       | 4-6 days            | Sequential implementation      |
-| **Total Commits**        | ~10-14              | Across all phases              |
-| **Total Files**          | ~8 new, ~3 modified | Mostly documentation           |
-| **Test Coverage Target** | N/A                 | Infrastructure/config story    |
+| Metric                   | Estimate            | Notes                           |
+| ------------------------ | ------------------- | ------------------------------- |
+| **Total Phases**         | 3 (+1 blocked)      | OIDC reportée, 3 phases actives |
+| **Total Duration**       | 2-3 days            | Réduit (OIDC différée)          |
+| **Total Commits**        | ~7-10               | Across 3 active phases          |
+| **Total Files**          | ~6 new, ~3 modified | Mostly documentation            |
+| **Test Coverage Target** | N/A                 | Infrastructure/config story     |
 
-### Per-Phase Timeline
+### Per-Phase Timeline (Révisé)
 
-| Phase | Name              | Duration | Commits | Start After | Blocks  |
-| ----- | ----------------- | -------- | ------- | ----------- | ------- |
-| 1     | Branch Protection | 0.5-1d   | 2-3     | Story 1.3   | Phase 2 |
-| 2     | Deploy Workflow   | 1-2d     | 3-4     | Phase 1     | Phase 3 |
-| 3     | OIDC Migration    | 1-2d     | 3-4     | Phase 2     | Phase 4 |
-| 4     | Validation & Docs | 1d       | 2-3     | Phase 3     | -       |
+| Phase   | Name                  | Duration | Commits | Status       | Notes           |
+| ------- | --------------------- | -------- | ------- | ------------ | --------------- |
+| 1       | Branch Protection     | 0.5-1d   | 2-3     | ✅ COMPLETED | ~1h actual      |
+| 2       | Deploy Workflow       | 1-2d     | 3-4     | ✅ COMPLETED | ~30min actual   |
+| BLOCKED | OIDC Migration        | -        | -       | ⏸️ BLOCKED   | wrangler-action |
+| 3       | Security & Validation | 0.5-1d   | 2-3     | 📋 PENDING   | Fusionnée       |
 
 ### Resource Requirements
 
@@ -519,33 +524,34 @@ Update this document as phases complete:
 
 - [x] Phase 1: Branch Protection & Quality Gate Enforcement - Status: ✅ COMPLETED, Actual duration: ~1h, Notes: Branch protection configured via GitHub UI, documentation created
 - [x] Phase 2: Deployment Workflow Creation - Status: ✅ COMPLETED, Actual duration: ~30min, Notes: 4 commits, deploy job with D1 migrations, wrangler deploy, validation
-- [ ] Phase 3: OIDC Authentication Migration - Status: 📋 NOT STARTED, Actual duration: \_, Notes: \_
-- [ ] Phase 4: Validation & Rollback Documentation - Status: 📋 NOT STARTED, Actual duration: \_, Notes: \_
+- [ ] ~~Phase 3 (ancienne): OIDC Authentication Migration~~ - Status: ⏸️ BLOCKED, Notes: wrangler-action ne supporte pas OIDC (vérifié Nov 2025)
+- [ ] Phase 3 (fusionnée): Security Best Practices & Validation - Status: 📋 PENDING, Actual duration: \_, Notes: Fusionne ancienne Phase 4 + éléments sécurité API Token
 
 ---
 
 ## Success Metrics
 
-### Story Completion Criteria
+### Story Completion Criteria (Révisé)
 
 This story is considered complete when:
 
-- [ ] All 4 phases implemented and validated
-- [ ] Branch protection active and tested
-- [ ] Deployment workflow functional (via OIDC preferred)
-- [ ] Documentation complete (Branch protection, OIDC, Rollback, Workflow)
+- [x] Phase 1 & 2 implemented and validated ✅
+- [ ] Phase 3 (fusionnée) implemented and validated
+- [x] Branch protection active and tested ✅
+- [x] Deployment workflow functional (via API Token) ✅
+- [ ] Documentation complete (Branch protection, Rollback, Workflow, Security)
 - [ ] CLAUDE.md updated with new CI/CD commands
-- [ ] No static API tokens required (OIDC fully functional)
+- ⏸️ OIDC: Reporté (wrangler-action ne le supporte pas encore)
 
-### Quality Metrics
+### Quality Metrics (Révisé)
 
-| Metric                    | Target                      | Actual |
-| ------------------------- | --------------------------- | ------ |
-| Deployment Success Rate   | > 95%                       | -      |
-| Time to Deploy            | < 5 min                     | -      |
-| OIDC Adoption             | 100%                        | -      |
-| Documentation Coverage    | 100% of acceptance criteria | -      |
-| Zero unauthorized deploys | 100%                        | -      |
+| Metric                    | Target                      | Actual | Notes                          |
+| ------------------------- | --------------------------- | ------ | ------------------------------ |
+| Deployment Success Rate   | > 95%                       | -      | À mesurer                      |
+| Time to Deploy            | < 5 min                     | ~3 min | ✅ Atteint                     |
+| OIDC Adoption             | ~~100%~~                    | 0%     | ⏸️ Bloqué - API Token en place |
+| Documentation Coverage    | 100% of acceptance criteria | ~80%   | Phase 3 à compléter            |
+| Zero unauthorized deploys | 100%                        | 100%   | ✅ Branch protection active    |
 
 ---
 
@@ -570,14 +576,15 @@ This story is considered complete when:
 
 ### Generated Phase Documentation
 
-- Phase 1: `docs/specs/epics/epic_1/story_1_4/implementation/phase_1/INDEX.md` (to generate)
-- Phase 2: `docs/specs/epics/epic_1/story_1_4/implementation/phase_2/INDEX.md` (to generate)
-- Phase 3: `docs/specs/epics/epic_1/story_1_4/implementation/phase_3/INDEX.md` (to generate)
-- Phase 4: `docs/specs/epics/epic_1/story_1_4/implementation/phase_4/INDEX.md` (to generate)
+- Phase 1: `docs/specs/epics/epic_1/story_1_4/implementation/phase_1/INDEX.md` ✅ Generated & Completed
+- Phase 2: `docs/specs/epics/epic_1/story_1_4/implementation/phase_2/INDEX.md` ✅ Generated & Completed
+- ~~Phase 3 (OIDC)~~: ⏸️ BLOCKED - wrangler-action ne supporte pas OIDC
+- Phase 3 (fusionnée): `docs/specs/epics/epic_1/story_1_4/implementation/phase_3/INDEX.md` (to generate)
 
 ---
 
 **Plan Created**: 2025-11-29
 **Last Updated**: 2025-11-29
 **Created by**: Claude Code (story-phase-planner skill)
-**Story Status**: In Progress (2/4 Phases Completed)
+**Story Status**: In Progress (2/3 Active Phases Completed, OIDC Blocked)
+**Restructured**: 2025-11-29 - Phase 3 OIDC blocked, Phase 4 merged into new Phase 3

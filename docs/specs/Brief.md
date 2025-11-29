@@ -131,6 +131,6 @@ Pipeline GitHub Actions avec validation multi-couches pour protéger contre les 
 - **Code Quality** : Knip (code mort), ESLint/Prettier, Type sync Payload ↔ TypeScript, dependency-cruiser
 - **Build & Tests** : Next.js build (no-DB), Vitest, Playwright + axe-core, Stryker (optionnel)
 - **Performance** : Lighthouse CI (budgets stricts : Performance ≥ 90, A11y = 100, SEO = 100)
-- **Security** : OIDC Cloudflare (pas de secrets statiques), GITHUB_TOKEN read-only
+- **Security** : API Token Cloudflare avec rotation (OIDC non disponible - Nov 2025), GITHUB_TOKEN read-only
 
 > **Documentation complète :** [CI-CD Security Architecture](./CI-CD-Security.md)
