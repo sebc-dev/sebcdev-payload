@@ -27,7 +27,24 @@ triggerPaths:
   - "pnpm-lock.yaml"
   - "socket.yml"
 
+# Issue-specific rule configuration
+# Default rules are enabled (malware, typosquatting)
+# Uncomment to disable if false positives occur:
+# issueRules:
+#   unsafe-eval: false
+
 # GitHub App integration for enhanced features
 githubApp:
   enabled: true
   dependencyOverviewEnabled: true
+
+# License compliance - block viral licenses
+# These licenses require derivative works to be open-sourced, which may conflict with proprietary code
+licensePolicies:
+  deny:
+    - "GPL-2.0-only"
+    - "GPL-2.0-or-later"
+    - "GPL-3.0-only"
+    - "GPL-3.0-or-later"
+    - "AGPL-3.0-only"
+    - "AGPL-3.0-or-later"
