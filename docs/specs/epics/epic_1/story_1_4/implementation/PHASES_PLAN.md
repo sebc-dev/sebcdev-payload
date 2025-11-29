@@ -3,7 +3,7 @@
 **Story**: Adaptation du Pipeline de Déploiement
 **Epic**: Epic 1 - Foundation & Cloudflare Architecture
 **Created**: 2025-11-29
-**Status**: Planning
+**Status**: In Progress (Phase 2 Completed)
 
 ---
 
@@ -517,10 +517,10 @@ For each phase:
 
 Update this document as phases complete:
 
-- [ ] Phase 1: Branch Protection & Quality Gate Enforcement - Status: _, Actual duration: _, Notes: \_
-- [ ] Phase 2: Deployment Workflow Creation - Status: _, Actual duration: _, Notes: \_
-- [ ] Phase 3: OIDC Authentication Migration - Status: _, Actual duration: _, Notes: \_
-- [ ] Phase 4: Validation & Rollback Documentation - Status: _, Actual duration: _, Notes: \_
+- [x] Phase 1: Branch Protection & Quality Gate Enforcement - Status: ✅ COMPLETED, Actual duration: ~1h, Notes: Branch protection configured via GitHub UI, documentation created
+- [x] Phase 2: Deployment Workflow Creation - Status: ✅ COMPLETED, Actual duration: ~30min, Notes: 4 commits, deploy job with D1 migrations, wrangler deploy, validation
+- [ ] Phase 3: OIDC Authentication Migration - Status: 📋 NOT STARTED, Actual duration: \_, Notes: \_
+- [ ] Phase 4: Validation & Rollback Documentation - Status: 📋 NOT STARTED, Actual duration: \_, Notes: \_
 
 ---
 
@@ -580,4 +580,4 @@ This story is considered complete when:
 **Plan Created**: 2025-11-29
 **Last Updated**: 2025-11-29
 **Created by**: Claude Code (story-phase-planner skill)
-**Story Status**: Planning
+**Story Status**: In Progress (2/4 Phases Completed)
