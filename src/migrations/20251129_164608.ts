@@ -120,15 +120,9 @@ export async function up({ db, payload: _payload, req: _req }: MigrateUpArgs): P
 }
 
 export async function down({ db, payload: _payload, req: _req }: MigrateDownArgs): Promise<void> {
-  // Drop locale tables first (child tables with FKs) before parent tables
-  await db.run(sql`DROP TABLE IF EXISTS \`categories_locales\`;`)
-  await db.run(sql`DROP TABLE IF EXISTS \`tags_locales\`;`)
-  await db.run(sql`DROP TABLE IF EXISTS \`categories\`;`)
-  await db.run(sql`DROP TABLE IF EXISTS \`tags\`;`)
-  await db.run(sql`DROP TABLE IF EXISTS \`payload_kv\`;`)
-
   // Remove categories_id and tags_id columns from payload_locked_documents_rels
-  // Use transaction and proper error handling for idempotency
+  // and drop taxonomy tables within a single transaction for FK safety
+  // CRITICAL: Must remove FK columns BEFORE dropping referenced tables to avoid constraint violations
   try {
     // Begin transaction
     await db.run(sql`BEGIN TRANSACTION;`)
@@ -208,6 +202,14 @@ export async function down({ db, payload: _payload, req: _req }: MigrateDownArgs
         sql`CREATE INDEX IF NOT EXISTS \`payload_locked_documents_rels_media_id_idx\` ON \`payload_locked_documents_rels\` (\`media_id\`);`,
       )
     }
+
+    // Drop locale tables first (child tables with FKs) before parent tables
+    // Safe to drop now because FK columns have been removed from payload_locked_documents_rels
+    await db.run(sql`DROP TABLE IF EXISTS \`categories_locales\`;`)
+    await db.run(sql`DROP TABLE IF EXISTS \`tags_locales\`;`)
+    await db.run(sql`DROP TABLE IF EXISTS \`categories\`;`)
+    await db.run(sql`DROP TABLE IF EXISTS \`tags\`;`)
+    await db.run(sql`DROP TABLE IF EXISTS \`payload_kv\`;`)
 
     // Commit transaction - defer_foreign_keys automatically resets and FK checks run here
     await db.run(sql`COMMIT;`)
