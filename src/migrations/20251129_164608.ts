@@ -95,10 +95,11 @@ export async function up({ db, payload: _payload, req: _req }: MigrateUpArgs): P
 }
 
 export async function down({ db, payload: _payload, req: _req }: MigrateDownArgs): Promise<void> {
-  await db.run(sql`DROP TABLE \`categories\`;`)
-  await db.run(sql`DROP TABLE \`categories_locales\`;`)
-  await db.run(sql`DROP TABLE \`tags\`;`)
-  await db.run(sql`DROP TABLE \`tags_locales\`;`)
+  // Drop locale tables first (child tables with FKs) before parent tables
+  await db.run(sql`DROP TABLE IF EXISTS \`categories_locales\`;`)
+  await db.run(sql`DROP TABLE IF EXISTS \`tags_locales\`;`)
+  await db.run(sql`DROP TABLE IF EXISTS \`categories\`;`)
+  await db.run(sql`DROP TABLE IF EXISTS \`tags\`;`)
   await db.run(sql`DROP TABLE IF EXISTS \`payload_kv\`;`)
   await db.run(sql`PRAGMA foreign_keys=OFF;`)
   await db.run(sql`CREATE TABLE \`__new_payload_locked_documents_rels\` (
