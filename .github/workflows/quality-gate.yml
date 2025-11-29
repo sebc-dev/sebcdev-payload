@@ -53,7 +53,7 @@ jobs:
       # Socket Firewall wraps package manager to detect malicious packages
       # See: https://github.com/SocketDev/action
       - name: Setup Socket Firewall
-        uses: SocketDev/action@v1
+        uses: SocketDev/action@4337a545deecc20f19a909e52db7a2f6ba292f42 # v1.2.0
         with:
           mode: firewall-free
 
