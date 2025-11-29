@@ -89,6 +89,9 @@ export async function up({ db, payload: _payload, req: _req }: MigrateUpArgs): P
   await db.run(
     sql`CREATE INDEX IF NOT EXISTS \`payload_locked_documents_rels_tags_id_idx\` ON \`payload_locked_documents_rels\` (\`tags_id\`);`,
   )
+
+  // Update query planner statistics after index creation
+  await db.run(sql`PRAGMA optimize;`)
 }
 
 export async function down({ db, payload: _payload, req: _req }: MigrateDownArgs): Promise<void> {
