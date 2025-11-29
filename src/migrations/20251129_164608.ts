@@ -76,7 +76,10 @@ export async function up({ db, payload: _payload, req: _req }: MigrateUpArgs): P
   } catch (error) {
     // Only ignore duplicate column error, rethrow other errors (connection, syntax, etc.)
     const errorMessage = error instanceof Error ? error.message : String(error)
-    if (errorMessage.includes('duplicate column') || errorMessage.includes('already exists')) {
+    const errorLower = errorMessage.toLowerCase()
+    // SQLite SQLITE_ERROR (1): duplicate column name: xxx
+    // D1 may return: "already exists" or "duplicate column"
+    if (errorLower.includes('duplicate column') || errorLower.includes('already exists')) {
       // Expected: column already exists from dev mode
     } else {
       console.error('Failed to add categories_id column:', errorMessage)
@@ -90,7 +93,10 @@ export async function up({ db, payload: _payload, req: _req }: MigrateUpArgs): P
   } catch (error) {
     // Only ignore duplicate column error, rethrow other errors (connection, syntax, etc.)
     const errorMessage = error instanceof Error ? error.message : String(error)
-    if (errorMessage.includes('duplicate column') || errorMessage.includes('already exists')) {
+    const errorLower = errorMessage.toLowerCase()
+    // SQLite SQLITE_ERROR (1): duplicate column name: xxx
+    // D1 may return: "already exists" or "duplicate column"
+    if (errorLower.includes('duplicate column') || errorLower.includes('already exists')) {
       // Expected: column already exists from dev mode
     } else {
       console.error('Failed to add tags_id column:', errorMessage)
