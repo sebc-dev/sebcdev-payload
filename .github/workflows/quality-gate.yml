@@ -56,10 +56,20 @@ jobs:
         continue-on-error: true # Don't block if service unavailable
 
       # ============================================
+      # LAYER 2: Code Quality
+      # ============================================
+
+      - name: ESLint
+        run: pnpm lint --format stylish
+
+      - name: Prettier Check
+        run: pnpm exec prettier --check .
+
+      # ============================================
       # PLACEHOLDER: Quality Checks (Future Phases)
       # ============================================
 
       - name: Placeholder - Quality checks coming soon
         run: |
-          echo "::notice::Phase 1-2 complete - Foundation workflow + Socket.dev"
-          echo "::notice::Future phases will add: Knip, ESLint, Build, etc."
+          echo "::notice::Phase 1-3 complete - Foundation + Socket.dev + ESLint/Prettier"
+          echo "::notice::Future phases will add: Knip, Build, dependency-cruiser, etc."
