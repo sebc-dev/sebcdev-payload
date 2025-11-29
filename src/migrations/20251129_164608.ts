@@ -73,15 +73,29 @@ export async function up({ db, payload: _payload, req: _req }: MigrateUpArgs): P
     await db.run(
       sql`ALTER TABLE \`payload_locked_documents_rels\` ADD \`categories_id\` integer REFERENCES categories(id);`,
     )
-  } catch {
-    // Column already exists (from dev mode)
+  } catch (error) {
+    // Only ignore duplicate column error, rethrow other errors (connection, syntax, etc.)
+    const errorMessage = error instanceof Error ? error.message : String(error)
+    if (errorMessage.includes('duplicate column') || errorMessage.includes('already exists')) {
+      // Expected: column already exists from dev mode
+    } else {
+      console.error('Failed to add categories_id column:', errorMessage)
+      throw error
+    }
   }
   try {
     await db.run(
       sql`ALTER TABLE \`payload_locked_documents_rels\` ADD \`tags_id\` integer REFERENCES tags(id);`,
     )
-  } catch {
-    // Column already exists (from dev mode)
+  } catch (error) {
+    // Only ignore duplicate column error, rethrow other errors (connection, syntax, etc.)
+    const errorMessage = error instanceof Error ? error.message : String(error)
+    if (errorMessage.includes('duplicate column') || errorMessage.includes('already exists')) {
+      // Expected: column already exists from dev mode
+    } else {
+      console.error('Failed to add tags_id column:', errorMessage)
+      throw error
+    }
   }
   await db.run(
     sql`CREATE INDEX IF NOT EXISTS \`payload_locked_documents_rels_categories_id_idx\` ON \`payload_locked_documents_rels\` (\`categories_id\`);`,
