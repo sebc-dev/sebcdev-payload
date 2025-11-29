@@ -200,7 +200,7 @@ export interface Tag {
    */
   name: string;
   /**
-   * URL-friendly identifier
+   * URL-friendly identifier (e.g., "javascript", "react-hooks")
    */
   slug: string;
   updatedAt: string;
