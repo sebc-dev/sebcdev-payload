@@ -15,27 +15,27 @@
 
 ### Implementation Checklist
 
-- [ ] Add "API Token Security Best Practices" section
-  - [ ] Token Scope table (principle of least privilege)
-  - [ ] Token Rotation steps
-  - [ ] Emergency Rotation procedure
-  - [ ] Token Audit instructions
-- [ ] Add "Future: OIDC Migration" note
-  - [ ] Tracking URL: https://github.com/cloudflare/wrangler-action
-  - [ ] Future migration steps outlined
-- [ ] Extend "Rollback" section
-  - [ ] Method 1: Wrangler CLI commands
-  - [ ] Method 2: Cloudflare Dashboard steps
-  - [ ] Method 3: Git Revert + Redeploy
-  - [ ] Rollback Considerations table
-  - [ ] Database Migration Rollback warning
+- [x] Add "API Token Security Best Practices" section
+  - [x] Token Scope table (principle of least privilege)
+  - [x] Token Rotation steps
+  - [x] Emergency Rotation procedure
+  - [x] Token Audit instructions
+- [x] Add "Future: OIDC Migration" note
+  - [x] Tracking URL: https://github.com/cloudflare/wrangler-action
+  - [x] Future migration steps outlined
+- [x] Extend "Rollback" section
+  - [x] Method 1: Wrangler CLI commands
+  - [x] Method 2: Cloudflare Dashboard steps
+  - [x] Method 3: Git Revert + Redeploy
+  - [x] Rollback Considerations table
+  - [x] Database Migration Rollback warning
 
 ### Post-Commit Checklist
 
-- [ ] Markdown renders correctly
-- [ ] All CLI commands are accurate
-- [ ] Links work (internal and external)
-- [ ] No typos or formatting issues
+- [x] Markdown renders correctly
+- [x] All CLI commands are accurate
+- [x] Links work (internal and external)
+- [x] No typos or formatting issues
 
 ### Commit Message Template
 
