@@ -21,7 +21,7 @@ export interface Logger {
 }
 
 /** Serialized error structure for JSON output (allows custom properties) */
-interface SerializedError {
+export interface SerializedError {
   name: string
   message: string
   stack?: string
@@ -53,11 +53,105 @@ function isErrorLike(value: unknown): boolean {
 /** Core error properties that are handled specially */
 const CORE_ERROR_PROPS = new Set(['name', 'message', 'stack'])
 
+/** Blacklist of keys that may contain sensitive or large data */
+const SENSITIVE_KEYS = new Set([
+  'response',
+  'request',
+  'config',
+  'context',
+  'headers',
+  'body',
+  'token',
+  'password',
+  'auth',
+  'raw',
+  'data',
+])
+
+/** Maximum length for string values before truncation */
+const MAX_STRING_LENGTH = 1000
+
+/** Truncation suffix */
+const TRUNCATION_SUFFIX = '…[truncated]'
+
+/**
+ * Check if a value is a Buffer or Stream-like object
+ */
+function isBufferOrStream(value: unknown): boolean {
+  if (value === null || typeof value !== 'object') return false
+  const obj = value as Record<string, unknown>
+  // Check for Buffer
+  if (typeof obj.constructor === 'function' && obj.constructor.name === 'Buffer') return true
+  // Check for Stream (has pipe method)
+  if (typeof obj.pipe === 'function') return true
+  // Check for ReadableStream/WritableStream
+  if (
+    typeof obj.constructor === 'function' &&
+    (obj.constructor.name === 'ReadableStream' ||
+      obj.constructor.name === 'WritableStream' ||
+      obj.constructor.name === 'TransformStream')
+  )
+    return true
+  return false
+}
+
+/**
+ * Truncate a string value if it exceeds the max length
+ */
+function truncateString(value: string): string {
+  if (value.length <= MAX_STRING_LENGTH) return value
+  return value.slice(0, MAX_STRING_LENGTH) + TRUNCATION_SUFFIX
+}
+
+/**
+ * Safely serialize a property value with size limits
+ * Returns undefined if the value should be skipped
+ */
+function serializePropertyValue(value: unknown): unknown {
+  // Skip functions
+  if (typeof value === 'function') return undefined
+
+  // Skip Buffer/Stream types
+  if (isBufferOrStream(value)) return undefined
+
+  // Handle null/undefined
+  if (value === null || value === undefined) return value
+
+  // Handle strings with truncation
+  if (typeof value === 'string') return truncateString(value)
+
+  // Handle primitives
+  if (typeof value === 'number' || typeof value === 'boolean') return value
+
+  // Handle objects/arrays
+  if (typeof value === 'object') {
+    try {
+      const serialized = JSON.stringify(value)
+      if (serialized.length > MAX_STRING_LENGTH) {
+        return Array.isArray(value) ? '[truncated array]' : '[truncated object]'
+      }
+      return value
+    } catch {
+      return '[unserializable]'
+    }
+  }
+
+  // For other types (symbol, bigint), convert to string
+  try {
+    return String(value)
+  } catch {
+    return '[unserializable]'
+  }
+}
+
 /**
  * Serialize an error-like value into a normalized object with name, message, stack,
  * plus any custom enumerable properties (code, statusCode, errno, etc.)
+ * Filters sensitive keys and truncates large values to prevent data leaks.
+ *
+ * @internal Exported for testing purposes
  */
-function serializeError(value: unknown): SerializedError {
+export function serializeError(value: unknown): SerializedError {
   // Handle string errors
   if (typeof value === 'string') {
     return { name: 'Error', message: value }
@@ -90,35 +184,18 @@ function serializeError(value: unknown): SerializedError {
     }
 
     // Copy custom enumerable properties (code, statusCode, errno, etc.)
+    // Filters sensitive keys and truncates large values
     for (const key of Object.keys(obj)) {
       if (CORE_ERROR_PROPS.has(key)) continue
+      if (SENSITIVE_KEYS.has(key)) continue
 
       try {
         const propValue = obj[key]
+        const serialized = serializePropertyValue(propValue)
 
-        // Skip functions
-        if (typeof propValue === 'function') continue
-
-        // Serialize the value appropriately
-        if (propValue === null || propValue === undefined) {
-          result[key] = propValue
-        } else if (
-          typeof propValue === 'string' ||
-          typeof propValue === 'number' ||
-          typeof propValue === 'boolean'
-        ) {
-          result[key] = propValue
-        } else if (typeof propValue === 'object') {
-          // For objects, try JSON serialization; fallback to string
-          try {
-            JSON.stringify(propValue)
-            result[key] = propValue
-          } catch {
-            result[key] = String(propValue)
-          }
-        } else {
-          // For other types (symbol, bigint), convert to string
-          result[key] = String(propValue)
+        // Skip if serializePropertyValue returned undefined (function, Buffer, Stream)
+        if (serialized !== undefined) {
+          result[key] = serialized
         }
       } catch {
         // Ignore properties that throw on access (getters)
