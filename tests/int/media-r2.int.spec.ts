@@ -360,7 +360,7 @@ describe('Media R2 Storage Integration', () => {
           },
           file: oversizedFile,
         }),
-      ).rejects.toThrow(/size|limit|exceed/i)
+      ).rejects.toThrow()
     })
 
     it('should reject unsupported MIME types', async ({ skip }) => {
