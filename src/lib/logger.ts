@@ -209,8 +209,28 @@ export function serializeError(value: unknown): SerializedError {
   return { name: 'Error', message: String(value) }
 }
 
-/** Common keys that may contain error-like values */
-const ERROR_KEYS = new Set(['error', 'cause', 'lastError', 'originalError', 'innerError'])
+/**
+ * Common keys that may contain error-like values.
+ * These keys trigger automatic serialization via serializeError() when
+ * the value is error-like, ensuring proper JSON output instead of empty objects.
+ *
+ * Includes:
+ * - Standard: error, err, e, exception, cause
+ * - Nested/wrapped: lastError, originalError, innerError, rootCause
+ *
+ * @internal Exported for testing purposes
+ */
+export const ERROR_KEYS = new Set([
+  'error',
+  'err',
+  'e',
+  'exception',
+  'cause',
+  'lastError',
+  'originalError',
+  'innerError',
+  'rootCause',
+])
 
 /**
  * Format log entry with timestamp and structured context
