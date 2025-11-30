@@ -89,7 +89,7 @@ describe('serializeError', () => {
 
     it('should filter out token property', () => {
       const error = new Error('Auth error') as Error & { token: string }
-      error.token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...'
+      error.token = 'REDACTED_TOKEN_EXAMPLE'
 
       const result = serializeError(error)
 
