@@ -11,7 +11,7 @@ import {
 } from '../helpers/media.helpers'
 
 let payload: Payload
-const createdMediaIds: number[] = []
+const createdMediaIds: Media['id'][] = []
 
 /**
  * Flag indicating if media uploads work in this test environment.
@@ -428,7 +428,7 @@ describe('Media R2 Storage Integration', () => {
       await expect(
         payload.delete({
           collection: 'media',
-          id: 999999,
+          id: 999999 as Media['id'],
         }),
       ).rejects.toThrow()
     })
@@ -441,7 +441,7 @@ describe('Media R2 Storage Integration', () => {
       // Payload returns null for non-existent documents
       const result = await payload.findByID({
         collection: 'media',
-        id: 999999,
+        id: 999999 as Media['id'],
       })
 
       expect(result).toBeNull()
