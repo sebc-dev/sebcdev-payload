@@ -28,9 +28,9 @@ export const calculateReadingTime: CollectionBeforeChangeHook = async ({
     return data
   }
 
-  // Handle missing or null data
+  // Handle missing or null data - return null per Payload conventions
   if (!data) {
-    return { readingTime: 0 }
+    return null
   }
 
   // Only calculate reading time for published articles
