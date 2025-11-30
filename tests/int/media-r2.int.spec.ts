@@ -8,6 +8,7 @@ import {
   createTestFileOfSize,
   createInvalidMimeTypeFile,
   createMediaWithFile,
+  updateMediaWithFile,
 } from '../helpers/media.helpers'
 
 let payload: Payload
@@ -249,14 +250,14 @@ describe('Media R2 Storage Integration', () => {
 
       // Update metadata
       const newAlt = generateTestAltText('Updated Alt')
-      const updated = (await (payload.update as any)({
+      const updated = await updateMediaWithFile(payload, {
         collection: 'media',
         id: created.id,
         data: {
           alt: newAlt,
           caption: 'Updated caption',
         },
-      })) as Media
+      })
 
       expect(updated.alt).toBe(newAlt)
       expect(updated.caption).toBe('Updated caption')
