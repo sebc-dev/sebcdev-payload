@@ -537,7 +537,7 @@ describe('Articles Collection', () => {
       expect(article.readingTime).toBe(2)
     })
 
-    it('should set null reading time for draft articles', async () => {
+    it('should set zero reading time for draft articles', async () => {
       const slug = `test-reading-draft-${Date.now()}`
       const article = // eslint-disable-next-line @typescript-eslint/no-explicit-any
         (await (payload.create as any)({
@@ -553,7 +553,7 @@ describe('Articles Collection', () => {
 
       createdArticleIds.push(article.id)
 
-      expect(article.readingTime).toBe(null)
+      expect(article.readingTime).toBe(0)
     })
 
     it('should handle null content gracefully for published articles', async () => {
@@ -669,7 +669,7 @@ describe('Articles Collection', () => {
     it('should calculate reading time when status changes to published', async () => {
       const slug = `test-reading-status-change-${Date.now()}`
 
-      // Create as draft - should have null reading time
+      // Create as draft - should have zero reading time
       const created = // eslint-disable-next-line @typescript-eslint/no-explicit-any
         (await (payload.create as any)({
           collection: 'articles',
@@ -684,7 +684,7 @@ describe('Articles Collection', () => {
 
       createdArticleIds.push(created.id)
 
-      expect(created.readingTime).toBe(null)
+      expect(created.readingTime).toBe(0)
 
       // Update to published - should now have reading time
       const updated = // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -719,7 +719,7 @@ describe('Articles Collection', () => {
 
       expect(created.readingTime).toBe(1)
 
-      // Update to archived - should clear reading time
+      // Update to archived - should reset reading time to zero
       const updated = // eslint-disable-next-line @typescript-eslint/no-explicit-any
         (await (payload.update as any)({
           collection: 'articles',
@@ -729,7 +729,7 @@ describe('Articles Collection', () => {
           },
         })) as Article
 
-      expect(updated.readingTime).toBe(null)
+      expect(updated.readingTime).toBe(0)
     })
   })
 
