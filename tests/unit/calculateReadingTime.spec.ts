@@ -513,20 +513,18 @@ describe('calculateReadingTime hook', () => {
    * This ensures compatibility with older environments.
    */
   describe('Fallback word counting (without Intl.Segmenter)', () => {
-    // Store original Segmenter to restore after each test
-    let originalSegmenter: typeof Intl.Segmenter | undefined
+    // Capture original Segmenter at module level for reliable restoration
+    const originalSegmenter = Intl.Segmenter
 
     beforeEach(() => {
-      // Save the original Intl.Segmenter
-      originalSegmenter = Intl.Segmenter
-      // Remove Intl.Segmenter to force fallback path
-      // @ts-expect-error - intentionally removing Segmenter for testing
-      delete Intl.Segmenter
+      // Set to undefined to simulate absence (more portable than delete)
+      // @ts-expect-error - intentionally setting to undefined for testing
+      Intl.Segmenter = undefined
     })
 
     afterEach(() => {
-      // Restore Intl.Segmenter after each test
-      if (originalSegmenter) {
+      // Restore Intl.Segmenter reliably using typeof check
+      if (typeof originalSegmenter !== 'undefined') {
         Intl.Segmenter = originalSegmenter
       }
     })
