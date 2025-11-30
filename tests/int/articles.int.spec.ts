@@ -3,8 +3,11 @@ import config from '@payload-config'
 import type { Article, User, Category, Tag, Media } from '@/payload-types'
 import path from 'path'
 import fs from 'fs'
+import { fileURLToPath } from 'url'
 
 import { describe, it, expect, beforeAll, afterAll } from 'vitest'
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
 let payload: Payload
 let testUser: User
