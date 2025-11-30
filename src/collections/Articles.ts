@@ -36,6 +36,7 @@ export const Articles: CollectionConfig = {
   },
   access: {
     read: isPublishedOrAuthenticated,
+    readVersions: isPublishedOrAuthenticated,
     create: isAuthenticated,
     update: isAuthenticated,
     delete: isAuthenticated,
