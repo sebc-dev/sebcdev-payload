@@ -540,6 +540,16 @@ describe('Media R2 Storage Integration', () => {
       results.forEach((media: Media) => createdMediaIds.push(media.id))
 
       expect(results).toHaveLength(5)
+
+      // Verify all IDs are unique
+      const ids = results.map((media) => media.id)
+      expect(new Set(ids).size).toBe(results.length)
+
+      // Verify all filenames are unique
+      const filenames = results.map((media) => media.filename)
+      expect(new Set(filenames).size).toBe(results.length)
+
+      // Verify each media has required fields
       results.forEach((media: Media) => {
         expect(media.id).toBeDefined()
         expect(media.filename).toBeDefined()
