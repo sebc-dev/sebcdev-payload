@@ -155,13 +155,6 @@ const DEFAULT_MAX_CHARS = 500000
 /** Type for Lexical node or array of nodes */
 type LexicalNode = Record<string, unknown> | Record<string, unknown>[] | null | undefined
 
-/** Default processing budget to prevent Cloudflare Worker CPU overruns */
-const DEFAULT_MAX_NODES = 10000
-const DEFAULT_MAX_CHARS = 500000
-
-/** Type for Lexical node or array of nodes */
-type LexicalNode = Record<string, unknown> | Record<string, unknown>[] | null | undefined
-
 /** Budget options for limiting processing on large documents */
 interface ExtractionBudget {
   /** Maximum number of nodes to process (default: 10000) */
