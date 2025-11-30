@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect, beforeEach, afterEach } from 'vitest'
 import { calculateReadingTime } from '@/hooks/calculateReadingTime'
 
 describe('calculateReadingTime hook', () => {
@@ -490,6 +490,154 @@ describe('calculateReadingTime hook', () => {
 
     it('should handle CJK content exceeding 200 characters', async () => {
       // Create content with 400 Chinese characters (should equal 2 minutes reading time)
+      const chineseText = '文'.repeat(400)
+      const content = createMockContent(chineseText)
+
+      const result = await calculateReadingTime({
+        data: { content, status: 'published' } as any,
+        req: {} as any,
+        operation: 'create',
+        context: {},
+      } as any)
+
+      // 400 characters / 200 wpm = 2 minutes
+      expect(result.readingTime).toBe(2)
+    })
+  })
+
+  /**
+   * Fallback word counting tests (without Intl.Segmenter)
+   *
+   * These tests verify that the hybrid fallback approach (whitespace split + CJK character count)
+   * produces correct results when Intl.Segmenter is unavailable.
+   * This ensures compatibility with older environments.
+   */
+  describe('Fallback word counting (without Intl.Segmenter)', () => {
+    // Store original Segmenter to restore after each test
+    let originalSegmenter: typeof Intl.Segmenter | undefined
+
+    beforeEach(() => {
+      // Save the original Intl.Segmenter
+      originalSegmenter = Intl.Segmenter
+      // Remove Intl.Segmenter to force fallback path
+      // @ts-expect-error - intentionally removing Segmenter for testing
+      delete Intl.Segmenter
+    })
+
+    afterEach(() => {
+      // Restore Intl.Segmenter after each test
+      if (originalSegmenter) {
+        Intl.Segmenter = originalSegmenter
+      }
+    })
+
+    it('should count pure Chinese characters using fallback', async () => {
+      // "你好世界" = 4 Chinese characters = 4 words (via CJK regex)
+      const content = createMockContent('你好世界')
+
+      const result = await calculateReadingTime({
+        data: { content, status: 'published' } as any,
+        req: {} as any,
+        operation: 'create',
+        context: {},
+      } as any)
+
+      // 4 words / 200 wpm = 0.02, rounds up to 1
+      expect(result.readingTime).toBe(1)
+    })
+
+    it('should count mixed Latin and CJK text using fallback', async () => {
+      // "Hello世界World" = "Hello" (1) + "世界" (2 CJK) + "World" (1) = 4 words
+      const content = createMockContent('Hello世界World')
+
+      const result = await calculateReadingTime({
+        data: { content, status: 'published' } as any,
+        req: {} as any,
+        operation: 'create',
+        context: {},
+      } as any)
+
+      // 4 words / 200 wpm = 0.02, rounds up to 1
+      expect(result.readingTime).toBe(1)
+    })
+
+    it('should count Japanese characters using fallback', async () => {
+      // "こんにちはカタカナ" = 9 characters (Hiragana + Katakana) = 9 words
+      const content = createMockContent('こんにちはカタカナ')
+
+      const result = await calculateReadingTime({
+        data: { content, status: 'published' } as any,
+        req: {} as any,
+        operation: 'create',
+        context: {},
+      } as any)
+
+      // 9 words / 200 wpm = 0.045, rounds up to 1
+      expect(result.readingTime).toBe(1)
+    })
+
+    it('should count Korean Hangul using fallback', async () => {
+      // "안녕하세요" = 5 Korean characters = 5 words
+      const content = createMockContent('안녕하세요')
+
+      const result = await calculateReadingTime({
+        data: { content, status: 'published' } as any,
+        req: {} as any,
+        operation: 'create',
+        context: {},
+      } as any)
+
+      // 5 words / 200 wpm = 0.025, rounds up to 1
+      expect(result.readingTime).toBe(1)
+    })
+
+    it('should handle mixed scripts with punctuation using fallback', async () => {
+      // "Hello 世界! How are you? こんにちは"
+      // Latin: 4 words, Chinese: 2 chars, Japanese: 5 chars = 11 total
+      const content = createMockContent('Hello 世界! How are you? こんにちは')
+
+      const result = await calculateReadingTime({
+        data: { content, status: 'published' } as any,
+        req: {} as any,
+        operation: 'create',
+        context: {},
+      } as any)
+
+      // 11 words / 200 wpm = 0.055, rounds up to 1
+      expect(result.readingTime).toBe(1)
+    })
+
+    it('should count standard Latin text correctly using fallback', async () => {
+      // Verify Latin word counting works without Intl.Segmenter
+      const content = createMockContent('The quick brown fox jumps over the lazy dog')
+
+      const result = await calculateReadingTime({
+        data: { content, status: 'published' } as any,
+        req: {} as any,
+        operation: 'create',
+        context: {},
+      } as any)
+
+      // 9 words / 200 wpm = 0.045, rounds up to 1
+      expect(result.readingTime).toBe(1)
+    })
+
+    it('should handle 200 CJK characters for 1 minute reading time using fallback', async () => {
+      const chineseText = '中'.repeat(200)
+      const content = createMockContent(chineseText)
+
+      const result = await calculateReadingTime({
+        data: { content, status: 'published' } as any,
+        req: {} as any,
+        operation: 'create',
+        context: {},
+      } as any)
+
+      // 200 characters / 200 wpm = 1 minute
+      expect(result.readingTime).toBe(1)
+    })
+
+    it('should handle 400 CJK characters for 2 minutes reading time using fallback', async () => {
       const chineseText = '文'.repeat(400)
       const content = createMockContent(chineseText)
 
