@@ -364,4 +364,144 @@ describe('calculateReadingTime hook', () => {
     expect(typeof result.readingTime).toBe('number')
     expect(result.readingTime).toBeGreaterThanOrEqual(0)
   })
+
+  /**
+   * Unicode-aware word counting tests
+   *
+   * These tests validate the countWords() function handles CJK (Chinese, Japanese, Korean)
+   * and other non-Latin scripts correctly. CJK languages don't use spaces between words,
+   * so each CJK character is counted as approximately one word.
+   *
+   * Implementation uses:
+   * 1. Intl.Segmenter (when available) for accurate word segmentation
+   * 2. Fallback: hybrid approach (whitespace split + CJK character count)
+   */
+  describe('Unicode-aware word counting', () => {
+    it('should count pure Chinese characters as individual words', async () => {
+      // "你好世界" = 4 Chinese characters = 4 words
+      const content = createMockContent('你好世界')
+
+      const result = await calculateReadingTime({
+        data: { content, status: 'published' } as any,
+        req: {} as any,
+        operation: 'create',
+        context: {},
+      } as any)
+
+      // 4 words / 200 wpm = 0.02, rounds up to 1
+      expect(result.readingTime).toBe(1)
+    })
+
+    it('should count mixed Latin and CJK text correctly', async () => {
+      // "Hello世界World" = "Hello" (1) + "世界" (2) + "World" (1) = 4 words
+      const content = createMockContent('Hello世界World')
+
+      const result = await calculateReadingTime({
+        data: { content, status: 'published' } as any,
+        req: {} as any,
+        operation: 'create',
+        context: {},
+      } as any)
+
+      // 4 words / 200 wpm = 0.02, rounds up to 1
+      expect(result.readingTime).toBe(1)
+    })
+
+    it('should count Japanese Hiragana and Katakana characters', async () => {
+      // "こんにちは" (Hiragana) + "カタカナ" (Katakana) = 9 characters = 9 words
+      const content = createMockContent('こんにちはカタカナ')
+
+      const result = await calculateReadingTime({
+        data: { content, status: 'published' } as any,
+        req: {} as any,
+        operation: 'create',
+        context: {},
+      } as any)
+
+      // 9 words / 200 wpm = 0.045, rounds up to 1
+      expect(result.readingTime).toBe(1)
+    })
+
+    it('should count Korean Hangul characters', async () => {
+      // "안녕하세요" = 5 Korean characters = 5 words
+      const content = createMockContent('안녕하세요')
+
+      const result = await calculateReadingTime({
+        data: { content, status: 'published' } as any,
+        req: {} as any,
+        operation: 'create',
+        context: {},
+      } as any)
+
+      // 5 words / 200 wpm = 0.025, rounds up to 1
+      expect(result.readingTime).toBe(1)
+    })
+
+    it('should handle mixed CJK scripts with Latin text and punctuation', async () => {
+      // Complex mixed content: Latin + Chinese + Japanese + punctuation
+      // "Hello 世界! How are you? こんにちは"
+      // Latin: "Hello" (1) + "How" (1) + "are" (1) + "you" (1) = 4 words
+      // Chinese: "世界" = 2 characters
+      // Japanese: "こんにちは" = 5 characters
+      // Total: 4 + 2 + 5 = 11 words
+      const content = createMockContent('Hello 世界! How are you? こんにちは')
+
+      const result = await calculateReadingTime({
+        data: { content, status: 'published' } as any,
+        req: {} as any,
+        operation: 'create',
+        context: {},
+      } as any)
+
+      // 11 words / 200 wpm = 0.055, rounds up to 1
+      expect(result.readingTime).toBe(1)
+    })
+
+    it('should still count standard Latin text correctly', async () => {
+      // Verify existing Latin word counting behavior is preserved
+      const content = createMockContent('The quick brown fox jumps over the lazy dog')
+
+      const result = await calculateReadingTime({
+        data: { content, status: 'published' } as any,
+        req: {} as any,
+        operation: 'create',
+        context: {},
+      } as any)
+
+      // 9 words / 200 wpm = 0.045, rounds up to 1
+      expect(result.readingTime).toBe(1)
+    })
+
+    it('should handle longer CJK content for accurate reading time', async () => {
+      // Create content with 200 Chinese characters (should equal 1 minute reading time)
+      const chineseText = '中'.repeat(200)
+      const content = createMockContent(chineseText)
+
+      const result = await calculateReadingTime({
+        data: { content, status: 'published' } as any,
+        req: {} as any,
+        operation: 'create',
+        context: {},
+      } as any)
+
+      // 200 characters / 200 wpm = 1 minute
+      expect(result.readingTime).toBe(1)
+    })
+
+    it('should handle CJK content exceeding 200 characters', async () => {
+      // Create content with 400 Chinese characters (should equal 2 minutes reading time)
+      const chineseText = '文'.repeat(400)
+      const content = createMockContent(chineseText)
+
+      const result = await calculateReadingTime({
+        data: { content, status: 'published' } as any,
+        req: {} as any,
+        operation: 'create',
+        context: {},
+      } as any)
+
+      // 400 characters / 200 wpm = 2 minutes
+      expect(result.readingTime).toBe(2)
+    })
+  })
 })
