@@ -35,9 +35,10 @@ export function getTestImageFile(customName?: string): {
 
 /**
  * Creates a buffer of specified size for testing file size limits
- * @param sizeInBytes Size of the buffer to create
+ * @param sizeInBytes Size of the buffer to create (must be a positive integer)
  * @param mimetype MIME type to report
  * @returns File object compatible with Payload's create API
+ * @throws RangeError if sizeInBytes is not a positive integer
  */
 export function createTestFileOfSize(
   sizeInBytes: number,
@@ -48,12 +49,15 @@ export function createTestFileOfSize(
   name: string
   size: number
 } {
+  if (!Number.isInteger(sizeInBytes) || sizeInBytes <= 0) {
+    throw new RangeError('sizeInBytes must be a positive integer')
+  }
   const buffer = Buffer.alloc(sizeInBytes)
   return {
     data: buffer,
     mimetype,
     name: `test-file-${sizeInBytes}-${Date.now()}.bin`,
-    size: sizeInBytes,
+    size: buffer.length,
   }
 }
 
