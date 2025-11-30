@@ -500,7 +500,7 @@ describe('Articles Collection', () => {
   })
 
   describe('Hook Execution: Reading Time', () => {
-    it('should calculate reading time for short content (100 words)', async () => {
+    it('should calculate reading time for short content (100 words) when published', async () => {
       const slug = `test-reading-100-${Date.now()}`
       const article = // eslint-disable-next-line @typescript-eslint/no-explicit-any
         (await (payload.create as any)({
@@ -509,6 +509,7 @@ describe('Articles Collection', () => {
           data: {
             title: 'Short Article',
             slug,
+            status: 'published',
             content: createBasicContent(100),
           },
         })) as Article
@@ -518,7 +519,7 @@ describe('Articles Collection', () => {
       expect(article.readingTime).toBe(1)
     })
 
-    it('should calculate reading time for medium content (400 words)', async () => {
+    it('should calculate reading time for medium content (400 words) when published', async () => {
       const slug = `test-reading-400-${Date.now()}`
       const article = // eslint-disable-next-line @typescript-eslint/no-explicit-any
         (await (payload.create as any)({
@@ -527,6 +528,7 @@ describe('Articles Collection', () => {
           data: {
             title: 'Medium Article',
             slug,
+            status: 'published',
             content: createBasicContent(400),
           },
         })) as Article
@@ -536,7 +538,26 @@ describe('Articles Collection', () => {
       expect(article.readingTime).toBe(2)
     })
 
-    it('should handle null content gracefully', async () => {
+    it('should set null reading time for draft articles', async () => {
+      const slug = `test-reading-draft-${Date.now()}`
+      const article = // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        (await (payload.create as any)({
+          collection: 'articles',
+          draft: false,
+          data: {
+            title: 'Draft Article with Content',
+            slug,
+            status: 'draft',
+            content: createBasicContent(100),
+          },
+        })) as Article
+
+      createdArticleIds.push(article.id)
+
+      expect(article.readingTime).toBe(null)
+    })
+
+    it('should handle null content gracefully for published articles', async () => {
       const slug = `test-reading-null-${Date.now()}`
       const article = // eslint-disable-next-line @typescript-eslint/no-explicit-any
         (await (payload.create as any)({
@@ -545,6 +566,7 @@ describe('Articles Collection', () => {
           data: {
             title: 'Article with No Content',
             slug,
+            status: 'published',
           },
         })) as Article
 
@@ -553,7 +575,7 @@ describe('Articles Collection', () => {
       expect(article.readingTime).toBe(0)
     })
 
-    it('should recalculate reading time on content update', async () => {
+    it('should recalculate reading time on content update when published', async () => {
       const slug = `test-reading-update-${Date.now()}`
 
       const created = // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -563,6 +585,7 @@ describe('Articles Collection', () => {
           data: {
             title: 'Article to Update Reading Time',
             slug,
+            status: 'published',
             content: createBasicContent(100),
           },
         })) as Article
@@ -583,7 +606,7 @@ describe('Articles Collection', () => {
       expect(updated.readingTime).toBe(2)
     })
 
-    it('should calculate reading time with complex Lexical structure', async () => {
+    it('should calculate reading time with complex Lexical structure when published', async () => {
       const slug = `test-reading-complex-${Date.now()}`
       const article = // eslint-disable-next-line @typescript-eslint/no-explicit-any
         (await (payload.create as any)({
@@ -592,6 +615,7 @@ describe('Articles Collection', () => {
           data: {
             title: 'Article with Complex Content',
             slug,
+            status: 'published',
             content: {
               root: {
                 type: 'root',
@@ -641,6 +665,72 @@ describe('Articles Collection', () => {
 
       expect(article.readingTime).toBeGreaterThan(0)
       expect(typeof article.readingTime).toBe('number')
+    })
+
+    it('should calculate reading time when status changes to published', async () => {
+      const slug = `test-reading-status-change-${Date.now()}`
+
+      // Create as draft - should have null reading time
+      const created = // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        (await (payload.create as any)({
+          collection: 'articles',
+          draft: false,
+          data: {
+            title: 'Article to Publish Later',
+            slug,
+            status: 'draft',
+            content: createBasicContent(200),
+          },
+        })) as Article
+
+      createdArticleIds.push(created.id)
+
+      expect(created.readingTime).toBe(null)
+
+      // Update to published - should now have reading time
+      const updated = // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        (await (payload.update as any)({
+          collection: 'articles',
+          id: created.id,
+          data: {
+            status: 'published',
+          },
+        })) as Article
+
+      expect(updated.readingTime).toBe(1)
+    })
+
+    it('should clear reading time when status changes to archived', async () => {
+      const slug = `test-reading-archived-${Date.now()}`
+
+      // Create as published
+      const created = // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        (await (payload.create as any)({
+          collection: 'articles',
+          draft: false,
+          data: {
+            title: 'Article to Archive',
+            slug,
+            status: 'published',
+            content: createBasicContent(200),
+          },
+        })) as Article
+
+      createdArticleIds.push(created.id)
+
+      expect(created.readingTime).toBe(1)
+
+      // Update to archived - should clear reading time
+      const updated = // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        (await (payload.update as any)({
+          collection: 'articles',
+          id: created.id,
+          data: {
+            status: 'archived',
+          },
+        })) as Article
+
+      expect(updated.readingTime).toBe(null)
     })
   })
 

@@ -27,6 +27,13 @@ export const calculateReadingTime: CollectionBeforeChangeHook = async ({ data, c
     return { readingTime: 0 }
   }
 
+  // Only calculate reading time for published articles
+  // Clear reading time for drafts and archived articles
+  if (data.status !== 'published') {
+    data.readingTime = null
+    return data
+  }
+
   // Handle missing or null content
   if (!data.content) {
     data.readingTime = 0
