@@ -47,14 +47,29 @@ export const calculateReadingTime: CollectionBeforeChangeHook = async ({
   }
 
   try {
-    // Extract plain text from Lexical JSON structure
-    const text = extractTextFromLexical(data.content)
+    // Extract plain text from Lexical JSON structure with budget limits
+    const { text, stats } = extractTextFromLexical(data.content, {
+      enableDiagnostics: true,
+    })
 
     // Calculate word count (split on whitespace)
     const wordCount = text.trim().split(/\s+/).filter(Boolean).length
 
     // Calculate reading time (200 wpm, round up)
     const readingTime = Math.ceil(wordCount / 200)
+
+    // Log if budget was exhausted (reading time may be underestimated)
+    if (stats.budgetExhausted) {
+      logger.warn('Reading time calculated with partial content', {
+        operation,
+        wordCount,
+        readingTime,
+        nodesProcessed: stats.nodesProcessed,
+        charsCollected: stats.charsCollected,
+        exhaustionReason: stats.exhaustionReason,
+        hook: 'calculateReadingTime',
+      })
+    }
 
     // Update data with calculated reading time
     data.readingTime = readingTime
@@ -77,36 +92,156 @@ export const calculateReadingTime: CollectionBeforeChangeHook = async ({
 /** Default maximum recursion depth to prevent stack overflow */
 const DEFAULT_MAX_DEPTH = 50
 
+/** Default processing budget to prevent Cloudflare Worker CPU overruns */
+const DEFAULT_MAX_NODES = 10000
+const DEFAULT_MAX_CHARS = 500000
+
 /** Type for Lexical node or array of nodes */
 type LexicalNode = Record<string, unknown> | Record<string, unknown>[] | null | undefined
 
+/** Budget options for limiting processing on large documents */
+interface ExtractionBudget {
+  /** Maximum number of nodes to process (default: 10000) */
+  maxNodes?: number
+  /** Maximum characters to collect (default: 500000) */
+  maxChars?: number
+}
+
+/** Mutable stats object passed through recursion */
+interface ExtractionStats {
+  /** Number of nodes processed */
+  nodesProcessed: number
+  /** Number of characters collected */
+  charsCollected: number
+  /** Maximum depth reached during extraction */
+  maxDepthReached: number
+  /** Whether processing was terminated due to budget exhaustion */
+  budgetExhausted: boolean
+  /** Reason for budget exhaustion if applicable */
+  exhaustionReason?: 'maxNodes' | 'maxChars' | 'maxDepth'
+}
+
+/** Result of text extraction including diagnostics */
+interface ExtractionResult {
+  /** Extracted plain text */
+  text: string
+  /** Processing statistics for diagnostics */
+  stats: ExtractionStats
+}
+
 /**
- * Recursively extract plain text from Lexical JSON structure
+ * Create initial extraction stats object
+ */
+function createExtractionStats(): ExtractionStats {
+  return {
+    nodesProcessed: 0,
+    charsCollected: 0,
+    maxDepthReached: 0,
+    budgetExhausted: false,
+  }
+}
+
+/**
+ * Recursively extract plain text from Lexical JSON structure with budget limits
  *
  * @param node - Lexical node (root, paragraph, heading, list, etc.) or array of nodes
- * @param maxDepth - Maximum recursion depth (default: 50)
- * @param currentDepth - Current recursion depth (internal use)
- * @param visited - WeakSet to track visited nodes for cycle detection (internal use)
- * @returns Plain text content
+ * @param options - Optional configuration for extraction
+ * @returns Extraction result with text and diagnostics
  */
 function extractTextFromLexical(
   node: LexicalNode,
-  maxDepth: number = DEFAULT_MAX_DEPTH,
-  currentDepth: number = 0,
-  visited: WeakSet<object> = new WeakSet(),
-): string {
-  if (!node) return ''
+  options?: {
+    maxDepth?: number
+    budget?: ExtractionBudget
+    enableDiagnostics?: boolean
+  },
+): ExtractionResult {
+  const maxDepth = options?.maxDepth ?? DEFAULT_MAX_DEPTH
+  const maxNodes = options?.budget?.maxNodes ?? DEFAULT_MAX_NODES
+  const maxChars = options?.budget?.maxChars ?? DEFAULT_MAX_CHARS
+  const stats = createExtractionStats()
+  const visited = new WeakSet<object>()
 
-  // Stop recursion if max depth reached
-  if (currentDepth >= maxDepth) {
+  const text = extractTextRecursive(node, {
+    maxDepth,
+    maxNodes,
+    maxChars,
+    currentDepth: 0,
+    stats,
+    visited,
+  })
+
+  // Log diagnostics if enabled and budget was exhausted
+  if (options?.enableDiagnostics && stats.budgetExhausted) {
+    logger.warn('Text extraction budget exhausted', {
+      nodesProcessed: stats.nodesProcessed,
+      charsCollected: stats.charsCollected,
+      maxDepthReached: stats.maxDepthReached,
+      exhaustionReason: stats.exhaustionReason,
+      hook: 'extractTextFromLexical',
+    })
+  }
+
+  return { text, stats }
+}
+
+/**
+ * Internal recursive extraction with budget tracking
+ */
+function extractTextRecursive(
+  node: LexicalNode,
+  context: {
+    maxDepth: number
+    maxNodes: number
+    maxChars: number
+    currentDepth: number
+    stats: ExtractionStats
+    visited: WeakSet<object>
+  },
+): string {
+  const { maxDepth, maxNodes, maxChars, currentDepth, stats, visited } = context
+
+  // Check if budget is already exhausted
+  if (stats.budgetExhausted) {
     return ''
   }
 
+  if (!node) return ''
+
+  // Update max depth reached
+  if (currentDepth > stats.maxDepthReached) {
+    stats.maxDepthReached = currentDepth
+  }
+
+  // Check depth budget
+  if (currentDepth >= maxDepth) {
+    stats.budgetExhausted = true
+    stats.exhaustionReason = 'maxDepth'
+    return ''
+  }
+
+  // Check nodes budget
+  if (stats.nodesProcessed >= maxNodes) {
+    stats.budgetExhausted = true
+    stats.exhaustionReason = 'maxNodes'
+    return ''
+  }
+
+  // Increment nodes counter
+  stats.nodesProcessed++
+
   // Handle array of nodes (e.g., when root is an array)
   if (Array.isArray(node)) {
-    return node
-      .map((element) => extractTextFromLexical(element, maxDepth, currentDepth + 1, visited))
-      .join(' ')
+    const results: string[] = []
+    for (const element of node) {
+      if (stats.budgetExhausted) break
+      const text = extractTextRecursive(element, {
+        ...context,
+        currentDepth: currentDepth + 1,
+      })
+      if (text) results.push(text)
+    }
+    return results.join(' ')
   }
 
   // Detect cycles by checking if node was already visited
@@ -119,19 +254,42 @@ function extractTextFromLexical(
 
   // Handle text nodes
   if (node.type === 'text') {
-    return (node.text as string) || ''
+    const text = (node.text as string) || ''
+
+    // Check chars budget before adding
+    if (stats.charsCollected + text.length > maxChars) {
+      // Take only what fits in budget
+      const remaining = maxChars - stats.charsCollected
+      stats.charsCollected = maxChars
+      stats.budgetExhausted = true
+      stats.exhaustionReason = 'maxChars'
+      return text.slice(0, remaining)
+    }
+
+    stats.charsCollected += text.length
+    return text
   }
 
   // Handle nodes with children (paragraphs, headings, lists, etc.)
   if (node.children && Array.isArray(node.children)) {
-    return (node.children as Record<string, unknown>[])
-      .map((child) => extractTextFromLexical(child, maxDepth, currentDepth + 1, visited))
-      .join(' ')
+    const results: string[] = []
+    for (const child of node.children as Record<string, unknown>[]) {
+      if (stats.budgetExhausted) break
+      const text = extractTextRecursive(child, {
+        ...context,
+        currentDepth: currentDepth + 1,
+      })
+      if (text) results.push(text)
+    }
+    return results.join(' ')
   }
 
   // Handle root node
   if (node.root) {
-    return extractTextFromLexical(node.root as LexicalNode, maxDepth, currentDepth + 1, visited)
+    return extractTextRecursive(node.root as LexicalNode, {
+      ...context,
+      currentDepth: currentDepth + 1,
+    })
   }
 
   return ''

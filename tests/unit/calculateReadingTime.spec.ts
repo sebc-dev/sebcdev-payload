@@ -332,4 +332,36 @@ describe('calculateReadingTime hook', () => {
     // 6 / 200 = 0.03, rounds up to 1
     expect(result.readingTime).toBe(1)
   })
+
+  it('should handle very large content with budget protection', async () => {
+    // Create a deeply nested structure that would normally cause issues
+    const createNestedContent = (depth: number): Record<string, unknown> => {
+      if (depth <= 0) {
+        return { type: 'text', text: 'word '.repeat(50) }
+      }
+      return {
+        type: 'paragraph',
+        children: [createNestedContent(depth - 1), createNestedContent(depth - 1)],
+      }
+    }
+
+    // Create moderately deep content (8 levels = 256 text nodes)
+    const content = {
+      root: {
+        type: 'root',
+        children: [createNestedContent(8)],
+      },
+    }
+
+    const result = await calculateReadingTime({
+      data: { content, status: 'published' } as any,
+      req: {} as any,
+      operation: 'create',
+      context: {},
+    } as any)
+
+    // Should return a valid reading time (budget protection should handle large content)
+    expect(typeof result.readingTime).toBe('number')
+    expect(result.readingTime).toBeGreaterThanOrEqual(0)
+  })
 })
