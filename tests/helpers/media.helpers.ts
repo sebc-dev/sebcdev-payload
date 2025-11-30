@@ -37,6 +37,26 @@ export function createMediaWithFile(payload: Payload, options: CreateMediaOption
 }
 
 /**
+ * Options for updating media with file upload.
+ * Extends Payload's update options to include the undeclared `file` parameter.
+ */
+export type UpdateMediaOptions = Parameters<Payload['update']>[0] & {
+  file?: PayloadFile
+}
+
+/**
+ * Updates a media document with optional file upload.
+ * Wraps payload.update with proper typing for the file parameter.
+ *
+ * @param payload - Payload instance
+ * @param options - Update options including optional file
+ * @returns Promise resolving to the updated Media document
+ */
+export function updateMediaWithFile(payload: Payload, options: UpdateMediaOptions): Promise<Media> {
+  return (payload.update as (options: UpdateMediaOptions) => Promise<Media>)(options)
+}
+
+/**
  * Path to the test fixtures directory
  */
 export const FIXTURES_PATH = path.resolve(__dirname, '../fixtures')
