@@ -50,14 +50,38 @@ export const calculateReadingTime: CollectionBeforeChangeHook = async ({ data, c
   }
 }
 
+/** Default maximum recursion depth to prevent stack overflow */
+const DEFAULT_MAX_DEPTH = 50
+
 /**
  * Recursively extract plain text from Lexical JSON structure
  *
  * @param node - Lexical node (root, paragraph, heading, list, etc.)
+ * @param maxDepth - Maximum recursion depth (default: 50)
+ * @param currentDepth - Current recursion depth (internal use)
+ * @param visited - WeakSet to track visited nodes for cycle detection (internal use)
  * @returns Plain text content
  */
-function extractTextFromLexical(node: Record<string, unknown> | null | undefined): string {
+function extractTextFromLexical(
+  node: Record<string, unknown> | null | undefined,
+  maxDepth: number = DEFAULT_MAX_DEPTH,
+  currentDepth: number = 0,
+  visited: WeakSet<object> = new WeakSet(),
+): string {
   if (!node) return ''
+
+  // Stop recursion if max depth reached
+  if (currentDepth >= maxDepth) {
+    return ''
+  }
+
+  // Detect cycles by checking if node was already visited
+  if (visited.has(node)) {
+    return ''
+  }
+
+  // Mark this node as visited
+  visited.add(node)
 
   // Handle text nodes
   if (node.type === 'text') {
@@ -66,12 +90,19 @@ function extractTextFromLexical(node: Record<string, unknown> | null | undefined
 
   // Handle nodes with children (paragraphs, headings, lists, etc.)
   if (node.children && Array.isArray(node.children)) {
-    return (node.children as Record<string, unknown>[]).map(extractTextFromLexical).join(' ')
+    return (node.children as Record<string, unknown>[])
+      .map((child) => extractTextFromLexical(child, maxDepth, currentDepth + 1, visited))
+      .join(' ')
   }
 
   // Handle root node
   if (node.root) {
-    return extractTextFromLexical(node.root as Record<string, unknown>)
+    return extractTextFromLexical(
+      node.root as Record<string, unknown>,
+      maxDepth,
+      currentDepth + 1,
+      visited,
+    )
   }
 
   return ''
