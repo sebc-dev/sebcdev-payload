@@ -7,6 +7,7 @@ import {
   generateTestAltText,
   createTestFileOfSize,
   createInvalidMimeTypeFile,
+  createMediaWithFile,
 } from '../helpers/media.helpers'
 
 let payload: Payload
@@ -29,13 +30,13 @@ describe('Media R2 Storage Integration', () => {
     // Miniflare has Buffer serialization issues that prevent file uploads
     try {
       const testFile = getTestImageFile('env-check.png')
-      const testMedia = (await (payload.create as any)({
+      const testMedia = await createMediaWithFile(payload, {
         collection: 'media',
         data: {
           alt: 'Environment check',
         },
         file: testFile,
-      })) as Media
+      })
 
       mediaUploadsSupported = true
       createdMediaIds.push(testMedia.id)
@@ -69,13 +70,13 @@ describe('Media R2 Storage Integration', () => {
       const altText = generateTestAltText('Upload Test')
       const file = getTestImageFile()
 
-      const media = (await (payload.create as any)({
+      const media = await createMediaWithFile(payload, {
         collection: 'media',
         data: {
           alt: altText,
         },
         file,
-      })) as Media
+      })
 
       createdMediaIds.push(media.id)
 
@@ -95,14 +96,14 @@ describe('Media R2 Storage Integration', () => {
       const caption = 'Test caption for metadata'
       const file = getTestImageFile()
 
-      const media = (await (payload.create as any)({
+      const media = await createMediaWithFile(payload, {
         collection: 'media',
         data: {
           alt: altText,
           caption,
         },
         file,
-      })) as Media
+      })
 
       createdMediaIds.push(media.id)
 
@@ -120,13 +121,13 @@ describe('Media R2 Storage Integration', () => {
       const altText = generateTestAltText('URL Test')
       const file = getTestImageFile()
 
-      const media = (await (payload.create as any)({
+      const media = await createMediaWithFile(payload, {
         collection: 'media',
         data: {
           alt: altText,
         },
         file,
-      })) as Media
+      })
 
       createdMediaIds.push(media.id)
 
@@ -144,13 +145,13 @@ describe('Media R2 Storage Integration', () => {
       const altText = generateTestAltText('Dimensions Test')
       const file = getTestImageFile()
 
-      const media = (await (payload.create as any)({
+      const media = await createMediaWithFile(payload, {
         collection: 'media',
         data: {
           alt: altText,
         },
         file,
-      })) as Media
+      })
 
       createdMediaIds.push(media.id)
 
@@ -172,13 +173,13 @@ describe('Media R2 Storage Integration', () => {
       const altText = generateTestAltText('Retrieve Test')
       const file = getTestImageFile()
 
-      const created = (await (payload.create as any)({
+      const created = await createMediaWithFile(payload, {
         collection: 'media',
         data: {
           alt: altText,
         },
         file,
-      })) as Media
+      })
 
       createdMediaIds.push(created.id)
 
@@ -203,13 +204,13 @@ describe('Media R2 Storage Integration', () => {
       const altText = generateTestAltText('Filter Test')
       const file = getTestImageFile()
 
-      const created = (await (payload.create as any)({
+      const created = await createMediaWithFile(payload, {
         collection: 'media',
         data: {
           alt: altText,
         },
         file,
-      })) as Media
+      })
 
       createdMediaIds.push(created.id)
 
@@ -236,13 +237,13 @@ describe('Media R2 Storage Integration', () => {
       const altText = generateTestAltText('Update Test')
       const file = getTestImageFile()
 
-      const created = (await (payload.create as any)({
+      const created = await createMediaWithFile(payload, {
         collection: 'media',
         data: {
           alt: altText,
         },
         file,
-      })) as Media
+      })
 
       createdMediaIds.push(created.id)
 
@@ -272,13 +273,13 @@ describe('Media R2 Storage Integration', () => {
       const altText = generateTestAltText('Delete Test')
       const file = getTestImageFile()
 
-      const created = (await (payload.create as any)({
+      const created = await createMediaWithFile(payload, {
         collection: 'media',
         data: {
           alt: altText,
         },
         file,
-      })) as Media
+      })
 
       // Note: Don't add to createdMediaIds since we're deleting it
       const mediaId = created.id
@@ -310,13 +311,13 @@ describe('Media R2 Storage Integration', () => {
       const altText = generateTestAltText('DB Cleanup Test')
       const file = getTestImageFile()
 
-      const created = (await (payload.create as any)({
+      const created = await createMediaWithFile(payload, {
         collection: 'media',
         data: {
           alt: altText,
         },
         file,
-      })) as Media
+      })
 
       const mediaId = created.id
       const mediaFilename = created.filename
@@ -352,7 +353,7 @@ describe('Media R2 Storage Integration', () => {
       const oversizedFile = createTestFileOfSize(11 * 1024 * 1024) // 11 MB
 
       await expect(
-        (payload.create as any)({
+        createMediaWithFile(payload, {
           collection: 'media',
           data: {
             alt: altText,
@@ -371,7 +372,7 @@ describe('Media R2 Storage Integration', () => {
       const invalidFile = createInvalidMimeTypeFile()
 
       await expect(
-        (payload.create as any)({
+        createMediaWithFile(payload, {
           collection: 'media',
           data: {
             alt: altText,
@@ -389,7 +390,7 @@ describe('Media R2 Storage Integration', () => {
       const file = getTestImageFile()
 
       await expect(
-        (payload.create as any)({
+        createMediaWithFile(payload, {
           collection: 'media',
           data: {
             // Missing required alt field
@@ -408,7 +409,7 @@ describe('Media R2 Storage Integration', () => {
 
       // Upload collections typically require a file
       await expect(
-        (payload.create as any)({
+        createMediaWithFile(payload, {
           collection: 'media',
           data: {
             alt: altText,
@@ -456,13 +457,13 @@ describe('Media R2 Storage Integration', () => {
       const specialAltText = `Test <script>alert('xss')</script> & "quotes" 'apostrophes'`
       const file = getTestImageFile()
 
-      const media = (await (payload.create as any)({
+      const media = await createMediaWithFile(payload, {
         collection: 'media',
         data: {
           alt: specialAltText,
         },
         file,
-      })) as Media
+      })
 
       createdMediaIds.push(media.id)
 
@@ -478,13 +479,13 @@ describe('Media R2 Storage Integration', () => {
       const unicodeAltText = 'Test image avec accents: café, école, français'
       const file = getTestImageFile()
 
-      const media = (await (payload.create as any)({
+      const media = await createMediaWithFile(payload, {
         collection: 'media',
         data: {
           alt: unicodeAltText,
         },
         file,
-      })) as Media
+      })
 
       createdMediaIds.push(media.id)
 
@@ -500,14 +501,14 @@ describe('Media R2 Storage Integration', () => {
       const longCaption = 'A'.repeat(5000) // 5000 character caption
       const file = getTestImageFile()
 
-      const media = (await (payload.create as any)({
+      const media = await createMediaWithFile(payload, {
         collection: 'media',
         data: {
           alt: altText,
           caption: longCaption,
         },
         file,
-      })) as Media
+      })
 
       createdMediaIds.push(media.id)
 
@@ -526,7 +527,7 @@ describe('Media R2 Storage Integration', () => {
       // Create multiple media in parallel
       const results = await Promise.all(
         uploads.map((data) =>
-          (payload.create as any)({
+          createMediaWithFile(payload, {
             collection: 'media',
             data,
             file: getTestImageFile(),

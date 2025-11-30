@@ -1,8 +1,40 @@
 import path from 'path'
 import fs from 'fs'
 import { fileURLToPath } from 'url'
+import type { Payload } from 'payload'
+import type { Media } from '@/payload-types'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
+
+/**
+ * File shape expected by Payload's upload collections
+ */
+export interface PayloadFile {
+  data: Buffer
+  mimetype: string
+  name: string
+  size: number
+}
+
+/**
+ * Options for creating media with file upload.
+ * Extends Payload's create options to include the undeclared `file` parameter.
+ */
+export type CreateMediaOptions = Parameters<Payload['create']>[0] & {
+  file?: PayloadFile
+}
+
+/**
+ * Creates a media document with file upload.
+ * Wraps payload.create with proper typing for the file parameter.
+ *
+ * @param payload - Payload instance
+ * @param options - Create options including file
+ * @returns Promise resolving to the created Media document
+ */
+export function createMediaWithFile(payload: Payload, options: CreateMediaOptions): Promise<Media> {
+  return (payload.create as (options: CreateMediaOptions) => Promise<Media>)(options)
+}
 
 /**
  * Path to the test fixtures directory
