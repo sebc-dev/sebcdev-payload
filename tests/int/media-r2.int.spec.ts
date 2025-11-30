@@ -39,8 +39,9 @@ describe('Media R2 Storage Integration', () => {
 
       mediaUploadsSupported = true
       createdMediaIds.push(testMedia.id)
-    } catch {
+    } catch (e) {
       // Media uploads not supported in this environment (e.g., miniflare)
+      console.warn('[media-r2] Env check failed, skipping upload tests:', e)
       mediaUploadsSupported = false
     }
   })
@@ -53,8 +54,8 @@ describe('Media R2 Storage Integration', () => {
           collection: 'media',
           id,
         })
-        .catch(() => {
-          // Ignore if already deleted
+        .catch((e) => {
+          console.warn(`[media-r2] Cleanup failed for media id ${id}:`, e)
         })
     }
   })
