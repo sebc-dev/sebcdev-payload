@@ -3,6 +3,7 @@ import type {
   CollectionBeforeOperationHook,
   CollectionConfig,
 } from 'payload'
+import { APIError } from 'payload'
 
 /** Maximum file size in bytes (10MB) */
 const MAX_FILE_SIZE = 10 * 1024 * 1024
@@ -24,8 +25,9 @@ const validateFileSize: CollectionBeforeOperationHook = ({ operation, req }) => 
   }
 
   if (file.size > MAX_FILE_SIZE) {
-    throw new Error(
+    throw new APIError(
       `File size (${(file.size / 1024 / 1024).toFixed(2)}MB) exceeds maximum allowed size (${MAX_FILE_SIZE / 1024 / 1024}MB)`,
+      400,
     )
   }
 }
