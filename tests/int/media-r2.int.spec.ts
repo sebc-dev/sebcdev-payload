@@ -438,13 +438,13 @@ describe('Media R2 Storage Integration', () => {
         skip('Media uploads not supported in miniflare environment')
       }
 
-      // Payload returns null for non-existent documents
-      const result = await payload.findByID({
-        collection: 'media',
-        id: 999999 as Media['id'],
-      })
-
-      expect(result).toBeNull()
+      // Payload throws when retrieving non-existent documents
+      await expect(
+        payload.findByID({
+          collection: 'media',
+          id: 999999 as Media['id'],
+        }),
+      ).rejects.toThrow()
     })
   })
 
