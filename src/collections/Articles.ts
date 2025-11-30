@@ -1,5 +1,7 @@
 import type { CollectionConfig } from 'payload'
 
+import { calculateReadingTime } from '@/hooks'
+
 export const Articles: CollectionConfig = {
   slug: 'articles',
   labels: {
@@ -8,8 +10,11 @@ export const Articles: CollectionConfig = {
   },
   admin: {
     useAsTitle: 'title',
-    defaultColumns: ['title', 'slug'],
+    defaultColumns: ['title', 'status', 'publishedAt'],
     group: 'Content',
+  },
+  hooks: {
+    beforeChange: [calculateReadingTime],
   },
   fields: [
     {
@@ -101,6 +106,44 @@ export const Articles: CollectionConfig = {
           },
         },
       ],
+    },
+    {
+      name: 'publishedAt',
+      type: 'date',
+      admin: {
+        description: 'Date when article was published',
+      },
+    },
+    {
+      name: 'status',
+      type: 'select',
+      options: [
+        {
+          label: 'Draft',
+          value: 'draft',
+        },
+        {
+          label: 'Published',
+          value: 'published',
+        },
+        {
+          label: 'Archived',
+          value: 'archived',
+        },
+      ],
+      defaultValue: 'draft',
+      required: true,
+      admin: {
+        description: 'Publication status of the article',
+      },
+    },
+    {
+      name: 'readingTime',
+      type: 'number',
+      admin: {
+        readOnly: true,
+        description: 'Reading time calculated automatically (minutes)',
+      },
     },
   ],
 }

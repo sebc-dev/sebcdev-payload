@@ -344,6 +344,18 @@ export interface Article {
      */
     metaDescription?: string | null;
   };
+  /**
+   * Date when article was published
+   */
+  publishedAt?: string | null;
+  /**
+   * Publication status of the article
+   */
+  status: 'draft' | 'published' | 'archived';
+  /**
+   * Reading time calculated automatically (minutes)
+   */
+  readingTime?: number | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -513,6 +525,9 @@ export interface ArticlesSelect<T extends boolean = true> {
         metaTitle?: T;
         metaDescription?: T;
       };
+  publishedAt?: T;
+  status?: T;
+  readingTime?: T;
   updatedAt?: T;
   createdAt?: T;
 }
