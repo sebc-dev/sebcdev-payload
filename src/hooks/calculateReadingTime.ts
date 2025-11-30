@@ -22,8 +22,13 @@ export const calculateReadingTime: CollectionBeforeChangeHook = async ({ data, c
     return data
   }
 
+  // Handle missing or null data
+  if (!data) {
+    return { readingTime: 0 }
+  }
+
   // Handle missing or null content
-  if (!data?.content) {
+  if (!data.content) {
     data.readingTime = 0
     return data
   }

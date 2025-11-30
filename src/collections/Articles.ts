@@ -48,8 +48,22 @@ export const Articles: CollectionConfig = {
       required: true,
       unique: true,
       index: true,
+      validate: (value: string | null | undefined) => {
+        if (!value) return true // Required validation handles empty values
+
+        // Pattern: lowercase letters, numbers, hyphens only
+        // No leading/trailing hyphens, no consecutive hyphens, no spaces
+        const slugPattern = /^[a-z0-9]+(?:-[a-z0-9]+)*$/
+
+        if (!slugPattern.test(value)) {
+          return 'Slug must contain only lowercase letters, numbers, and hyphens. No leading/trailing hyphens, no consecutive hyphens, no spaces.'
+        }
+
+        return true
+      },
       admin: {
-        description: 'URL-friendly identifier (e.g., "mon-premier-article")',
+        description:
+          'URL-friendly identifier. Use lowercase letters, numbers, and hyphens only (e.g., "mon-premier-article"). No spaces or special characters.',
       },
     },
     {
