@@ -20,11 +20,12 @@ export interface Logger {
   debug: (message: string, context?: LogContext) => void
 }
 
-/** Serialized error structure for JSON output */
+/** Serialized error structure for JSON output (allows custom properties) */
 interface SerializedError {
   name: string
   message: string
   stack?: string
+  [key: string]: unknown
 }
 
 /**
@@ -49,9 +50,13 @@ function isErrorLike(value: unknown): boolean {
   return false
 }
 
+/** Core error properties that are handled specially */
+const CORE_ERROR_PROPS = new Set(['name', 'message', 'stack'])
+
 /**
- * Serialize an error-like value into a normalized { name, message, stack } object
- * Uses Object.getOwnPropertyNames to capture non-enumerable properties
+ * Serialize an error-like value into a normalized object with name, message, stack,
+ * plus any custom enumerable properties (code, statusCode, errno, etc.)
+ * Uses Object.getOwnPropertyNames for non-enumerable props and Object.keys for enumerable
  */
 function serializeError(value: unknown): SerializedError {
   // Handle string errors
@@ -66,17 +71,57 @@ function serializeError(value: unknown): SerializedError {
       message: 'Unknown error',
     }
 
-    // Use Object.getOwnPropertyNames to capture non-enumerable properties like stack
-    const props = Object.getOwnPropertyNames(value)
     const obj = value as Record<string, unknown>
 
-    for (const prop of props) {
-      if (prop === 'name' && typeof obj.name === 'string') {
-        result.name = obj.name
-      } else if (prop === 'message' && typeof obj.message === 'string') {
-        result.message = obj.message
-      } else if (prop === 'stack' && typeof obj.stack === 'string') {
-        result.stack = obj.stack
+    // Extract core properties using getOwnPropertyNames (captures non-enumerable like stack)
+    const allProps = Object.getOwnPropertyNames(value)
+    for (const prop of allProps) {
+      try {
+        if (prop === 'name' && typeof obj.name === 'string') {
+          result.name = obj.name
+        } else if (prop === 'message' && typeof obj.message === 'string') {
+          result.message = obj.message
+        } else if (prop === 'stack' && typeof obj.stack === 'string') {
+          result.stack = obj.stack
+        }
+      } catch {
+        // Ignore getters that throw
+      }
+    }
+
+    // Copy custom enumerable properties (code, statusCode, errno, etc.)
+    for (const key of Object.keys(obj)) {
+      if (CORE_ERROR_PROPS.has(key)) continue
+
+      try {
+        const propValue = obj[key]
+
+        // Skip functions
+        if (typeof propValue === 'function') continue
+
+        // Serialize the value appropriately
+        if (propValue === null || propValue === undefined) {
+          result[key] = propValue
+        } else if (
+          typeof propValue === 'string' ||
+          typeof propValue === 'number' ||
+          typeof propValue === 'boolean'
+        ) {
+          result[key] = propValue
+        } else if (typeof propValue === 'object') {
+          // For objects, try JSON serialization; fallback to string
+          try {
+            JSON.stringify(propValue)
+            result[key] = propValue
+          } catch {
+            result[key] = String(propValue)
+          }
+        } else {
+          // For other types (symbol, bigint), convert to string
+          result[key] = String(propValue)
+        }
+      } catch {
+        // Ignore properties that throw on access (getters)
       }
     }
 
