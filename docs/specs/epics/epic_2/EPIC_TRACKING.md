@@ -101,10 +101,11 @@ Story 2.3 (Editeur Lexical & Seed Data) [depend de 2.1 pour les collections]
 
 ### Recent Updates
 
-| Date       | Update                                                 |
-| ---------- | ------------------------------------------------------ |
-| 2025-11-29 | Epic initialized - EPIC_TRACKING.md created            |
-| 2025-11-29 | Story 2.1 planned - 5 phases defined in PHASES_PLAN.md |
+| Date       | Update                                                         |
+| ---------- | -------------------------------------------------------------- |
+| 2025-11-29 | Epic initialized - EPIC_TRACKING.md created                    |
+| 2025-11-29 | Story 2.1 planned - 5 phases defined in PHASES_PLAN.md         |
+| 2025-11-30 | Phase 3 documentation generated - Articles Collection (7 docs) |
 
 ---
 
@@ -121,6 +122,11 @@ Story 2.3 (Editeur Lexical & Seed Data) [depend de 2.1 pour les collections]
 _Links will be added as stories are planned_
 
 - Story 2.1: [story_2_1/story_2.1.md](story_2_1/story_2.1.md) | [PHASES_PLAN.md](story_2_1/implementation/PHASES_PLAN.md)
+  - Phase 1: [phase_1/INDEX.md](story_2_1/implementation/phase_1/INDEX.md) - i18n Configuration (documented)
+  - Phase 2: [phase_2/INDEX.md](story_2_1/implementation/phase_2/INDEX.md) - Categories & Tags (documented)
+  - Phase 3: [phase_3/INDEX.md](story_2_1/implementation/phase_3/INDEX.md) - Articles Collection (documented)
+  - Phase 4: Pages Collection (pending)
+  - Phase 5: Integration & Validation (pending)
 - Story 2.2: `story_2_2/story_2.2.md` (pending)
 - Story 2.3: `story_2_3/story_2.3.md` (pending)
 
