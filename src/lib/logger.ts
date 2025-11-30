@@ -56,7 +56,6 @@ const CORE_ERROR_PROPS = new Set(['name', 'message', 'stack'])
 /**
  * Serialize an error-like value into a normalized object with name, message, stack,
  * plus any custom enumerable properties (code, statusCode, errno, etc.)
- * Uses Object.getOwnPropertyNames for non-enumerable props and Object.keys for enumerable
  */
 function serializeError(value: unknown): SerializedError {
   // Handle string errors
@@ -73,20 +72,21 @@ function serializeError(value: unknown): SerializedError {
 
     const obj = value as Record<string, unknown>
 
-    // Extract core properties using getOwnPropertyNames (captures non-enumerable like stack)
-    const allProps = Object.getOwnPropertyNames(value)
-    for (const prop of allProps) {
-      try {
-        if (prop === 'name' && typeof obj.name === 'string') {
-          result.name = obj.name
-        } else if (prop === 'message' && typeof obj.message === 'string') {
-          result.message = obj.message
-        } else if (prop === 'stack' && typeof obj.stack === 'string') {
-          result.stack = obj.stack
-        }
-      } catch {
-        // Ignore getters that throw
-      }
+    // Extract core properties directly (wrapped in try/catch for throwing getters)
+    try {
+      if (typeof obj.name === 'string') result.name = obj.name
+    } catch {
+      /* ignore */
+    }
+    try {
+      if (typeof obj.message === 'string') result.message = obj.message
+    } catch {
+      /* ignore */
+    }
+    try {
+      if (typeof obj.stack === 'string') result.stack = obj.stack
+    } catch {
+      /* ignore */
     }
 
     // Copy custom enumerable properties (code, statusCode, errno, etc.)
