@@ -440,11 +440,10 @@ describe('Articles Collection', () => {
       ).toBe(true)
     })
 
-    it('should create article with featured image', async () => {
+    it('should create article with featured image', async ({ skip }) => {
       // Skip if media creation failed (miniflare environment limitation)
       if (!testMedia) {
-        console.warn('Skipping: testMedia not available (miniflare upload limitation)')
-        return
+        skip('testMedia not available (miniflare upload limitation)')
       }
 
       const slug = `test-rel-media-${Date.now()}`
