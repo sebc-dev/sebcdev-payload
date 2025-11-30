@@ -11,6 +11,13 @@ export const Media: CollectionConfig = {
       type: 'text',
       required: true,
     },
+    {
+      name: 'caption',
+      type: 'textarea',
+      admin: {
+        description: 'Optional caption displayed below the media',
+      },
+    },
   ],
   upload: {
     // These are not supported on Workers yet due to lack of sharp
