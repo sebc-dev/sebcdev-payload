@@ -84,6 +84,37 @@ describe('calculateReadingTime hook', () => {
     expect(result.readingTime).toBe(null)
   })
 
+  it('should handle null data gracefully', async () => {
+    const result = await calculateReadingTime({
+      data: null as any,
+      req: {} as any,
+      operation: 'create',
+      context: {},
+    } as any)
+
+    // When data is null, hook returns { readingTime: 0 }
+    expect(result).toEqual({ readingTime: 0 })
+  })
+
+  it('should handle undefined data gracefully', async () => {
+    const result = await calculateReadingTime({
+      data: undefined as any,
+      req: {} as any,
+      operation: 'create',
+      context: {},
+    } as any)
+
+    // When data is undefined, hook returns { readingTime: 0 }
+    expect(result).toEqual({ readingTime: 0 })
+  })
+
+  it('should handle empty params object gracefully', async () => {
+    const result = await calculateReadingTime({} as any)
+
+    // When data is missing from params, hook returns { readingTime: 0 }
+    expect(result).toEqual({ readingTime: 0 })
+  })
+
   it('should calculate reading time for 100-word content', async () => {
     const text = 'word '.repeat(100).trim() // Exactly 100 words
     const content = createMockContent(text)
