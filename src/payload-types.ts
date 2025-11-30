@@ -318,6 +318,32 @@ export interface Article {
    * URL-friendly identifier (e.g., "mon-premier-article")
    */
   slug: string;
+  /**
+   * Optional featured image for article display
+   */
+  featuredImage?: (number | null) | Media;
+  /**
+   * Article category classification
+   */
+  category?: (number | null) | Category;
+  /**
+   * Multiple tags for article categorization
+   */
+  tags?: (number | Tag)[] | null;
+  /**
+   * Article author
+   */
+  author?: (number | null) | User;
+  seo?: {
+    /**
+     * Meta title for search engines and social sharing (localized)
+     */
+    metaTitle?: string | null;
+    /**
+     * Meta description for search engines (localized)
+     */
+    metaDescription?: string | null;
+  };
   updatedAt: string;
   createdAt: string;
 }
@@ -477,6 +503,16 @@ export interface ArticlesSelect<T extends boolean = true> {
   content?: T;
   excerpt?: T;
   slug?: T;
+  featuredImage?: T;
+  category?: T;
+  tags?: T;
+  author?: T;
+  seo?:
+    | T
+    | {
+        metaTitle?: T;
+        metaDescription?: T;
+      };
   updatedAt?: T;
   createdAt?: T;
 }

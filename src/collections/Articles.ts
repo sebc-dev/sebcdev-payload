@@ -47,5 +47,60 @@ export const Articles: CollectionConfig = {
         description: 'URL-friendly identifier (e.g., "mon-premier-article")',
       },
     },
+    {
+      name: 'featuredImage',
+      type: 'upload',
+      relationTo: 'media',
+      admin: {
+        description: 'Optional featured image for article display',
+      },
+    },
+    {
+      name: 'category',
+      type: 'relationship',
+      relationTo: 'categories',
+      admin: {
+        description: 'Article category classification',
+      },
+    },
+    {
+      name: 'tags',
+      type: 'relationship',
+      relationTo: 'tags',
+      hasMany: true,
+      admin: {
+        description: 'Multiple tags for article categorization',
+      },
+    },
+    {
+      name: 'author',
+      type: 'relationship',
+      relationTo: 'users',
+      admin: {
+        description: 'Article author',
+      },
+    },
+    {
+      name: 'seo',
+      type: 'group',
+      fields: [
+        {
+          name: 'metaTitle',
+          type: 'text',
+          localized: true,
+          admin: {
+            description: 'Meta title for search engines and social sharing (localized)',
+          },
+        },
+        {
+          name: 'metaDescription',
+          type: 'textarea',
+          localized: true,
+          admin: {
+            description: 'Meta description for search engines (localized)',
+          },
+        },
+      ],
+    },
   ],
 }
