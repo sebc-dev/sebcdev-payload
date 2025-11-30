@@ -1,4 +1,8 @@
-import type { CollectionBeforeChangeHook, CollectionConfig } from 'payload'
+import type {
+  CollectionAfterChangeHook,
+  CollectionBeforeChangeHook,
+  CollectionConfig,
+} from 'payload'
 
 const MAX_FILE_SIZE = 10 * 1024 * 1024 // 10 MB
 
@@ -17,6 +21,24 @@ const validateFileSize: CollectionBeforeChangeHook = async ({ data, operation })
   }
 
   return data
+}
+
+/**
+ * Hook to log successful media uploads for debugging and validation.
+ * Logs key metadata: id, filename, mimeType, filesize.
+ */
+const logMediaUpload: CollectionAfterChangeHook = async ({ doc, operation, req }) => {
+  if (operation === 'create') {
+    req.payload.logger.info({
+      msg: 'Media uploaded successfully',
+      mediaId: doc.id,
+      filename: doc.filename,
+      mimeType: doc.mimeType,
+      filesize: doc.filesize,
+    })
+  }
+
+  return doc
 }
 
 export const Media: CollectionConfig = {
@@ -47,5 +69,6 @@ export const Media: CollectionConfig = {
   },
   hooks: {
     beforeChange: [validateFileSize],
+    afterChange: [logMediaUpload],
   },
 }
