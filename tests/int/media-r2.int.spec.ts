@@ -264,7 +264,7 @@ describe('Media R2 Storage Integration', () => {
   })
 
   describe('Delete Operations', () => {
-    it('should remove file from R2 on delete', async ({ skip }) => {
+    it('should remove media document on delete', async ({ skip }) => {
       if (!mediaUploadsSupported) {
         skip('Media uploads not supported in miniflare environment')
       }
