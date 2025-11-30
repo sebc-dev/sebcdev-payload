@@ -1,5 +1,5 @@
 import { getPayload, Payload } from 'payload'
-import config from '@/payload.config'
+import config from '@payload-config'
 import type { Article, User, Category, Tag, Media } from '@/payload-types'
 import path from 'path'
 import fs from 'fs'
@@ -833,6 +833,48 @@ describe('Articles Collection', () => {
 
       expect(article.publishedAt).toBeDefined()
       expect(article.status).toBe('published')
+    })
+
+    it('should auto-populate publishedAt when status is published and publishedAt is missing', async () => {
+      const slug = `test-auto-published-at-${Date.now()}`
+      const beforeCreate = new Date()
+
+      // Create article with status 'published' but WITHOUT publishedAt
+      const article = // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        (await (payload.create as any)({
+          collection: 'articles',
+          draft: false,
+          data: {
+            title: 'Article with Auto PublishedAt',
+            slug,
+            status: 'published',
+            content: createBasicContent(),
+            // Note: publishedAt is intentionally NOT provided
+          },
+        })) as Article
+
+      createdArticleIds.push(article.id)
+
+      // Verify status is published
+      expect(article.status).toBe('published')
+
+      // Verify publishedAt was auto-populated
+      expect(article.publishedAt).toBeDefined()
+      expect(article.publishedAt).not.toBeNull()
+
+      // Verify the auto-populated date is reasonable (after beforeCreate)
+      const publishedAtDate = new Date(article.publishedAt as string)
+      expect(publishedAtDate.getTime()).toBeGreaterThanOrEqual(beforeCreate.getTime())
+
+      // Fetch the article again to confirm persistence
+      const fetched = // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        (await (payload.findByID as any)({
+          collection: 'articles',
+          id: article.id,
+        })) as Article
+
+      expect(fetched.status).toBe('published')
+      expect(fetched.publishedAt).toBe(article.publishedAt)
     })
   })
 

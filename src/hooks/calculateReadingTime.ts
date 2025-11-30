@@ -1,5 +1,7 @@
 import type { CollectionBeforeChangeHook } from 'payload'
 
+import { logger } from '@/lib/logger'
+
 /**
  * Calculates reading time based on article content
  *
@@ -16,7 +18,11 @@ import type { CollectionBeforeChangeHook } from 'payload'
  * // 201 words → 2 minutes
  * // 400 words → 2 minutes
  */
-export const calculateReadingTime: CollectionBeforeChangeHook = async ({ data, context }) => {
+export const calculateReadingTime: CollectionBeforeChangeHook = async ({
+  data,
+  context,
+  operation,
+}) => {
   // Prevent infinite loops if hook is called recursively
   if (context?.skipReadingTimeHook) {
     return data
@@ -55,8 +61,14 @@ export const calculateReadingTime: CollectionBeforeChangeHook = async ({ data, c
 
     return data
   } catch (error) {
-    // Log error but don't fail the operation
-    console.error('Error calculating reading time:', error)
+    // Log error with structured context but don't fail the operation
+    logger.error('Error calculating reading time', {
+      error: error instanceof Error ? error : new Error(String(error)),
+      operation,
+      status: data.status,
+      hasContent: !!data.content,
+      hook: 'calculateReadingTime',
+    })
     data.readingTime = 0
     return data
   }
