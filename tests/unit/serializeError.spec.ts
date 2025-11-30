@@ -1,7 +1,7 @@
 import { Readable } from 'stream'
 import { describe, expect, it } from 'vitest'
 
-import { serializeError } from '@/lib/logger'
+import { ERROR_KEYS, serializeError } from '@/lib/logger'
 
 describe('serializeError', () => {
   describe('basic error serialization', () => {
@@ -325,6 +325,72 @@ describe('serializeError', () => {
 
       expect(result.name).toBe('Error')
       expect(result.message).toBe('null')
+    })
+  })
+})
+
+describe('ERROR_KEYS', () => {
+  describe('standard aliases', () => {
+    it('should include "error" key', () => {
+      expect(ERROR_KEYS.has('error')).toBe(true)
+    })
+
+    it('should include "err" alias', () => {
+      expect(ERROR_KEYS.has('err')).toBe(true)
+    })
+
+    it('should include "e" alias', () => {
+      expect(ERROR_KEYS.has('e')).toBe(true)
+    })
+
+    it('should include "exception" alias', () => {
+      expect(ERROR_KEYS.has('exception')).toBe(true)
+    })
+
+    it('should include "cause" key', () => {
+      expect(ERROR_KEYS.has('cause')).toBe(true)
+    })
+  })
+
+  describe('nested/wrapped error aliases', () => {
+    it('should include "lastError" key', () => {
+      expect(ERROR_KEYS.has('lastError')).toBe(true)
+    })
+
+    it('should include "originalError" key', () => {
+      expect(ERROR_KEYS.has('originalError')).toBe(true)
+    })
+
+    it('should include "innerError" key', () => {
+      expect(ERROR_KEYS.has('innerError')).toBe(true)
+    })
+
+    it('should include "rootCause" key', () => {
+      expect(ERROR_KEYS.has('rootCause')).toBe(true)
+    })
+  })
+
+  describe('completeness', () => {
+    it('should contain exactly 9 error key aliases', () => {
+      expect(ERROR_KEYS.size).toBe(9)
+    })
+
+    it('should contain all documented aliases', () => {
+      const expectedKeys = [
+        'error',
+        'err',
+        'e',
+        'exception',
+        'cause',
+        'lastError',
+        'originalError',
+        'innerError',
+        'rootCause',
+      ]
+
+      for (const key of expectedKeys) {
+        expect(ERROR_KEYS.has(key)).toBe(true)
+      }
     })
   })
 })
