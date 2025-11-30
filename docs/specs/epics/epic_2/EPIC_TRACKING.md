@@ -108,6 +108,7 @@ Story 2.3 (Editeur Lexical & Seed Data) [depend de 2.1 pour les collections]
 | 2025-11-30 | Phase 3 documentation generated - Articles Collection (7 docs) |
 | 2025-11-30 | Story 2.2 planned - 3 phases defined in PHASES_PLAN.md         |
 | 2025-11-30 | Story 2.2 Phase 1 documentation generated (7 docs)             |
+| 2025-11-30 | Story 2.2 Phase 3 documentation generated (7 docs)             |
 
 ---
 
@@ -132,7 +133,7 @@ _Links will be added as stories are planned_
 - Story 2.2: [story_2_2/story_2.2.md](story_2_2/story_2.2.md) | [PHASES_PLAN.md](story_2_2/implementation/PHASES_PLAN.md)
   - Phase 1: [phase_1/INDEX.md](story_2_2/implementation/phase_1/INDEX.md) - Media Collection Enhancement (documented)
   - Phase 2: Integration Tests R2 (pending)
-  - Phase 3: E2E Tests & Validation (pending)
+  - Phase 3: [phase_3/INDEX.md](story_2_2/implementation/phase_3/INDEX.md) - E2E Tests & Validation (documented)
 - Story 2.3: `story_2_3/story_2.3.md` (pending)
 
 ### Technical References
