@@ -92,6 +92,10 @@ export const calculateReadingTime: CollectionBeforeChangeHook = async ({
 /** Default maximum recursion depth to prevent stack overflow */
 const DEFAULT_MAX_DEPTH = 50
 
+/** Default processing budget to prevent Cloudflare Worker CPU overruns */
+const DEFAULT_MAX_NODES = 10000
+const DEFAULT_MAX_CHARS = 500000
+
 /** Type for Lexical node or array of nodes */
 type LexicalNode = Record<string, unknown> | Record<string, unknown>[] | null | undefined
 
