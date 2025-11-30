@@ -1,26 +1,33 @@
 import type {
   CollectionAfterChangeHook,
-  CollectionBeforeChangeHook,
+  CollectionBeforeOperationHook,
   CollectionConfig,
 } from 'payload'
 
-const MAX_FILE_SIZE = 10 * 1024 * 1024 // 10 MB
+/** Maximum file size in bytes (10MB) */
+const MAX_FILE_SIZE = 10 * 1024 * 1024
 
 /**
- * Hook to validate file size on upload.
- * Ensures uploaded files do not exceed 10 MB.
+ * Validates file size before upload to R2.
+ * Runs on both create and update operations before the file is uploaded.
  */
-const validateFileSize: CollectionBeforeChangeHook = async ({ data, operation }) => {
-  // Only validate on create operation
-  if (operation === 'create' && data.filesize) {
-    if (data.filesize > MAX_FILE_SIZE) {
-      throw new Error(
-        `File size exceeds maximum limit of 10 MB. Uploaded file is ${(data.filesize / (1024 * 1024)).toFixed(2)} MB.`,
-      )
-    }
+const validateFileSize: CollectionBeforeOperationHook = ({ operation, req }) => {
+  // Only validate on create/update operations that include a file
+  if (operation !== 'create' && operation !== 'update') {
+    return
   }
 
-  return data
+  const file = req.file
+
+  if (!file) {
+    return
+  }
+
+  if (file.size > MAX_FILE_SIZE) {
+    throw new Error(
+      `File size (${(file.size / 1024 / 1024).toFixed(2)}MB) exceeds maximum allowed size (${MAX_FILE_SIZE / 1024 / 1024}MB)`,
+    )
+  }
 }
 
 /**
@@ -46,6 +53,10 @@ export const Media: CollectionConfig = {
   access: {
     read: () => true,
   },
+  hooks: {
+    beforeOperation: [validateFileSize],
+    afterChange: [logMediaUpload],
+  },
   fields: [
     {
       name: 'alt',
@@ -66,9 +77,5 @@ export const Media: CollectionConfig = {
     focalPoint: false,
     // MIME type restrictions for security
     mimeTypes: ['image/jpeg', 'image/png', 'image/webp', 'image/gif', 'image/svg+xml'],
-  },
-  hooks: {
-    beforeChange: [validateFileSize],
-    afterChange: [logMediaUpload],
   },
 }
