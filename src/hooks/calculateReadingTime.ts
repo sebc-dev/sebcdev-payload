@@ -121,8 +121,12 @@ function countWords(text: string): number {
         }
       }
       return wordCount
-    } catch {
-      // Fall through to fallback
+    } catch (error) {
+      // Log warning and fall through to fallback
+      logger.warn('Intl.Segmenter failed, falling back to hybrid word count', {
+        error: error instanceof Error ? error : new Error(String(error)),
+        hook: 'countWords',
+      })
     }
   }
 
