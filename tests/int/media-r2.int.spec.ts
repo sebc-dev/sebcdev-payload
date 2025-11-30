@@ -466,8 +466,8 @@ describe('Media R2 Storage Integration', () => {
 
       createdMediaIds.push(media.id)
 
-      // Should store the text (sanitized or as-is depending on Payload config)
-      expect(media.alt).toBeDefined()
+      // Payload stores text as-is without sanitization (XSS prevention is a rendering concern)
+      expect(media.alt).toBe(specialAltText)
     })
 
     it('should handle unicode in alt text', async ({ skip }) => {
@@ -475,7 +475,7 @@ describe('Media R2 Storage Integration', () => {
         skip('Media uploads not supported in miniflare environment')
       }
 
-      const unicodeAltText = 'Test image avec accents: cafe, ecole, francais'
+      const unicodeAltText = 'Test image avec accents: café, école, français'
       const file = getTestImageFile()
 
       const media = (await (payload.create as any)({
