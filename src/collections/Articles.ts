@@ -1,6 +1,6 @@
 import type { CollectionConfig } from 'payload'
 
-import { calculateReadingTime } from '@/hooks'
+import { calculateReadingTime, ensurePublishedAt } from '@/hooks'
 
 export const Articles: CollectionConfig = {
   slug: 'articles',
@@ -14,6 +14,7 @@ export const Articles: CollectionConfig = {
     group: 'Content',
   },
   hooks: {
+    beforeValidate: [ensurePublishedAt],
     beforeChange: [calculateReadingTime],
   },
   fields: [

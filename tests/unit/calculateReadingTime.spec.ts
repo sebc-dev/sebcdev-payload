@@ -20,9 +20,9 @@ describe('calculateReadingTime hook', () => {
     },
   })
 
-  it('should handle null content', async () => {
+  it('should handle null content for published articles', async () => {
     const result = await calculateReadingTime({
-      data: { content: null } as any,
+      data: { content: null, status: 'published' } as any,
       req: {} as any,
       operation: 'create',
       context: {},
@@ -31,15 +31,57 @@ describe('calculateReadingTime hook', () => {
     expect(result.readingTime).toBe(0)
   })
 
-  it('should handle undefined content', async () => {
+  it('should handle undefined content for published articles', async () => {
     const result = await calculateReadingTime({
-      data: {} as any,
+      data: { status: 'published' } as any,
       req: {} as any,
       operation: 'create',
       context: {},
     } as any)
 
     expect(result.readingTime).toBe(0)
+  })
+
+  it('should return null for draft articles', async () => {
+    const text = 'word '.repeat(100).trim()
+    const content = createMockContent(text)
+
+    const result = await calculateReadingTime({
+      data: { content, status: 'draft' } as any,
+      req: {} as any,
+      operation: 'create',
+      context: {},
+    } as any)
+
+    expect(result.readingTime).toBe(null)
+  })
+
+  it('should return null for archived articles', async () => {
+    const text = 'word '.repeat(100).trim()
+    const content = createMockContent(text)
+
+    const result = await calculateReadingTime({
+      data: { content, status: 'archived' } as any,
+      req: {} as any,
+      operation: 'create',
+      context: {},
+    } as any)
+
+    expect(result.readingTime).toBe(null)
+  })
+
+  it('should return null when status is undefined', async () => {
+    const text = 'word '.repeat(100).trim()
+    const content = createMockContent(text)
+
+    const result = await calculateReadingTime({
+      data: { content } as any,
+      req: {} as any,
+      operation: 'create',
+      context: {},
+    } as any)
+
+    expect(result.readingTime).toBe(null)
   })
 
   it('should calculate reading time for 100-word content', async () => {
@@ -47,7 +89,7 @@ describe('calculateReadingTime hook', () => {
     const content = createMockContent(text)
 
     const result = await calculateReadingTime({
-      data: { content } as any,
+      data: { content, status: 'published' } as any,
       req: {} as any,
       operation: 'create',
       context: {},
@@ -62,7 +104,7 @@ describe('calculateReadingTime hook', () => {
     const content = createMockContent(text)
 
     const result = await calculateReadingTime({
-      data: { content } as any,
+      data: { content, status: 'published' } as any,
       req: {} as any,
       operation: 'create',
       context: {},
@@ -77,7 +119,7 @@ describe('calculateReadingTime hook', () => {
     const content = createMockContent(text)
 
     const result = await calculateReadingTime({
-      data: { content } as any,
+      data: { content, status: 'published' } as any,
       req: {} as any,
       operation: 'create',
       context: {},
@@ -92,7 +134,7 @@ describe('calculateReadingTime hook', () => {
     const content = createMockContent(text)
 
     const result = await calculateReadingTime({
-      data: { content } as any,
+      data: { content, status: 'published' } as any,
       req: {} as any,
       operation: 'create',
       context: {},
@@ -121,7 +163,7 @@ describe('calculateReadingTime hook', () => {
     }
 
     const result = await calculateReadingTime({
-      data: { content } as any,
+      data: { content, status: 'published' } as any,
       req: {} as any,
       operation: 'create',
       context: {},
@@ -165,7 +207,7 @@ describe('calculateReadingTime hook', () => {
     }
 
     const result = await calculateReadingTime({
-      data: { content } as any,
+      data: { content, status: 'published' } as any,
       req: {} as any,
       operation: 'create',
       context: {},
@@ -191,9 +233,9 @@ describe('calculateReadingTime hook', () => {
     expect(result.readingTime).toBe(999)
   })
 
-  it('should handle empty content object', async () => {
+  it('should handle empty content object for published articles', async () => {
     const result = await calculateReadingTime({
-      data: { content: {} } as any,
+      data: { content: {}, status: 'published' } as any,
       req: {} as any,
       operation: 'create',
       context: {},
@@ -224,7 +266,7 @@ describe('calculateReadingTime hook', () => {
     }
 
     const result = await calculateReadingTime({
-      data: { content } as any,
+      data: { content, status: 'published' } as any,
       req: {} as any,
       operation: 'create',
       context: {},
