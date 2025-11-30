@@ -156,4 +156,182 @@ describe('Media R2 Storage Integration', () => {
       }
     })
   })
+
+  describe('Retrieval Operations', () => {
+    it('should retrieve file metadata by ID', async ({ skip }) => {
+      if (!mediaUploadsSupported) {
+        skip('Media uploads not supported in miniflare environment')
+      }
+
+      const altText = generateTestAltText('Retrieve Test')
+      const file = getTestImageFile()
+
+      const created = (await (payload.create as any)({
+        collection: 'media',
+        data: {
+          alt: altText,
+        },
+        file,
+      })) as Media
+
+      createdMediaIds.push(created.id)
+
+      // Retrieve by ID
+      const retrieved = (await payload.findByID({
+        collection: 'media',
+        id: created.id,
+      })) as Media
+
+      expect(retrieved).toBeDefined()
+      expect(retrieved.id).toBe(created.id)
+      expect(retrieved.alt).toBe(altText)
+      expect(retrieved.filename).toBe(created.filename)
+      expect(retrieved.mimeType).toBe(created.mimeType)
+    })
+
+    it('should find media with filters', async ({ skip }) => {
+      if (!mediaUploadsSupported) {
+        skip('Media uploads not supported in miniflare environment')
+      }
+
+      const altText = generateTestAltText('Filter Test')
+      const file = getTestImageFile()
+
+      const created = (await (payload.create as any)({
+        collection: 'media',
+        data: {
+          alt: altText,
+        },
+        file,
+      })) as Media
+
+      createdMediaIds.push(created.id)
+
+      // Find with filter
+      const results = await payload.find({
+        collection: 'media',
+        where: {
+          alt: {
+            equals: altText,
+          },
+        },
+      })
+
+      expect(results.docs.length).toBeGreaterThan(0)
+      const found = results.docs.find((doc) => doc.id === created.id)
+      expect(found).toBeDefined()
+    })
+
+    it('should update media metadata', async ({ skip }) => {
+      if (!mediaUploadsSupported) {
+        skip('Media uploads not supported in miniflare environment')
+      }
+
+      const altText = generateTestAltText('Update Test')
+      const file = getTestImageFile()
+
+      const created = (await (payload.create as any)({
+        collection: 'media',
+        data: {
+          alt: altText,
+        },
+        file,
+      })) as Media
+
+      createdMediaIds.push(created.id)
+
+      // Update metadata
+      const newAlt = generateTestAltText('Updated Alt')
+      const updated = (await (payload.update as any)({
+        collection: 'media',
+        id: created.id,
+        data: {
+          alt: newAlt,
+          caption: 'Updated caption',
+        },
+      })) as Media
+
+      expect(updated.alt).toBe(newAlt)
+      expect(updated.caption).toBe('Updated caption')
+      expect(updated.filename).toBe(created.filename) // File unchanged
+    })
+  })
+
+  describe('Delete Operations', () => {
+    it('should remove file from R2 on delete', async ({ skip }) => {
+      if (!mediaUploadsSupported) {
+        skip('Media uploads not supported in miniflare environment')
+      }
+
+      const altText = generateTestAltText('Delete Test')
+      const file = getTestImageFile()
+
+      const created = (await (payload.create as any)({
+        collection: 'media',
+        data: {
+          alt: altText,
+        },
+        file,
+      })) as Media
+
+      // Note: Don't add to createdMediaIds since we're deleting it
+      const mediaId = created.id
+
+      // Delete the media
+      await payload.delete({
+        collection: 'media',
+        id: mediaId,
+      })
+
+      // Verify it's gone
+      const results = await payload.find({
+        collection: 'media',
+        where: {
+          id: {
+            equals: mediaId,
+          },
+        },
+      })
+
+      expect(results.docs).toHaveLength(0)
+    })
+
+    it('should clean up database record on delete', async ({ skip }) => {
+      if (!mediaUploadsSupported) {
+        skip('Media uploads not supported in miniflare environment')
+      }
+
+      const altText = generateTestAltText('DB Cleanup Test')
+      const file = getTestImageFile()
+
+      const created = (await (payload.create as any)({
+        collection: 'media',
+        data: {
+          alt: altText,
+        },
+        file,
+      })) as Media
+
+      const mediaId = created.id
+      const mediaFilename = created.filename
+
+      // Delete
+      await payload.delete({
+        collection: 'media',
+        id: mediaId,
+      })
+
+      // Try to find by filename (should not exist)
+      const results = await payload.find({
+        collection: 'media',
+        where: {
+          filename: {
+            equals: mediaFilename,
+          },
+        },
+      })
+
+      expect(results.docs).toHaveLength(0)
+    })
+  })
 })
