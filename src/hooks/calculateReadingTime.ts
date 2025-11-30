@@ -65,17 +65,20 @@ export const calculateReadingTime: CollectionBeforeChangeHook = async ({ data, c
 /** Default maximum recursion depth to prevent stack overflow */
 const DEFAULT_MAX_DEPTH = 50
 
+/** Type for Lexical node or array of nodes */
+type LexicalNode = Record<string, unknown> | Record<string, unknown>[] | null | undefined
+
 /**
  * Recursively extract plain text from Lexical JSON structure
  *
- * @param node - Lexical node (root, paragraph, heading, list, etc.)
+ * @param node - Lexical node (root, paragraph, heading, list, etc.) or array of nodes
  * @param maxDepth - Maximum recursion depth (default: 50)
  * @param currentDepth - Current recursion depth (internal use)
  * @param visited - WeakSet to track visited nodes for cycle detection (internal use)
  * @returns Plain text content
  */
 function extractTextFromLexical(
-  node: Record<string, unknown> | null | undefined,
+  node: LexicalNode,
   maxDepth: number = DEFAULT_MAX_DEPTH,
   currentDepth: number = 0,
   visited: WeakSet<object> = new WeakSet(),
@@ -85,6 +88,13 @@ function extractTextFromLexical(
   // Stop recursion if max depth reached
   if (currentDepth >= maxDepth) {
     return ''
+  }
+
+  // Handle array of nodes (e.g., when root is an array)
+  if (Array.isArray(node)) {
+    return node
+      .map((element) => extractTextFromLexical(element, maxDepth, currentDepth + 1, visited))
+      .join(' ')
   }
 
   // Detect cycles by checking if node was already visited
@@ -109,12 +119,7 @@ function extractTextFromLexical(
 
   // Handle root node
   if (node.root) {
-    return extractTextFromLexical(
-      node.root as Record<string, unknown>,
-      maxDepth,
-      currentDepth + 1,
-      visited,
-    )
+    return extractTextFromLexical(node.root as LexicalNode, maxDepth, currentDepth + 1, visited)
   }
 
   return ''

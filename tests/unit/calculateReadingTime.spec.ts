@@ -276,4 +276,29 @@ describe('calculateReadingTime hook', () => {
     // 187 / 200 = 0.935, rounds up to 1
     expect(result.readingTime).toBe(1)
   })
+
+  it('should handle content with root as array of nodes', async () => {
+    // Some Lexical structures may have root as an array
+    const content = [
+      {
+        type: 'paragraph',
+        children: [{ type: 'text', text: 'First paragraph content.' }],
+      },
+      {
+        type: 'paragraph',
+        children: [{ type: 'text', text: 'Second paragraph content.' }],
+      },
+    ]
+
+    const result = await calculateReadingTime({
+      data: { content, status: 'published' } as any,
+      req: {} as any,
+      operation: 'create',
+      context: {},
+    } as any)
+
+    // "First paragraph content." (3) + "Second paragraph content." (3) = 6 words
+    // 6 / 200 = 0.03, rounds up to 1
+    expect(result.readingTime).toBe(1)
+  })
 })
