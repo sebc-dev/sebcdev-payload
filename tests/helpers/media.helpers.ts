@@ -51,12 +51,7 @@ export const TEST_IMAGE_PATH = path.join(FIXTURES_PATH, 'test-image.png')
  * @param customName Optional custom filename (defaults to test-image-{timestamp}.png)
  * @returns File object compatible with Payload's create API
  */
-export function getTestImageFile(customName?: string): {
-  data: Buffer
-  mimetype: string
-  name: string
-  size: number
-} {
+export function getTestImageFile(customName?: string): PayloadFile {
   const buffer = fs.readFileSync(TEST_IMAGE_PATH)
   const name = customName ?? `test-image-${Date.now()}.png`
 
@@ -75,15 +70,7 @@ export function getTestImageFile(customName?: string): {
  * @returns File object compatible with Payload's create API
  * @throws RangeError if sizeInBytes is not a positive integer
  */
-export function createTestFileOfSize(
-  sizeInBytes: number,
-  mimetype = 'image/png',
-): {
-  data: Buffer
-  mimetype: string
-  name: string
-  size: number
-} {
+export function createTestFileOfSize(sizeInBytes: number, mimetype = 'image/png'): PayloadFile {
   if (!Number.isInteger(sizeInBytes) || sizeInBytes <= 0) {
     throw new RangeError('sizeInBytes must be a positive integer')
   }
@@ -125,12 +112,7 @@ export function generateTestAltText(prefix = 'Test Media'): string {
  * Creates a file with invalid MIME type for testing rejection
  * @returns File object with application/pdf MIME type
  */
-export function createInvalidMimeTypeFile(): {
-  data: Buffer
-  mimetype: string
-  name: string
-  size: number
-} {
+export function createInvalidMimeTypeFile(): PayloadFile {
   const buffer = Buffer.from('fake pdf content')
   return {
     data: buffer,
