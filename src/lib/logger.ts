@@ -87,6 +87,9 @@ function serializeError(value: unknown): SerializedError {
   return { name: 'Error', message: String(value) }
 }
 
+/** Common keys that may contain error-like values */
+const ERROR_KEYS = new Set(['error', 'cause', 'lastError', 'originalError', 'innerError'])
+
 /**
  * Format log entry with timestamp and structured context
  */
@@ -100,7 +103,7 @@ function formatLogEntry(level: string, message: string, context?: LogContext): s
 
     for (const key of Object.keys(context)) {
       const value = context[key]
-      if (key === 'error' && isErrorLike(value)) {
+      if (ERROR_KEYS.has(key) && isErrorLike(value)) {
         serializedContext[key] = serializeError(value)
       } else {
         serializedContext[key] = value
