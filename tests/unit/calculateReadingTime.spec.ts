@@ -42,7 +42,7 @@ describe('calculateReadingTime hook', () => {
     expect(result.readingTime).toBe(0)
   })
 
-  it('should return null for draft articles', async () => {
+  it('should return 0 for draft articles', async () => {
     const text = 'word '.repeat(100).trim()
     const content = createMockContent(text)
 
@@ -53,10 +53,10 @@ describe('calculateReadingTime hook', () => {
       context: {},
     } as any)
 
-    expect(result.readingTime).toBe(null)
+    expect(result.readingTime).toBe(0)
   })
 
-  it('should return null for archived articles', async () => {
+  it('should return 0 for archived articles', async () => {
     const text = 'word '.repeat(100).trim()
     const content = createMockContent(text)
 
@@ -67,10 +67,10 @@ describe('calculateReadingTime hook', () => {
       context: {},
     } as any)
 
-    expect(result.readingTime).toBe(null)
+    expect(result.readingTime).toBe(0)
   })
 
-  it('should return null when status is undefined', async () => {
+  it('should return 0 when status is undefined', async () => {
     const text = 'word '.repeat(100).trim()
     const content = createMockContent(text)
 
@@ -81,7 +81,7 @@ describe('calculateReadingTime hook', () => {
       context: {},
     } as any)
 
-    expect(result.readingTime).toBe(null)
+    expect(result.readingTime).toBe(0)
   })
 
   it('should handle null data gracefully', async () => {
@@ -92,8 +92,8 @@ describe('calculateReadingTime hook', () => {
       context: {},
     } as any)
 
-    // When data is null, hook returns { readingTime: 0 }
-    expect(result).toEqual({ readingTime: 0 })
+    // When data is null, hook returns null per Payload conventions
+    expect(result).toBeNull()
   })
 
   it('should handle undefined data gracefully', async () => {
@@ -104,15 +104,15 @@ describe('calculateReadingTime hook', () => {
       context: {},
     } as any)
 
-    // When data is undefined, hook returns { readingTime: 0 }
-    expect(result).toEqual({ readingTime: 0 })
+    // When data is undefined, hook returns null per Payload conventions
+    expect(result).toBeNull()
   })
 
   it('should handle empty params object gracefully', async () => {
     const result = await calculateReadingTime({} as any)
 
-    // When data is missing from params, hook returns { readingTime: 0 }
-    expect(result).toEqual({ readingTime: 0 })
+    // When data is missing from params, hook returns null per Payload conventions
+    expect(result).toBeNull()
   })
 
   it('should calculate reading time for 100-word content', async () => {
