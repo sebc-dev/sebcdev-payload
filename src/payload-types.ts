@@ -315,7 +315,7 @@ export interface Article {
    */
   excerpt?: string | null;
   /**
-   * URL-friendly identifier (e.g., "mon-premier-article")
+   * URL-friendly identifier. Use lowercase letters, numbers, and hyphens only (e.g., "mon-premier-article"). No spaces or special characters.
    */
   slug: string;
   /**
