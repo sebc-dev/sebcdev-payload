@@ -1,12 +1,44 @@
-import type { CollectionConfig } from 'payload'
+import type { Access, CollectionConfig } from 'payload'
 
 import { calculateReadingTime, ensurePublishedAt } from '@/hooks'
+
+/**
+ * Access control: Allow read for published articles only (public)
+ * Authenticated users can read all articles
+ */
+const isPublishedOrAuthenticated: Access = ({ req: { user } }) => {
+  // Authenticated users can read all articles
+  if (user) {
+    return true
+  }
+
+  // Anonymous users can only read published articles with publishedAt in the past
+  return {
+    and: [
+      { status: { equals: 'published' } },
+      { publishedAt: { less_than_equal: new Date().toISOString() } },
+    ],
+  }
+}
+
+/**
+ * Access control: Only authenticated users
+ */
+const isAuthenticated: Access = ({ req: { user } }) => {
+  return Boolean(user)
+}
 
 export const Articles: CollectionConfig = {
   slug: 'articles',
   labels: {
     singular: 'Article',
     plural: 'Articles',
+  },
+  access: {
+    read: isPublishedOrAuthenticated,
+    create: isAuthenticated,
+    update: isAuthenticated,
+    delete: isAuthenticated,
   },
   admin: {
     useAsTitle: 'title',
