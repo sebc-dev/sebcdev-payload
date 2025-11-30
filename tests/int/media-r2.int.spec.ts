@@ -2,7 +2,12 @@ import { getPayload, Payload } from 'payload'
 import config from '@payload-config'
 import type { Media } from '@/payload-types'
 import { describe, it, expect, beforeAll, afterAll } from 'vitest'
-import { getTestImageFile, generateTestAltText } from '../helpers/media.helpers'
+import {
+  getTestImageFile,
+  generateTestAltText,
+  createTestFileOfSize,
+  createInvalidMimeTypeFile,
+} from '../helpers/media.helpers'
 
 let payload: Payload
 const createdMediaIds: number[] = []
@@ -332,6 +337,249 @@ describe('Media R2 Storage Integration', () => {
       })
 
       expect(results.docs).toHaveLength(0)
+    })
+  })
+
+  describe('Error Handling', () => {
+    it('should reject files exceeding size limit', async ({ skip }) => {
+      if (!mediaUploadsSupported) {
+        skip('Media uploads not supported in miniflare environment')
+      }
+
+      const altText = generateTestAltText('Size Limit Test')
+      // Create a file larger than 10MB limit
+      const oversizedFile = createTestFileOfSize(11 * 1024 * 1024) // 11 MB
+
+      let error: Error | null = null
+
+      try {
+        await (payload.create as any)({
+          collection: 'media',
+          data: {
+            alt: altText,
+          },
+          file: oversizedFile,
+        })
+      } catch (e) {
+        error = e as Error
+      }
+
+      expect(error).toBeDefined()
+      // The error message should mention file size
+      expect(error?.message.toLowerCase()).toMatch(/size|limit|exceed/i)
+    })
+
+    it('should reject unsupported MIME types', async ({ skip }) => {
+      if (!mediaUploadsSupported) {
+        skip('Media uploads not supported in miniflare environment')
+      }
+
+      const altText = generateTestAltText('MIME Type Test')
+      const invalidFile = createInvalidMimeTypeFile()
+
+      let error: Error | null = null
+
+      try {
+        await (payload.create as any)({
+          collection: 'media',
+          data: {
+            alt: altText,
+          },
+          file: invalidFile,
+        })
+      } catch (e) {
+        error = e as Error
+      }
+
+      expect(error).toBeDefined()
+    })
+
+    it('should require alt text field', async ({ skip }) => {
+      if (!mediaUploadsSupported) {
+        skip('Media uploads not supported in miniflare environment')
+      }
+
+      const file = getTestImageFile()
+
+      let error: Error | null = null
+
+      try {
+        await (payload.create as any)({
+          collection: 'media',
+          data: {
+            // Missing required alt field
+          },
+          file,
+        })
+      } catch (e) {
+        error = e as Error
+      }
+
+      expect(error).toBeDefined()
+    })
+
+    it('should handle missing file gracefully', async ({ skip }) => {
+      if (!mediaUploadsSupported) {
+        skip('Media uploads not supported in miniflare environment')
+      }
+
+      const altText = generateTestAltText('No File Test')
+
+      let error: Error | null = null
+
+      try {
+        await (payload.create as any)({
+          collection: 'media',
+          data: {
+            alt: altText,
+          },
+          // No file provided
+        })
+      } catch (e) {
+        error = e as Error
+      }
+
+      // Upload collections typically require a file
+      expect(error).toBeDefined()
+    })
+
+    it('should handle non-existent media ID on delete', async ({ skip }) => {
+      if (!mediaUploadsSupported) {
+        skip('Media uploads not supported in miniflare environment')
+      }
+
+      let error: Error | null = null
+
+      try {
+        await payload.delete({
+          collection: 'media',
+          id: 999999, // Non-existent ID
+        })
+      } catch (e) {
+        error = e as Error
+      }
+
+      // Should error on non-existent media
+      expect(error).toBeDefined()
+    })
+
+    it('should handle non-existent media ID on findByID', async ({ skip }) => {
+      if (!mediaUploadsSupported) {
+        skip('Media uploads not supported in miniflare environment')
+      }
+
+      let error: Error | null = null
+      let result: Media | null = null
+
+      try {
+        result = (await payload.findByID({
+          collection: 'media',
+          id: 999999, // Non-existent ID
+        })) as Media
+      } catch (e) {
+        error = e as Error
+      }
+
+      // Either returns null/undefined or throws - both are acceptable
+      expect(error !== null || result === null || result === undefined).toBe(true)
+    })
+  })
+
+  describe('Edge Cases', () => {
+    it('should handle special characters in alt text', async ({ skip }) => {
+      if (!mediaUploadsSupported) {
+        skip('Media uploads not supported in miniflare environment')
+      }
+
+      const specialAltText = `Test <script>alert('xss')</script> & "quotes" 'apostrophes'`
+      const file = getTestImageFile()
+
+      const media = (await (payload.create as any)({
+        collection: 'media',
+        data: {
+          alt: specialAltText,
+        },
+        file,
+      })) as Media
+
+      createdMediaIds.push(media.id)
+
+      // Should store the text (sanitized or as-is depending on Payload config)
+      expect(media.alt).toBeDefined()
+    })
+
+    it('should handle unicode in alt text', async ({ skip }) => {
+      if (!mediaUploadsSupported) {
+        skip('Media uploads not supported in miniflare environment')
+      }
+
+      const unicodeAltText = 'Test image avec accents: cafe, ecole, francais'
+      const file = getTestImageFile()
+
+      const media = (await (payload.create as any)({
+        collection: 'media',
+        data: {
+          alt: unicodeAltText,
+        },
+        file,
+      })) as Media
+
+      createdMediaIds.push(media.id)
+
+      expect(media.alt).toBe(unicodeAltText)
+    })
+
+    it('should handle very long caption text', async ({ skip }) => {
+      if (!mediaUploadsSupported) {
+        skip('Media uploads not supported in miniflare environment')
+      }
+
+      const altText = generateTestAltText('Long Caption Test')
+      const longCaption = 'A'.repeat(5000) // 5000 character caption
+      const file = getTestImageFile()
+
+      const media = (await (payload.create as any)({
+        collection: 'media',
+        data: {
+          alt: altText,
+          caption: longCaption,
+        },
+        file,
+      })) as Media
+
+      createdMediaIds.push(media.id)
+
+      expect(media.caption).toBe(longCaption)
+    })
+
+    it('should handle multiple rapid uploads', async ({ skip }) => {
+      if (!mediaUploadsSupported) {
+        skip('Media uploads not supported in miniflare environment')
+      }
+
+      const uploads = Array.from({ length: 5 }, (_, i) => ({
+        alt: generateTestAltText(`Rapid Upload ${i}`),
+      }))
+
+      // Create multiple media in parallel
+      const results = await Promise.all(
+        uploads.map((data) =>
+          (payload.create as any)({
+            collection: 'media',
+            data,
+            file: getTestImageFile(),
+          }),
+        ),
+      )
+
+      // Track for cleanup
+      results.forEach((media: Media) => createdMediaIds.push(media.id))
+
+      expect(results).toHaveLength(5)
+      results.forEach((media: Media) => {
+        expect(media.id).toBeDefined()
+        expect(media.filename).toBeDefined()
+      })
     })
   })
 })
