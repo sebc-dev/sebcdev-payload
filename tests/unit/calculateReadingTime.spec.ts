@@ -525,6 +525,7 @@ describe('calculateReadingTime hook', () => {
     afterEach(() => {
       // Restore Intl.Segmenter reliably using typeof check
       if (typeof originalSegmenter !== 'undefined') {
+        // @ts-expect-error - intentionally restoring for testing
         Intl.Segmenter = originalSegmenter
       }
     })
