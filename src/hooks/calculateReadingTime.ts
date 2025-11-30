@@ -52,8 +52,8 @@ export const calculateReadingTime: CollectionBeforeChangeHook = async ({
       enableDiagnostics: true,
     })
 
-    // Calculate word count (split on whitespace)
-    const wordCount = text.trim().split(/\s+/).filter(Boolean).length
+    // Calculate word count using Unicode-aware segmentation
+    const wordCount = countWords(text)
 
     // Calculate reading time (200 wpm, round up)
     const readingTime = Math.ceil(wordCount / 200)
@@ -87,6 +87,58 @@ export const calculateReadingTime: CollectionBeforeChangeHook = async ({
     data.readingTime = 0
     return data
   }
+}
+
+/**
+ * CJK Unicode property regex to match Han, Hiragana, Katakana, and Hangul characters.
+ * Each CJK character is counted as approximately one word since these languages
+ * don't use spaces between words.
+ */
+const CJK_REGEX = /\p{Script=Han}|\p{Script=Hiragana}|\p{Script=Katakana}|\p{Script=Hangul}/gu
+
+/**
+ * Counts words in text using Unicode-aware segmentation.
+ *
+ * Strategy:
+ * 1. Try Intl.Segmenter (word granularity) - counts segments where isWordLike is true
+ * 2. Fallback: hybrid approach combining whitespace split + CJK character count
+ *
+ * @param text - The text to count words in
+ * @returns Number of words
+ */
+function countWords(text: string): number {
+  const trimmedText = text.trim()
+  if (!trimmedText) return 0
+
+  // Try Intl.Segmenter if available (modern browsers, Node 16+, Cloudflare Workers)
+  if (typeof Intl !== 'undefined' && 'Segmenter' in Intl) {
+    try {
+      const segmenter = new Intl.Segmenter(undefined, { granularity: 'word' })
+      let wordCount = 0
+      for (const segment of segmenter.segment(trimmedText)) {
+        if (segment.isWordLike) {
+          wordCount++
+        }
+      }
+      return wordCount
+    } catch {
+      // Fall through to fallback
+    }
+  }
+
+  // Fallback: hybrid approach for environments without Intl.Segmenter
+  // 1. Count whitespace-separated tokens (for space-separated languages)
+  // 2. Add CJK characters (each character ≈ one word)
+
+  // Remove CJK characters from text before splitting on whitespace
+  const textWithoutCJK = trimmedText.replace(CJK_REGEX, ' ')
+  const spaceSeparatedWords = textWithoutCJK.split(/\s+/).filter(Boolean).length
+
+  // Count CJK characters
+  const cjkMatches = trimmedText.match(CJK_REGEX)
+  const cjkCharCount = cjkMatches ? cjkMatches.length : 0
+
+  return spaceSeparatedWords + cjkCharCount
 }
 
 /** Default maximum recursion depth to prevent stack overflow */
