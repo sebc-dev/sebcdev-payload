@@ -118,12 +118,21 @@ export function createTestFileOfSize(sizeInBytes: number, mimetype = 'image/png'
 }
 
 /**
+ * Module-level counter for generating unique identifiers in parallel tests
+ */
+let testAltTextCounter = 0
+
+/**
  * Generate unique alt text for test media
+ * Uses timestamp + counter + random suffix to avoid collisions in parallel tests
  * @param prefix Optional prefix for the alt text
- * @returns Unique alt text string
+ * @returns Unique alt text string (format: "{prefix} {timestamp}-{counter}-{randomSuffix}")
  */
 export function generateTestAltText(prefix = 'Test Media'): string {
-  return `${prefix} ${Date.now()}`
+  const timestamp = Date.now()
+  const counter = ++testAltTextCounter
+  const randomSuffix = Math.random().toString(36).substring(2, 8)
+  return `${prefix} ${timestamp}-${counter}-${randomSuffix}`
 }
 
 /**
