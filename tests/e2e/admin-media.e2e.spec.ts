@@ -226,25 +226,15 @@ test.describe('Admin Media CRUD E2E', () => {
         )
         await saveButton.first().click()
 
-        // Wait for save to complete by watching for either:
-        // 1. Toast notification
-        // 2. Button state change
-        // 3. Network idle
-        const saveComplete = Promise.race([
-          page
-            .locator(
-              '[class*="toast"]:has-text("saved"), [class*="toast"]:has-text("Success"), [class*="Toastify"]:has-text("saved")',
-            )
-            .first()
-            .waitFor({ timeout: 10000 })
-            .then(() => 'toast'),
-          page.waitForLoadState('networkidle').then(() => 'network'),
-        ])
-
-        await saveComplete
-
-        // Small delay to ensure save is fully persisted
-        await page.waitForTimeout(500)
+        // Wait for save to complete by watching for the API response
+        // This is deterministic - we wait for the actual PATCH/PUT response
+        await page.waitForResponse(
+          (response) =>
+            response.url().includes('/api/media/') &&
+            (response.request().method() === 'PATCH' || response.request().method() === 'PUT') &&
+            response.status() === 200,
+          { timeout: 10000 },
+        )
 
         // Reload and verify the value persisted
         await page.goto(editUrl, { waitUntil: 'networkidle' })
