@@ -400,17 +400,18 @@ test.describe('Admin Media CRUD E2E', () => {
       const focusedElement = page.locator(':focus')
       await expect(focusedElement).toBeVisible()
 
-      // Continue tabbing through the form
+      // Continue tabbing through the form and count focusable elements
+      let focusableCount = 0
       for (let i = 0; i < 5; i++) {
         await page.keyboard.press('Tab')
-        // Verify focus remains visible on each tab
         const currentFocus = page.locator(':focus')
         const isVisible = await currentFocus.isVisible().catch(() => false)
-        // At least some elements should be focusable
         if (isVisible) {
-          expect(isVisible).toBeTruthy()
+          focusableCount++
         }
       }
+      // At least some elements should be focusable
+      expect(focusableCount).toBeGreaterThan(0)
 
       // Verify the submit button is reachable via keyboard
       // Keep tabbing until we find a button or reach a reasonable limit
