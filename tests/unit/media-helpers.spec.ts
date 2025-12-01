@@ -27,8 +27,9 @@ describe('createTestFileOfSize', () => {
     expect(() => createTestFileOfSize(oversizedBytes)).toThrow(/exceeds maximum allowed size/)
   })
 
-  it('should allow sizes up to MAX_TEST_FILE_BYTES', () => {
+  it('should create file when size is within MAX_TEST_FILE_BYTES limit', () => {
     // Test with a small size to avoid memory issues in tests
+    // This verifies the function accepts sizes below the limit
     const smallSize = 1024
     expect(smallSize).toBeLessThanOrEqual(MAX_TEST_FILE_BYTES)
     const file = createTestFileOfSize(smallSize)
