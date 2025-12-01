@@ -24,9 +24,23 @@ function toMonacoLanguage(language: string): string {
  *
  * Uses React key prop to force remount when language changes,
  * ensuring Monaco editor updates its syntax highlighting.
+ *
+ * @constraint This component requires the field path to end with ".code".
+ * It expects a sibling "language" select field at the same level.
+ * Example: path "blocks.0.code" → sibling "blocks.0.language"
+ *
+ * @throws Error if field path does not end with ".code"
  */
 export function DynamicCodeField(props: CodeFieldClientProps) {
   const { path } = props
+
+  // Validate that path ends with ".code" as expected
+  if (!path.endsWith('.code')) {
+    throw new Error(
+      `DynamicCodeField requires field path ending with ".code", got "${path}". ` +
+        'This component is designed for use with CodeBlock where a sibling "language" field exists.',
+    )
+  }
 
   // Derive the language field path from the code field path
   // e.g., if code field is "blocks.0.code", language field is "blocks.0.language"
