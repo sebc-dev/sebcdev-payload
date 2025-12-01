@@ -8,7 +8,7 @@ import type { CodeFieldClientProps } from 'payload'
  * Monaco uses specific language IDs that may differ from common names.
  */
 const MONACO_LANGUAGE_MAP: Record<string, string> = {
-  bash: 'shell',
+  bash: 'shellscript',
 }
 
 /**
