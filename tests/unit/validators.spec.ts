@@ -40,6 +40,9 @@ describe('validateTaxonomySlug', () => {
   it('should use custom entity name in error message', () => {
     const result = validateTaxonomySlug('INVALID', 'tag')
     expect(result).toContain('my-tag-name')
+    // Verify the custom entity name is actually used (not 'taxonomy')
+    expect(result).not.toContain('my-taxonomy-name')
+    expect(typeof result).toBe('string')
   })
 
   it('should use default entity name when not provided', () => {
@@ -80,6 +83,16 @@ describe('isValidHexColor', () => {
   })
 
   it('should accept empty string', () => {
-    expect(isValidHexColor('')).toBe(true) // Empty string is falsy, returns true
+    const result = isValidHexColor('')
+    expect(result).toBe(true) // Empty string is falsy, returns true
+    // Verify it returns true (not just truthy) for empty string
+    expect(result === true).toBe(true)
+  })
+
+  it('should return error string for invalid colors (not false)', () => {
+    const result = isValidHexColor('invalid')
+    expect(typeof result).toBe('string')
+    expect(result).not.toBe(true)
+    expect(result).not.toBe(false)
   })
 })

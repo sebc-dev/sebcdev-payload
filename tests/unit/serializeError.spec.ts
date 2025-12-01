@@ -1,7 +1,7 @@
 import { Readable } from 'stream'
 import { describe, expect, it } from 'vitest'
 
-import { ERROR_KEYS, serializeError } from '@/lib/logger'
+import { ERROR_KEYS, isBufferOrStream, isErrorLike, serializeError } from '@/lib/logger'
 
 describe('serializeError', () => {
   describe('basic error serialization', () => {
@@ -43,12 +43,14 @@ describe('serializeError', () => {
 
   describe('sensitive key filtering', () => {
     it('should filter out response property', () => {
-      const error = new Error('API Error') as Error & { response: object }
+      const error = new Error('API Error') as Error & { response: object; code: string }
       error.response = { status: 401, data: { token: 'secret' } }
+      error.code = 'API_ERR' // Non-sensitive property to verify filtering is selective
 
       const result = serializeError(error)
 
       expect(result.response).toBeUndefined()
+      expect(result.code).toBe('API_ERR') // Verify non-sensitive props are kept
     })
 
     it('should filter out request property', () => {
@@ -292,6 +294,20 @@ describe('serializeError', () => {
 
       expect(result.statusCode).toBe(429)
       expect(result.retryAfter).toBe(60)
+      // Verify numeric type is preserved (not converted to string)
+      expect(typeof result.statusCode).toBe('number')
+      expect(typeof result.retryAfter).toBe('number')
+    })
+
+    it('should preserve zero and negative numeric values', () => {
+      const error = new Error('Test') as Error & { count: number; offset: number }
+      error.count = 0
+      error.offset = -10
+
+      const result = serializeError(error)
+
+      expect(result.count).toBe(0)
+      expect(result.offset).toBe(-10)
     })
   })
 
@@ -391,6 +407,165 @@ describe('ERROR_KEYS', () => {
       for (const key of expectedKeys) {
         expect(ERROR_KEYS.has(key)).toBe(true)
       }
+    })
+  })
+})
+
+describe('isErrorLike', () => {
+  describe('Error instances', () => {
+    it('should return true for Error instances', () => {
+      expect(isErrorLike(new Error('test'))).toBe(true)
+    })
+
+    it('should return true for TypeError instances', () => {
+      expect(isErrorLike(new TypeError('test'))).toBe(true)
+    })
+
+    it('should return true for custom Error subclasses', () => {
+      class CustomError extends Error {}
+      expect(isErrorLike(new CustomError('test'))).toBe(true)
+    })
+  })
+
+  describe('string values', () => {
+    it('should return true for non-empty strings', () => {
+      expect(isErrorLike('error message')).toBe(true)
+    })
+
+    it('should return true for empty strings', () => {
+      expect(isErrorLike('')).toBe(true)
+    })
+  })
+
+  describe('error-like objects', () => {
+    it('should return true for objects with message property', () => {
+      expect(isErrorLike({ message: 'test error' })).toBe(true)
+    })
+
+    it('should return true for objects with name property', () => {
+      expect(isErrorLike({ name: 'CustomError' })).toBe(true)
+    })
+
+    it('should return true for objects with both name and message', () => {
+      expect(isErrorLike({ name: 'Error', message: 'test' })).toBe(true)
+    })
+
+    it('should return false for objects without name or message', () => {
+      expect(isErrorLike({ code: 'ERR_TEST' })).toBe(false)
+    })
+
+    it('should return false for objects with non-string name/message', () => {
+      expect(isErrorLike({ name: 123, message: 456 })).toBe(false)
+    })
+  })
+
+  describe('non-error values', () => {
+    it('should return false for null', () => {
+      expect(isErrorLike(null)).toBe(false)
+    })
+
+    it('should return false for undefined', () => {
+      expect(isErrorLike(undefined)).toBe(false)
+    })
+
+    it('should return false for numbers', () => {
+      expect(isErrorLike(42)).toBe(false)
+    })
+
+    it('should return false for booleans', () => {
+      expect(isErrorLike(true)).toBe(false)
+    })
+
+    it('should return false for functions', () => {
+      expect(isErrorLike(() => {})).toBe(false)
+    })
+
+    it('should return false for arrays', () => {
+      expect(isErrorLike([1, 2, 3])).toBe(false)
+    })
+
+    it('should return false for empty objects', () => {
+      expect(isErrorLike({})).toBe(false)
+    })
+  })
+})
+
+describe('isBufferOrStream', () => {
+  describe('non-objects', () => {
+    it('should return false for null', () => {
+      expect(isBufferOrStream(null)).toBe(false)
+    })
+
+    it('should return false for undefined', () => {
+      expect(isBufferOrStream(undefined)).toBe(false)
+    })
+
+    it('should return false for strings', () => {
+      expect(isBufferOrStream('test')).toBe(false)
+    })
+
+    it('should return false for numbers', () => {
+      expect(isBufferOrStream(42)).toBe(false)
+    })
+
+    it('should return false for booleans', () => {
+      expect(isBufferOrStream(true)).toBe(false)
+    })
+  })
+
+  describe('Buffer detection', () => {
+    it('should return true for Buffer instances', () => {
+      expect(isBufferOrStream(Buffer.from('test'))).toBe(true)
+    })
+
+    it('should return true for empty Buffer', () => {
+      expect(isBufferOrStream(Buffer.alloc(0))).toBe(true)
+    })
+  })
+
+  describe('Node.js Stream detection', () => {
+    it('should return true for Readable streams', () => {
+      expect(isBufferOrStream(new Readable())).toBe(true)
+    })
+
+    it('should return true for objects with pipe method', () => {
+      const streamLike = { pipe: () => {} }
+      expect(isBufferOrStream(streamLike)).toBe(true)
+    })
+  })
+
+  describe('Web Streams API detection', () => {
+    it('should return true for ReadableStream', () => {
+      const stream = new ReadableStream()
+      expect(isBufferOrStream(stream)).toBe(true)
+    })
+
+    it('should return true for WritableStream', () => {
+      const stream = new WritableStream()
+      expect(isBufferOrStream(stream)).toBe(true)
+    })
+
+    it('should return true for TransformStream', () => {
+      const stream = new TransformStream()
+      expect(isBufferOrStream(stream)).toBe(true)
+    })
+  })
+
+  describe('regular objects', () => {
+    it('should return false for plain objects', () => {
+      expect(isBufferOrStream({})).toBe(false)
+    })
+
+    it('should return false for arrays', () => {
+      expect(isBufferOrStream([1, 2, 3])).toBe(false)
+    })
+
+    it('should return false for Date objects', () => {
+      expect(isBufferOrStream(new Date())).toBe(false)
+    })
+
+    it('should return false for objects with non-function pipe property', () => {
+      expect(isBufferOrStream({ pipe: 'not a function' })).toBe(false)
     })
   })
 })
