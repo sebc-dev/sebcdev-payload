@@ -84,9 +84,7 @@ describe('isValidHexColor', () => {
 
   it('should accept empty string', () => {
     const result = isValidHexColor('')
-    expect(result).toBe(true) // Empty string is falsy, returns true
-    // Verify it returns true (not just truthy) for empty string
-    expect(result === true).toBe(true)
+    expect(result).toBe(true)
   })
 
   it('should return error string for invalid colors (not false)', () => {
