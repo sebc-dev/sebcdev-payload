@@ -37,7 +37,9 @@ export const CodeBlock: Block = {
       type: 'code',
       required: true,
       admin: {
-        language: 'typescript',
+        components: {
+          Field: '@/fields/code/DynamicCodeField#DynamicCodeField',
+        },
       },
     },
   ],
