@@ -84,15 +84,29 @@ export function getTestImageFile(customName?: string): PayloadFile {
 }
 
 /**
+ * Maximum allowed test file size (50 MB) to prevent OOM in CI environments.
+ * Can be overridden via TEST_MAX_FILE_BYTES environment variable for special cases.
+ */
+export const MAX_TEST_FILE_BYTES = process.env.TEST_MAX_FILE_BYTES
+  ? parseInt(process.env.TEST_MAX_FILE_BYTES, 10)
+  : 50 * 1024 * 1024
+
+/**
  * Creates a buffer of specified size for testing file size limits
- * @param sizeInBytes Size of the buffer to create (must be a positive integer)
+ * @param sizeInBytes Size of the buffer to create (must be a positive integer, max 50 MB by default)
  * @param mimetype MIME type to report
  * @returns File object compatible with Payload's create API
- * @throws RangeError if sizeInBytes is not a positive integer
+ * @throws RangeError if sizeInBytes is not a positive integer or exceeds MAX_TEST_FILE_BYTES
  */
 export function createTestFileOfSize(sizeInBytes: number, mimetype = 'image/png'): PayloadFile {
   if (!Number.isInteger(sizeInBytes) || sizeInBytes <= 0) {
     throw new RangeError('sizeInBytes must be a positive integer')
+  }
+  if (sizeInBytes > MAX_TEST_FILE_BYTES) {
+    throw new RangeError(
+      `sizeInBytes (${sizeInBytes}) exceeds maximum allowed size (${MAX_TEST_FILE_BYTES} bytes). ` +
+        'Set TEST_MAX_FILE_BYTES environment variable to override.',
+    )
   }
   const buffer = Buffer.alloc(sizeInBytes)
   return {
