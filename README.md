@@ -69,9 +69,27 @@ This project implements an **AI-Shield** CI/CD pipeline with:
 - **Code Quality Gates**: Knip (dead code detection), ESLint, Prettier, dependency-cruiser
 - **Architecture Validation**: Enforced separation between server/client code
 - **Automated Testing**: Multi-stage testing with coverage reports
-- **OIDC Authentication**: Secure deployments without static secrets
+- **Mutation Testing**: Stryker for test quality validation
 
 > Full documentation: [CI/CD Security Architecture](docs/specs/CI-CD-Security.md)
+
+### Mutation Testing (Stryker)
+
+Stryker validates test suite effectiveness by introducing mutations into source code:
+
+```bash
+pnpm stryker              # Full mutation run (CI/comprehensive check)
+pnpm stryker:incremental  # Fast incremental run (local development)
+pnpm stryker:dry          # Validate config without running mutations
+```
+
+| Command | Use Case |
+|---------|----------|
+| `stryker` | CI pipelines, pre-release validation |
+| `stryker:incremental` | Daily development, only tests changed files |
+| `stryker:dry` | Verify configuration, troubleshoot setup |
+
+> **Note**: Mutation testing is CPU-intensive. In CI, it only runs via manual `workflow_dispatch` trigger.
 
 ## 📝 Commit Convention
 
