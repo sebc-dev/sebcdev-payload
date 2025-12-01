@@ -29,6 +29,8 @@ describe('CodeBlock', () => {
 
   it('should support 11 programming languages', () => {
     const languageField = CodeBlock.fields[0]
+    expect(languageField).toHaveProperty('options')
+    // TypeScript type guard for safe property access
     if ('options' in languageField) {
       expect(languageField.options).toHaveLength(11)
 
