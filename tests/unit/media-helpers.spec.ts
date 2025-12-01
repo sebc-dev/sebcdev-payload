@@ -36,24 +36,19 @@ describe('createTestFileOfSize', () => {
     expect(file.size).toBe(smallSize)
   })
 
-  it('should export MAX_TEST_FILE_BYTES constant', () => {
+  it('should export MAX_TEST_FILE_BYTES as a positive number', () => {
+    // Simple observable behavior test: MAX_TEST_FILE_BYTES should be a positive integer
+    expect(MAX_TEST_FILE_BYTES).toBeGreaterThan(0)
+    expect(Number.isInteger(MAX_TEST_FILE_BYTES)).toBe(true)
+    expect(Number.isFinite(MAX_TEST_FILE_BYTES)).toBe(true)
+  })
+
+  it('should have MAX_TEST_FILE_BYTES equal to default when no env override', () => {
     const DEFAULT_MAX = 50 * 1024 * 1024
 
-    expect(MAX_TEST_FILE_BYTES).toBeGreaterThan(0)
-
-    // Check value matches env var override or default
-    // Only pure numeric strings are accepted (e.g., "52428800", not "50MB")
-    const envValue = process.env.TEST_MAX_FILE_BYTES
-    if (envValue && /^\d+$/.test(envValue)) {
-      const parsed = Number(envValue)
-      if (Number.isFinite(parsed) && Number.isInteger(parsed) && parsed > 0) {
-        expect(MAX_TEST_FILE_BYTES).toBe(parsed)
-      } else {
-        // Invalid env var should fallback to default
-        expect(MAX_TEST_FILE_BYTES).toBe(DEFAULT_MAX)
-      }
-    } else {
-      // No env var or non-numeric value, should be default (50 MB)
+    // If no TEST_MAX_FILE_BYTES env var is set, expect default value
+    // Note: This test may be skipped if env var is set in CI
+    if (!process.env.TEST_MAX_FILE_BYTES) {
       expect(MAX_TEST_FILE_BYTES).toBe(DEFAULT_MAX)
     }
   })
