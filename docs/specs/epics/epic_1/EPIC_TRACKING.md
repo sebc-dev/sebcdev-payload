@@ -153,6 +153,7 @@ Track epic-level milestones here:
 
 ### Recent Updates
 
+- **2025-12-01**: Story 1.3 Phase 8 📋 DOCS READY - Stryker mutation testing documentation generated (7 files, 5 commits planned)
 - **2025-11-29**: Story 1.4 Phase 3 ✅ COMPLETED - Security documentation and CI/CD guide finalized (3 commits, ~300 lines)
 - **2025-11-29**: Story 1.4 RESTRUCTURED - Phase 3 OIDC ⏸️ BLOCKED (wrangler-action ne supporte pas OIDC), Phase 4 fusionnée en nouvelle Phase 3
 - **2025-11-29**: Story 1.4 Phase 2 ✅ COMPLETED - Deployment workflow with D1 migrations, wrangler deploy, validation (4 commits, ~185 lines)
@@ -203,9 +204,9 @@ Track epic-level milestones here:
   - Phase 3: `docs/specs/epics/epic_1/story_1_3/implementation/phase_3/` ✅ COMPLETED
   - Phase 4: `docs/specs/epics/epic_1/story_1_3/implementation/phase_4/` ✅ COMPLETED
   - Phase 5: `docs/specs/epics/epic_1/story_1_3/implementation/phase_5/` ✅ COMPLETED
-  - Phase 6: Architecture Validation - dependency-cruiser (to generate)
+  - Phase 6: `docs/specs/epics/epic_1/story_1_3/implementation/phase_6/` ✅ COMPLETED
   - Phase 7: Performance & Accessibility - Lighthouse/axe (to generate)
-  - Phase 8: Mutation Testing - Stryker (to generate)
+  - Phase 8: `docs/specs/epics/epic_1/story_1_3/implementation/phase_8/` 📋 DOCS READY (Stryker - 7 files generated)
 - Story 1.4: `docs/specs/epics/epic_1/story_1_4/implementation/PHASES_PLAN.md` Created (3 active + 1 blocked)
   - Phase 1: `docs/specs/epics/epic_1/story_1_4/implementation/phase_1/` ✅ COMPLETED
   - Phase 2: `docs/specs/epics/epic_1/story_1_4/implementation/phase_2/` ✅ COMPLETED
@@ -247,6 +248,6 @@ Track epic-level milestones here:
 ---
 
 **Epic Initialized**: 2025-11-28
-**Last Updated**: 2025-11-29 (Story 1.4 restructured - OIDC blocked)
+**Last Updated**: 2025-12-01 (Story 1.3 Phase 8 documentation generated)
 **Created by**: Claude Code (epic-initializer skill)
 **Story 1.1 Validated by**: Claude Code (phase-implementer validation)
