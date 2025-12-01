@@ -23,8 +23,9 @@ describe('createTestFileOfSize', () => {
 
   it('should throw RangeError when size exceeds MAX_TEST_FILE_BYTES', () => {
     const oversizedBytes = MAX_TEST_FILE_BYTES + 1
-    expect(() => createTestFileOfSize(oversizedBytes)).toThrow(RangeError)
-    expect(() => createTestFileOfSize(oversizedBytes)).toThrow(/exceeds maximum allowed size/)
+    const oversizedCall = () => createTestFileOfSize(oversizedBytes)
+    expect(oversizedCall).toThrow(RangeError)
+    expect(oversizedCall).toThrow(/exceeds maximum allowed size/)
   })
 
   it('should create file when size is within MAX_TEST_FILE_BYTES limit', () => {
