@@ -53,7 +53,9 @@ describe('isValidLucideIcon', () => {
     const uppercaseResult = isValidLucideIcon('Newspaper')
     const allCapsResult = isValidLucideIcon('BOOK')
 
-    // Verify they return error strings (not true or false)
+    // Verify they return error strings (returns true on success, error string on failure)
+    expect(uppercaseResult).not.toBe(true)
+    expect(allCapsResult).not.toBe(true)
     expect(typeof uppercaseResult).toBe('string')
     expect(typeof allCapsResult).toBe('string')
     expect(uppercaseResult).toContain('Please select a valid icon')
