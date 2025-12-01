@@ -102,7 +102,6 @@ describe('getLucideIconOptions', () => {
 
     options.forEach((opt) => {
       expect(opt.value).toMatch(/^[a-z]+(-[a-z0-9]+)*$/)
-      expect(opt.value).toBe(opt.value.toLowerCase())
     })
   })
 
