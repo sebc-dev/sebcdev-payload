@@ -289,9 +289,8 @@ test.describe('Admin Media CRUD E2E', () => {
           await expect(page.locator(`a[href*="/media/${mediaId}"]`)).not.toBeVisible()
         }
       } else {
-        // Alternative: use API to verify deletion capability
-        // or skip if delete not available in UI
-        console.log('Delete button not found in UI, test skipped')
+        // Skip test if delete button is not available in UI
+        test.skip(true, 'Delete button not found in UI')
       }
     } finally {
       await page.close()
