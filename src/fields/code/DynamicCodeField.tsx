@@ -4,6 +4,21 @@ import { CodeField, useField } from '@payloadcms/ui'
 import type { CodeFieldClientProps } from 'payload'
 
 /**
+ * Maps language aliases to Monaco-compatible language identifiers.
+ * Monaco uses specific language IDs that may differ from common names.
+ */
+const MONACO_LANGUAGE_MAP: Record<string, string> = {
+  bash: 'shell',
+}
+
+/**
+ * Converts a language value to its Monaco-compatible identifier.
+ */
+function toMonacoLanguage(language: string): string {
+  return MONACO_LANGUAGE_MAP[language] ?? language
+}
+
+/**
  * Custom CodeField component that dynamically updates syntax highlighting
  * based on the sibling 'language' select field value.
  *
@@ -20,7 +35,8 @@ export function DynamicCodeField(props: CodeFieldClientProps) {
   const { value: languageValue } = useField<string>({ path: languagePath })
 
   // Use the selected language, falling back to typescript as default
-  const language = languageValue || 'typescript'
+  // Map to Monaco-compatible identifier
+  const language = toMonacoLanguage(languageValue || 'typescript')
 
   return (
     <CodeField
