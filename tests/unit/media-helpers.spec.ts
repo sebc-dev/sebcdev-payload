@@ -42,17 +42,18 @@ describe('createTestFileOfSize', () => {
     expect(MAX_TEST_FILE_BYTES).toBeGreaterThan(0)
 
     // Check value matches env var override or default
+    // Only pure numeric strings are accepted (e.g., "52428800", not "50MB")
     const envValue = process.env.TEST_MAX_FILE_BYTES
-    if (envValue) {
-      const parsed = parseInt(envValue, 10)
-      if (Number.isFinite(parsed) && parsed > 0) {
+    if (envValue && /^\d+$/.test(envValue)) {
+      const parsed = Number(envValue)
+      if (Number.isFinite(parsed) && Number.isInteger(parsed) && parsed > 0) {
         expect(MAX_TEST_FILE_BYTES).toBe(parsed)
       } else {
         // Invalid env var should fallback to default
         expect(MAX_TEST_FILE_BYTES).toBe(DEFAULT_MAX)
       }
     } else {
-      // No env var, should be default (50 MB)
+      // No env var or non-numeric value, should be default (50 MB)
       expect(MAX_TEST_FILE_BYTES).toBe(DEFAULT_MAX)
     }
   })
