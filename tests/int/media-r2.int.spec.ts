@@ -523,15 +523,16 @@ describe('Media R2 Storage Integration', () => {
 
       const uploads = Array.from({ length: 5 }, (_, i) => ({
         alt: generateTestAltText(`Rapid Upload ${i}`),
+        index: i,
       }))
 
-      // Create multiple media in parallel
+      // Create multiple media in parallel with unique filenames per index
       const results = await Promise.all(
-        uploads.map((data) =>
+        uploads.map(({ alt, index }) =>
           createMediaWithFile(payload, {
             collection: 'media',
-            data,
-            file: getTestImageFile(),
+            data: { alt },
+            file: getTestImageFile(`rapid-upload-${Date.now()}-${index}.png`),
           }),
         ),
       )
