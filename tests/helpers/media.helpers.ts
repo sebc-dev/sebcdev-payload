@@ -90,7 +90,8 @@ const DEFAULT_MAX_TEST_FILE_BYTES = 50 * 1024 * 1024
 
 /**
  * Parse and validate TEST_MAX_FILE_BYTES environment variable.
- * Returns the default if the env var is not set, not a valid number, or not a positive integer.
+ * Only accepts pure numeric strings (e.g., "52428800"). Values like "50MB" are rejected.
+ * Returns the default if the env var is not set, not a pure numeric string, or not a positive integer.
  */
 function parseMaxTestFileBytes(): number {
   const envValue = process.env.TEST_MAX_FILE_BYTES
@@ -98,7 +99,15 @@ function parseMaxTestFileBytes(): number {
     return DEFAULT_MAX_TEST_FILE_BYTES
   }
 
-  const parsed = parseInt(envValue, 10)
+  // Only accept pure numeric strings (digits only)
+  if (!/^\d+$/.test(envValue)) {
+    console.warn(
+      `Invalid TEST_MAX_FILE_BYTES value "${envValue}" (must be numeric), using default ${DEFAULT_MAX_TEST_FILE_BYTES}`,
+    )
+    return DEFAULT_MAX_TEST_FILE_BYTES
+  }
+
+  const parsed = Number(envValue)
   if (!Number.isFinite(parsed) || !Number.isInteger(parsed) || parsed <= 0) {
     console.warn(
       `Invalid TEST_MAX_FILE_BYTES value "${envValue}", using default ${DEFAULT_MAX_TEST_FILE_BYTES}`,
