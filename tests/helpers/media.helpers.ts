@@ -143,9 +143,20 @@ export function createTestFileOfSize(sizeInBytes: number, mimetype = 'image/png'
 }
 
 /**
- * Module-level counter for generating unique identifiers in parallel tests
+ * Module-level counter for generating unique identifiers in parallel tests.
+ * This counter persists across test runs in the same process to ensure uniqueness.
+ * Use resetTestAltTextCounter() in test setup/teardown if isolation is needed.
  */
 let testAltTextCounter = 0
+
+/**
+ * Resets the alt text counter to zero.
+ * Call this in beforeEach/afterEach if you need counter isolation between test suites.
+ * Note: In most cases, persistence is desirable to avoid collisions across suites.
+ */
+export function resetTestAltTextCounter(): void {
+  testAltTextCounter = 0
+}
 
 /**
  * Generate unique alt text for test media
