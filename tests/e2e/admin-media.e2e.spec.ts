@@ -500,13 +500,27 @@ test.describe('Admin Media CRUD E2E', () => {
       // Submit form without required file to trigger validation
       await page.locator('button[type="submit"], button:has-text("Save")').first().click()
 
-      // Wait for potential error messages
-      await page.waitForTimeout(1000)
-
-      // Check if any error messages exist
+      // Wait for validation response - either error UI appears or API returns error
       const errorMessages = page.locator(
         '[role="alert"], [aria-live="polite"], [aria-live="assertive"], [class*="error"], .field-error',
       )
+
+      await Promise.race([
+        // Wait for error message to appear in UI
+        errorMessages.first().waitFor({ state: 'visible', timeout: 5000 }),
+        // Or wait for failed API response (validation error returns 400+)
+        page.waitForResponse(
+          (response) =>
+            response.url().includes('/api/media') &&
+            response.request().method() === 'POST' &&
+            response.status() >= 400,
+          { timeout: 5000 },
+        ),
+      ]).catch(() => {
+        // Neither happened - form may have client-side validation preventing submission
+      })
+
+      // Check if any error messages exist
       const errorCount = await errorMessages.count()
 
       if (errorCount > 0) {
