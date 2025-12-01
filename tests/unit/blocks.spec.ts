@@ -63,10 +63,15 @@ describe('CodeBlock', () => {
     })
   })
 
-  it('should have admin language config on code field', () => {
+  it('should have admin config with dynamic language component on code field', () => {
     const codeField = CodeBlock.fields[1]
-    if ('admin' in codeField && codeField.admin) {
-      expect(codeField.admin).toHaveProperty('language', 'typescript')
+    expect(codeField).toHaveProperty('admin')
+    if ('admin' in codeField) {
+      expect(codeField.admin).toBeDefined()
+      expect(codeField.admin).toHaveProperty('components.Field')
+      expect((codeField.admin as { components: { Field: string } }).components.Field).toContain(
+        'DynamicCodeField',
+      )
     }
   })
 })
