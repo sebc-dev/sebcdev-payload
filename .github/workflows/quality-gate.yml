@@ -168,6 +168,8 @@ jobs:
 
       - name: Stryker Mutation Testing
         if: ${{ github.event.inputs.run_mutation_tests == 'true' }}
+        env:
+          PAYLOAD_SECRET: ${{ secrets.PAYLOAD_SECRET || env.PAYLOAD_SECRET_CI }}
         run: |
           echo "## 🧬 Mutation Testing Report" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
