@@ -84,42 +84,33 @@ describe('getLucideIconOptions', () => {
     })
   })
 
-  it('should format labels with capitalized words', () => {
+  it.each([
+    { value: 'newspaper', expectedLabel: 'Newspaper' },
+    { value: 'book-open', expectedLabel: 'Book Open' },
+    { value: 'code-xml', expectedLabel: 'Code Xml' },
+    { value: 'file-text', expectedLabel: 'File Text' },
+  ])('should convert "$value" to "$expectedLabel"', ({ value, expectedLabel }) => {
     const options = getLucideIconOptions()
-    const newspaperOption = options.find((opt) => opt.value === 'newspaper')
-    const bookOpenOption = options.find((opt) => opt.value === 'book-open')
-    const codeXmlOption = options.find((opt) => opt.value === 'code-xml')
+    const option = options.find((opt) => opt.value === value)
 
-    expect(newspaperOption?.label).toBe('Newspaper')
-    expect(bookOpenOption?.label).toBe('Book Open')
-    expect(codeXmlOption?.label).toBe('Code Xml')
+    expect(option).toBeDefined()
+    expect(option?.label).toBe(expectedLabel)
   })
 
-  it('should use kebab-case icon identifiers as values', () => {
+  it('should use lowercase kebab-case for all values', () => {
     const options = getLucideIconOptions()
-    const bookOpenOption = options.find((opt) => opt.label === 'Book Open')
 
-    expect(bookOpenOption?.value).toBe('book-open')
-
-    // Verify all values are lowercase kebab-case
     options.forEach((opt) => {
-      expect(opt.value).toMatch(/^[a-z]+(-[a-z]+)*$/)
+      expect(opt.value).toMatch(/^[a-z]+(-[a-z0-9]+)*$/)
       expect(opt.value).toBe(opt.value.toLowerCase())
     })
   })
 
-  it('should convert kebab-case to Title Case for labels', () => {
+  it('should convert hyphens to spaces in multi-word labels', () => {
     const options = getLucideIconOptions()
-
-    // Find multi-word icons to verify conversion
-    const codeXmlOption = options.find((opt) => opt.value === 'code-xml')
-    const fileTextOption = options.find((opt) => opt.value === 'file-text')
-
-    expect(codeXmlOption?.label).toBe('Code Xml')
-    expect(fileTextOption?.label).toBe('File Text')
-
-    // Labels should have spaces, values should have hyphens
     const multiWordOptions = options.filter((opt) => opt.value.includes('-'))
+
+    expect(multiWordOptions.length).toBeGreaterThan(0)
     multiWordOptions.forEach((opt) => {
       expect(opt.label).toContain(' ')
       expect(opt.label).not.toContain('-')
