@@ -181,13 +181,21 @@ jobs:
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "📊 Full report available in artifacts" >> $GITHUB_STEP_SUMMARY
 
+      - name: Compress Mutation Report
+        if: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.run_mutation_tests == 'true' && always() }}
+        run: |
+          if [ -d "reports/mutation" ]; then
+            tar -czvf /tmp/mutation-report.tar.gz -C reports mutation
+            echo "📦 Compressed mutation report: $(du -h /tmp/mutation-report.tar.gz | cut -f1)"
+          fi
+
       - name: Upload Mutation Report
         if: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.run_mutation_tests == 'true' && always() }}
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: mutation-report
-          path: reports/mutation/
-          retention-days: 14
+          path: /tmp/mutation-report.tar.gz
+          retention-days: 7
 
       # ============================================
       # SUMMARY
