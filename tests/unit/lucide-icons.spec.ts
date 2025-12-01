@@ -45,8 +45,6 @@ describe('isValidLucideIcon', () => {
   it('should allow empty string (treated as falsy)', () => {
     const result = isValidLucideIcon('')
     expect(result).toBe(true)
-    // Verify it returns exactly true (not just truthy)
-    expect(result === true).toBe(true)
   })
 
   it('should be case-sensitive', () => {
