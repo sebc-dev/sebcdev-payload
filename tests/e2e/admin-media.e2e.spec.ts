@@ -311,19 +311,37 @@ test.describe('Admin Media CRUD E2E', () => {
       // Try to submit without uploading a file
       await page.locator('button[type="submit"], button:has-text("Save")').first().click()
 
-      // Wait a moment for validation
-      await page.waitForTimeout(1000)
+      // Wait for validation response - either error UI appears or we stay on create page
+      // Use Promise.race to wait for the first deterministic signal
+      const errorLocator = page.locator(
+        '[class*="error"], [class*="toast"][class*="error"], .field-error',
+      )
 
-      // Should either show error or stay on create page
+      const validationResult = await Promise.race([
+        // Wait for error message to appear
+        errorLocator
+          .first()
+          .waitFor({ state: 'visible', timeout: 5000 })
+          .then(() => 'error-shown' as const),
+        // Or wait for failed API response (validation error returns 400)
+        page
+          .waitForResponse(
+            (response) =>
+              response.url().includes('/api/media') &&
+              response.request().method() === 'POST' &&
+              response.status() >= 400,
+            { timeout: 5000 },
+          )
+          .then(() => 'api-error' as const),
+      ]).catch(() => 'timeout' as const)
+
+      // Either we see an error message, got API error, OR we're still on the create page
       const currentUrl = page.url()
-      const hasError = await page
-        .locator('[class*="error"], [class*="toast"][class*="error"], .field-error')
-        .first()
-        .isVisible({ timeout: 5000 })
-        .catch(() => false)
-
-      // Either we see an error message OR we're still on the create page
-      expect(currentUrl.includes('create') || hasError).toBeTruthy()
+      expect(
+        validationResult === 'error-shown' ||
+          validationResult === 'api-error' ||
+          currentUrl.includes('create'),
+      ).toBeTruthy()
     } finally {
       await page.close()
     }
