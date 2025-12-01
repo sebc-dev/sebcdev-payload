@@ -28,7 +28,7 @@ En tant qu'auteur unique du blog, je veux disposer d'un systeme de gestion de co
 | Story | Title                                     | Description                                                                                                                                                                | Status      | Phases | Progress |
 | ----- | ----------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------- | ------ | -------- |
 | 2.1   | Configuration des Collections Blog & i18n | Creer les collections `Articles` et `Pages` avec l'option `localized: true` sur les champs de contenu (Titre, Corps, SEO), afin de gerer le contenu en Francais et Anglais | PLANNED     | 5      | 0/5      |
-| 2.2   | Validation du Stockage R2                 | Uploader une image test depuis le panneau admin et verifier sa presence dans le bucket R2, afin de valider que le plugin Cloud Storage est correctement configure          | PLANNED     | 3      | 0/3      |
+| 2.2   | Validation du Stockage R2                 | Uploader une image test depuis le panneau admin et verifier sa presence dans le bucket R2, afin de valider que le plugin Cloud Storage est correctement configure          | COMPLETED   | 3      | 3/3      |
 | 2.3   | Editeur Lexical & Seed Data               | Disposer d'un editeur Lexical configure avec les blocs "Code", "Citation" et "Image", et executer un script de seed pour creer les 9 categories canoniques                 | NOT STARTED | -      | 0/0      |
 
 ---
@@ -56,9 +56,9 @@ En tant qu'auteur unique du blog, je veux disposer d'un systeme de gestion de co
 | ----------------- | ----- |
 | Total Stories     | 3     |
 | Stories Started   | 2     |
-| Stories Completed | 0     |
+| Stories Completed | 1     |
 | Total Phases      | 8     |
-| Phases Completed  | 0     |
+| Phases Completed  | 3     |
 
 ---
 
@@ -95,7 +95,7 @@ Story 2.3 (Editeur Lexical & Seed Data) [depend de 2.1 pour les collections]
 | ---------------------- | ----------- | ----------- |
 | Epic Planning Complete | -           | IN PROGRESS |
 | Story 2.1 Complete     | -           | NOT STARTED |
-| Story 2.2 Complete     | -           | NOT STARTED |
+| Story 2.2 Complete     | 2025-12-01  | COMPLETED   |
 | Story 2.3 Complete     | -           | NOT STARTED |
 | Epic Complete          | -           | NOT STARTED |
 
@@ -108,6 +108,9 @@ Story 2.3 (Editeur Lexical & Seed Data) [depend de 2.1 pour les collections]
 | 2025-11-30 | Phase 3 documentation generated - Articles Collection (7 docs) |
 | 2025-11-30 | Story 2.2 planned - 3 phases defined in PHASES_PLAN.md         |
 | 2025-11-30 | Story 2.2 Phase 1 documentation generated (7 docs)             |
+| 2025-11-30 | Story 2.2 Phase 3 documentation generated (7 docs)             |
+| 2025-12-01 | Story 2.2 Phase 3 implemented - E2E tests, a11y tests, R2 docs |
+| 2025-12-01 | **Story 2.2 COMPLETED** - All acceptance criteria validated    |
 
 ---
 
@@ -132,7 +135,7 @@ _Links will be added as stories are planned_
 - Story 2.2: [story_2_2/story_2.2.md](story_2_2/story_2.2.md) | [PHASES_PLAN.md](story_2_2/implementation/PHASES_PLAN.md)
   - Phase 1: [phase_1/INDEX.md](story_2_2/implementation/phase_1/INDEX.md) - Media Collection Enhancement (documented)
   - Phase 2: Integration Tests R2 (pending)
-  - Phase 3: E2E Tests & Validation (pending)
+  - Phase 3: [phase_3/INDEX.md](story_2_2/implementation/phase_3/INDEX.md) - E2E Tests & Validation (documented)
 - Story 2.3: `story_2_3/story_2.3.md` (pending)
 
 ### Technical References

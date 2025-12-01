@@ -52,6 +52,7 @@
     "react-dom": "19.1.0"
   },
   "devDependencies": {
+    "@axe-core/playwright": "^4.11.0",
     "@eslint/eslintrc": "^3.3.1",
     "@playwright/test": "1.56.1",
     "@stryker-mutator/core": "^9.4.0",

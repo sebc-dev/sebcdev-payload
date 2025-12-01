@@ -84,15 +84,63 @@ export function getTestImageFile(customName?: string): PayloadFile {
 }
 
 /**
+ * Default maximum test file size (50 MB) to prevent OOM in CI environments.
+ */
+const DEFAULT_MAX_TEST_FILE_BYTES = 50 * 1024 * 1024
+
+/**
+ * Parse and validate TEST_MAX_FILE_BYTES environment variable.
+ * Only accepts pure numeric strings (e.g., "52428800"). Values like "50MB" are rejected.
+ * Returns the default if the env var is not set, not a pure numeric string, or not a positive integer.
+ */
+function parseMaxTestFileBytes(): number {
+  const envValue = process.env.TEST_MAX_FILE_BYTES
+  if (!envValue) {
+    return DEFAULT_MAX_TEST_FILE_BYTES
+  }
+
+  // Only accept pure numeric strings (digits only)
+  if (!/^\d+$/.test(envValue)) {
+    console.warn(
+      `Invalid TEST_MAX_FILE_BYTES value "${envValue}" (must be numeric), using default ${DEFAULT_MAX_TEST_FILE_BYTES}`,
+    )
+    return DEFAULT_MAX_TEST_FILE_BYTES
+  }
+
+  const parsed = Number(envValue)
+  if (!Number.isFinite(parsed) || !Number.isInteger(parsed) || parsed <= 0) {
+    console.warn(
+      `Invalid TEST_MAX_FILE_BYTES value "${envValue}", using default ${DEFAULT_MAX_TEST_FILE_BYTES}`,
+    )
+    return DEFAULT_MAX_TEST_FILE_BYTES
+  }
+
+  return parsed
+}
+
+/**
+ * Maximum allowed test file size (50 MB by default) to prevent OOM in CI environments.
+ * Can be overridden via TEST_MAX_FILE_BYTES environment variable for special cases.
+ * Invalid values will fallback to the default with a warning.
+ */
+export const MAX_TEST_FILE_BYTES = parseMaxTestFileBytes()
+
+/**
  * Creates a buffer of specified size for testing file size limits
- * @param sizeInBytes Size of the buffer to create (must be a positive integer)
+ * @param sizeInBytes Size of the buffer to create (must be a positive integer, max 50 MB by default)
  * @param mimetype MIME type to report
  * @returns File object compatible with Payload's create API
- * @throws RangeError if sizeInBytes is not a positive integer
+ * @throws RangeError if sizeInBytes is not a positive integer or exceeds MAX_TEST_FILE_BYTES
  */
 export function createTestFileOfSize(sizeInBytes: number, mimetype = 'image/png'): PayloadFile {
   if (!Number.isInteger(sizeInBytes) || sizeInBytes <= 0) {
     throw new RangeError('sizeInBytes must be a positive integer')
+  }
+  if (sizeInBytes > MAX_TEST_FILE_BYTES) {
+    throw new RangeError(
+      `sizeInBytes (${sizeInBytes}) exceeds maximum allowed size (${MAX_TEST_FILE_BYTES} bytes). ` +
+        'Set TEST_MAX_FILE_BYTES environment variable to override.',
+    )
   }
   const buffer = Buffer.alloc(sizeInBytes)
   return {
@@ -104,12 +152,32 @@ export function createTestFileOfSize(sizeInBytes: number, mimetype = 'image/png'
 }
 
 /**
+ * Module-level counter for generating unique identifiers in parallel tests.
+ * This counter persists across test runs in the same process to ensure uniqueness.
+ * Use resetTestAltTextCounter() in test setup/teardown if isolation is needed.
+ */
+let testAltTextCounter = 0
+
+/**
+ * Resets the alt text counter to zero.
+ * Call this in beforeEach/afterEach if you need counter isolation between test suites.
+ * Note: In most cases, persistence is desirable to avoid collisions across suites.
+ */
+export function resetTestAltTextCounter(): void {
+  testAltTextCounter = 0
+}
+
+/**
  * Generate unique alt text for test media
+ * Uses timestamp + counter + random suffix to avoid collisions in parallel tests
  * @param prefix Optional prefix for the alt text
- * @returns Unique alt text string
+ * @returns Unique alt text string (format: "{prefix} {timestamp}-{counter}-{randomSuffix}")
  */
 export function generateTestAltText(prefix = 'Test Media'): string {
-  return `${prefix} ${Date.now()}`
+  const timestamp = Date.now()
+  const counter = ++testAltTextCounter
+  const randomSuffix = Math.random().toString(36).substring(2, 8)
+  return `${prefix} ${timestamp}-${counter}-${randomSuffix}`
 }
 
 /**
