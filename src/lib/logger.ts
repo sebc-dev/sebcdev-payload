@@ -31,8 +31,10 @@ export interface SerializedError {
 /**
  * Check if a value is error-like (Error instance, object with error properties, or string)
  * Handles cross-realm errors and plain error-like objects
+ *
+ * @internal Exported for testing purposes
  */
-function isErrorLike(value: unknown): boolean {
+export function isErrorLike(value: unknown): boolean {
   if (value instanceof Error) {
     return true
   }
@@ -76,8 +78,10 @@ const TRUNCATION_SUFFIX = '…[truncated]'
 
 /**
  * Check if a value is a Buffer or Stream-like object
+ *
+ * @internal Exported for testing purposes
  */
-function isBufferOrStream(value: unknown): boolean {
+export function isBufferOrStream(value: unknown): boolean {
   if (value === null || typeof value !== 'object') return false
   const obj = value as Record<string, unknown>
   // Check for Buffer

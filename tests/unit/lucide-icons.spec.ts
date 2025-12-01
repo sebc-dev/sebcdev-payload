@@ -43,12 +43,25 @@ describe('isValidLucideIcon', () => {
   })
 
   it('should allow empty string (treated as falsy)', () => {
-    expect(isValidLucideIcon('')).toBe(true)
+    const result = isValidLucideIcon('')
+    expect(result).toBe(true)
+    // Verify it returns exactly true (not just truthy)
+    expect(result === true).toBe(true)
   })
 
   it('should be case-sensitive', () => {
-    expect(isValidLucideIcon('Newspaper')).toContain('Please select a valid icon')
-    expect(isValidLucideIcon('BOOK')).toContain('Please select a valid icon')
+    const uppercaseResult = isValidLucideIcon('Newspaper')
+    const allCapsResult = isValidLucideIcon('BOOK')
+
+    // Verify they return error strings (not true or false)
+    expect(typeof uppercaseResult).toBe('string')
+    expect(typeof allCapsResult).toBe('string')
+    expect(uppercaseResult).toContain('Please select a valid icon')
+    expect(allCapsResult).toContain('Please select a valid icon')
+
+    // Verify lowercase versions are valid
+    expect(isValidLucideIcon('newspaper')).toBe(true)
+    expect(isValidLucideIcon('book')).toBe(true)
   })
 })
 
@@ -85,5 +98,29 @@ describe('getLucideIconOptions', () => {
     const bookOpenOption = options.find((opt) => opt.label === 'Book Open')
 
     expect(bookOpenOption?.value).toBe('book-open')
+
+    // Verify all values are lowercase kebab-case
+    options.forEach((opt) => {
+      expect(opt.value).toMatch(/^[a-z]+(-[a-z]+)*$/)
+      expect(opt.value).toBe(opt.value.toLowerCase())
+    })
+  })
+
+  it('should convert kebab-case to Title Case for labels', () => {
+    const options = getLucideIconOptions()
+
+    // Find multi-word icons to verify conversion
+    const codeXmlOption = options.find((opt) => opt.value === 'code-xml')
+    const fileTextOption = options.find((opt) => opt.value === 'file-text')
+
+    expect(codeXmlOption?.label).toBe('Code Xml')
+    expect(fileTextOption?.label).toBe('File Text')
+
+    // Labels should have spaces, values should have hyphens
+    const multiWordOptions = options.filter((opt) => opt.value.includes('-'))
+    multiWordOptions.forEach((opt) => {
+      expect(opt.label).toContain(' ')
+      expect(opt.label).not.toContain('-')
+    })
   })
 })
