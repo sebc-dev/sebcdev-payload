@@ -3,6 +3,7 @@ import AxeBuilder from '@axe-core/playwright'
 import path from 'path'
 import { fileURLToPath } from 'url'
 import fs from 'fs'
+import { TEST_IMAGE_PATH } from '../helpers/media.helpers'
 
 /**
  * E2E tests for the Payload CMS Media collection admin interface.
@@ -16,19 +17,16 @@ import fs from 'fs'
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 
-// Test configuration
-const BASE_URL = 'http://localhost:3000'
-const ADMIN_URL = `${BASE_URL}/admin`
+// Test configuration - use environment variables with sensible defaults
+const BASE_URL = process.env.BASE_URL ?? 'http://localhost:3000'
+const ADMIN_URL = `${BASE_URL}${process.env.ADMIN_PATH ?? '/admin'}`
 const MEDIA_COLLECTION_URL = `${ADMIN_URL}/collections/media`
 
-// Test credentials
+// Test credentials from environment variables with defaults for local development
 const TEST_USER = {
-  email: 'admin@example.com',
-  password: 'password123',
+  email: process.env.ADMIN_EMAIL ?? 'admin@example.com',
+  password: process.env.ADMIN_PASSWORD ?? 'password123',
 }
-
-// Test fixtures
-const TEST_IMAGE_PATH = path.resolve(__dirname, '../fixtures/test-image.png')
 
 // Auth state file for sharing authentication between tests
 const AUTH_STATE_PATH = path.resolve(__dirname, '../../.auth/admin.json')
