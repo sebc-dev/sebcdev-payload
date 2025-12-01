@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it, vi, beforeEach, afterEach } from 'vitest'
 
 import { createTestFileOfSize, MAX_TEST_FILE_BYTES } from '../helpers/media.helpers'
 
@@ -42,14 +42,67 @@ describe('createTestFileOfSize', () => {
     expect(Number.isInteger(MAX_TEST_FILE_BYTES)).toBe(true)
     expect(Number.isFinite(MAX_TEST_FILE_BYTES)).toBe(true)
   })
+})
 
-  it('should have MAX_TEST_FILE_BYTES equal to default when no env override', () => {
-    const DEFAULT_MAX = 50 * 1024 * 1024
+describe('MAX_TEST_FILE_BYTES env var parsing', () => {
+  const DEFAULT_MAX = 50 * 1024 * 1024
+  let originalEnvValue: string | undefined
 
-    // If no TEST_MAX_FILE_BYTES env var is set, expect default value
-    // Note: This test may be skipped if env var is set in CI
-    if (!process.env.TEST_MAX_FILE_BYTES) {
-      expect(MAX_TEST_FILE_BYTES).toBe(DEFAULT_MAX)
+  beforeEach(() => {
+    // Save original env value
+    originalEnvValue = process.env.TEST_MAX_FILE_BYTES
+    // Reset modules to allow re-evaluation of MAX_TEST_FILE_BYTES
+    vi.resetModules()
+  })
+
+  afterEach(() => {
+    // Restore original env value
+    if (originalEnvValue !== undefined) {
+      process.env.TEST_MAX_FILE_BYTES = originalEnvValue
+    } else {
+      delete process.env.TEST_MAX_FILE_BYTES
     }
+    vi.resetModules()
+  })
+
+  it('should use default value when env var is not set', async () => {
+    delete process.env.TEST_MAX_FILE_BYTES
+
+    const { MAX_TEST_FILE_BYTES: freshMax } = await import('../helpers/media.helpers')
+
+    expect(freshMax).toBe(DEFAULT_MAX)
+  })
+
+  it('should use env var value when set to valid numeric string', async () => {
+    const customValue = 10 * 1024 * 1024 // 10 MB
+    process.env.TEST_MAX_FILE_BYTES = String(customValue)
+
+    const { MAX_TEST_FILE_BYTES: freshMax } = await import('../helpers/media.helpers')
+
+    expect(freshMax).toBe(customValue)
+  })
+
+  it('should fallback to default when env var is non-numeric', async () => {
+    process.env.TEST_MAX_FILE_BYTES = '50MB'
+
+    const { MAX_TEST_FILE_BYTES: freshMax } = await import('../helpers/media.helpers')
+
+    expect(freshMax).toBe(DEFAULT_MAX)
+  })
+
+  it('should fallback to default when env var is negative', async () => {
+    process.env.TEST_MAX_FILE_BYTES = '-100'
+
+    const { MAX_TEST_FILE_BYTES: freshMax } = await import('../helpers/media.helpers')
+
+    expect(freshMax).toBe(DEFAULT_MAX)
+  })
+
+  it('should fallback to default when env var is zero', async () => {
+    process.env.TEST_MAX_FILE_BYTES = '0'
+
+    const { MAX_TEST_FILE_BYTES: freshMax } = await import('../helpers/media.helpers')
+
+    expect(freshMax).toBe(DEFAULT_MAX)
   })
 })
