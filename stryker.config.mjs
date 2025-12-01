@@ -1,17 +1,21 @@
 /**
  * Stryker Mutation Testing Configuration
  *
- * This configuration targets critical modules in src/lib/ and src/utilities/
- * for mutation testing to validate test quality.
+ * This configuration targets critical modules in src/lib/, src/utilities/,
+ * and src/hooks/ for mutation testing to validate test quality.
  *
  * @see https://stryker-mutator.io/docs/stryker-js/configuration
  * @type {import('@stryker-mutator/api/core').StrykerOptions}
  */
 export default {
+  // Package manager - avoid implicit npm installs
+  packageManager: 'pnpm',
+
   // Files to mutate (production code only)
   mutate: [
     'src/lib/**/*.ts',
     'src/utilities/**/*.ts',
+    'src/hooks/**/*.ts',
     '!src/**/*.test.ts',
     '!src/**/*.spec.ts',
     '!src/payload-types.ts',
