@@ -7,7 +7,7 @@
 | **Story ID**     | 2.2                                                     |
 | **Epic**         | Epic 2 - Content Management System (CMS) Core           |
 | **Title**        | Validation du Stockage R2                               |
-| **Status**       | PLANNED                                                 |
+| **Status**       | COMPLETED                                               |
 | **Created**      | 2025-11-30                                              |
 | **Dependencies** | Story 2.1 (partiel - collection Media existe)           |
 | **Complexity**   | Medium                                                  |
@@ -113,10 +113,10 @@ Source: [Cloudflare R2 Documentation](https://developers.cloudflare.com/r2/)
 **Then** l'upload se complete sans erreur et l'image est visible dans la liste Media
 
 **Validation** :
-- [ ] Formulaire d'upload accessible
-- [ ] Progress bar visible pendant upload
-- [ ] Confirmation apres upload reussi
-- [ ] Image affichee dans la galerie Media
+- [x] Formulaire d'upload accessible
+- [x] Progress bar visible pendant upload
+- [x] Confirmation apres upload reussi
+- [x] Image affichee dans la galerie Media
 
 ### CA2 : Presence dans le bucket R2
 
@@ -125,10 +125,10 @@ Source: [Cloudflare R2 Documentation](https://developers.cloudflare.com/r2/)
 **Then** le fichier existe avec le bon nom et la bonne taille
 
 **Validation** :
-- [ ] Fichier present dans R2 bucket
-- [ ] Nom de fichier correspond (avec prefixe/path Payload)
-- [ ] Taille fichier coherente
-- [ ] MIME type correct
+- [x] Fichier present dans R2 bucket
+- [x] Nom de fichier correspond (avec prefixe/path Payload)
+- [x] Taille fichier coherente
+- [x] MIME type correct
 
 ### CA3 : Accessibilite URL
 
@@ -137,10 +137,10 @@ Source: [Cloudflare R2 Documentation](https://developers.cloudflare.com/r2/)
 **Then** l'image est servie correctement avec les bons headers
 
 **Validation** :
-- [ ] URL generee par Payload fonctionne
-- [ ] Headers `Content-Type` corrects
-- [ ] Cache headers presents (si configures)
-- [ ] Pas d'erreur CORS en local
+- [x] URL generee par Payload fonctionne
+- [x] Headers `Content-Type` corrects
+- [x] Cache headers presents (si configures)
+- [x] Pas d'erreur CORS en local
 
 ### CA4 : Metadata stockees
 
@@ -149,10 +149,10 @@ Source: [Cloudflare R2 Documentation](https://developers.cloudflare.com/r2/)
 **Then** toutes les metadata sont correctement persistees
 
 **Validation** :
-- [ ] Alt text sauvegarde en D1
-- [ ] Dimensions images (si extraites)
-- [ ] Filename original
-- [ ] URL R2 reference
+- [x] Alt text sauvegarde en D1
+- [x] Dimensions images (si extraites)
+- [x] Filename original
+- [x] URL R2 reference
 
 ### CA5 : Operations CRUD completes
 
@@ -161,10 +161,10 @@ Source: [Cloudflare R2 Documentation](https://developers.cloudflare.com/r2/)
 **Then** toutes les operations se refletent dans R2
 
 **Validation** :
-- [ ] Create : Nouveau fichier dans R2
-- [ ] Read : Fichier accessible
-- [ ] Update : Remplacement fichier fonctionne
-- [ ] Delete : Fichier supprime de R2
+- [x] Create : Nouveau fichier dans R2
+- [x] Read : Fichier accessible
+- [x] Update : Remplacement fichier fonctionne
+- [x] Delete : Fichier supprime de R2
 
 ---
 
