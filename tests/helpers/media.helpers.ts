@@ -84,12 +84,37 @@ export function getTestImageFile(customName?: string): PayloadFile {
 }
 
 /**
- * Maximum allowed test file size (50 MB) to prevent OOM in CI environments.
- * Can be overridden via TEST_MAX_FILE_BYTES environment variable for special cases.
+ * Default maximum test file size (50 MB) to prevent OOM in CI environments.
  */
-export const MAX_TEST_FILE_BYTES = process.env.TEST_MAX_FILE_BYTES
-  ? parseInt(process.env.TEST_MAX_FILE_BYTES, 10)
-  : 50 * 1024 * 1024
+const DEFAULT_MAX_TEST_FILE_BYTES = 50 * 1024 * 1024
+
+/**
+ * Parse and validate TEST_MAX_FILE_BYTES environment variable.
+ * Returns the default if the env var is not set, not a valid number, or not a positive integer.
+ */
+function parseMaxTestFileBytes(): number {
+  const envValue = process.env.TEST_MAX_FILE_BYTES
+  if (!envValue) {
+    return DEFAULT_MAX_TEST_FILE_BYTES
+  }
+
+  const parsed = parseInt(envValue, 10)
+  if (!Number.isFinite(parsed) || !Number.isInteger(parsed) || parsed <= 0) {
+    console.warn(
+      `Invalid TEST_MAX_FILE_BYTES value "${envValue}", using default ${DEFAULT_MAX_TEST_FILE_BYTES}`,
+    )
+    return DEFAULT_MAX_TEST_FILE_BYTES
+  }
+
+  return parsed
+}
+
+/**
+ * Maximum allowed test file size (50 MB by default) to prevent OOM in CI environments.
+ * Can be overridden via TEST_MAX_FILE_BYTES environment variable for special cases.
+ * Invalid values will fallback to the default with a warning.
+ */
+export const MAX_TEST_FILE_BYTES = parseMaxTestFileBytes()
 
 /**
  * Creates a buffer of specified size for testing file size limits
