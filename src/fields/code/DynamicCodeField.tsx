@@ -44,7 +44,7 @@ export function DynamicCodeField(props: CodeFieldClientProps) {
       field={{
         ...props.field,
         admin: {
-          ...props.field.admin,
+          ...(props.field.admin ?? {}),
           language,
         },
       }}
