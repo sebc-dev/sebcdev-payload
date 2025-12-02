@@ -14,5 +14,25 @@ export const routing = defineRouting({
   localePrefix: 'always',
 })
 
+/**
+ * Middleware matcher configuration
+ *
+ * Only matches frontend routes, excluding:
+ * - /api/* - API routes (Payload and custom endpoints)
+ * - /admin/* - Payload admin panel
+ * - /_next/* - Next.js internals
+ * - Files with extensions (.*\..*)
+ *
+ * This ensures middleware only processes frontend routes that need locale handling.
+ * The matcher pattern uses a negative lookahead regex for efficiency.
+ *
+ * @see middleware.ts - Uses this same pattern
+ */
+export const middlewareMatcher = [
+  // Match all pathnames except those starting with:
+  // api/, admin/, _next/ or containing a file extension
+  '/((?!api|admin|_next|.*\\..*).*)',
+]
+
 // Re-export for convenience
 export type { Locale } from './config'
