@@ -27,8 +27,8 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
   const fileURL = `vscode://file/${fileURLToPath(import.meta.url)}`
 
   return (
-    <div className="home">
-      <div className="content">
+    <div className="mx-auto flex min-h-screen max-w-4xl flex-col items-center justify-between p-6 sm:p-11">
+      <div className="flex flex-grow flex-col items-center justify-center">
         <picture>
           <source srcSet="https://raw.githubusercontent.com/payloadcms/payload/main/packages/ui/src/assets/payload-favicon.svg" />
           <Image
@@ -38,11 +38,19 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
             width={65}
           />
         </picture>
-        {!user && <h1>Welcome to your new project.</h1>}
-        {user && <h1>Welcome back, {user.email}</h1>}
-        <div className="links">
+        {!user && (
+          <h1 className="my-6 text-center text-3xl font-bold sm:my-10 sm:text-4xl lg:text-5xl">
+            Welcome to your new project.
+          </h1>
+        )}
+        {user && (
+          <h1 className="my-6 text-center text-3xl font-bold sm:my-10 sm:text-4xl lg:text-5xl">
+            Welcome back, {user.email}
+          </h1>
+        )}
+        <div className="flex items-center gap-3">
           <a
-            className="admin"
+            className="rounded bg-foreground px-3 py-1.5 text-background no-underline transition-colors hover:bg-foreground/90"
             href={payloadConfig.routes.admin}
             rel="noopener noreferrer"
             target="_blank"
@@ -50,7 +58,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
             Go to admin panel
           </a>
           <a
-            className="docs"
+            className="rounded border border-border bg-background px-3 py-1.5 text-foreground no-underline transition-colors hover:bg-muted"
             href="https://payloadcms.com/docs"
             rel="noopener noreferrer"
             target="_blank"
@@ -75,9 +83,9 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
           <Button size="lg">Large</Button>
         </div>
       </section>
-      <div className="footer">
-        <p>Update this page by editing</p>
-        <a className="codeLink" href={fileURL}>
+      <div className="mt-8 flex flex-col items-center gap-2 lg:flex-row">
+        <p className="m-0 text-muted-foreground">Update this page by editing</p>
+        <a className="rounded bg-muted px-2 py-0.5 font-mono text-sm no-underline" href={fileURL}>
           <code>app/[locale]/(frontend)/page.tsx</code>
         </a>
       </div>
