@@ -1,6 +1,6 @@
 import createMiddleware from 'next-intl/middleware'
 import { type NextRequest } from 'next/server'
-import { routing, middlewareMatcher } from '@/i18n/routing'
+import { routing } from '@/i18n/routing'
 
 /**
  * Query parameter that indicates an explicit user-initiated locale change.
@@ -80,5 +80,7 @@ export default function middleware(request: NextRequest) {
  * This ensures middleware only processes frontend routes that need locale handling.
  */
 export const config = {
-  matcher: middlewareMatcher,
+  // Must be inlined - Next.js requires static analysis of config.matcher
+  // Matches all pathnames except: /api/*, /admin/*, /_next/*, files with extensions
+  matcher: ['/((?!api|admin|_next|.*\\..*).*)'],
 }
