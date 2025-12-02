@@ -133,6 +133,7 @@ export type { Locale } from './config';
 ```typescript
 import { getRequestConfig } from 'next-intl/server';
 import { routing } from './routing';
+import { isValidLocale } from './config';
 
 /**
  * Server-side i18n Request Configuration
@@ -147,7 +148,7 @@ export default getRequestConfig(async ({ requestLocale }) => {
   let locale = await requestLocale;
 
   // Validate and fallback to default if invalid
-  if (!locale || !routing.locales.includes(locale as (typeof routing.locales)[number])) {
+  if (!locale || !isValidLocale(locale)) {
     locale = routing.defaultLocale;
   }
 
