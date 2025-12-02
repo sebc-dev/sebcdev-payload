@@ -39,9 +39,9 @@
     --popover: hsl(222, 16%, 18%);
     --popover-foreground: hsl(210, 40%, 98%);
 
-    /* Primary accent (Teal) */
+    /* Primary accent (Teal) - darker text for WCAG AA contrast (7.3:1) */
     --primary: hsl(174, 72%, 40%);
-    --primary-foreground: hsl(210, 40%, 98%);
+    --primary-foreground: hsl(222, 16%, 12%);
 
     /* Secondary */
     --secondary: hsl(217, 19%, 27%);
@@ -55,9 +55,9 @@
     --accent: hsl(217, 19%, 27%);
     --accent-foreground: hsl(210, 40%, 98%);
 
-    /* Destructive (Red) */
+    /* Destructive (Red) - darker text for WCAG AA contrast */
     --destructive: hsl(0, 72%, 67%);
-    --destructive-foreground: hsl(210, 40%, 98%);
+    --destructive-foreground: hsl(222, 16%, 12%);
 
     /* Border & Input */
     --border: hsl(217, 19%, 27%);
