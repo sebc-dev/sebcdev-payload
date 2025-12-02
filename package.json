@@ -43,6 +43,7 @@
     "@payloadcms/richtext-lexical": "3.63.0",
     "@payloadcms/storage-r2": "3.63.0",
     "@payloadcms/ui": "3.63.0",
+    "@radix-ui/react-slot": "^1.2.4",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "cross-env": "^7.0.3",
