@@ -20,6 +20,11 @@ const LOCALE_COOKIE_NAME = 'NEXT_LOCALE'
  */
 const ONE_YEAR_SECONDS = 60 * 60 * 24 * 365
 
+/**
+ * Secure cookie flag - only send over HTTPS in production
+ */
+const isProduction = process.env.NODE_ENV === 'production'
+
 const handleI18nRouting = createMiddleware(routing)
 
 /**
@@ -61,14 +66,20 @@ export default function middleware(request: NextRequest) {
         maxAge: ONE_YEAR_SECONDS,
         path: '/',
         sameSite: 'lax',
+        secure: isProduction,
       })
     } else {
       // Automatic detection: session cookie (no maxAge)
       response.cookies.set(LOCALE_COOKIE_NAME, locale, {
         path: '/',
         sameSite: 'lax',
+        secure: isProduction,
       })
     }
+
+    // Prevent Cloudflare and other CDNs from caching responses with Set-Cookie
+    // This ensures the locale cookie is properly delivered to the client
+    response.headers.set('Cache-Control', 'private, no-cache, no-store, must-revalidate')
   }
 
   return response
