@@ -1,6 +1,7 @@
 import createMiddleware from 'next-intl/middleware'
 import { type NextRequest } from 'next/server'
 import { routing } from '@/i18n/routing'
+import { isValidLocale } from '@/i18n/config'
 
 /**
  * Query parameter that indicates an explicit user-initiated locale change.
@@ -42,12 +43,17 @@ export default function middleware(request: NextRequest) {
   // Detect explicit user-initiated locale change
   const explicitChange = request.nextUrl.searchParams.has(EXPLICIT_LOCALE_CHANGE_PARAM)
 
-  // Extract locale from the URL path (after redirect/rewrite)
-  const pathname = response.headers.get('x-middleware-rewrite') || request.nextUrl.pathname
-  const localeMatch = pathname.match(/^\/([a-z]{2})(\/|$)/)
-  const locale = localeMatch?.[1]
+  // Extract locale using next-intl's dedicated header (preferred source of truth)
+  // Falls back to URL path parsing for robustness
+  // Supports both 2-letter (en, fr) and regional locales (en-US, fr-CA)
+  const headerLocale = response.headers.get('x-middleware-request-x-next-intl-locale')
+  const rewriteUrl = response.headers.get('x-middleware-rewrite')
+  const pathname = rewriteUrl ? new URL(rewriteUrl, request.url).pathname : request.nextUrl.pathname
+  const [, pathLocale] = pathname.split('/')
 
-  if (locale) {
+  const locale = headerLocale ?? pathLocale
+
+  if (locale && isValidLocale(locale)) {
     // Set cookie with GDPR-compliant behavior
     if (explicitChange) {
       // Explicit user choice: persistent cookie (1 year)
