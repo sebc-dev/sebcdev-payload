@@ -9,10 +9,12 @@
  * logger.info('Request completed', { duration: 150, status: 200 })
  */
 
+/** @public - Context object type for structured logging */
 export interface LogContext {
   [key: string]: unknown
 }
 
+/** @public - Logger interface for dependency injection and testing */
 export interface Logger {
   error: (message: string, context?: LogContext) => void
   warn: (message: string, context?: LogContext) => void
@@ -20,7 +22,10 @@ export interface Logger {
   debug: (message: string, context?: LogContext) => void
 }
 
-/** Serialized error structure for JSON output (allows custom properties) */
+/**
+ * Serialized error structure for JSON output (allows custom properties)
+ * @public - Used for typing error serialization results
+ */
 export interface SerializedError {
   name: string
   message: string
