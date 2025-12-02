@@ -12,6 +12,9 @@ export const routing = defineRouting({
   locales,
   defaultLocale,
   localePrefix: 'always',
+  // Disable automatic cookie - we handle it manually for GDPR compliance
+  // Session cookie by default, persistent only on explicit user locale change
+  localeCookie: false,
 })
 
 /**
