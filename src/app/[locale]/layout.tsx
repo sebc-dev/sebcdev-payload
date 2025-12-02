@@ -1,7 +1,7 @@
 import '@/app/globals.css'
 import { NextIntlClientProvider } from 'next-intl'
 import { getMessages, setRequestLocale } from 'next-intl/server'
-import { Nunito_Sans } from 'next/font/google'
+import { JetBrains_Mono, Nunito_Sans } from 'next/font/google'
 import { notFound } from 'next/navigation'
 import { routing } from '@/i18n/routing'
 import { isValidLocale } from '@/i18n/config'
@@ -19,6 +19,18 @@ const nunitoSans = Nunito_Sans({
 })
 
 /**
+ * JetBrains Mono - Monospace font for code elements
+ *
+ * @see https://fonts.google.com/specimen/JetBrains+Mono
+ */
+const jetbrainsMono = JetBrains_Mono({
+  subsets: ['latin'],
+  variable: '--font-mono',
+  display: 'swap',
+  weight: ['400', '500'],
+})
+
+/**
  * Generate static params for all supported locales.
  * This enables static generation for /fr and /en paths.
  */
@@ -33,7 +45,7 @@ export function generateStaticParams() {
  * - NextIntlClientProvider for client-side translations
  * - Dynamic <html lang> attribute
  * - Static rendering support via setRequestLocale
- * - Nunito Sans font via next/font
+ * - Nunito Sans and JetBrains Mono fonts via next/font
  */
 export default async function LocaleLayout({
   children,
@@ -56,7 +68,7 @@ export default async function LocaleLayout({
   const messages = await getMessages()
 
   return (
-    <html lang={locale} className={nunitoSans.variable}>
+    <html lang={locale} className={`${nunitoSans.variable} ${jetbrainsMono.variable}`}>
       <body className="font-sans">
         <NextIntlClientProvider messages={messages}>{children}</NextIntlClientProvider>
       </body>
