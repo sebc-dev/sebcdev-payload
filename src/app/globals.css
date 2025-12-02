@@ -76,6 +76,9 @@
  * Using @theme inline to reference CSS variables defined in :root
  */
 @theme inline {
+  /* Typography - Nunito Sans for body/headings */
+  --font-sans: var(--font-sans);
+
   /* Colors - map to utility classes like bg-background, text-primary, etc. */
   --color-background: var(--background);
   --color-foreground: var(--foreground);
