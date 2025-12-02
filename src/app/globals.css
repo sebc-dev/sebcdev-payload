@@ -1,22 +1,125 @@
 /**
  * Global Styles - Tailwind CSS 4
  *
- * This file imports Tailwind CSS and defines base layer customizations.
- * Design tokens will be added in Phase 3.
+ * This file imports Tailwind CSS and defines:
+ * - Design tokens (CSS variables) for the "Anthracite & Vert Canard" theme
+ * - Base layer customizations
  *
- * @see https://tailwindcss.com/docs/v4-beta
+ * @see https://tailwindcss.com/docs/theme
+ * @see https://ui.shadcn.com/docs/theming
  */
 
 /* Tailwind CSS 4 - CSS-first import */
 @import 'tailwindcss';
 
 /*
+ * Design Tokens - Anthracite & Vert Canard Theme
+ *
+ * Color palette following shadcn/ui conventions.
+ * Uses HSL values for theme colors.
+ *
+ * Brand colors:
+ * - Background (Anthracite): #1A1D23 → hsl(222, 16%, 12%)
+ * - Foreground (Off-white): #F7FAFC → hsl(210, 40%, 98%)
+ * - Primary (Teal): #14B8A6 → hsl(174, 72%, 40%)
+ */
+
+/* CSS variables for theming - these hold the actual values */
+@layer base {
+  :root {
+    /* Background colors */
+    --background: hsl(222, 16%, 12%);
+    --foreground: hsl(210, 40%, 98%);
+
+    /* Card colors */
+    --card: hsl(222, 16%, 18%);
+    --card-foreground: hsl(210, 40%, 98%);
+
+    /* Popover colors */
+    --popover: hsl(222, 16%, 18%);
+    --popover-foreground: hsl(210, 40%, 98%);
+
+    /* Primary accent (Teal) */
+    --primary: hsl(174, 72%, 40%);
+    --primary-foreground: hsl(210, 40%, 98%);
+
+    /* Secondary */
+    --secondary: hsl(217, 19%, 27%);
+    --secondary-foreground: hsl(210, 40%, 98%);
+
+    /* Muted */
+    --muted: hsl(217, 19%, 27%);
+    --muted-foreground: hsl(215, 14%, 65%);
+
+    /* Accent */
+    --accent: hsl(217, 19%, 27%);
+    --accent-foreground: hsl(210, 40%, 98%);
+
+    /* Destructive (Red) */
+    --destructive: hsl(0, 72%, 67%);
+    --destructive-foreground: hsl(210, 40%, 98%);
+
+    /* Border & Input */
+    --border: hsl(217, 19%, 27%);
+    --input: hsl(217, 19%, 27%);
+
+    /* Focus ring (Teal) */
+    --ring: hsl(174, 72%, 40%);
+
+    /* Border radius */
+    --radius: 0.5rem;
+  }
+}
+
+/*
+ * Tailwind v4 Theme - Register CSS variables as Tailwind utilities
+ * Using @theme inline to reference CSS variables defined in :root
+ */
+@theme inline {
+  /* Colors - map to utility classes like bg-background, text-primary, etc. */
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  /* Border radius */
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+}
+
+/*
  * Base layer customizations
  * These apply to the base HTML elements
  */
 @layer base {
-  /* Smooth scrolling for the entire page */
+  /* Dark mode by default - set color scheme */
   html {
+    color-scheme: dark;
     scroll-behavior: smooth;
   }
 
@@ -26,9 +129,11 @@
     height: 100%;
   }
 
-  /* Remove default margins */
+  /* Apply theme colors to body */
   body {
     margin: 0;
+    background-color: var(--background);
+    color: var(--foreground);
   }
 
   /* Responsive images by default */
@@ -38,9 +143,11 @@
     display: block;
   }
 
-  /* Focus visible for accessibility */
+  /* Accessible focus styles using design tokens */
   :focus-visible {
-    outline: 2px solid currentColor;
-    outline-offset: 2px;
+    outline: none;
+    box-shadow:
+      0 0 0 2px var(--background),
+      0 0 0 4px var(--ring);
   }
 }
