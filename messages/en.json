@@ -1,0 +1,25 @@
+{
+  "common": {
+    "loading": "Loading...",
+    "error": "An error occurred",
+    "retry": "Retry",
+    "back": "Back",
+    "close": "Close"
+  },
+  "navigation": {
+    "home": "Home",
+    "blog": "Blog",
+    "about": "About",
+    "contact": "Contact",
+    "search": "Search"
+  },
+  "metadata": {
+    "title": "sebc.dev - Technical Blog",
+    "description": "Technical blog about modern web development, Next.js, and Cloudflare"
+  },
+  "accessibility": {
+    "skipToContent": "Skip to main content",
+    "menu": "Menu",
+    "languageSelector": "Select language"
+  }
+}
