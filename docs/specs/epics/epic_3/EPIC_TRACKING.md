@@ -28,8 +28,8 @@ Construire l'identité visuelle et la navigation bilingue du blog. Cet epic éta
 
 | Story | Title | Description | Status | Phases | Progress |
 |-------|-------|-------------|--------|--------|----------|
-| 3.1 | Routing i18n & Middleware | Implémenter le routing bilingue avec `next-intl`, URLs localisées (`/fr`, `/en`) et persistance de la préférence utilisateur | IN PROGRESS | 4 | 0/4 (Phase 1 📋) |
-| 3.2 | Intégration Design System (Dark Mode) | Installer Tailwind 4 et shadcn/ui, appliquer la charte graphique "Anthracite & Vert Canard" | NOT STARTED | - | 0/0 |
+| 3.1 | Routing i18n & Middleware | Implémenter le routing bilingue avec `next-intl`, URLs localisées (`/fr`, `/en`) et persistance de la préférence utilisateur | COMPLETED | 4 | 4/4 ✅ |
+| 3.2 | Intégration Design System (Dark Mode) | Installer Tailwind 4 et shadcn/ui, appliquer la charte graphique "Anthracite & Vert Canard" | IN PROGRESS | 4 | 0/4 (Phase 1 📋) |
 | 3.3 | Layout Global & Navigation | Créer Header et Footer cohérents avec sélecteur de langue fonctionnel | NOT STARTED | - | 0/0 |
 
 ---
@@ -55,10 +55,10 @@ Construire l'identité visuelle et la navigation bilingue du blog. Cet epic éta
 
 ### Progress Summary
 
-- **Stories Started**: 1/3
-- **Stories Completed**: 0/3
-- **Total Phases**: 4
-- **Phases Completed**: 0
+- **Stories Started**: 2/3
+- **Stories Completed**: 1/3
+- **Total Phases**: 8 (4 + 4)
+- **Phases Completed**: 4
 
 ### Timeline
 
@@ -107,6 +107,8 @@ Story 3.2 (Design System)
 
 | Date | Update |
 |------|--------|
+| 2025-12-02 | Story 3.2 planned: 4 phases (~12-16 commits), design system setup |
+| 2025-12-02 | Story 3.1 marked as COMPLETED (i18n routing fully functional) |
 | 2025-12-01 | Story 3.1 Phase 1 documentation generated (7 files, ~145 lines implementation) |
 | 2025-12-01 | Story 3.1 planned: 4 phases, ~12-16 commits |
 | 2025-12-01 | Epic initialized with 3 stories from PRD |
@@ -130,10 +132,8 @@ Story 3.2 (Design System)
 
 ### Story Specifications
 
-_Links will be added as stories are planned:_
-
-- Story 3.1: [story_3_1/story_3.1.md](story_3_1/story_3.1.md)
-- Story 3.2: `story_3_2/story_3.2.md` (pending)
+- Story 3.1: [story_3_1/story_3.1.md](story_3_1/story_3.1.md) ✅
+- Story 3.2: [story_3_2/story_3.2.md](story_3_2/story_3.2.md) 🚧
 - Story 3.3: `story_3_3/story_3.3.md` (pending)
 
 ---
