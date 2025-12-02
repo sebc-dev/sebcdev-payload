@@ -73,6 +73,8 @@ export function middleware(request: NextRequest) {
  */
 export const config = {
   matcher: [
+    // Match root path explicitly
+    '/',
     // Match all pathnames except those starting with:
     // api/, admin/, _next/ or containing a file extension
     '/((?!api|admin|_next|.*\\..*).*)',
