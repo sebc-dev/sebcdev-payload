@@ -3,7 +3,7 @@
 **Story**: Intégration Design System (Dark Mode)
 **Epic**: 3 - Frontend Core & Design System
 **Created**: 2025-12-02
-**Status**: 📋 PLANNING
+**Status**: 🚧 IN PROGRESS (Phase 3 Complete)
 
 ---
 
@@ -552,9 +552,9 @@ Pour chaque phase:
 
 Mettre à jour ce document au fur et à mesure:
 
-- [ ] Phase 1: Tailwind Foundation - ⬜ Not Started
-- [ ] Phase 2: shadcn/ui Setup - ⬜ Not Started
-- [ ] Phase 3: Design Tokens & Migration - ⬜ Not Started
+- [x] Phase 1: Tailwind Foundation - ✅ COMPLETED (2025-12-02)
+- [x] Phase 2: shadcn/ui Setup - ✅ COMPLETED (2025-12-02)
+- [x] Phase 3: Design Tokens & Migration - ✅ COMPLETED (2025-12-02, 5 commits)
 - [ ] Phase 4: Validation & Cleanup - ⬜ Not Started
 
 ---
@@ -613,4 +613,4 @@ Cette story est considérée complète quand:
 **Plan Created**: 2025-12-02
 **Last Updated**: 2025-12-02
 **Created by**: Claude Code (story-phase-planner skill)
-**Story Status**: 📋 PLANNING
+**Story Status**: 🚧 IN PROGRESS (3/4 phases complete)

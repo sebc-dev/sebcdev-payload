@@ -3,7 +3,7 @@
 **Story**: 3.2 - Integration Design System (Dark Mode)
 **Epic**: 3 - Frontend Core & Design System
 **Phase**: 3 of 4
-**Status**: READY FOR IMPLEMENTATION
+**Status**: ✅ COMPLETED (2025-12-02)
 
 ---
 
@@ -38,12 +38,12 @@ Configure the design tokens from the "Anthracite & Vert Canard" brand guidelines
 
 ### Key Deliverables
 
-- [ ] CSS variables defined in globals.css (shadcn/ui format)
-- [ ] Nunito Sans font configured via next/font
-- [ ] JetBrains Mono font configured via next/font
-- [ ] Homepage migrated to Tailwind utility classes
-- [ ] styles.css deleted
-- [ ] Visual conformity with brand guidelines
+- [x] CSS variables defined in globals.css (shadcn/ui format)
+- [x] Nunito Sans font configured via next/font
+- [x] JetBrains Mono font configured via next/font
+- [x] Homepage migrated to Tailwind utility classes
+- [x] styles.css deleted
+- [x] Visual conformity with brand guidelines
 
 ---
 
