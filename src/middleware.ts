@@ -1,64 +1,18 @@
-import { NextRequest, NextResponse } from 'next/server'
-import { routing } from '@/i18n/routing'
-import { isValidLocale, defaultLocale } from '@/i18n/config'
+import createMiddleware from 'next-intl/middleware'
+import { routing, middlewareMatcher } from '@/i18n/routing'
 
 /**
  * Middleware for locale detection and routing
  *
- * Detects user's locale preference from:
- * 1. Existing NEXT_LOCALE cookie (returning visitor)
- * 2. Accept-Language header (new visitor)
- * 3. Default locale (fallback)
- *
- * Sets NEXT_LOCALE cookie for persistence across sessions.
+ * Uses next-intl's createMiddleware for RFC-compliant locale negotiation:
+ * - Proper Accept-Language parsing with q-value handling
+ * - Automatic locale detection, redirects, and rewrites
+ * - Cookie-based locale persistence (NEXT_LOCALE)
+ * - Alternate links for search engines
  *
  * @see https://next-intl.dev/docs/routing/middleware
  */
-export function middleware(request: NextRequest) {
-  const pathname = request.nextUrl.pathname
-
-  // Check if pathname already has a locale prefix
-  const pathnameHasLocale = routing.locales.some(
-    (locale) => pathname.startsWith(`/${locale}/`) || pathname === `/${locale}`,
-  )
-
-  // If locale is already in the path, proceed without redirecting
-  if (pathnameHasLocale) {
-    return NextResponse.next()
-  }
-
-  // Get locale from cookie (returning visitors)
-  const cookieLocale = request.cookies.get('NEXT_LOCALE')?.value
-
-  let locale = defaultLocale
-
-  // Priority 1: Use cookie if valid (returning visitor's preference)
-  if (cookieLocale && isValidLocale(cookieLocale)) {
-    locale = cookieLocale
-  } else {
-    // Priority 2: Parse Accept-Language header (new visitor)
-    const acceptLanguage = request.headers.get('accept-language') || ''
-    const preferredLocale = acceptLanguage.split(',')[0].split('-')[0].toLowerCase()
-
-    if (isValidLocale(preferredLocale)) {
-      locale = preferredLocale
-    }
-  }
-
-  // Redirect to locale-prefixed URL and set cookie
-  const response = NextResponse.redirect(
-    new URL(`/${locale}${pathname === '/' ? '' : pathname}`, request.url),
-  )
-
-  // Set NEXT_LOCALE cookie for future requests
-  response.cookies.set('NEXT_LOCALE', locale, {
-    maxAge: 31536000, // 1 year in seconds
-    path: '/',
-    sameSite: 'lax',
-  })
-
-  return response
-}
+export default createMiddleware(routing)
 
 /**
  * Middleware matcher configuration
@@ -72,11 +26,5 @@ export function middleware(request: NextRequest) {
  * This ensures middleware only processes frontend routes that need locale handling.
  */
 export const config = {
-  matcher: [
-    // Match root path explicitly
-    '/',
-    // Match all pathnames except those starting with:
-    // api/, admin/, _next/ or containing a file extension
-    '/((?!api|admin|_next|.*\\..*).*)',
-  ],
+  matcher: middlewareMatcher,
 }
