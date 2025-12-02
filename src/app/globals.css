@@ -1,0 +1,46 @@
+/**
+ * Global Styles - Tailwind CSS 4
+ *
+ * This file imports Tailwind CSS and defines base layer customizations.
+ * Design tokens will be added in Phase 3.
+ *
+ * @see https://tailwindcss.com/docs/v4-beta
+ */
+
+/* Tailwind CSS 4 - CSS-first import */
+@import 'tailwindcss';
+
+/*
+ * Base layer customizations
+ * These apply to the base HTML elements
+ */
+@layer base {
+  /* Smooth scrolling for the entire page */
+  html {
+    scroll-behavior: smooth;
+  }
+
+  /* Ensure full height for app shell */
+  html,
+  body {
+    height: 100%;
+  }
+
+  /* Remove default margins */
+  body {
+    margin: 0;
+  }
+
+  /* Responsive images by default */
+  img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+  }
+
+  /* Focus visible for accessibility */
+  :focus-visible {
+    outline: 2px solid currentColor;
+    outline-offset: 2px;
+  }
+}
