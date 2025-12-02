@@ -6,6 +6,7 @@
  */
 
 export const locales = ['fr', 'en'] as const
+/** @public - Exported for typing locale parameters across the application */
 export type Locale = (typeof locales)[number]
 export const defaultLocale: Locale = 'fr'
 

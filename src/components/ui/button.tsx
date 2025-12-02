@@ -31,6 +31,7 @@ const buttonVariants = cva(
   },
 )
 
+/** @public - Exported for typing button component props in consumers */
 export interface ButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement>,
     VariantProps<typeof buttonVariants> {
@@ -47,4 +48,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
 )
 Button.displayName = 'Button'
 
-export { Button, buttonVariants }
+export { Button }
+
+/** @public - Exported for composing button styles with other components (e.g., Link as Button) */
+export { buttonVariants }

@@ -29,6 +29,7 @@ export const routing = defineRouting({
  * This ensures middleware only processes frontend routes that need locale handling.
  * The matcher pattern uses a negative lookahead regex for efficiency.
  *
+ * @public - Exported for reuse in middleware.ts and tests
  * @see middleware.ts - Uses this same pattern
  */
 export const middlewareMatcher = [
@@ -37,5 +38,8 @@ export const middlewareMatcher = [
   '/((?!api|admin|_next|.*\\..*).*)',
 ]
 
-// Re-export for convenience
+/**
+ * Re-export Locale type for convenience
+ * @public - Public API for consumers of i18n module
+ */
 export type { Locale } from './config'

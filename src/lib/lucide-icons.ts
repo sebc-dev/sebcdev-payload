@@ -82,6 +82,7 @@ export const LUCIDE_CATEGORY_ICONS = [
 
 /**
  * TypeScript type representing valid Lucide category icon names.
+ * @public - Used for typing icon fields in Payload collections
  */
 export type LucideCategoryIcon = (typeof LUCIDE_CATEGORY_ICONS)[number]
 
