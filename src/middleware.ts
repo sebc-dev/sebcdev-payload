@@ -81,12 +81,20 @@ export default function middleware(request: NextRequest) {
  * - /api/* - API routes
  * - /admin/* - Payload admin panel
  * - /_next/* - Next.js internals
- * - Files with extensions (.*\..*)
+ * - Paths containing a dot (.*\..*)
  *
  * This ensures middleware only processes frontend routes that need locale handling.
+ *
+ * @note The dot exclusion pattern filters ANY path containing a dot, not just file
+ * extensions. This means routes like /blog/john.doe or /v1.2/changelog will bypass
+ * the middleware. This is intentional for this CMS project where content slugs
+ * should not contain dots. If you need routes with dots, use a more specific pattern
+ * like /[^/]+\\.[^/]+$ to match only the final segment with an extension.
+ *
+ * @see https://next-intl.dev/docs/routing/middleware#matcher
  */
 export const config = {
   // Must be inlined - Next.js requires static analysis of config.matcher
-  // Matches all pathnames except: /api/*, /admin/*, /_next/*, files with extensions
+  // Matches all pathnames except: /api/*, /admin/*, /_next/*, paths with dots
   matcher: ['/((?!api|admin|_next|.*\\..*).*)'],
 }
