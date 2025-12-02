@@ -1,9 +1,22 @@
 import '@/app/globals.css'
 import { NextIntlClientProvider } from 'next-intl'
 import { getMessages, setRequestLocale } from 'next-intl/server'
+import { Nunito_Sans } from 'next/font/google'
 import { notFound } from 'next/navigation'
 import { routing } from '@/i18n/routing'
 import { isValidLocale } from '@/i18n/config'
+
+/**
+ * Nunito Sans - Primary font for body and headings
+ *
+ * @see https://fonts.google.com/specimen/Nunito+Sans
+ */
+const nunitoSans = Nunito_Sans({
+  subsets: ['latin'],
+  variable: '--font-sans',
+  display: 'swap',
+  weight: ['400', '600', '700'],
+})
 
 /**
  * Generate static params for all supported locales.
@@ -20,6 +33,7 @@ export function generateStaticParams() {
  * - NextIntlClientProvider for client-side translations
  * - Dynamic <html lang> attribute
  * - Static rendering support via setRequestLocale
+ * - Nunito Sans font via next/font
  */
 export default async function LocaleLayout({
   children,
@@ -42,8 +56,8 @@ export default async function LocaleLayout({
   const messages = await getMessages()
 
   return (
-    <html lang={locale}>
-      <body>
+    <html lang={locale} className={nunitoSans.variable}>
+      <body className="font-sans">
         <NextIntlClientProvider messages={messages}>{children}</NextIntlClientProvider>
       </body>
     </html>
