@@ -16,7 +16,8 @@ import { cn } from '@/lib/utils'
  *
  * Provides the main desktop navigation menu with:
  * - Direct link to Articles
- * - Dropdown menu for Categories
+ * - Dropdown menu for Categories (content types)
+ * - Dropdown menu for Themes (subject areas)
  * - Dropdown menu for Difficulty Levels
  *
  * Uses DropdownMenu from shadcn/ui for accessible dropdown behavior.
@@ -25,7 +26,8 @@ import { cn } from '@/lib/utils'
  * @returns Navigation menu for desktop screens
  */
 
-const categories = ['ai', 'ux', 'engineering'] as const
+const categories = ['news', 'deep-dive', 'tutorial', 'case-study', 'feedback'] as const
+const themes = ['ai', 'ux', 'engineering'] as const
 const levels = ['beginner', 'intermediate', 'advanced'] as const
 
 interface NavigationProps {
@@ -79,6 +81,29 @@ export function Navigation({ className }: NavigationProps) {
           {categories.map((category) => (
             <DropdownMenuItem key={category} asChild>
               <Link href={`/articles?category=${category}`}>{t(`category.${category}`)}</Link>
+            </DropdownMenuItem>
+          ))}
+        </DropdownMenuContent>
+      </DropdownMenu>
+
+      {/* Themes Dropdown */}
+      <DropdownMenu>
+        <DropdownMenuTrigger
+          className={cn(
+            'flex items-center gap-1 px-4 py-2 text-sm font-medium rounded-md transition-colors',
+            'text-muted-foreground hover:text-foreground hover:bg-accent',
+          )}
+        >
+          {t('themes')}
+          <ChevronDown className="h-4 w-4" />
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="start">
+          <DropdownMenuItem asChild>
+            <Link href="/articles">{t('allThemes')}</Link>
+          </DropdownMenuItem>
+          {themes.map((theme) => (
+            <DropdownMenuItem key={theme} asChild>
+              <Link href={`/articles?tags=${theme}`}>{t(`theme.${theme}`)}</Link>
             </DropdownMenuItem>
           ))}
         </DropdownMenuContent>

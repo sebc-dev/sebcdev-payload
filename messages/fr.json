@@ -39,10 +39,19 @@
     "search": "Rechercher",
     "articles": "Articles",
     "categories": "Catégories",
+    "themes": "Thèmes",
     "levels": "Niveaux",
     "allCategories": "Toutes les catégories",
+    "allThemes": "Tous les thèmes",
     "allLevels": "Tous les niveaux",
     "category": {
+      "news": "Actualités",
+      "deep-dive": "Décryptage",
+      "tutorial": "Tutoriel",
+      "case-study": "Étude de Cas",
+      "feedback": "Retour d'Expérience"
+    },
+    "theme": {
       "ai": "Intelligence Artificielle",
       "ux": "UX Design",
       "engineering": "Ingénierie Logicielle"
@@ -56,9 +65,33 @@
   "footer": {
     "tagline": "Blog technique sur l'IA, l'UX et l'ingénierie logicielle",
     "copyright": "© {year} sebc.dev. Tous droits réservés.",
-    "links": {
-      "articles": "Articles",
-      "contact": "Contact"
+    "sections": {
+      "categories": "Catégories",
+      "themes": "Thèmes",
+      "levels": "Niveaux"
+    },
+    "category": {
+      "news": "Actualités",
+      "deep-dive": "Décryptage",
+      "tutorial": "Tutoriel",
+      "case-study": "Étude de Cas",
+      "feedback": "Retour d'Expérience"
+    },
+    "theme": {
+      "ai": "Intelligence Artificielle",
+      "ux": "UX Design",
+      "engineering": "Ingénierie Logicielle"
+    },
+    "level": {
+      "beginner": "Débutant",
+      "intermediate": "Intermédiaire",
+      "advanced": "Avancé"
+    },
+    "legal": {
+      "privacy": "Politique de confidentialité",
+      "terms-of-use": "Conditions d'utilisation",
+      "terms": "Mentions légales",
+      "sitemap": "Plan du site"
     }
   },
   "language": {

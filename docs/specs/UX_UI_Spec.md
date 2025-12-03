@@ -187,14 +187,15 @@ L'interface s'adapte dynamiquement au **contexte** :
 Minimaliste, toujours visible, adaptée mobile-first :
 
 ```
-┌────────────────────────────────────────┐
-│ [Logo] │ Articles │ Catégories │ Niveaux │ [🌐 FR/EN] │
-└────────────────────────────────────────┘
+┌──────────────────────────────────────────────────────┐
+│ [Logo] │ Articles │ Catégories │ Thèmes │ Niveaux │ [🌐 FR/EN] │
+└──────────────────────────────────────────────────────┘
 ```
 
 - **Logo** : Lien vers `/[lang]/` (accueil)
 - **Articles** : Lien vers `/[lang]/articles` (Hub de Recherche)
 - **Catégories** : Menu déroulant → clique catégorie → Hub avec filtre `category=X`
+- **Thèmes** : Menu déroulant → clique thème → Hub avec filtre `tags=X` (IA, UX, Engineering)
 - **Niveaux** : Menu déroulant → clique niveau → Hub avec filtre `complexity=X`
 - **Sélecteur langue** : FR/EN avec persistance cookie (next-intl)
 
@@ -483,17 +484,19 @@ Basée sur **dark mode moderne** avec gris neutres et accent teal :
 - **Catégories** : Icône unique par catégorie (identification visuelle immédiate)
 - **États** : icônes pour actif/inactif/loading
 
-Exemple 9 catégories :
+Les 5 catégories canoniques :
 
-- Actualités → 📰 (news-icon)
-- Analyse Approfondie → 🔬 (microscope-icon)
-- Parcours d'Apprentissage → 🛤️ (journey-icon)
-- Rétrospective → 📋 (clipboard-icon)
-- Tutoriel → 🎓 (graduation-icon)
-- Étude de Cas → 📊 (bar-chart-icon)
-- Astuces Rapides → ⚡ (flash-icon)
-- Dans les Coulisses → 🎬 (camera-icon)
-- Test d'Outil → 🧪 (test-tube-icon)
+- Actualités → 📰 (newspaper-icon) : veille technologique, nouveautés, tendances
+- Décryptage → 🔬 (microscope-icon) : analyse technique, comparatifs, évaluations d'outils
+- Tutoriel → 🎓 (graduation-icon) : guides pratiques, astuces et optimisations
+- Étude de Cas → 📊 (bar-chart-icon) : applications concrètes, résolution de problèmes
+- Retour d'Expérience → 📋 (clipboard-icon) : apprentissage documenté, bilans, méthodologie
+
+Les 3 thèmes (tags prédéfinis représentant les piliers du blog) :
+
+- Intelligence Artificielle → 🤖 (sparkles-icon) : IA, LLM, agents, automatisation
+- UX Design → 🎨 (palette-icon) : expérience utilisateur, interfaces, accessibilité
+- Ingénierie Logicielle → ⚙️ (cog-icon) : architecture, DevOps, qualité de code
 
 ### 7.4 Espacement et Grille
 
@@ -976,17 +979,19 @@ Chaque catégorie a une **couleur et icône dédiée** :
 └──────────────────────────┘
 ```
 
-Palette :
+Palette des 5 catégories :
 
 - Actualités → Bleu
-- Analyse → Indigo
-- Parcours → Vert
-- Rétrospective → Amber
+- Décryptage → Indigo
 - Tutoriel → Cyan
 - Étude de Cas → Orange
-- Astuces → Rose
-- Coulisses → Violet
-- Test d'Outil → Émeraude
+- Retour d'Expérience → Amber
+
+Palette des 3 thèmes :
+
+- Intelligence Artificielle → Violet
+- UX Design → Rose
+- Ingénierie Logicielle → Émeraude
 
 ### 17.2 Badges Niveaux
 
