@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import { setRequestLocale } from 'next-intl/server'
-import { Footer, Header } from '@/components/layout'
+import { Footer, Header, SkipLink } from '@/components/layout'
 
 /**
  * Metadata for frontend pages.
@@ -34,8 +34,11 @@ export default async function FrontendLayout({
 
   return (
     <div className="flex min-h-screen flex-col">
+      <SkipLink />
       <Header />
-      <main className="flex-1">{children}</main>
+      <main id="main-content" className="flex-1" tabIndex={-1}>
+        {children}
+      </main>
       <Footer />
     </div>
   )
