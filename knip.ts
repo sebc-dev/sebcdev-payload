@@ -105,10 +105,13 @@ const config: KnipConfig = {
     // @knip-review-by: 2026-06-03
     '@payloadcms/ui',
 
-    // shadcn/ui dependencies - used in src/components/ui/button.tsx
+    // shadcn/ui dependencies - used in src/components/ui/*.tsx
     // @knip-review-by: 2026-06-03
+    '@radix-ui/react-dialog', // used in src/components/ui/sheet.tsx
+    '@radix-ui/react-dropdown-menu', // used in src/components/ui/dropdown-menu.tsx
     '@radix-ui/react-slot',
     'class-variance-authority',
+    'lucide-react', // icons used across components
 
     // Utility libraries - used in src/lib/utils.ts
     // @knip-review-by: 2026-06-03
