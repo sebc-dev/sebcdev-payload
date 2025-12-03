@@ -197,14 +197,15 @@ Nous définissons ici les entités principales. Le schéma Payload sera la sourc
 ### Taxonomie & Média
 
 - **Catégories (Categories)**
-  - **But :** Structure thématique principale (ex: "Tutoriel", "Rétrospective").
+  - **But :** Structure thématique principale. 5 catégories canoniques : Actualités, Décryptage, Tutoriel, Étude de Cas, Retour d'Expérience.
   - **Attributs Clés :**
     - `title` (Localized, Text).
     - `slug` (Text).
     - **Config UI :** `color` (Text/ColorPicker), `icon` (Upload/Media) pour l'identité dynamique.
 - **Étiquettes (Tags)**
-  - **But :** Filtrage transversal (ex: "Next.js", "AI", "Cloudflare").
-  - **Attributs Clés :** `title` (Text), `slug` (Text).
+  - **But :** Filtrage transversal. Inclut les 3 tags thématiques prédéfinis (Thèmes) : Intelligence Artificielle, UX Design, Ingénierie Logicielle.
+  - **Attributs Clés :** `title` (Localized, Text), `slug` (Text).
+  - **Note :** Les Thèmes sont des tags spéciaux représentant les 3 piliers du blog, utilisés pour la navigation principale.
 - **Media**
   - **But :** Gestion des assets (Images, Vidéos).
   - **Stockage :** Cloudflare R2 via plugin S3.

@@ -32,7 +32,16 @@ C'est entendu. Voici la section complète des **Exigences (Requirements)**, cons
 
 - **CA1** : L'accès administrateur permet de créer/éditer/supprimer des Articles, Pages, Catégories et Tags.
 - **CA2** : La gestion des utilisateurs est restreinte à un profil auteur unique pour la V1.
-- **CA3** : Un script de "seed" initialise la base de données avec les 9 catégories canoniques (Actualités, Tutoriel, Rétrospective, etc.) définies dans la stratégie de contenu.
+- **CA3** : Un script de "seed" initialise la base de données avec les 5 catégories canoniques définies dans la stratégie de contenu :
+    - **Actualités** : veille technologique, nouveautés, tendances émergentes
+    - **Décryptage** : analyse technique détaillée, études comparatives, évaluations d'outils
+    - **Tutoriel** : guides pratiques étape par étape, astuces et optimisations
+    - **Étude de Cas** : applications concrètes, résolution de problèmes réels
+    - **Retour d'Expérience** : apprentissage documenté, bilans, leçons retenues, méthodologie
+- **CA4** : Le script de "seed" initialise également les 3 tags thématiques (Thèmes) représentant les piliers du blog :
+    - **Intelligence Artificielle** : IA comme outil d'amplification, LLM, agents, automatisation
+    - **UX Design** : principes d'expérience utilisateur, interfaces, accessibilité
+    - **Ingénierie Logicielle** : bonnes pratiques, architecture, DevOps, qualité de code
 
 #### EF2 — Expérience d'Édition Riche & Structurée
 
@@ -229,7 +238,7 @@ Voici la proposition :
 - **Palette de Couleurs :**
   - **Fond :** Gris neutre foncé (`#1F1F1F`) pour réduire la fatigue oculaire (saturation 0%).
   - **Accent Primaire :** Teal lumineux (`#14B8A6`) pour les actions principales et liens.
-  - **Code couleur Catégories :** Une palette secondaire définie pour les 9 catégories canoniques.
+  - **Code couleur Catégories :** Une palette secondaire définie pour les 5 catégories canoniques.
   - **Border-radius :** `0.375rem` (6px) pour des arrondis subtils.
 
 - **Typographie :**
@@ -317,7 +326,7 @@ _Objectif : Configurer le métier du blog sur l'infrastructure Payload._
 - **Story 2.2 : Validation du Stockage R2**
   - **En tant qu'** Auteur, **je veux** uploader une image test depuis le panneau admin et vérifier sa présence dans le bucket R2, **afin de** valider que le plugin Cloud Storage est correctement configuré par le template.
 - **Story 2.3 : Éditeur Lexical & Seed Data**
-  - **En tant qu'** Auteur, **je veux** disposer d'un éditeur Lexical configuré avec les blocs "Code", "Citation" et "Image", et exécuter un script de seed pour créer les 9 catégories canoniques, **afin de** commencer à rédiger du contenu structuré immédiatement.
+  - **En tant qu'** Auteur, **je veux** disposer d'un éditeur Lexical configuré avec les blocs "Code", "Citation" et "Image", et exécuter un script de seed pour créer les 5 catégories canoniques, **afin de** commencer à rédiger du contenu structuré immédiatement.
 
 ### 🎨 Epic 3 : Frontend Core & Design System
 

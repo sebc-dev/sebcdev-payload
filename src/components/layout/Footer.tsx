@@ -1,16 +1,31 @@
 import { Link } from '@/i18n/navigation'
 import { useTranslations } from 'next-intl'
+import { Facebook, Linkedin, Twitter } from 'lucide-react'
+
+const categories = ['news', 'deep-dive', 'tutorial', 'case-study', 'feedback'] as const
+const themes = ['ai', 'ux', 'engineering'] as const
+const levels = ['beginner', 'intermediate', 'advanced'] as const
+
+const socialLinks = [
+  { name: 'Facebook', href: 'https://facebook.com/sebc.dev', icon: Facebook },
+  { name: 'LinkedIn', href: 'https://linkedin.com/in/sebcdev', icon: Linkedin },
+  { name: 'X', href: 'https://x.com/sebcdev', icon: Twitter },
+] as const
+
+const legalLinks = ['privacy', 'terms-of-use', 'terms', 'sitemap'] as const
 
 /**
  * Footer Component
  *
  * Site footer displaying:
- * - Brand name and tagline
- * - Secondary navigation links
- * - Copyright with dynamic year
+ * - Themes navigation (subject areas)
+ * - Categories navigation (content types)
+ * - Levels navigation (difficulty)
+ * - Brand name, contact and social links
+ * - Bottom bar with copyright, legal links and language switcher
  *
  * This is a Server Component - no client-side JS required.
- * Responsive design: centered on mobile, spread on desktop.
+ * Responsive design: stacked on mobile, 2x2 on tablet, 4 columns on desktop.
  *
  * @returns Footer element with semantic contentinfo role
  */
@@ -20,33 +35,103 @@ export function Footer() {
 
   return (
     <footer className="border-t border-border bg-card">
-      <div className="container mx-auto max-w-6xl px-4 py-8">
-        {/* Brand Section */}
-        <div className="flex flex-col items-center text-center lg:flex-row lg:items-start lg:justify-between lg:text-left">
-          <div className="mb-6 lg:mb-0">
-            <p className="text-lg font-bold text-foreground">sebc.dev</p>
-            <p className="mt-1 text-sm text-muted-foreground">{t('tagline')}</p>
+      <div className="container mx-auto max-w-6xl px-4 py-12">
+        {/* Main Footer Content - 4 columns on desktop, 2x2 on tablet */}
+        <div className="grid grid-cols-1 gap-8 text-center sm:grid-cols-2 md:text-left lg:grid-cols-4">
+          {/* Themes Column */}
+          <div>
+            <h3 className="mb-4 text-sm font-semibold text-foreground">{t('sections.themes')}</h3>
+            <nav className="flex flex-col gap-2">
+              {themes.map((theme) => (
+                <Link
+                  key={theme}
+                  href={`/articles?tags=${theme}`}
+                  className="text-sm text-muted-foreground transition-colors hover:text-foreground"
+                >
+                  {t(`theme.${theme}`)}
+                </Link>
+              ))}
+            </nav>
           </div>
 
-          {/* Navigation Links */}
-          <nav className="mb-6 flex gap-6 lg:mb-0">
-            <Link
-              href="/articles"
-              className="text-sm text-muted-foreground transition-colors hover:text-foreground"
-            >
-              {t('links.articles')}
-            </Link>
+          {/* Categories Column */}
+          <div>
+            <h3 className="mb-4 text-sm font-semibold text-foreground">
+              {t('sections.categories')}
+            </h3>
+            <nav className="flex flex-col gap-2">
+              {categories.map((category) => (
+                <Link
+                  key={category}
+                  href={`/articles?category=${category}`}
+                  className="text-sm text-muted-foreground transition-colors hover:text-foreground"
+                >
+                  {t(`category.${category}`)}
+                </Link>
+              ))}
+            </nav>
+          </div>
+
+          {/* Levels Column */}
+          <div>
+            <h3 className="mb-4 text-sm font-semibold text-foreground">{t('sections.levels')}</h3>
+            <nav className="flex flex-col gap-2">
+              {levels.map((level) => (
+                <Link
+                  key={level}
+                  href={`/articles?complexity=${level}`}
+                  className="text-sm text-muted-foreground transition-colors hover:text-foreground"
+                >
+                  {t(`level.${level}`)}
+                </Link>
+              ))}
+            </nav>
+          </div>
+
+          {/* Brand Section */}
+          <div>
+            <p className="text-lg font-bold text-foreground">sebc.dev</p>
+            <p className="mt-2 text-sm text-muted-foreground">{t('tagline')}</p>
             <a
               href="mailto:contact@sebc.dev"
-              className="text-sm text-muted-foreground transition-colors hover:text-foreground"
+              className="mt-4 inline-block text-sm text-muted-foreground transition-colors hover:text-foreground"
             >
-              {t('links.contact')}
+              contact@sebc.dev
             </a>
-          </nav>
+            {/* Social Links */}
+            <div className="mt-4 flex justify-center gap-4 md:justify-start">
+              {socialLinks.map((social) => (
+                <a
+                  key={social.name}
+                  href={social.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-muted-foreground transition-colors hover:text-foreground"
+                  aria-label={social.name}
+                >
+                  <social.icon className="h-5 w-5" />
+                </a>
+              ))}
+            </div>
+          </div>
         </div>
 
-        {/* Copyright */}
-        <div className="mt-8 border-t border-border pt-6 text-center">
+        {/* Bottom Bar: Legal Links (left) | Copyright (right) */}
+        <div className="mt-12 flex flex-col-reverse items-center gap-4 border-t border-border pt-6 md:flex-row md:justify-between">
+          {/* Legal Links - Left */}
+          <nav className="flex flex-wrap justify-center gap-4 md:justify-start">
+            {legalLinks.map((link) => (
+              <Link
+                key={link}
+                href={`/${link}`}
+                className="text-xs text-muted-foreground transition-colors hover:text-foreground"
+              >
+                {t(`legal.${link}`)}
+              </Link>
+            ))}
+          </nav>
+
+          {/* Copyright - Right */}
           <p className="text-xs text-muted-foreground">{t('copyright', { year: currentYear })}</p>
         </div>
       </div>
