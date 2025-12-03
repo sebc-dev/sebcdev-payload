@@ -72,6 +72,35 @@ const config: KnipConfig = {
     // ESLint configs - used via compat.extends() which Knip doesn't detect
     'eslint-config-next',
     'eslint-config-prettier',
+
+    // === Dependencies used but not detected in --production mode ===
+    // CI runs with --production flag which excludes dev config files
+    // These are all actively used in production code
+
+    // OpenNext - used in open-next.config.ts for Cloudflare deployment
+    '@opennextjs/cloudflare',
+
+    // Payload CMS core packages - used in src/payload.config.ts
+    '@payloadcms/db-d1-sqlite',
+    '@payloadcms/richtext-lexical',
+    '@payloadcms/storage-r2',
+
+    // Payload UI - used in src/fields/code/DynamicCodeField.tsx
+    '@payloadcms/ui',
+
+    // shadcn/ui dependencies - used in src/components/ui/button.tsx
+    '@radix-ui/react-slot',
+    'class-variance-authority',
+
+    // Utility libraries - used in src/lib/utils.ts
+    'clsx',
+    'tailwind-merge',
+
+    // Tailwind CSS - used via @import 'tailwindcss' in src/app/globals.css
+    'tailwindcss',
+
+    // dotenv - used in vitest.setup.ts (dev file, but still needed)
+    'dotenv',
   ],
 
   // Rules configuration - strict on dependencies, warn on code
