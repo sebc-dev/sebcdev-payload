@@ -7,7 +7,7 @@
  * @see https://knip.dev/reference/configuration
  * @see docs/guides/gestion-knip.md for project-specific strategies
  */
-import type { KnipConfig } from 'knip'
+import type { KnipConfig } from 'knip' with { 'resolution-mode': 'import' }
 
 const config: KnipConfig = {
   // Entry points - files that are the roots of the dependency graph

@@ -1,0 +1,10 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "noEmit": true,
+    "module": "nodenext",
+    "moduleResolution": "nodenext"
+  },
+  "include": ["knip.ts"],
+  "exclude": ["node_modules"]
+}
