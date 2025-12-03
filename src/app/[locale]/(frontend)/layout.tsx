@@ -16,6 +16,9 @@ export const metadata: Metadata = {
  * This layout:
  * - Wraps content in semantic <main> element
  * - Enables static rendering via setRequestLocale
+ *
+ * Note: params is typed as Promise per Next.js 15 API.
+ * @see https://nextjs.org/docs/app/api-reference/file-conventions/layout#params-optional
  */
 export default async function FrontendLayout({
   children,
