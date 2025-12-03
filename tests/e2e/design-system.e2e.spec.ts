@@ -114,17 +114,15 @@ test.describe('Design System', () => {
       // Tab to first focusable element
       await page.keyboard.press('Tab')
 
-      // Check that focused element has visible outline
+      // Ensure an element received focus - fail explicitly if nothing is focusable
       const focusedElement = page.locator(':focus')
-      if ((await focusedElement.count()) > 0) {
-        const boxShadow = await focusedElement.evaluate(
-          (el) => window.getComputedStyle(el).boxShadow,
-        )
+      expect(await focusedElement.count()).toBeGreaterThan(0)
 
-        // Should have visible focus indicator (box-shadow from :focus-visible)
-        // The focus ring uses box-shadow, not outline
-        expect(boxShadow).not.toBe('none')
-      }
+      const boxShadow = await focusedElement.evaluate((el) => window.getComputedStyle(el).boxShadow)
+
+      // Should have visible focus indicator (box-shadow from :focus-visible)
+      // The focus ring uses box-shadow, not outline
+      expect(boxShadow).not.toBe('none')
     })
   })
 
