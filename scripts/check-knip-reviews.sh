@@ -10,10 +10,19 @@
 #   0 - All review dates are in the future
 #   1 - One or more review dates are overdue
 #   2 - No review dates found (misconfiguration)
+#   3 - knip.ts file not found
 
 set -euo pipefail
 
 KNIP_FILE="knip.ts"
+
+# Fail fast if knip.ts doesn't exist
+if [[ ! -f "$KNIP_FILE" ]]; then
+  echo "ERROR: File '$KNIP_FILE' not found or is not a regular file."
+  echo "This script must be run from the project root directory."
+  exit 3
+fi
+
 TODAY=$(date +%Y-%m-%d)
 OVERDUE=()
 FOUND=0
