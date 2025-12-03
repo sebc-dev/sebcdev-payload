@@ -8,5 +8,7 @@
 
 export { Footer } from './Footer'
 export { Header } from './Header'
+export { LanguageSwitcher } from './LanguageSwitcher'
 export { Logo } from './Logo'
+export { MobileMenu } from './MobileMenu'
 export { Navigation } from './Navigation'
