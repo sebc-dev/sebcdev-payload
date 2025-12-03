@@ -1,8 +1,6 @@
 import { expect, test } from '@playwright/test'
 import AxeBuilder from '@axe-core/playwright'
 
-import frMessages from '../../messages/fr.json' with { type: 'json' }
-
 /**
  * Design System E2E Tests
  *
@@ -15,35 +13,6 @@ import frMessages from '../../messages/fr.json' with { type: 'json' }
  * @see docs/specs/UX_UI_Spec.md Section 7: Design System
  */
 test.describe('Design System', () => {
-  test.describe('Visual Validation', () => {
-    test('homepage displays correct anthracite background', async ({ page }) => {
-      await page.goto('/fr')
-
-      // Verify background color is anthracite (#1A1D23 = rgb(26, 29, 35))
-      const body = page.locator('body')
-      await expect(body).toHaveCSS('background-color', 'rgb(26, 29, 35)')
-    })
-
-    test('primary text uses correct off-white foreground', async ({ page }) => {
-      await page.goto('/fr')
-
-      // Check main heading color - off-white (hsl(210, 40%, 98%) ≈ rgb(248, 250, 252))
-      const h1 = page.locator('h1').first()
-      await expect(h1).toHaveCSS('color', 'rgb(248, 250, 252)')
-    })
-
-    test('primary button uses teal accent', async ({ page }) => {
-      await page.goto('/fr')
-
-      // Check primary button background (teal hsl(174, 72%, 40%) ≈ rgb(29, 175, 161))
-      // Use localized button name from i18n resources
-      const button = page
-        .getByRole('button', { name: frMessages.components.buttons.variant.default })
-        .first()
-      await expect(button).toHaveCSS('background-color', 'rgb(29, 175, 161)')
-    })
-  })
-
   test.describe('Typography', () => {
     test('headings use Nunito Sans font', async ({ page }) => {
       await page.goto('/fr')

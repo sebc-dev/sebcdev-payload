@@ -32,6 +32,7 @@ export function MobileMenu() {
   const t = useTranslations('mobileMenu')
   const navT = useTranslations('navigation')
   const langT = useTranslations('language')
+  const a11yT = useTranslations('accessibility')
 
   return (
     <Sheet>
@@ -47,7 +48,7 @@ export function MobileMenu() {
         <SheetHeader className="text-left">
           <SheetTitle className="text-lg font-bold">sebc.dev</SheetTitle>
         </SheetHeader>
-        <nav className="mt-8 flex flex-col gap-4" aria-label={navT('main')}>
+        <nav className="mt-8 flex flex-col gap-4" aria-label={a11yT('mainNavigation')}>
           <SheetClose asChild>
             <Link href="/" className="text-lg text-foreground transition-colors hover:text-primary">
               {navT('home')}
