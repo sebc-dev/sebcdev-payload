@@ -3,7 +3,7 @@ import AxeBuilder from '@axe-core/playwright'
 import path from 'path'
 import { fileURLToPath } from 'url'
 import fs from 'fs'
-import { TEST_IMAGE_PATH } from '../helpers/media.helpers'
+import { TEST_IMAGE_PATH, waitForDropzoneAndUpload } from '../helpers/media.helpers'
 
 /**
  * E2E tests for the Payload CMS Media collection admin interface.
@@ -69,6 +69,7 @@ async function authenticate(page: Page): Promise<void> {
 
 /**
  * Helper to upload a media file and return to the edit page.
+ * Uses the shared waitForDropzoneAndUpload helper for Payload 3.x compatibility.
  */
 async function uploadMedia(page: Page, altText?: string): Promise<string> {
   await page.goto(`${MEDIA_COLLECTION_URL}/create`, { waitUntil: 'networkidle' })
@@ -76,22 +77,8 @@ async function uploadMedia(page: Page, altText?: string): Promise<string> {
   // Wait for form
   await expect(page.locator('form')).toBeVisible()
 
-  // Wait for the dropzone and file input to be rendered
-  // Payload CMS uses a hidden file input with class 'file-field__hidden-input'
-  const dropzone = page.locator('.file-field__upload').first()
-  await expect(dropzone).toBeVisible({ timeout: 10000 })
-
-  // Upload file - Payload uses a hidden input, we need to set files directly
-  const fileInput = page.locator('input[type="file"]')
-  await fileInput.setInputFiles(TEST_IMAGE_PATH)
-
-  // Wait for upload to be processed
-  await page.waitForSelector(
-    '.file__filename, .upload__filename, [class*="thumbnail"], .file-field__filename',
-    {
-      timeout: 15000,
-    },
-  )
+  // Use shared helper for dropzone upload pattern
+  await waitForDropzoneAndUpload(page, TEST_IMAGE_PATH)
 
   // Fill alt text if provided
   if (altText) {
@@ -152,22 +139,8 @@ test.describe('Admin Media CRUD E2E', () => {
       // Wait for form to be ready
       await expect(page.locator('form')).toBeVisible()
 
-      // Wait for the dropzone and file input to be rendered
-      // Payload CMS uses a hidden file input with class 'file-field__hidden-input'
-      const dropzone = page.locator('.file-field__upload').first()
-      await expect(dropzone).toBeVisible({ timeout: 10000 })
-
-      // Upload file - Payload uses a hidden input, we need to set files directly
-      const fileInput = page.locator('input[type="file"]')
-      await fileInput.setInputFiles(TEST_IMAGE_PATH)
-
-      // Wait for file to be processed
-      await page.waitForSelector(
-        '.file__filename, .upload__filename, [class*="thumbnail"], .file-field__filename',
-        {
-          timeout: 15000,
-        },
-      )
+      // Use shared helper for dropzone upload pattern
+      await waitForDropzoneAndUpload(page, TEST_IMAGE_PATH)
 
       // Fill alt text if available
       const altField = page.locator('#field-alt')
