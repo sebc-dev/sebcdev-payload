@@ -30,7 +30,7 @@ Construire l'identité visuelle et la navigation bilingue du blog. Cet epic éta
 |-------|-------|-------------|--------|--------|----------|
 | 3.1 | Routing i18n & Middleware | Implémenter le routing bilingue avec `next-intl`, URLs localisées (`/fr`, `/en`) et persistance de la préférence utilisateur | COMPLETED | 4 | 4/4 ✅ |
 | 3.2 | Intégration Design System (Dark Mode) | Installer Tailwind 4 et shadcn/ui, appliquer la charte graphique "Anthracite & Vert Canard" | IN PROGRESS | 4 | 3/4 (Phase 4 📋) |
-| 3.3 | Layout Global & Navigation | Créer Header et Footer cohérents avec sélecteur de langue fonctionnel | NOT STARTED | - | 0/0 |
+| 3.3 | Layout Global & Navigation | Créer Header et Footer cohérents avec sélecteur de langue fonctionnel | PLANNING | 5 | 0/5 |
 
 ---
 
@@ -55,10 +55,10 @@ Construire l'identité visuelle et la navigation bilingue du blog. Cet epic éta
 
 ### Progress Summary
 
-- **Stories Started**: 2/3
+- **Stories Started**: 3/3
 - **Stories Completed**: 1/3
-- **Total Phases**: 8 (4 + 4)
-- **Phases Completed**: 7 (4 + 3)
+- **Total Phases**: 13 (4 + 4 + 5)
+- **Phases Completed**: 7 (4 + 3 + 0)
 
 ### Timeline
 
@@ -107,6 +107,7 @@ Story 3.2 (Design System)
 
 | Date | Update |
 |------|--------|
+| 2025-12-03 | Story 3.3 PLANNING: 5 phases planned (~16-21 commits), layout & navigation |
 | 2025-12-02 | Story 3.2 Phase 3 COMPLETED: Design tokens & visual migration (5 commits) |
 | 2025-12-02 | Story 3.2 Phase 2 COMPLETED: shadcn/ui & utility functions |
 | 2025-12-02 | Story 3.2 Phase 1 COMPLETED: Tailwind CSS 4 foundation |
@@ -137,7 +138,7 @@ Story 3.2 (Design System)
 
 - Story 3.1: [story_3_1/story_3.1.md](story_3_1/story_3.1.md) ✅
 - Story 3.2: [story_3_2/story_3.2.md](story_3_2/story_3.2.md) 🚧
-- Story 3.3: `story_3_3/story_3.3.md` (pending)
+- Story 3.3: [story_3_3/story_3.3.md](story_3_3/story_3.3.md) 📋
 
 ---
 
