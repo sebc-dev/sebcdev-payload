@@ -1,4 +1,4 @@
-import type { SVGProps } from 'react'
+import { useId, type SVGProps } from 'react'
 
 type FlagProps = SVGProps<SVGSVGElement>
 
@@ -25,6 +25,10 @@ export function FrenchFlag({ className, ...props }: FlagProps) {
  * British flag icon (Union Jack)
  */
 export function BritishFlag({ className, ...props }: FlagProps) {
+  const id = useId()
+  const clipId = `${id}-clip`
+  const diagId = `${id}-diag`
+
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -33,19 +37,20 @@ export function BritishFlag({ className, ...props }: FlagProps) {
       aria-hidden="true"
       {...props}
     >
-      {/* Blue background */}
-      <clipPath id="ukClip">
-        <path d="M0,0 v30 h60 v-30 z" />
-      </clipPath>
-      <clipPath id="ukDiag">
-        <path d="M30,15 h30 v15 z v15 h-30 z h-30 v-15 z v-15 h30 z" />
-      </clipPath>
-      <g clipPath="url(#ukClip)">
+      <defs>
+        <clipPath id={clipId}>
+          <path d="M0,0 v30 h60 v-30 z" />
+        </clipPath>
+        <clipPath id={diagId}>
+          <path d="M30,15 h30 v15 z v15 h-30 z h-30 v-15 z v-15 h30 z" />
+        </clipPath>
+      </defs>
+      <g clipPath={`url(#${clipId})`}>
         <path d="M0,0 v30 h60 v-30 z" fill="#012169" />
         <path d="M0,0 L60,30 M60,0 L0,30" stroke="#fff" strokeWidth="6" />
         <path
           d="M0,0 L60,30 M60,0 L0,30"
-          clipPath="url(#ukDiag)"
+          clipPath={`url(#${diagId})`}
           stroke="#C8102E"
           strokeWidth="4"
         />
