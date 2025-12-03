@@ -19,7 +19,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
   const { locale } = await params
   setRequestLocale(locale)
 
-  const t = await getTranslations('components')
+  const tComponents = await getTranslations('components')
   const tHome = await getTranslations('home')
   const headers = await getHeaders()
   const payloadConfig = await config
@@ -64,7 +64,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
         </div>
       </div>
       <section className="mt-8 space-y-4">
-        <h2 className="text-xl font-semibold">{t('buttons.title')}</h2>
+        <h2 className="text-xl font-semibold">{tComponents('buttons.title')}</h2>
         <div className="flex flex-wrap gap-4">
           <Button>Default</Button>
           <Button variant="secondary">Secondary</Button>
