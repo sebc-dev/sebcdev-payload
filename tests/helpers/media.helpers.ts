@@ -1,6 +1,7 @@
 import path from 'path'
 import fs from 'fs'
 import { fileURLToPath } from 'url'
+import type { Page } from '@playwright/test'
 import type { Payload } from 'payload'
 import type { Media } from '@/payload-types'
 
@@ -192,4 +193,50 @@ export function createInvalidMimeTypeFile(): PayloadFile {
     name: `test-invalid-${Date.now()}.pdf`,
     size: buffer.length,
   }
+}
+
+/**
+ * Selectors for Payload CMS 3.x dropzone file upload component.
+ * Used by waitForDropzoneAndUpload helper.
+ */
+export const PAYLOAD_DROPZONE_SELECTORS = {
+  /** The dropzone container */
+  dropzone: '.file-field__upload',
+  /** Selectors indicating upload was processed (any match = success) */
+  uploadComplete: '.file__filename, .upload__filename, [class*="thumbnail"], .file-field__filename',
+} as const
+
+/**
+ * Waits for Payload CMS dropzone to be ready, uploads a file, and waits for processing.
+ *
+ * This helper encapsulates the Payload 3.x file upload pattern:
+ * 1. Wait for dropzone to be visible
+ * 2. Set file on the hidden input
+ * 3. Wait for upload processing indicators
+ *
+ * @param page - Playwright Page instance
+ * @param filePath - Path to the file to upload (defaults to TEST_IMAGE_PATH)
+ * @param options - Optional configuration
+ * @param options.dropzoneTimeout - Timeout for dropzone visibility (default: 10000ms)
+ * @param options.uploadTimeout - Timeout for upload processing (default: 15000ms)
+ */
+export async function waitForDropzoneAndUpload(
+  page: Page,
+  filePath: string = TEST_IMAGE_PATH,
+  options: { dropzoneTimeout?: number; uploadTimeout?: number } = {},
+): Promise<void> {
+  const { dropzoneTimeout = 10000, uploadTimeout = 15000 } = options
+
+  // Wait for the dropzone to be visible
+  const dropzone = page.locator(PAYLOAD_DROPZONE_SELECTORS.dropzone).first()
+  await dropzone.waitFor({ state: 'visible', timeout: dropzoneTimeout })
+
+  // Upload file via hidden input
+  const fileInput = page.locator('input[type="file"]')
+  await fileInput.setInputFiles(filePath)
+
+  // Wait for upload to be processed
+  await page.waitForSelector(PAYLOAD_DROPZONE_SELECTORS.uploadComplete, {
+    timeout: uploadTimeout,
+  })
 }
