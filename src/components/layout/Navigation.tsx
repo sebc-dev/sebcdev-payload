@@ -30,6 +30,7 @@ const levels = ['beginner', 'intermediate', 'advanced'] as const
 
 export function Navigation() {
   const t = useTranslations('navigation')
+  const a11yT = useTranslations('accessibility')
   const pathname = usePathname()
 
   /**
@@ -39,7 +40,7 @@ export function Navigation() {
   const isActive = (path: string) => pathname === path || pathname.startsWith(path + '/')
 
   return (
-    <nav className="hidden lg:flex items-center gap-1">
+    <nav className="hidden lg:flex items-center gap-1" aria-label={a11yT('mainNavigation')}>
       {/* Articles Link */}
       <Link
         href="/articles"
