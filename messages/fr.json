@@ -36,7 +36,22 @@
     "blog": "Blog",
     "about": "À propos",
     "contact": "Contact",
-    "search": "Rechercher"
+    "search": "Rechercher",
+    "articles": "Articles",
+    "categories": "Catégories",
+    "levels": "Niveaux",
+    "allCategories": "Toutes les catégories",
+    "allLevels": "Tous les niveaux",
+    "category": {
+      "ai": "Intelligence Artificielle",
+      "ux": "UX Design",
+      "engineering": "Ingénierie Logicielle"
+    },
+    "level": {
+      "beginner": "Débutant",
+      "intermediate": "Intermédiaire",
+      "advanced": "Avancé"
+    }
   },
   "metadata": {
     "title": "sebc.dev - Blog technique",
