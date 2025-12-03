@@ -61,6 +61,16 @@
       "contact": "Contact"
     }
   },
+  "language": {
+    "switch": "Changer de langue",
+    "current": "Langue actuelle",
+    "fr": "Français",
+    "en": "English"
+  },
+  "mobileMenu": {
+    "open": "Ouvrir le menu",
+    "close": "Fermer le menu"
+  },
   "metadata": {
     "title": "sebc.dev - Blog technique",
     "description": "Blog technique sur le développement web moderne, Next.js, et Cloudflare"
