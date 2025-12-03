@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import { setRequestLocale } from 'next-intl/server'
-import { Header } from '@/components/layout'
+import { Footer, Header } from '@/components/layout'
 
 /**
  * Metadata for frontend pages.
@@ -33,9 +33,10 @@ export default async function FrontendLayout({
   setRequestLocale(locale)
 
   return (
-    <>
+    <div className="flex min-h-screen flex-col">
       <Header />
-      <main className="min-h-screen">{children}</main>
-    </>
+      <main className="flex-1">{children}</main>
+      <Footer />
+    </div>
   )
 }
