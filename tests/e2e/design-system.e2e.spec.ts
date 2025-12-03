@@ -1,6 +1,8 @@
 import { expect, test } from '@playwright/test'
 import AxeBuilder from '@axe-core/playwright'
 
+import frMessages from '../../messages/fr.json' with { type: 'json' }
+
 /**
  * Design System E2E Tests
  *
@@ -34,7 +36,10 @@ test.describe('Design System', () => {
       await page.goto('/fr')
 
       // Check primary button background (teal hsl(174, 72%, 40%) ≈ rgb(29, 175, 161))
-      const button = page.getByRole('button', { name: 'Default' }).first()
+      // Use localized button name from i18n resources
+      const button = page
+        .getByRole('button', { name: frMessages.components.buttons.variant.default })
+        .first()
       await expect(button).toHaveCSS('background-color', 'rgb(29, 175, 161)')
     })
   })
