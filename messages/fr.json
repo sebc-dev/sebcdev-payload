@@ -53,6 +53,14 @@
       "advanced": "Avancé"
     }
   },
+  "footer": {
+    "tagline": "Blog technique sur l'IA, l'UX et l'ingénierie logicielle",
+    "copyright": "© {year} sebc.dev. Tous droits réservés.",
+    "links": {
+      "articles": "Articles",
+      "contact": "Contact"
+    }
+  },
   "metadata": {
     "title": "sebc.dev - Blog technique",
     "description": "Blog technique sur le développement web moderne, Next.js, et Cloudflare"

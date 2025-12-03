@@ -53,6 +53,14 @@
       "advanced": "Advanced"
     }
   },
+  "footer": {
+    "tagline": "Technical blog about AI, UX, and software engineering",
+    "copyright": "© {year} sebc.dev. All rights reserved.",
+    "links": {
+      "articles": "Articles",
+      "contact": "Contact"
+    }
+  },
   "metadata": {
     "title": "sebc.dev - Technical Blog",
     "description": "Technical blog about modern web development, Next.js, and Cloudflare"
