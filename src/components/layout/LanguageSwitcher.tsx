@@ -1,54 +1,90 @@
 'use client'
 
 import { useLocale, useTranslations } from 'next-intl'
-import { usePathname } from '@/i18n/navigation'
-import { Link } from '@/i18n/navigation'
+import { useRouter, usePathname } from '@/i18n/navigation'
+import { ChevronDown } from 'lucide-react'
+
+import { Button } from '@/components/ui/button'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu'
+import { FrenchFlag, BritishFlag } from '@/components/icons/flags'
+
+const locales = [
+  { code: 'fr', Flag: FrenchFlag },
+  { code: 'en', Flag: BritishFlag },
+] as const
+
+type LocaleCode = (typeof locales)[number]['code']
 
 /**
  * LanguageSwitcher Component
  *
- * Toggles between French and English locales.
+ * Dropdown menu for switching between French and English locales.
+ * Displays country flags alongside language labels.
  * Preserves the current page path when switching.
- * Uses next-intl Link for locale-aware navigation.
  *
  * Features:
- * - Visual indication of current locale (primary color)
- * - Accessible with role="group" and aria-current
+ * - Dropdown with flag icons for visual identification
+ * - Visual indication of current locale (checkmark)
+ * - Accessible with proper ARIA attributes
  * - Client-side navigation (no full page reload)
  *
- * @returns Language toggle buttons
+ * @returns Language dropdown menu
  */
 export function LanguageSwitcher() {
-  const locale = useLocale()
+  const locale = useLocale() as LocaleCode
   const t = useTranslations('language')
   const pathname = usePathname()
+  const router = useRouter()
 
-  // Remove locale prefix from pathname for locale-aware Link
-  const pathnameWithoutLocale = pathname.replace(/^\/(fr|en)/, '') || '/'
+  const currentLocale = locales.find((l) => l.code === locale) ?? locales[0]
+  const CurrentFlag = currentLocale.Flag
+
+  const handleLocaleChange = (newLocale: LocaleCode) => {
+    router.replace(pathname, { locale: newLocale })
+  }
 
   return (
-    <div className="flex items-center gap-1" role="group" aria-label={t('switch')}>
-      <Link
-        href={pathnameWithoutLocale}
-        locale="fr"
-        className={`px-2 py-1 text-sm font-medium transition-colors ${
-          locale === 'fr' ? 'text-primary' : 'text-muted-foreground hover:text-foreground'
-        }`}
-        aria-current={locale === 'fr' ? 'true' : undefined}
-      >
-        {t('fr')}
-      </Link>
-      <span className="text-muted-foreground">/</span>
-      <Link
-        href={pathnameWithoutLocale}
-        locale="en"
-        className={`px-2 py-1 text-sm font-medium transition-colors ${
-          locale === 'en' ? 'text-primary' : 'text-muted-foreground hover:text-foreground'
-        }`}
-        aria-current={locale === 'en' ? 'true' : undefined}
-      >
-        {t('en')}
-      </Link>
-    </div>
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button variant="ghost" size="sm" className="gap-2 px-2" aria-label={t('switch')}>
+          <CurrentFlag className="size-5 rounded-sm" />
+          <ChevronDown className="size-3 text-muted-foreground" />
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end" className="min-w-[140px]">
+        {locales.map(({ code, Flag }) => (
+          <DropdownMenuItem
+            key={code}
+            onClick={() => handleLocaleChange(code)}
+            className="gap-3 cursor-pointer"
+            aria-current={locale === code ? 'true' : undefined}
+          >
+            <Flag className="size-5 rounded-sm" />
+            <span>{t(code)}</span>
+            {locale === code && (
+              <span className="ml-auto text-primary">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  className="size-4"
+                >
+                  <polyline points="20 6 9 17 4 12" />
+                </svg>
+              </span>
+            )}
+          </DropdownMenuItem>
+        ))}
+      </DropdownMenuContent>
+    </DropdownMenu>
   )
 }
