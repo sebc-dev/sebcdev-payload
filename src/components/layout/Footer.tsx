@@ -1,10 +1,7 @@
 import { Link } from '@/i18n/navigation'
-import { useTranslations } from 'next-intl'
+import { categories, levels, themes } from '@/lib/constants'
 import { Facebook, Linkedin, Twitter } from 'lucide-react'
-
-const categories = ['news', 'deep-dive', 'tutorial', 'case-study', 'feedback'] as const
-const themes = ['ai', 'ux', 'engineering'] as const
-const levels = ['beginner', 'intermediate', 'advanced'] as const
+import { useTranslations } from 'next-intl'
 
 const socialLinks = [
   { name: 'Facebook', href: 'https://facebook.com/sebc.dev', icon: Facebook },

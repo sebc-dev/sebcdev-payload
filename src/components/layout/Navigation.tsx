@@ -1,15 +1,16 @@
 'use client'
 
-import { useTranslations } from 'next-intl'
-import { Link, usePathname } from '@/i18n/navigation'
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import { ChevronDown } from 'lucide-react'
+import { Link, usePathname } from '@/i18n/navigation'
+import { categories, levels, themes } from '@/lib/constants'
 import { cn } from '@/lib/utils'
+import { ChevronDown } from 'lucide-react'
+import { useTranslations } from 'next-intl'
 
 /**
  * Navigation Component
@@ -25,10 +26,6 @@ import { cn } from '@/lib/utils'
  *
  * @returns Navigation menu for desktop screens
  */
-
-const categories = ['news', 'deep-dive', 'tutorial', 'case-study', 'feedback'] as const
-const themes = ['ai', 'ux', 'engineering'] as const
-const levels = ['beginner', 'intermediate', 'advanced'] as const
 
 interface NavigationProps {
   className?: string
