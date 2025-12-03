@@ -1,4 +1,9 @@
 {
+  "components": {
+    "buttons": {
+      "title": "Button Variants"
+    }
+  },
   "common": {
     "loading": "Loading...",
     "error": "An error occurred",
