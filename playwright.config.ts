@@ -9,6 +9,22 @@ import 'dotenv/config'
 const baseURL = process.env.BASE_URL ?? 'http://localhost:3000'
 
 /**
+ * Determine if BASE_URL points to a local host.
+ * Only start webServer for local URLs (localhost, 127.0.0.1) or when BASE_URL is unset.
+ */
+function isLocalURL(url: string): boolean {
+  try {
+    const parsed = new URL(url)
+    const hostname = parsed.hostname.toLowerCase()
+    return hostname === 'localhost' || hostname === '127.0.0.1' || parsed.protocol === 'file:'
+  } catch {
+    return true // If URL parsing fails, assume local
+  }
+}
+
+const shouldStartWebServer = !process.env.BASE_URL || isLocalURL(baseURL)
+
+/**
  * See https://playwright.dev/docs/test-configuration.
  */
 export default defineConfig({
@@ -35,9 +51,12 @@ export default defineConfig({
       use: { ...devices['Desktop Chrome'], channel: 'chromium' },
     },
   ],
-  webServer: {
-    command: 'pnpm dev',
-    reuseExistingServer: true,
-    url: baseURL,
-  },
+  /* Only start local dev server when targeting localhost */
+  webServer: shouldStartWebServer
+    ? {
+        command: 'pnpm dev',
+        reuseExistingServer: true,
+        url: baseURL,
+      }
+    : undefined,
 })
