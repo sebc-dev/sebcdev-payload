@@ -1,5 +1,7 @@
 import { expect, test } from '@playwright/test'
 
+import frMessages from '../../messages/fr.json' with { type: 'json' }
+
 /**
  * Frontend E2E Tests
  *
@@ -12,8 +14,9 @@ test.describe('Frontend', () => {
 
     await expect(page).toHaveTitle(/sebc\.dev/)
 
+    // Use localized string from i18n resources to avoid hardcoded English regex
     const heading = page.locator('h1').first()
-    await expect(heading).toHaveText(/Welcome/)
+    await expect(heading).toContainText(frMessages.home.welcome)
   })
 
   test('homepage uses design system CSS variables', async ({ page }) => {
