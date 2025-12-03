@@ -10,13 +10,30 @@ const baseURL = process.env.BASE_URL ?? 'http://localhost:3000'
 
 /**
  * Determine if BASE_URL points to a local host.
- * Only start webServer for local URLs (localhost, 127.0.0.1) or when BASE_URL is unset.
+ * Only start webServer for local URLs or when BASE_URL is unset.
+ *
+ * Recognized as local:
+ * - localhost, 127.0.0.0/8 range, 0.0.0.0, ::1 (IPv6 loopback)
+ * - Hostnames ending with .local (mDNS/Bonjour)
+ * - file:// protocol
  */
 function isLocalURL(url: string): boolean {
   try {
     const parsed = new URL(url)
-    const hostname = parsed.hostname.toLowerCase()
-    return hostname === 'localhost' || hostname === '127.0.0.1' || parsed.protocol === 'file:'
+    // Normalize hostname: lowercase and strip IPv6 brackets if present
+    let hostname = parsed.hostname.toLowerCase()
+    if (hostname.startsWith('[') && hostname.endsWith(']')) {
+      hostname = hostname.slice(1, -1)
+    }
+
+    return (
+      hostname === 'localhost' ||
+      hostname === '0.0.0.0' ||
+      hostname === '::1' ||
+      hostname.startsWith('127.') ||
+      hostname.endsWith('.local') ||
+      parsed.protocol === 'file:'
+    )
   } catch {
     return true // If URL parsing fails, assume local
   }
