@@ -22,11 +22,9 @@ const baseURL = rawBaseURL || 'http://localhost:3000'
 function isLocalURL(url: string): boolean {
   try {
     const parsed = new URL(url)
-    // Normalize hostname: lowercase and strip IPv6 brackets if present
-    let hostname = parsed.hostname.toLowerCase()
-    if (hostname.startsWith('[') && hostname.endsWith(']')) {
-      hostname = hostname.slice(1, -1)
-    }
+    // Normalize hostname: lowercase
+    // Note: URL.hostname already excludes IPv6 brackets per WHATWG URL spec
+    const hostname = parsed.hostname.toLowerCase()
 
     return (
       hostname === 'localhost' ||
