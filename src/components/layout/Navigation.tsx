@@ -63,29 +63,6 @@ export function Navigation({ className }: NavigationProps) {
         {t('articles')}
       </Link>
 
-      {/* Categories Dropdown */}
-      <DropdownMenu>
-        <DropdownMenuTrigger
-          className={cn(
-            'flex items-center gap-1 px-4 py-2 text-sm font-medium rounded-md transition-colors',
-            'text-muted-foreground hover:text-foreground hover:bg-accent',
-          )}
-        >
-          {t('categories')}
-          <ChevronDown className="h-4 w-4" />
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="start">
-          <DropdownMenuItem asChild>
-            <Link href="/articles">{t('allCategories')}</Link>
-          </DropdownMenuItem>
-          {categories.map((category) => (
-            <DropdownMenuItem key={category} asChild>
-              <Link href={`/articles?category=${category}`}>{t(`category.${category}`)}</Link>
-            </DropdownMenuItem>
-          ))}
-        </DropdownMenuContent>
-      </DropdownMenu>
-
       {/* Themes Dropdown */}
       <DropdownMenu>
         <DropdownMenuTrigger
@@ -98,12 +75,29 @@ export function Navigation({ className }: NavigationProps) {
           <ChevronDown className="h-4 w-4" />
         </DropdownMenuTrigger>
         <DropdownMenuContent align="start">
-          <DropdownMenuItem asChild>
-            <Link href="/articles">{t('allThemes')}</Link>
-          </DropdownMenuItem>
           {themes.map((theme) => (
             <DropdownMenuItem key={theme} asChild>
               <Link href={`/articles?tags=${theme}`}>{t(`theme.${theme}`)}</Link>
+            </DropdownMenuItem>
+          ))}
+        </DropdownMenuContent>
+      </DropdownMenu>
+
+      {/* Categories Dropdown */}
+      <DropdownMenu>
+        <DropdownMenuTrigger
+          className={cn(
+            'flex items-center gap-1 px-4 py-2 text-sm font-medium rounded-md transition-colors',
+            'text-muted-foreground hover:text-foreground hover:bg-accent',
+          )}
+        >
+          {t('categories')}
+          <ChevronDown className="h-4 w-4" />
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="start">
+          {categories.map((category) => (
+            <DropdownMenuItem key={category} asChild>
+              <Link href={`/articles?category=${category}`}>{t(`category.${category}`)}</Link>
             </DropdownMenuItem>
           ))}
         </DropdownMenuContent>
