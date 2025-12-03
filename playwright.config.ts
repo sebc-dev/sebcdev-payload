@@ -12,6 +12,7 @@ const DEFAULT_BASE_URL = 'http://localhost:3000'
  * Normalize and validate BASE_URL.
  * - Trims whitespace, treats empty strings as undefined
  * - Validates URL is parseable, falls back to default if not
+ * - Rejects file:// URLs (incompatible with Playwright's HTTP health checks)
  */
 function getBaseURL(): string {
   const rawBaseURL = process.env.BASE_URL?.trim()
@@ -20,7 +21,16 @@ function getBaseURL(): string {
   }
 
   try {
-    new URL(rawBaseURL)
+    const parsed = new URL(rawBaseURL)
+
+    // file:// URLs are incompatible with Playwright's webServer health checks
+    if (parsed.protocol === 'file:') {
+      console.warn(
+        `[Playwright Config] BASE_URL "${rawBaseURL}" uses file:// protocol which is incompatible with Playwright webServer. Use http:// or https://. Falling back to ${DEFAULT_BASE_URL}.`,
+      )
+      return DEFAULT_BASE_URL
+    }
+
     return rawBaseURL
   } catch (error) {
     console.warn(
@@ -41,7 +51,8 @@ const hasCustomBaseURL = process.env.BASE_URL?.trim() && baseURL !== DEFAULT_BAS
  * Recognized as local:
  * - localhost, 127.0.0.0/8 range, 0.0.0.0, ::1 (IPv6 loopback)
  * - Hostnames ending with .local (mDNS/Bonjour)
- * - file:// protocol
+ *
+ * Note: file:// is excluded - it's rejected earlier in getBaseURL()
  */
 function isLocalURL(url: string): boolean {
   try {
@@ -55,8 +66,7 @@ function isLocalURL(url: string): boolean {
       hostname === '0.0.0.0' ||
       hostname === '::1' ||
       hostname.startsWith('127.') ||
-      hostname.endsWith('.local') ||
-      parsed.protocol === 'file:'
+      hostname.endsWith('.local')
     )
   } catch (error) {
     // Log warning for debugging invalid URLs, then fallback to local
