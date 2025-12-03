@@ -6,7 +6,9 @@ import { defineConfig, devices } from '@playwright/test'
  */
 import 'dotenv/config'
 
-const baseURL = process.env.BASE_URL ?? 'http://localhost:3000'
+// Normalize BASE_URL: trim whitespace, treat empty strings as undefined
+const rawBaseURL = process.env.BASE_URL?.trim()
+const baseURL = rawBaseURL || 'http://localhost:3000'
 
 /**
  * Determine if BASE_URL points to a local host.
@@ -39,7 +41,7 @@ function isLocalURL(url: string): boolean {
   }
 }
 
-const shouldStartWebServer = !process.env.BASE_URL || isLocalURL(baseURL)
+const shouldStartWebServer = !rawBaseURL || isLocalURL(baseURL)
 
 /**
  * See https://playwright.dev/docs/test-configuration.
