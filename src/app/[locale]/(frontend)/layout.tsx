@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import { setRequestLocale } from 'next-intl/server'
+import { Header } from '@/components/layout'
 
 /**
  * Metadata for frontend pages.
@@ -14,6 +15,7 @@ export const metadata: Metadata = {
  * Frontend layout for locale-specific routes.
  *
  * This layout:
+ * - Renders Header on all pages (sticky, responsive)
  * - Wraps content in semantic <main> element
  * - Enables static rendering via setRequestLocale
  *
@@ -30,5 +32,10 @@ export default async function FrontendLayout({
   const { locale } = await params
   setRequestLocale(locale)
 
-  return <main className="min-h-screen">{children}</main>
+  return (
+    <>
+      <Header />
+      <main className="min-h-screen">{children}</main>
+    </>
+  )
 }
