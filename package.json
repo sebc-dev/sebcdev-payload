@@ -20,6 +20,7 @@
     "ii": "pnpm install --ignore-workspace",
     "knip": "knip",
     "knip:production": "knip --production",
+    "typecheck:tooling": "tsc --project tsconfig.tooling.json --noEmit",
     "lint": "cross-env NODE_OPTIONS=--no-deprecation next lint",
     "lint-staged": "lint-staged",
     "format": "prettier --write .",
