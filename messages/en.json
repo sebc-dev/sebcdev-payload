@@ -8,7 +8,20 @@
   },
   "components": {
     "buttons": {
-      "title": "Button Variants"
+      "title": "Button Variants",
+      "variant": {
+        "default": "Default",
+        "secondary": "Secondary",
+        "outline": "Outline",
+        "ghost": "Ghost",
+        "destructive": "Destructive",
+        "link": "Link"
+      },
+      "size": {
+        "small": "Small",
+        "default": "Default",
+        "large": "Large"
+      }
     }
   },
   "common": {
