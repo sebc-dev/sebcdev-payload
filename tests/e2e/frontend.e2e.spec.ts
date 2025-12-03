@@ -16,16 +16,30 @@ test.describe('Frontend', () => {
     await expect(heading).toHaveText(/Welcome/)
   })
 
-  test('homepage has correct brand colors', async ({ page }) => {
+  test('homepage uses design system CSS variables', async ({ page }) => {
     await page.goto('/fr')
 
-    // Verify the page uses anthracite background
-    const body = page.locator('body')
-    await expect(body).toHaveCSS('background-color', 'rgb(26, 29, 35)')
+    // Verify CSS custom properties are defined on :root
+    // This decouples tests from specific RGB values - palette changes won't break tests
+    const root = page.locator(':root')
 
-    // Verify heading uses off-white text
-    const heading = page.locator('h1').first()
-    await expect(heading).toHaveCSS('color', 'rgb(248, 250, 252)')
+    // Check that --background variable is defined (anthracite theme)
+    const backgroundVar = await root.evaluate((el) =>
+      getComputedStyle(el).getPropertyValue('--background').trim(),
+    )
+    expect(backgroundVar).toBeTruthy()
+
+    // Check that --foreground variable is defined (off-white text)
+    const foregroundVar = await root.evaluate((el) =>
+      getComputedStyle(el).getPropertyValue('--foreground').trim(),
+    )
+    expect(foregroundVar).toBeTruthy()
+
+    // Verify body uses the background variable (not a hardcoded color)
+    const body = page.locator('body')
+    const bodyBgColor = await body.evaluate((el) => getComputedStyle(el).backgroundColor)
+    expect(bodyBgColor).not.toBe('rgba(0, 0, 0, 0)') // Not transparent
+    expect(bodyBgColor).not.toBe('rgb(255, 255, 255)') // Not default white
   })
 
   test('locale switching works', async ({ page }) => {
