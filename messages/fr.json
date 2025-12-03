@@ -8,7 +8,20 @@
   },
   "components": {
     "buttons": {
-      "title": "Variantes de boutons"
+      "title": "Variantes de boutons",
+      "variant": {
+        "default": "Par défaut",
+        "secondary": "Secondaire",
+        "outline": "Contour",
+        "ghost": "Fantôme",
+        "destructive": "Destructif",
+        "link": "Lien"
+      },
+      "size": {
+        "small": "Petit",
+        "default": "Par défaut",
+        "large": "Grand"
+      }
     }
   },
   "common": {

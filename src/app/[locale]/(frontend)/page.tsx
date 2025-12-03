@@ -66,17 +66,17 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
       <section className="mt-8 space-y-4">
         <h2 className="text-xl font-semibold">{tComponents('buttons.title')}</h2>
         <div className="flex flex-wrap gap-4">
-          <Button>Default</Button>
-          <Button variant="secondary">Secondary</Button>
-          <Button variant="outline">Outline</Button>
-          <Button variant="ghost">Ghost</Button>
-          <Button variant="destructive">Destructive</Button>
-          <Button variant="link">Link</Button>
+          <Button>{tComponents('buttons.variant.default')}</Button>
+          <Button variant="secondary">{tComponents('buttons.variant.secondary')}</Button>
+          <Button variant="outline">{tComponents('buttons.variant.outline')}</Button>
+          <Button variant="ghost">{tComponents('buttons.variant.ghost')}</Button>
+          <Button variant="destructive">{tComponents('buttons.variant.destructive')}</Button>
+          <Button variant="link">{tComponents('buttons.variant.link')}</Button>
         </div>
         <div className="flex flex-wrap gap-4">
-          <Button size="sm">Small</Button>
-          <Button size="default">Default</Button>
-          <Button size="lg">Large</Button>
+          <Button size="sm">{tComponents('buttons.size.small')}</Button>
+          <Button size="default">{tComponents('buttons.size.default')}</Button>
+          <Button size="lg">{tComponents('buttons.size.large')}</Button>
         </div>
       </section>
       <div className="mt-8 flex flex-col items-center gap-2 lg:flex-row">
