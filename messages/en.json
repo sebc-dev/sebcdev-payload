@@ -1,4 +1,11 @@
 {
+  "home": {
+    "welcome": "Welcome to your new project.",
+    "welcomeBack": "Welcome back, {email}",
+    "goToAdmin": "Go to admin panel",
+    "documentation": "Documentation",
+    "updatePage": "Update this page by editing"
+  },
   "components": {
     "buttons": {
       "title": "Button Variants"

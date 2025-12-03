@@ -20,6 +20,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
   setRequestLocale(locale)
 
   const t = await getTranslations('components')
+  const tHome = await getTranslations('home')
   const headers = await getHeaders()
   const payloadConfig = await config
   const payload = await getPayload({ config: payloadConfig })
@@ -41,23 +42,23 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
         </picture>
         {!user && (
           <h1 className="my-6 text-center text-3xl font-bold sm:my-10 sm:text-4xl lg:text-5xl">
-            Welcome to your new project.
+            {tHome('welcome')}
           </h1>
         )}
         {user && (
           <h1 className="my-6 text-center text-3xl font-bold sm:my-10 sm:text-4xl lg:text-5xl">
-            Welcome back, {user.email}
+            {tHome('welcomeBack', { email: user.email })}
           </h1>
         )}
         <div className="flex items-center gap-3">
           <Button asChild>
             <a href={payloadConfig.routes.admin} rel="noopener noreferrer" target="_blank">
-              Go to admin panel
+              {tHome('goToAdmin')}
             </a>
           </Button>
           <Button variant="outline" asChild>
             <a href="https://payloadcms.com/docs" rel="noopener noreferrer" target="_blank">
-              Documentation
+              {tHome('documentation')}
             </a>
           </Button>
         </div>
@@ -79,7 +80,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
         </div>
       </section>
       <div className="mt-8 flex flex-col items-center gap-2 lg:flex-row">
-        <p className="m-0 text-muted-foreground">Update this page by editing</p>
+        <p className="m-0 text-muted-foreground">{tHome('updatePage')}</p>
         <a className="rounded bg-muted px-2 py-0.5 font-mono text-sm no-underline" href={fileURL}>
           <code>app/[locale]/(frontend)/page.tsx</code>
         </a>
