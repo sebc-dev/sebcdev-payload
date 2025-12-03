@@ -3,7 +3,7 @@
 **Story**: Layout Global & Navigation
 **Epic**: 3 - Frontend Core & Design System
 **Created**: 2025-12-03
-**Status**: 📋 PLANNING
+**Status**: 🚧 IN PROGRESS (Phase 1 Complete)
 
 ---
 
@@ -667,7 +667,7 @@ For each phase:
 
 Update this document as phases complete:
 
-- [ ] Phase 1: shadcn/ui Components - ⬜ Not Started
+- [x] Phase 1: shadcn/ui Components - ✅ COMPLETE (2025-12-03)
 - [ ] Phase 2: Header & Desktop Navigation - ⬜ Not Started
 - [ ] Phase 3: Footer Component - ⬜ Not Started
 - [ ] Phase 4: Mobile Navigation & Language Switcher - ⬜ Not Started
