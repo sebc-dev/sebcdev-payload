@@ -28,7 +28,11 @@ import { cn } from '@/lib/utils'
 const categories = ['ai', 'ux', 'engineering'] as const
 const levels = ['beginner', 'intermediate', 'advanced'] as const
 
-export function Navigation() {
+interface NavigationProps {
+  className?: string
+}
+
+export function Navigation({ className }: NavigationProps) {
   const t = useTranslations('navigation')
   const a11yT = useTranslations('accessibility')
   const pathname = usePathname()
@@ -40,7 +44,10 @@ export function Navigation() {
   const isActive = (path: string) => pathname === path || pathname.startsWith(path + '/')
 
   return (
-    <nav className="hidden lg:flex items-center gap-1" aria-label={a11yT('mainNavigation')}>
+    <nav
+      className={cn('hidden lg:flex items-center gap-1', className)}
+      aria-label={a11yT('mainNavigation')}
+    >
       {/* Articles Link */}
       <Link
         href="/articles"
