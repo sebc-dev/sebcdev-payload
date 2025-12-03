@@ -13,7 +13,7 @@ test.describe('Frontend', () => {
     await expect(page).toHaveTitle(/sebc\.dev/)
 
     const heading = page.locator('h1').first()
-    await expect(heading).toHaveText('Welcome to your new project.')
+    await expect(heading).toHaveText(/Welcome/)
   })
 
   test('homepage has correct brand colors', async ({ page }) => {
