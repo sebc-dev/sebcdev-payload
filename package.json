@@ -54,8 +54,7 @@
     "payload": "3.63.0",
     "react": "19.1.0",
     "react-dom": "19.1.0",
-    "tailwind-merge": "^3.4.0",
-    "tailwindcss": "^4.1.17"
+    "tailwind-merge": "^3.4.0"
   },
   "devDependencies": {
     "@axe-core/playwright": "^4.11.0",
@@ -64,6 +63,7 @@
     "@stryker-mutator/core": "^9.4.0",
     "@stryker-mutator/vitest-runner": "^9.4.0",
     "@tailwindcss/postcss": "^4.1.17",
+    "tailwindcss": "^4.1.17",
     "@testing-library/react": "16.3.0",
     "@types/node": "^22.5.4",
     "@types/react": "19.1.8",
