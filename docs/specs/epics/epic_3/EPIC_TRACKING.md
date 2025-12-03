@@ -13,7 +13,7 @@ Construire l'identité visuelle et la navigation bilingue du blog. Cet epic éta
 ### Objectives
 
 1. Implémenter le routing i18n avec `next-intl` pour une navigation bilingue (FR/EN)
-2. Intégrer Tailwind 4 et shadcn/ui avec la charte graphique "Anthracite & Vert Canard"
+2. Intégrer Tailwind 4 et shadcn/ui avec la charte graphique "Neutral Gray & Teal"
 3. Créer le layout global (Header, Footer) avec sélecteur de langue fonctionnel
 
 ### User Value
@@ -29,7 +29,7 @@ Construire l'identité visuelle et la navigation bilingue du blog. Cet epic éta
 | Story | Title | Description | Status | Phases | Progress |
 |-------|-------|-------------|--------|--------|----------|
 | 3.1 | Routing i18n & Middleware | Implémenter le routing bilingue avec `next-intl`, URLs localisées (`/fr`, `/en`) et persistance de la préférence utilisateur | COMPLETED | 4 | 4/4 ✅ |
-| 3.2 | Intégration Design System (Dark Mode) | Installer Tailwind 4 et shadcn/ui, appliquer la charte graphique "Anthracite & Vert Canard" | IN PROGRESS | 4 | 3/4 (Phase 4 📋) |
+| 3.2 | Intégration Design System (Dark Mode) | Installer Tailwind 4 et shadcn/ui, appliquer la charte graphique "Neutral Gray & Teal" | IN PROGRESS | 4 | 3/4 (Phase 4 📋) |
 | 3.3 | Layout Global & Navigation | Créer Header et Footer cohérents avec sélecteur de langue fonctionnel | PLANNING | 5 | 0/5 |
 
 ---
@@ -129,8 +129,9 @@ Story 3.2 (Design System)
 
 ### Design Guidelines
 
-- **Primary Background**: `#1A1D23` (Anthracite)
-- **Accent Color**: `#14B8A6` (Vert Canard)
+- **Primary Background**: `#1F1F1F` (Neutral Gray)
+- **Accent Color**: `#14B8A6` (Teal)
+- **Border Radius**: `0.375rem` (6px)
 - **Typography**: Inter/Nunito Sans (body), JetBrains Mono (code)
 - **Target**: WCAG 2.1 AA compliance
 

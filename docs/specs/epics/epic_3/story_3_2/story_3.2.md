@@ -11,7 +11,7 @@
 
 ## Original Specification (from PRD)
 
-> **En tant que** Développeur, **je veux** installer **Tailwind 4** et **shadcn/ui** et appliquer la charte graphique "Anthracite & Vert Canard", **afin de** remplacer le style par défaut du template par l'identité de la marque.
+> **En tant que** Développeur, **je veux** installer **Tailwind 4** et **shadcn/ui** et appliquer la charte graphique "Neutral Gray & Teal", **afin de** remplacer le style par défaut du template par l'identité de la marque.
 
 ---
 
@@ -19,7 +19,7 @@
 
 1. **Installer et configurer Tailwind CSS 4** avec PostCSS
 2. **Installer et configurer shadcn/ui** pour les composants React
-3. **Définir les design tokens** de la charte graphique "Anthracite & Vert Canard"
+3. **Définir les design tokens** de la charte graphique "Neutral Gray & Teal"
 4. **Configurer les polices** Nunito Sans et JetBrains Mono
 5. **Migrer le CSS existant** vers Tailwind
 6. **Valider l'accessibilité** (WCAG 2.1 AA - contrastes)
@@ -70,15 +70,18 @@
 
 | Token | Hex | CSS Variable | Usage |
 |-------|-----|--------------|-------|
-| Background Primary | `#1A1D23` | `--background` | Fond principal (anthracite) |
-| Background Secondary | `#2D3748` | `--card` | Cartes, panneaux |
-| Accent Primary | `#14B8A6` | `--primary` | Vert canard (liens, boutons) |
-| Foreground Primary | `#F7FAFC` | `--foreground` | Texte principal (blanc cassé) |
-| Foreground Muted | `#A0AEC0` | `--muted-foreground` | Texte secondaire |
+| Background Primary | `#1F1F1F` | `--background` | Fond principal (gris neutre) |
+| Background Secondary | `#2E2E2E` | `--card` | Cartes, panneaux |
+| Accent Primary | `#14B8A6` | `--primary` | Teal (liens, boutons) |
+| Foreground Primary | `#FAFAFA` | `--foreground` | Texte principal (blanc pur) |
+| Foreground Muted | `#A6A6A6` | `--muted-foreground` | Texte secondaire |
 | Destructive | `#F56565` | `--destructive` | Erreurs, actions destructives |
 | Success | `#48BB78` | `--success` | Confirmations |
-| Border | `#374151` | `--border` | Bordures |
+| Border | `#454545` | `--border` | Bordures (gris neutre) |
 | Ring | `#14B8A6` | `--ring` | Focus ring |
+| Border Radius | `0.375rem` | `--radius` | 6px - arrondis subtils |
+
+> **Note**: Les gris utilisent une saturation de 0% (neutres purs) pour éviter les teintes bleutées.
 
 ### Typography
 

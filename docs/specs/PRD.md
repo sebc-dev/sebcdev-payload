@@ -227,9 +227,10 @@ Voici la proposition :
 ### Branding & Style Guide
 
 - **Palette de Couleurs :**
-  - **Fond :** Gris anthracite profond (`#1A1D23`) pour réduire la fatigue oculaire.
-  - **Accent Primaire :** Vert canard lumineux (`#14B8A6`) pour les actions principales et liens.
+  - **Fond :** Gris neutre foncé (`#1F1F1F`) pour réduire la fatigue oculaire (saturation 0%).
+  - **Accent Primaire :** Teal lumineux (`#14B8A6`) pour les actions principales et liens.
   - **Code couleur Catégories :** Une palette secondaire définie pour les 9 catégories canoniques.
+  - **Border-radius :** `0.375rem` (6px) pour des arrondis subtils.
 
 - **Typographie :**
   - **Corps/Titres :** `Inter` ou `Nunito Sans` pour une lisibilité maximale.
@@ -325,7 +326,7 @@ _Objectif : Construire l'identité visuelle et la navigation bilingue._
 - **Story 3.1 : Routing i18n & Middleware**
   - **En tant qu'** Utilisateur, **je veux** que l'URL reflète ma langue (`/fr` ou `/en`) et que ma préférence soit sauvegardée, **afin de** naviguer dans une interface localisée via `next-intl`.
 - **Story 3.2 : Intégration Design System (Dark Mode)**
-  - **En tant que** Développeur, **je veux** installer **Tailwind 4** et **shadcn/ui** et appliquer la charte graphique "Anthracite & Vert Canard", **afin de** remplacer le style par défaut du template par l'identité de la marque.
+  - **En tant que** Développeur, **je veux** installer **Tailwind 4** et **shadcn/ui** et appliquer la charte graphique "Neutral Gray & Teal", **afin de** remplacer le style par défaut du template par l'identité de la marque.
 - **Story 3.3 : Layout Global & Navigation**
   - **En tant qu'** Utilisateur, **je veux** voir un Header et un Footer cohérents sur toutes les pages, incluant un sélecteur de langue fonctionnel, **afin de** naviguer aisément dans le site.
 

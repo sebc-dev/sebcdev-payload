@@ -33,7 +33,7 @@ Cette story implémente la structure de navigation globale du site sebc.dev :
 - [ ] Le Header contient : Logo (lien vers `/[locale]/`), Navigation, Sélecteur de langue
 - [ ] Le Header est sticky en haut de page
 - [ ] Le Header est responsive (hamburger menu sur mobile)
-- [ ] Le Header respecte la charte graphique "Anthracite & Vert Canard"
+- [ ] Le Header respecte la charte graphique "Neutral Gray & Teal"
 
 ### AC2: Navigation Principale
 - [ ] Liens de navigation : Articles (`/[locale]/articles`), Catégories (dropdown), Niveaux (dropdown)
@@ -173,11 +173,12 @@ messages/
 ```
 
 ### Color Tokens (from Story 3.2)
-- **Header Background**: `bg-background` (#1A1D23)
-- **Header Border**: `border-border` (#374151)
+- **Header Background**: `bg-background` (#1F1F1F - gris neutre)
+- **Header Border**: `border-border` (#454545 - gris neutre)
 - **Navigation Links**: `text-foreground` with `hover:text-primary`
-- **Active Link**: `text-primary` (#14B8A6)
-- **Footer Background**: `bg-card` (#2D3748) or `bg-background`
+- **Active Link**: `text-primary` (#14B8A6 - teal)
+- **Footer Background**: `bg-card` (#2E2E2E) or `bg-background`
+- **Border Radius**: `0.375rem` (6px)
 
 ---
 

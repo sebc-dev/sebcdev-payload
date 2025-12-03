@@ -447,17 +447,19 @@ Utilisation TailwindCSS 4 standard :
 
 ### 7.1 Palette de Couleurs
 
-Basée sur **dark mode moderne**, avec accent vert canard :
+Basée sur **dark mode moderne** avec gris neutres et accent teal :
 
 | Type                 | Hex       | Utilisation                                      |
 | -------------------- | --------- | ------------------------------------------------ |
-| **Fond Primaire**    | `#1A1D23` | Arrière-plan principal (anthracite profond)      |
-| **Fond Secondaire**  | `#2D3748` | Cartes, panneaux, sections                       |
-| **Accent Principal** | `#14B8A6` | Liens, boutons, indicateurs actifs (vert canard) |
-| **Texte Principal**  | `#F7FAFC` | Titres, corps (blanc cassé)                      |
-| **Texte Secondaire** | `#A0AEC0` | Métadonnées, hints (gris moyen)                  |
+| **Fond Primaire**    | `#1F1F1F` | Arrière-plan principal (gris neutre foncé)       |
+| **Fond Secondaire**  | `#2E2E2E` | Cartes, panneaux, sections                       |
+| **Accent Principal** | `#14B8A6` | Liens, boutons, indicateurs actifs (teal)        |
+| **Texte Principal**  | `#FAFAFA` | Titres, corps (blanc pur)                        |
+| **Texte Secondaire** | `#A6A6A6` | Métadonnées, hints (gris neutre moyen)           |
 | **Erreur**           | `#F56565` | Messages d'erreur, actions destructives (rouge)  |
 | **Succès**           | `#48BB78` | Confirmations (vert)                             |
+
+> **Note technique** : Les gris utilisent une saturation de 0% (neutres purs) pour éviter les teintes bleutées. Border-radius de base : `0.375rem` (6px).
 
 ### 7.2 Typographie
 
