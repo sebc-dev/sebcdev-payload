@@ -231,8 +231,8 @@ export async function waitForDropzoneAndUpload(
   const dropzone = page.locator(PAYLOAD_DROPZONE_SELECTORS.dropzone).first()
   await dropzone.waitFor({ state: 'visible', timeout: dropzoneTimeout })
 
-  // Upload file via hidden input
-  const fileInput = page.locator('input[type="file"]')
+  // Upload file via hidden input scoped to the dropzone to avoid race conditions
+  const fileInput = dropzone.locator('input[type="file"]').first()
   await fileInput.setInputFiles(filePath)
 
   // Wait for upload to be processed
