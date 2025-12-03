@@ -50,22 +50,16 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
           </h1>
         )}
         <div className="flex items-center gap-3">
-          <a
-            className="rounded bg-foreground px-3 py-1.5 text-background no-underline transition-colors hover:bg-foreground/90"
-            href={payloadConfig.routes.admin}
-            rel="noopener noreferrer"
-            target="_blank"
-          >
-            Go to admin panel
-          </a>
-          <a
-            className="rounded border border-border bg-background px-3 py-1.5 text-foreground no-underline transition-colors hover:bg-muted"
-            href="https://payloadcms.com/docs"
-            rel="noopener noreferrer"
-            target="_blank"
-          >
-            Documentation
-          </a>
+          <Button asChild>
+            <a href={payloadConfig.routes.admin} rel="noopener noreferrer" target="_blank">
+              Go to admin panel
+            </a>
+          </Button>
+          <Button variant="outline" asChild>
+            <a href="https://payloadcms.com/docs" rel="noopener noreferrer" target="_blank">
+              Documentation
+            </a>
+          </Button>
         </div>
       </div>
       <section className="mt-8 space-y-4">
