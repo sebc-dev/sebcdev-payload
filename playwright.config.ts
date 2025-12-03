@@ -36,8 +36,12 @@ function isLocalURL(url: string): boolean {
       hostname.endsWith('.local') ||
       parsed.protocol === 'file:'
     )
-  } catch {
-    return true // If URL parsing fails, assume local
+  } catch (error) {
+    // Log warning for debugging invalid URLs, then fallback to local
+    console.warn(
+      `[Playwright Config] Invalid URL "${url}": ${error instanceof Error ? error.message : String(error)}. Assuming local.`,
+    )
+    return true
   }
 }
 
