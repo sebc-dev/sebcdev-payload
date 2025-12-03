@@ -1,8 +1,6 @@
 import type { SVGProps } from 'react'
 
-interface FlagProps extends SVGProps<SVGSVGElement> {
-  className?: string
-}
+type FlagProps = SVGProps<SVGSVGElement>
 
 /**
  * French flag icon (blue, white, red vertical stripes)
