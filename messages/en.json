@@ -76,8 +76,9 @@
     "description": "Technical blog about modern web development, Next.js, and Cloudflare"
   },
   "accessibility": {
-    "skipToContent": "Skip to main content",
+    "languageSelection": "Language selection",
+    "mainNavigation": "Main navigation",
     "menu": "Menu",
-    "languageSelector": "Select language"
+    "skipToContent": "Skip to main content"
   }
 }
