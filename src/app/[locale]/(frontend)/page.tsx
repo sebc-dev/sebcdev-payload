@@ -6,7 +6,7 @@ import { fileURLToPath } from 'url'
 import { getTranslations, setRequestLocale } from 'next-intl/server'
 
 import { Button } from '@/components/ui/button'
-import config from '@/payload.config'
+import config from '@payload-config'
 
 /**
  * Homepage component with locale support.
