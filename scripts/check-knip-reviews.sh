@@ -37,7 +37,6 @@ while IFS= read -r line; do
     FOUND=$((FOUND + 1))
 
     if [[ "$REVIEW_DATE" < "$TODAY" ]]; then
-      # Extract the dependency name from the next non-empty line
       OVERDUE+=("$REVIEW_DATE")
       echo "OVERDUE: Review date $REVIEW_DATE has passed"
     else
