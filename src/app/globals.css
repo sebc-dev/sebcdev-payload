@@ -42,7 +42,7 @@
  *
  * Contrast Ratios (WCAG 2.1 AA compliant):
  * - foreground on background: 15.3:1 (AAA)
- * - primary-foreground on primary: 7.3:1 (AAA)
+ * - primary-foreground on primary: 6.19:1 (AA)
  * - destructive-foreground on destructive: 5.2:1 (AA)
  * - muted-foreground on background: 4.6:1 (AA)
  */
@@ -62,7 +62,7 @@
     --popover-foreground: hsl(210, 40%, 98%);
 
     /* Primary: Teal #1DAFA1 - buttons, links, CTAs */
-    /* Uses dark text for WCAG AA contrast (7.3:1) */
+    /* Uses dark text for WCAG AA contrast (6.19:1) */
     --primary: hsl(174, 72%, 40%);
     --primary-foreground: hsl(222, 16%, 12%);
 
