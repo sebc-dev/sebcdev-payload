@@ -143,11 +143,15 @@ const config: KnipConfig = {
   // @see https://knip.dev/features/compilers
   compilers: {
     css: (text: string): string => {
-      // Match @import "pkg" and @plugin "pkg" directives (Tailwind v4 syntax)
-      const matches = [...text.matchAll(/@(?:import|plugin)\s+['"]([^'"]+)['"]/g)]
+      // Strip block comments to avoid matching @import/@plugin inside /* ... */
+      const withoutComments = text.replace(/\/\*[\s\S]*?\*\//g, '')
 
-      // Transform to ES module imports so Knip can track the dependencies
-      return matches.map(([, match]) => `import '${match}';`).join('\n')
+      // Match @import "pkg" and @plugin "pkg" directives (Tailwind v4 syntax)
+      const matches = [...withoutComments.matchAll(/@(?:import|plugin)\s+['"]([^'"]+)['"]/g)]
+
+      // Deduplicate and transform to ES module imports so Knip can track the dependencies
+      const uniquePackages = [...new Set(matches.map(([, pkg]) => pkg))]
+      return uniquePackages.map((pkg) => `import '${pkg}';`).join('\n')
     },
   },
 
