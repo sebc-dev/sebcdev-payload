@@ -59,12 +59,15 @@ test.describe('Design System', () => {
       await page.goto('/fr')
 
       const code = page.locator('code').first()
-      if ((await code.count()) > 0) {
-        const fontFamily = await code.evaluate((el) => window.getComputedStyle(el).fontFamily)
 
-        // JetBrains Mono should be in the font stack
-        expect(fontFamily.toLowerCase()).toContain('jetbrains')
-      }
+      // Ensure at least one code element exists - fail explicitly if missing
+      // The homepage should always have a <code> element in the "edit this page" section
+      expect(await code.count()).toBeGreaterThan(0)
+
+      const fontFamily = await code.evaluate((el) => window.getComputedStyle(el).fontFamily)
+
+      // JetBrains Mono should be in the font stack
+      expect(fontFamily.toLowerCase()).toContain('jetbrains')
     })
   })
 
