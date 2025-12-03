@@ -86,45 +86,6 @@ const config: KnipConfig = {
     // @knip-review-by: 2026-06-03
     'eslint-config-next',
     'eslint-config-prettier',
-
-    // === Production dependencies not detected in --production mode ===
-    // CI runs with --production flag excluding dev config files
-    // These are actively used; structural limitation of Knip detection
-
-    // OpenNext - used in open-next.config.ts for Cloudflare deployment
-    // @knip-review-by: 2026-06-03
-    '@opennextjs/cloudflare',
-
-    // Payload CMS core packages - used in src/payload.config.ts
-    // @knip-review-by: 2026-06-03
-    '@payloadcms/db-d1-sqlite',
-    '@payloadcms/richtext-lexical',
-    '@payloadcms/storage-r2',
-
-    // Payload UI - used in src/fields/code/DynamicCodeField.tsx
-    // @knip-review-by: 2026-06-03
-    '@payloadcms/ui',
-
-    // shadcn/ui dependencies - used in src/components/ui/*.tsx
-    // @knip-review-by: 2026-06-03
-    '@radix-ui/react-dialog', // used in src/components/ui/sheet.tsx
-    '@radix-ui/react-dropdown-menu', // used in src/components/ui/dropdown-menu.tsx
-    '@radix-ui/react-slot',
-    'class-variance-authority',
-    'lucide-react', // icons used across components
-
-    // Utility libraries - used in src/lib/utils.ts
-    // @knip-review-by: 2026-06-03
-    'clsx',
-    'tailwind-merge',
-
-    // Tailwind CSS - used via @import 'tailwindcss' in src/app/globals.css
-    // @knip-review-by: 2026-06-03
-    'tailwindcss',
-
-    // dotenv - used in vitest.setup.ts (dev file, but still needed)
-    // @knip-review-by: 2026-06-03
-    'dotenv',
   ],
 
   // Rules configuration - strict on dependencies, warn on code
