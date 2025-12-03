@@ -76,14 +76,22 @@ async function uploadMedia(page: Page, altText?: string): Promise<string> {
   // Wait for form
   await expect(page.locator('form')).toBeVisible()
 
-  // Upload file
+  // Wait for the dropzone and file input to be rendered
+  // Payload CMS uses a hidden file input with class 'file-field__hidden-input'
+  const dropzone = page.locator('.file-field__upload').first()
+  await expect(dropzone).toBeVisible({ timeout: 10000 })
+
+  // Upload file - Payload uses a hidden input, we need to set files directly
   const fileInput = page.locator('input[type="file"]')
   await fileInput.setInputFiles(TEST_IMAGE_PATH)
 
   // Wait for upload to be processed
-  await page.waitForSelector('.file__filename, .upload__filename, [class*="thumbnail"]', {
-    timeout: 15000,
-  })
+  await page.waitForSelector(
+    '.file__filename, .upload__filename, [class*="thumbnail"], .file-field__filename',
+    {
+      timeout: 15000,
+    },
+  )
 
   // Fill alt text if provided
   if (altText) {
@@ -144,15 +152,22 @@ test.describe('Admin Media CRUD E2E', () => {
       // Wait for form to be ready
       await expect(page.locator('form')).toBeVisible()
 
-      // Upload file
+      // Wait for the dropzone and file input to be rendered
+      // Payload CMS uses a hidden file input with class 'file-field__hidden-input'
+      const dropzone = page.locator('.file-field__upload').first()
+      await expect(dropzone).toBeVisible({ timeout: 10000 })
+
+      // Upload file - Payload uses a hidden input, we need to set files directly
       const fileInput = page.locator('input[type="file"]')
-      await expect(fileInput).toBeAttached()
       await fileInput.setInputFiles(TEST_IMAGE_PATH)
 
       // Wait for file to be processed
-      await page.waitForSelector('.file__filename, .upload__filename, [class*="thumbnail"]', {
-        timeout: 15000,
-      })
+      await page.waitForSelector(
+        '.file__filename, .upload__filename, [class*="thumbnail"], .file-field__filename',
+        {
+          timeout: 15000,
+        },
+      )
 
       // Fill alt text if available
       const altField = page.locator('#field-alt')
