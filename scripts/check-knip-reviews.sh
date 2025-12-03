@@ -7,8 +7,8 @@
 #
 # Usage: ./scripts/check-knip-reviews.sh
 # Exit codes:
-#   0 - All review dates are in the future
-#   1 - One or more review dates are overdue
+#   0 - All review dates are today or in the future
+#   1 - One or more review dates are overdue (in the past)
 #   2 - No review dates found (misconfiguration)
 #   3 - knip.ts file not found
 
@@ -40,7 +40,7 @@ while IFS= read -r line; do
       OVERDUE+=("$REVIEW_DATE")
       echo "OVERDUE: Review date $REVIEW_DATE has passed"
     else
-      echo "OK: Review date $REVIEW_DATE is in the future"
+      echo "OK: Review date $REVIEW_DATE is today or in the future"
     fi
   fi
 done < "$KNIP_FILE"

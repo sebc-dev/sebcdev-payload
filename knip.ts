@@ -41,7 +41,8 @@ const config: KnipConfig = {
   ],
 
   // Project files to analyze (includes CSS for TailwindCSS v4 compiler)
-  project: ['src/**/*.{ts,tsx,css}', '*.{ts,mjs,cjs}'],
+  // Root globs include .mts for vitest.config.mts and future configs
+  project: ['src/**/*.{ts,tsx,mts,css}', '*.{ts,mts,mjs,cjs}'],
 
   // Files to ignore completely
   ignore: [
