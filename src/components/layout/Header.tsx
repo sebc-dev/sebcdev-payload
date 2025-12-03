@@ -31,7 +31,7 @@ export function Header({ className }: HeaderProps) {
         className,
       )}
     >
-      <div className="container flex h-14 items-center justify-between">
+      <div className="container mx-auto flex h-14 max-w-6xl items-center justify-between px-4">
         <Logo />
         <Navigation />
         {/* Mobile menu trigger will be added in Phase 4 */}

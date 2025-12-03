@@ -90,8 +90,8 @@
     /* Focus ring: Teal for keyboard navigation visibility */
     --ring: hsl(174, 72%, 40%);
 
-    /* Border radius: 0.5rem base (8px) */
-    --radius: 0.5rem;
+    /* Border radius: 0.25rem base (4px) - subtle rounded corners */
+    --radius: 0.25rem;
   }
 }
 
