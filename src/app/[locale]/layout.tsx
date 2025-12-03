@@ -5,6 +5,7 @@ import { JetBrains_Mono, Nunito_Sans } from 'next/font/google'
 import { notFound } from 'next/navigation'
 import { routing } from '@/i18n/routing'
 import { isValidLocale } from '@/i18n/config'
+import { cn } from '@/lib/utils'
 
 /**
  * Nunito Sans - Primary font for body and headings
@@ -68,8 +69,8 @@ export default async function LocaleLayout({
   const messages = await getMessages()
 
   return (
-    <html lang={locale} className={`${nunitoSans.variable} ${jetbrainsMono.variable}`}>
-      <body className="font-sans">
+    <html lang={locale} className={cn(nunitoSans.variable, jetbrainsMono.variable)}>
+      <body className={cn('font-sans')}>
         <NextIntlClientProvider messages={messages}>{children}</NextIntlClientProvider>
       </body>
     </html>
