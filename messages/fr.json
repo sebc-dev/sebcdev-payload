@@ -1,4 +1,9 @@
 {
+  "components": {
+    "buttons": {
+      "title": "Variantes de boutons"
+    }
+  },
   "common": {
     "loading": "Chargement...",
     "error": "Une erreur est survenue",

@@ -3,7 +3,7 @@ import Image from 'next/image'
 import { getPayload } from 'payload'
 import React from 'react'
 import { fileURLToPath } from 'url'
-import { setRequestLocale } from 'next-intl/server'
+import { getTranslations, setRequestLocale } from 'next-intl/server'
 
 import { Button } from '@/components/ui/button'
 import config from '@/payload.config'
@@ -19,6 +19,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
   const { locale } = await params
   setRequestLocale(locale)
 
+  const t = await getTranslations('components')
   const headers = await getHeaders()
   const payloadConfig = await config
   const payload = await getPayload({ config: payloadConfig })
@@ -68,7 +69,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
         </div>
       </div>
       <section className="mt-8 space-y-4">
-        <h2 className="text-xl font-semibold">Button Variants</h2>
+        <h2 className="text-xl font-semibold">{t('buttons.title')}</h2>
         <div className="flex flex-wrap gap-4">
           <Button>Default</Button>
           <Button variant="secondary">Secondary</Button>
