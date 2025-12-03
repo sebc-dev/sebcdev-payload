@@ -6,9 +6,33 @@ import { defineConfig, devices } from '@playwright/test'
  */
 import 'dotenv/config'
 
-// Normalize BASE_URL: trim whitespace, treat empty strings as undefined
-const rawBaseURL = process.env.BASE_URL?.trim()
-const baseURL = rawBaseURL || 'http://localhost:3000'
+const DEFAULT_BASE_URL = 'http://localhost:3000'
+
+/**
+ * Normalize and validate BASE_URL.
+ * - Trims whitespace, treats empty strings as undefined
+ * - Validates URL is parseable, falls back to default if not
+ */
+function getBaseURL(): string {
+  const rawBaseURL = process.env.BASE_URL?.trim()
+  if (!rawBaseURL) {
+    return DEFAULT_BASE_URL
+  }
+
+  try {
+    new URL(rawBaseURL)
+    return rawBaseURL
+  } catch (error) {
+    console.warn(
+      `[Playwright Config] Invalid BASE_URL "${rawBaseURL}": ${error instanceof Error ? error.message : String(error)}. Falling back to ${DEFAULT_BASE_URL}.`,
+    )
+    return DEFAULT_BASE_URL
+  }
+}
+
+const baseURL = getBaseURL()
+// Track if user provided a valid custom URL (for webServer decision)
+const hasCustomBaseURL = process.env.BASE_URL?.trim() && baseURL !== DEFAULT_BASE_URL
 
 /**
  * Determine if BASE_URL points to a local host.
@@ -43,7 +67,7 @@ function isLocalURL(url: string): boolean {
   }
 }
 
-const shouldStartWebServer = !rawBaseURL || isLocalURL(baseURL)
+const shouldStartWebServer = !hasCustomBaseURL || isLocalURL(baseURL)
 
 /**
  * See https://playwright.dev/docs/test-configuration.
