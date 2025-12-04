@@ -102,7 +102,8 @@
   },
   "mobileMenu": {
     "open": "Ouvrir le menu",
-    "close": "Fermer le menu"
+    "close": "Fermer le menu",
+    "back": "Retour"
   },
   "metadata": {
     "title": "sebc.dev - Blog technique",
