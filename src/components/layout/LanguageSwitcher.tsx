@@ -33,9 +33,15 @@ type LocaleCode = (typeof locales)[number]['code']
  * - Accessible with proper ARIA attributes
  * - Client-side navigation (no full page reload)
  *
+ * @param props - Component props
+ * @param props.className - Additional CSS classes for the container
  * @returns Language dropdown menu
  */
-export function LanguageSwitcher() {
+interface LanguageSwitcherProps {
+  className?: string
+}
+
+export function LanguageSwitcher({ className }: LanguageSwitcherProps) {
   const locale = useLocale() as LocaleCode
   const t = useTranslations('language')
   const pathname = usePathname()
@@ -49,42 +55,44 @@ export function LanguageSwitcher() {
   }
 
   return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button variant="ghost" size="sm" className="gap-2 px-2" aria-label={t('switch')}>
-          <CurrentFlag className="size-5 rounded-sm" />
-          <ChevronDown className="size-3 text-muted-foreground" />
-        </Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="min-w-[140px]">
-        {locales.map(({ code, Flag }) => (
-          <DropdownMenuItem
-            key={code}
-            onClick={() => handleLocaleChange(code)}
-            className="gap-3 cursor-pointer"
-            aria-current={locale === code ? 'true' : undefined}
-          >
-            <Flag className="size-5 rounded-sm" />
-            <span>{t(code)}</span>
-            {locale === code && (
-              <span className="ml-auto text-primary">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  className="size-4"
-                >
-                  <polyline points="20 6 9 17 4 12" />
-                </svg>
-              </span>
-            )}
-          </DropdownMenuItem>
-        ))}
-      </DropdownMenuContent>
-    </DropdownMenu>
+    <div className={className}>
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button variant="ghost" size="sm" className="gap-2 px-2" aria-label={t('switch')}>
+            <CurrentFlag className="size-5 rounded-sm" />
+            <ChevronDown className="size-3 text-muted-foreground" />
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end" className="min-w-[140px]">
+          {locales.map(({ code, Flag }) => (
+            <DropdownMenuItem
+              key={code}
+              onClick={() => handleLocaleChange(code)}
+              className="gap-3 cursor-pointer"
+              aria-current={locale === code ? 'true' : undefined}
+            >
+              <Flag className="size-5 rounded-sm" />
+              <span>{t(code)}</span>
+              {locale === code && (
+                <span className="ml-auto text-primary">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    className="size-4"
+                  >
+                    <polyline points="20 6 9 17 4 12" />
+                  </svg>
+                </span>
+              )}
+            </DropdownMenuItem>
+          ))}
+        </DropdownMenuContent>
+      </DropdownMenu>
+    </div>
   )
 }

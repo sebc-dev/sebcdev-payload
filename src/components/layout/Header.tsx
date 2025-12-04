@@ -35,11 +35,11 @@ export function Header({ className }: HeaderProps) {
         className,
       )}
     >
-      <div className="container mx-auto grid h-14 max-w-6xl grid-cols-3 items-center px-4">
+      <div className="container mx-auto flex h-14 max-w-6xl items-center justify-between px-4">
         <Logo />
-        <Navigation className="justify-center" />
-        <div className="flex items-center justify-end gap-2">
-          <LanguageSwitcher />
+        <Navigation className="hidden lg:flex" />
+        <div className="flex items-center gap-2">
+          <LanguageSwitcher className="hidden lg:flex" />
           <MobileMenu />
         </div>
       </div>
