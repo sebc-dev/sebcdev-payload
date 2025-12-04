@@ -38,23 +38,22 @@ export default async function FrontendLayout({
     <div className="flex min-h-screen flex-col">
       <SkipLink />
       <Header />
-      <div className="relative flex-1 overflow-clip bg-[hsl(0,0%,8%)]">
-        {/* Fixed decorative SVGs - behind content, starting just after header */}
-        <div
-          className="pointer-events-none absolute left-0 top-0 hidden h-[1600px] w-[1600px] opacity-[0.12] lg:block"
-          style={{ marginLeft: 'calc(50% - 36rem - 800px)', marginTop: '-300px' }}
-          aria-hidden="true"
-        >
-          <Image src="/logo_outline_left.svg" alt="" fill style={{ filter: 'invert(1)' }} />
-        </div>
-        <div
-          className="pointer-events-none absolute right-0 top-0 hidden h-[1600px] w-[1600px] opacity-[0.12] lg:block"
-          style={{ marginRight: 'calc(50% - 36rem - 800px)', marginTop: '-300px' }}
-          aria-hidden="true"
-        >
-          <Image src="/logo_outline_right.svg" alt="" fill style={{ filter: 'invert(1)' }} />
-        </div>
-
+      {/* Fixed decorative SVGs - behind content, fixed position on scroll */}
+      <div
+        className="pointer-events-none fixed -top-64 left-0 z-0 hidden h-[1400px] w-[1400px] opacity-[0.10] lg:block"
+        style={{ marginLeft: 'calc(50% - 36rem - 700px)' }}
+        aria-hidden="true"
+      >
+        <Image src="/logo_outline_left.svg" alt="" fill style={{ filter: 'invert(1)' }} />
+      </div>
+      <div
+        className="pointer-events-none fixed -top-64 right-0 z-0 hidden h-[1400px] w-[1400px] opacity-[0.10] lg:block"
+        style={{ marginRight: 'calc(50% - 36rem - 700px)' }}
+        aria-hidden="true"
+      >
+        <Image src="/logo_outline_right.svg" alt="" fill style={{ filter: 'invert(1)' }} />
+      </div>
+      <div className="relative z-10 flex-1">
         {/* Main content with constrained width and subtle shadow */}
         <main
           id="main-content"

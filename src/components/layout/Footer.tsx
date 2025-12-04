@@ -31,7 +31,7 @@ export function Footer() {
   const currentYear = new Date().getFullYear()
 
   return (
-    <footer className="border-t border-border bg-card">
+    <footer className="relative z-10 border-t border-border bg-card">
       <div className="container mx-auto max-w-6xl px-4 py-12">
         {/* Main Footer Content - 4 columns on desktop, 2x2 on tablet */}
         <div className="grid grid-cols-1 gap-8 text-center sm:grid-cols-2 md:text-left lg:grid-cols-4">
