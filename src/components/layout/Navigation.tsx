@@ -43,10 +43,7 @@ export function Navigation({ className }: NavigationProps) {
   const isActive = (path: string) => pathname === path || pathname.startsWith(path + '/')
 
   return (
-    <nav
-      className={cn('hidden lg:flex items-center gap-1', className)}
-      aria-label={a11yT('mainNavigation')}
-    >
+    <nav className={cn('items-center gap-1', className)} aria-label={a11yT('mainNavigation')}>
       {/* Articles Link */}
       <Link
         href="/articles"
