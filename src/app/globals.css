@@ -160,7 +160,8 @@
   /* Apply theme colors to body */
   body {
     margin: 0;
-    background-color: var(--background);
+    /* Outer background (10%) for SVG visibility on sides */
+    background-color: hsl(0, 0%, 10%);
     color: var(--foreground);
   }
 
