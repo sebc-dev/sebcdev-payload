@@ -61,4 +61,7 @@ depcruise-report.html
 .stryker-tmp/
 reports/mutation/*.html
 reports/mutation/*.json
-!reports/mutation/.gitkeep.claude-trace/
+!reports/mutation/.gitkeep
+
+# Claude Code
+.claude-trace/
