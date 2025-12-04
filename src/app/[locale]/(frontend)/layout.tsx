@@ -39,16 +39,38 @@ export default async function FrontendLayout({
       <SkipLink />
       <Header />
       {/* Fixed decorative SVGs - behind content, fixed position on scroll */}
+      {/* lg-xl: 1400px logos, 2xl+: 1700px logos */}
+      {/* Margin = 50% - (content-width/2) - (logo-width) to align logo edge with content edge */}
+
+      {/* Left logo - lg to xl */}
       <div
-        className="pointer-events-none fixed -top-64 left-0 z-0 hidden h-[1400px] w-[1400px] opacity-[0.10] lg:block"
+        className="pointer-events-none fixed -top-64 left-0 z-0 hidden h-[1400px] w-[1400px] opacity-[0.10] lg:block 2xl:hidden"
         style={{ marginLeft: 'calc(50% - 36rem - 700px)' }}
         aria-hidden="true"
       >
         <Image src="/logo_outline_left.svg" alt="" fill style={{ filter: 'invert(1)' }} />
       </div>
+      {/* Left logo - 2xl+ */}
       <div
-        className="pointer-events-none fixed -top-64 right-0 z-0 hidden h-[1400px] w-[1400px] opacity-[0.10] lg:block"
+        className="pointer-events-none fixed -top-64 left-0 z-0 hidden h-[1700px] w-[1700px] opacity-[0.10] 2xl:block"
+        style={{ marginLeft: 'calc(50% - 36rem - 850px)' }}
+        aria-hidden="true"
+      >
+        <Image src="/logo_outline_left.svg" alt="" fill style={{ filter: 'invert(1)' }} />
+      </div>
+
+      {/* Right logo - lg to xl */}
+      <div
+        className="pointer-events-none fixed -top-64 right-0 z-0 hidden h-[1400px] w-[1400px] opacity-[0.10] lg:block 2xl:hidden"
         style={{ marginRight: 'calc(50% - 36rem - 700px)' }}
+        aria-hidden="true"
+      >
+        <Image src="/logo_outline_right.svg" alt="" fill style={{ filter: 'invert(1)' }} />
+      </div>
+      {/* Right logo - 2xl+ */}
+      <div
+        className="pointer-events-none fixed -top-64 right-0 z-0 hidden h-[1700px] w-[1700px] opacity-[0.10] 2xl:block"
+        style={{ marginRight: 'calc(50% - 36rem - 850px)' }}
         aria-hidden="true"
       >
         <Image src="/logo_outline_right.svg" alt="" fill style={{ filter: 'invert(1)' }} />
