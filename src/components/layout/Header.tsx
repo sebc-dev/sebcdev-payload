@@ -1,8 +1,9 @@
+import { cn } from '@/lib/utils'
+import { getTranslations } from 'next-intl/server'
 import { LanguageSwitcher } from './LanguageSwitcher'
 import { Logo } from './Logo'
 import { MobileMenu } from './MobileMenu'
 import { Navigation } from './Navigation'
-import { cn } from '@/lib/utils'
 
 /**
  * Header Component
@@ -27,13 +28,16 @@ interface HeaderProps {
   className?: string
 }
 
-export function Header({ className }: HeaderProps) {
+export async function Header({ className }: HeaderProps) {
+  const a11yT = await getTranslations('accessibility')
+
   return (
     <header
       className={cn(
         'sticky top-0 z-50 w-full border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60',
         className,
       )}
+      aria-label={a11yT('siteHeader')}
     >
       <div className="container mx-auto flex h-14 max-w-6xl items-center justify-between px-4">
         <Logo />
