@@ -216,3 +216,22 @@
 .animate-menu-item:nth-child(5) {
   animation-delay: 0.3s;
 }
+
+/*
+ * Reduced Motion Support
+ * Disable animations for users who prefer reduced motion (WCAG 2.1 AA)
+ */
+@media (prefers-reduced-motion: reduce) {
+  .animate-menu-item,
+  .animate-menu-item:nth-child(1),
+  .animate-menu-item:nth-child(2),
+  .animate-menu-item:nth-child(3),
+  .animate-menu-item:nth-child(4),
+  .animate-menu-item:nth-child(5) {
+    animation: none !important;
+    animation-delay: 0s !important;
+    transition: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
