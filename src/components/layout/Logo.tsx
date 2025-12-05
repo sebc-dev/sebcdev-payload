@@ -26,7 +26,7 @@ export function Logo({ className }: LogoProps) {
         className,
       )}
     >
-      <Image src="/logo_circle.svg" alt="" width={40} height={40} aria-hidden="true" />
+      <Image src="/logo_circle.svg" alt="" width={50} height={50} aria-hidden="true" />
       <span className="font-mono bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
         sebc.dev
       </span>
