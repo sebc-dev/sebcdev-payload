@@ -378,11 +378,11 @@ pnpm test:e2e -- tests/e2e/homepage.e2e.spec.ts
 ```
 
 ### Checklist
-- [ ] Fichier de test cree
-- [ ] Tests couvrent les cas principaux
-- [ ] Tests passent avec des articles
-- [ ] Tests passent sans articles (empty state)
-- [ ] Tests responsive passent
+- [x] Fichier de test cree
+- [x] Tests couvrent les cas principaux
+- [x] Tests passent avec des articles
+- [x] Tests passent sans articles (empty state)
+- [x] Tests responsive passent
 
 ### Commit
 ```bash
