@@ -81,19 +81,19 @@ EOF
 ## Commit 3: Update CLAUDE.md with CI Test Commands
 
 ### Pre-commit
-- [ ] Commits 1 et 2 appliqués
-- [ ] Lire la section CI/CD de CLAUDE.md
-- [ ] Identifier les sections à mettre à jour
+- [x] Commits 1 et 2 appliqués
+- [x] Lire la section CI/CD de CLAUDE.md
+- [x] Identifier les sections à mettre à jour
 
 ### Changes
-- [ ] Mettre à jour "Quality Gate Workflow" avec les layers de tests
-- [ ] Ajouter les commandes de test dans la liste des checks locaux
-- [ ] S'assurer que l'ordre des layers est correct
+- [x] Mettre à jour "Quality Gate Workflow" avec les layers de tests
+- [x] Ajouter les commandes de test dans la liste des checks locaux
+- [x] S'assurer que l'ordre des layers est correct
 
 ### Post-commit
-- [ ] Documentation cohérente avec le workflow actuel
-- [ ] Commandes testables
-- [ ] Commit message correct
+- [x] Documentation cohérente avec le workflow actuel
+- [x] Commandes testables
+- [x] Commit message correct
 
 ### Commit Command
 ```bash

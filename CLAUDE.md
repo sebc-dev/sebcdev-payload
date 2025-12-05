@@ -89,12 +89,25 @@ Le projet utilise un pipeline CI/CD "AI-Shield" avec validation multi-couches po
 - Déclenchement manuel disponible via `workflow_dispatch`
 - **Requis pour merger** : Status check via branch protection
 
+**Layers exécutés** :
+
+1. **Supply Chain Security** : Socket.dev (paquets malveillants)
+2. **Code Quality** : ESLint, Prettier, Knip, Type Sync
+3. **Unit & Integration Tests** : Vitest
+4. **Build Validation** : Next.js Build (no-DB mode)
+5. **E2E Tests** : Playwright (Chromium)
+6. **Architecture Validation** : dependency-cruiser
+7. **Mutation Testing** : Stryker (optional, workflow_dispatch)
+
 ```bash
 # Checks locaux avant push (recommandé)
 pnpm lint                    # ESLint + Prettier
 pnpm generate:types:payload  # Sync types Payload → TypeScript
+pnpm test:unit               # Unit tests (Vitest)
+pnpm test:int                # Integration tests (Vitest)
 pnpm build                   # Next.js build (no-DB mode)
-pnpm test                    # Tests unitaires + E2E
+pnpm test:e2e                # E2E tests (Playwright)
+pnpm depcruise               # Architecture validation
 ```
 
 ### GitHub Actions Workflow

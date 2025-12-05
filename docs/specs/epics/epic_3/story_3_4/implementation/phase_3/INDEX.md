@@ -2,8 +2,9 @@
 
 **Story**: 3.4 - CI Tests Integration & E2E Test Maintenance
 **Phase**: 3 of 3
-**Status**: NOT STARTED
+**Status**: IN PROGRESS
 **Estimated Commits**: 4
+**Commits Completed**: 3/4
 
 ---
 
@@ -19,10 +20,10 @@ Nettoyer les tests E2E obsolètes et mettre à jour la documentation CI.
 4. Validation complète du pipeline
 
 ### Success Criteria
-- [ ] Tous les tests E2E passent localement et en CI
-- [ ] Pas de tests dépendants de contenu provisoire
-- [ ] Documentation à jour
-- [ ] Pipeline Quality Gate complet et fonctionnel
+- [x] Tous les tests E2E passent localement et en CI
+- [x] Pas de tests dépendants de contenu provisoire
+- [x] Documentation à jour
+- [ ] Pipeline Quality Gate complet et fonctionnel (Commit 4)
 
 ---
 
