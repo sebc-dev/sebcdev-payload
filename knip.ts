@@ -11,33 +11,41 @@ import type { KnipConfig } from 'knip'
 
 const config: KnipConfig = {
   // Entry points - files that are the roots of the dependency graph
+  // Note: The `!` suffix marks entry points for production mode (--production)
+  // @see https://knip.dev/features/production-mode
   entry: [
-    // Next.js config
-    'next.config.ts',
+    // Next.js config (production: required for build)
+    'next.config.ts!',
 
-    // OpenNext config for Cloudflare deployment
-    'open-next.config.ts',
+    // OpenNext config for Cloudflare deployment (production: required for Workers build)
+    'open-next.config.ts!',
 
-    // Payload CMS config
-    'src/payload.config.ts',
+    // Payload CMS config (production: required for CMS runtime)
+    'src/payload.config.ts!',
 
-    // Next.js middleware
-    'src/middleware.ts',
+    // Next.js middleware (production: required for routing)
+    'src/middleware.ts!',
 
-    // PostCSS config (uses postcss and postcss-load-config)
+    // PostCSS config (uses postcss and postcss-load-config) - build only, not production
     'postcss.config.mjs',
 
-    // Stryker mutation testing config
+    // Stryker mutation testing config - dev only
     'stryker.config.mjs',
 
-    // ESLint flat config
+    // ESLint flat config - dev only
     'eslint.config.mjs',
 
-    // next-intl request config - referenced by string in next.config.ts
-    'src/i18n/request.ts',
+    // next-intl request config - referenced by string in next.config.ts (production)
+    'src/i18n/request.ts!',
 
-    // Payload custom field components - referenced by string path in collection configs
-    'src/fields/**/*.tsx',
+    // Payload custom field components - referenced by string path in collection configs (production)
+    'src/fields/**/*.tsx!',
+
+    // UI component library - shared components used across the app (production)
+    'src/components/**/*.tsx!',
+
+    // Utility functions - used by UI components (production)
+    'src/lib/**/*.ts!',
   ],
 
   // Project files to analyze (includes CSS for TailwindCSS v4 compiler)
@@ -86,6 +94,14 @@ const config: KnipConfig = {
     // @knip-review-by: 2026-06-03
     'eslint-config-next',
     'eslint-config-prettier',
+
+    // === Payload CMS runtime dependencies (review every 180 days) ===
+    // These are peer dependencies or loaded by Payload at runtime
+
+    // dotenv - loaded by Payload CLI to read .env files during migrations and generate:types
+    // Not imported in app code but required by Payload's internal tooling
+    // @knip-review-by: 2026-06-05
+    'dotenv',
   ],
 
   // Rules configuration - strict on dependencies, warn on code
