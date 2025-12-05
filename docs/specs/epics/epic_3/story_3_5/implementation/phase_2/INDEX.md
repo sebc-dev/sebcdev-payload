@@ -2,7 +2,7 @@
 
 **Story**: 3.5 - Homepage Implementation
 **Phase**: 2 of 3
-**Status**: NOT STARTED
+**Status**: IN PROGRESS (Commit 1/5 completed)
 **Estimated Commits**: 5
 
 ---
