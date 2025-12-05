@@ -622,6 +622,223 @@ Filtres combinables pour Hub de Recherche :
 />
 ```
 
+### 8.6 Page d'Accueil (Homepage)
+
+La Homepage est la porte d'entrée principale du blog. Elle met en avant le contenu le plus récent sans section Hero traditionnelle — l'article vedette fait office de Hero.
+
+#### 8.6.1 Structure Générale
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                    [Header Navigation]                       │
+├─────────────────────────────────────────────────────────────┤
+│                                                              │
+│  ┌────────────────────────────────────────────────────────┐ │
+│  │                                                         │ │
+│  │              🖼️ IMAGE DE COUVERTURE                    │ │
+│  │                  (pleine largeur)                       │ │
+│  │                                                         │ │
+│  ├─────────────────────────────────────────────────────────┤ │
+│  │ [📰 Catégorie]  •  8 min  •  Il y a 2 jours            │ │
+│  │                                                         │ │
+│  │ Titre de l'Article Vedette                              │ │
+│  │ ════════════════════════════════                        │ │
+│  │                                                         │ │
+│  │ Extrait de l'article qui donne envie de lire la suite  │ │
+│  │ avec suffisamment de contexte pour comprendre...        │ │
+│  │                                                         │ │
+│  │ [Intermédiaire]  [#tag1]  [#tag2]                       │ │
+│  │                                                         │ │
+│  │                              [Lire l'article →]         │ │
+│  └─────────────────────────────────────────────────────────┘ │
+│                                                              │
+│  ─────────────────────────────────────────────────────────── │
+│                     ARTICLES RÉCENTS                         │
+│  ─────────────────────────────────────────────────────────── │
+│                                                              │
+│  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐       │
+│  │   🖼️ Image   │  │   🖼️ Image   │  │   🖼️ Image   │       │
+│  │ [Catégorie]  │  │ [Catégorie]  │  │ [Catégorie]  │       │
+│  │ Titre        │  │ Titre        │  │ Titre        │       │
+│  │ Extrait...   │  │ Extrait...   │  │ Extrait...   │       │
+│  │ 5 min • 3j   │  │ 7 min • 5j   │  │ 4 min • 1sem │       │
+│  │ [Niveau]     │  │ [Niveau]     │  │ [Niveau]     │       │
+│  └──────────────┘  └──────────────┘  └──────────────┘       │
+│                                                              │
+│  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐       │
+│  │   🖼️ Image   │  │   🖼️ Image   │  │   🖼️ Image   │       │
+│  │ [Catégorie]  │  │ [Catégorie]  │  │ [Catégorie]  │       │
+│  │ Titre        │  │ Titre        │  │ Titre        │       │
+│  │ Extrait...   │  │ Extrait...   │  │ Extrait...   │       │
+│  │ 6 min • 1sem │  │ 3 min • 2sem │  │ 9 min • 2sem │       │
+│  │ [Niveau]     │  │ [Niveau]     │  │ [Niveau]     │       │
+│  └──────────────┘  └──────────────┘  └──────────────┘       │
+│                                                              │
+│              ┌─────────────────────────────┐                 │
+│              │   Voir tous les articles →  │                 │
+│              └─────────────────────────────┘                 │
+│                                                              │
+├─────────────────────────────────────────────────────────────┤
+│                    [Footer]                                  │
+└─────────────────────────────────────────────────────────────┘
+```
+
+#### 8.6.2 Composant FeaturedArticleCard (Article Vedette)
+
+Carte spéciale pour l'article le plus récent, pleine largeur :
+
+```tsx
+<FeaturedArticleCard
+  title="Titre de l'article vedette"
+  excerpt="Extrait complet de l'article..."
+  coverImage="/path/to/image.jpg"
+  category={{ title: "Tutoriel", color: "#14B8A6", icon: "🎓" }}
+  complexity="intermediate"
+  readingTime={8}
+  publishedAt={new Date()}
+  tags={[{ title: "React" }, { title: "Next.js" }]}
+  slug="article-slug"
+  lang="fr"
+/>
+```
+
+**Spécifications visuelles** :
+
+| Élément | Desktop | Tablette | Mobile |
+|---------|---------|----------|--------|
+| **Image** | 100% largeur, ratio 16:9, max-height 400px | 100% largeur, ratio 16:9 | 100% largeur, ratio 16:9 |
+| **Titre** | H1, 2.25rem (36px), bold | H1, 1.875rem (30px) | H1, 1.5rem (24px) |
+| **Extrait** | Max 3 lignes, 1rem | Max 3 lignes | Max 2 lignes |
+| **Métadonnées** | Inline, espacement 16px | Inline | Stack vertical |
+| **CTA** | Bouton "Lire l'article" aligné droite | Pleine largeur | Pleine largeur |
+
+#### 8.6.3 Grille d'Articles Récents
+
+Layout responsive pour les 6 articles suivants :
+
+| Breakpoint | Colonnes | Gap | Comportement |
+|------------|----------|-----|--------------|
+| **Desktop (≥ 1024px)** | 3 colonnes | 24px | Grille 2x3 |
+| **Tablette (768-1023px)** | 2 colonnes | 20px | Grille 3x2 |
+| **Mobile (< 768px)** | 1 colonne | 16px | Stack vertical |
+
+#### 8.6.4 État Vide (Empty State)
+
+Lorsqu'aucun article n'est publié :
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                    [Header Navigation]                       │
+├─────────────────────────────────────────────────────────────┤
+│                                                              │
+│                         📝                                   │
+│                                                              │
+│              Bienvenue sur sebc.dev !                        │
+│                                                              │
+│       Aucun article n'a encore été publié.                   │
+│       C'est le moment de créer votre premier contenu.        │
+│                                                              │
+│              ┌─────────────────────────────┐                 │
+│              │   Créer un article →        │                 │
+│              └─────────────────────────────┘                 │
+│              (Lien vers /admin/collections/posts/create)     │
+│                                                              │
+├─────────────────────────────────────────────────────────────┤
+│                    [Footer]                                  │
+└─────────────────────────────────────────────────────────────┘
+```
+
+**Note** : Le CTA "Créer un article" n'est visible que si l'utilisateur est authentifié (cookie `payload-token` présent). Sinon, afficher uniquement le message sans CTA.
+
+#### 8.6.5 Composant Homepage (RSC)
+
+```tsx
+// app/[locale]/(frontend)/page.tsx
+import { getPayload } from '@/lib/payload'
+import { FeaturedArticleCard } from '@/components/FeaturedArticleCard'
+import { ArticleCard } from '@/components/ArticleCard'
+import { EmptyState } from '@/components/EmptyState'
+import { Button } from '@/components/ui/button'
+import Link from 'next/link'
+
+export default async function HomePage({
+  params,
+}: {
+  params: Promise<{ locale: string }>
+}) {
+  const { locale } = await params
+  const payload = await getPayload()
+
+  const { docs: articles } = await payload.find({
+    collection: 'posts',
+    locale,
+    limit: 7,
+    sort: '-publishedAt',
+    where: {
+      _status: { equals: 'published' },
+    },
+  })
+
+  if (articles.length === 0) {
+    return <EmptyState locale={locale} />
+  }
+
+  const [featured, ...recentArticles] = articles
+
+  return (
+    <main className="container mx-auto px-4 py-8">
+      {/* Article Vedette */}
+      <section className="mb-12">
+        <FeaturedArticleCard article={featured} locale={locale} />
+      </section>
+
+      {/* Grille Articles Récents */}
+      {recentArticles.length > 0 && (
+        <section className="mb-12">
+          <h2 className="text-2xl font-bold mb-6">Articles récents</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {recentArticles.map((article) => (
+              <ArticleCard key={article.id} article={article} locale={locale} />
+            ))}
+          </div>
+        </section>
+      )}
+
+      {/* CTA Hub de Recherche */}
+      <section className="text-center">
+        <Button asChild size="lg">
+          <Link href={`/${locale}/articles`}>
+            Voir tous les articles →
+          </Link>
+        </Button>
+      </section>
+    </main>
+  )
+}
+```
+
+#### 8.6.6 Métadonnées des Cartes
+
+Chaque carte d'article (vedette ou grille) affiche :
+
+| Métadonnée | Format | Exemple |
+|------------|--------|---------|
+| **Catégorie** | Badge avec icône et couleur | `[🎓 Tutoriel]` (cyan) |
+| **Temps de lecture** | `X min` | `8 min` |
+| **Date publication** | Relative (fr/en) | `Il y a 2 jours` / `2 days ago` |
+| **Niveau complexité** | Badge coloré | `[Intermédiaire]` (orange) |
+| **Tags** | Pills cliquables (max 3) | `[React]` `[Next.js]` |
+
+#### 8.6.7 Interactions et États
+
+| Interaction | Comportement |
+|-------------|--------------|
+| **Hover carte** | Légère élévation (shadow), scale 1.02, transition 200ms |
+| **Hover image** | Zoom subtil (scale 1.05) avec overflow hidden |
+| **Click carte** | Navigation vers `/[locale]/articles/[slug]` |
+| **Click tag** | Navigation vers Hub avec filtre `?tags=X` |
+| **Click catégorie** | Navigation vers Hub avec filtre `?category=X` |
+
 ---
 
 ## 9. Animations & Micro-interactions

@@ -223,12 +223,96 @@ Dans notre architecture "Monolithe Logique", la distinction Front/Back est floue
 - **Root Layout (`layout.tsx`) :** Gère le `<html>`, la police (Inter/JetBrains), le `ThemeProvider` (Dark mode) et l'initialisation de l'i18n.
 - **Blog Layout :** Wrapper pour la navigation (Header/Footer) et la gestion du Scroll Progress (Story 4.2).
 - **Page Components (RSC) :**
-  - `HomePage` : Fetch les derniers articles via Local API.
+  - `HomePage` : Fetch les 7 derniers articles via Local API, affiche l'article vedette + grille de 6 articles (voir détails ci-dessous).
   - `PostPage` : Fetch le contenu, génère les métadonnées SEO, rend le MDX/Lexical.
   - `SearchHub` : Client Component (seule exception majeure) pour la gestion d'état des filtres (Story 5.2).
 - **Design System (`/components/ui`) :**
   - Implémentation atomique de `shadcn/ui` (Button, Card, Badge).
   - Adaptation Tailwind v4 (CSS variables natives).
+
+#### Composant HomePage — Spécifications Techniques
+
+**Fichier** : `src/app/[locale]/(frontend)/page.tsx`
+
+**Data Fetching Strategy** :
+
+```typescript
+// Pattern de récupération des articles pour la Homepage
+const { docs: articles } = await payload.find({
+  collection: 'posts',
+  locale,                          // FR ou EN selon la route
+  limit: 7,                        // 1 vedette + 6 grille
+  sort: '-publishedAt',            // Plus récent en premier
+  where: {
+    _status: { equals: 'published' },
+  },
+  depth: 2,                        // Inclure relations (category, tags)
+})
+```
+
+**Composants Requis** :
+
+| Composant | Type | Responsabilité |
+|-----------|------|----------------|
+| `FeaturedArticleCard` | RSC | Carte pleine largeur pour l'article vedette |
+| `ArticleCard` | RSC | Carte standard pour la grille (réutilisable dans Hub) |
+| `EmptyState` | RSC | État vide avec CTA conditionnel |
+
+**Flow de Données** :
+
+```mermaid
+sequenceDiagram
+    participant User
+    participant Edge as Cloudflare Worker
+    participant HomePage as HomePage (RSC)
+    participant LocalAPI as Payload Local API
+    participant D1 as D1 Database
+
+    User->>Edge: GET /fr
+    Edge->>HomePage: Invoke Server Component
+
+    rect rgb(20, 20, 30)
+        note right of HomePage: Exécution interne (Pas de HTTP)
+        HomePage->>LocalAPI: payload.find({ collection: 'posts', limit: 7 })
+        LocalAPI->>D1: SELECT * FROM posts WHERE status='published' ORDER BY publishedAt DESC LIMIT 7
+        D1-->>LocalAPI: Articles JSON
+        LocalAPI-->>HomePage: Typed Articles Array
+    end
+
+    alt articles.length === 0
+        HomePage->>HomePage: Render EmptyState
+    else articles.length > 0
+        HomePage->>HomePage: Destructure [featured, ...recent]
+        HomePage->>HomePage: Render FeaturedArticleCard + Grid
+    end
+
+    HomePage-->>Edge: HTML Stream
+    Edge-->>User: Response (Cache-Control: public, max-age=3600)
+```
+
+**Cache Strategy** :
+
+- **Cache-Control** : `public, max-age=3600, s-maxage=86400` (1h client, 24h CDN)
+- **Revalidation** : Via hook `afterChange` sur collection `posts` → `revalidateTag('homepage')`
+- **Bypass** : Cookie `payload-token` présent → pas de cache (admin voit les articles en temps réel)
+
+**SEO Metadata** :
+
+```typescript
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
+  const { locale } = await params
+  return {
+    title: locale === 'fr' ? 'Accueil | sebc.dev' : 'Home | sebc.dev',
+    description: locale === 'fr'
+      ? 'Blog technique sur l\'IA, l\'UX et l\'ingénierie logicielle'
+      : 'Technical blog about AI, UX and software engineering',
+    alternates: {
+      canonical: `https://sebc.dev/${locale}`,
+      languages: { fr: '/fr', en: '/en' },
+    },
+  }
+}
+```
 
 ### CMS Core (Payload Config)
 
