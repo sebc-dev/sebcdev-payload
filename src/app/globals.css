@@ -141,6 +141,23 @@
 }
 
 /*
+ * Utilities - GPU-accelerated transforms for smooth animations
+ *
+ * The transform-gpu utility enables GPU acceleration by using translateZ(0)
+ * and backface-visibility, which helps achieve 60fps animations.
+ * Combined with will-change, this significantly improves animation performance.
+ *
+ * @see https://web.dev/animations-guide/
+ */
+@layer utilities {
+  .transform-gpu {
+    transform: translateZ(0);
+    backface-visibility: hidden;
+    will-change: transform;
+  }
+}
+
+/*
  * Base layer customizations
  * These apply to the base HTML elements
  */

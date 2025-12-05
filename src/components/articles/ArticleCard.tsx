@@ -139,9 +139,14 @@ export async function ArticleCard({ article, locale, className }: ArticleCardPro
       <Link href={`/${locale}/articles/${article.slug}`} className="block h-full">
         <Card
           className={cn(
-            'h-full overflow-hidden transition-all duration-200',
-            'hover:shadow-lg hover:scale-[1.02]',
-            'focus-within:ring-2 focus-within:ring-primary',
+            'h-full overflow-hidden',
+            // GPU-accelerated, smooth transitions
+            'transform-gpu transition-all duration-200 ease-out',
+            // Motion-safe hover effects (respects prefers-reduced-motion)
+            'motion-safe:hover:shadow-lg motion-safe:hover:scale-[1.02]',
+            // Focus ring for accessibility
+            'focus-within:ring-2 focus-within:ring-primary focus-within:ring-offset-2 focus-within:ring-offset-background',
+            className,
           )}
         >
           {/* Cover Image */}
@@ -152,7 +157,7 @@ export async function ArticleCard({ article, locale, className }: ArticleCardPro
                 alt={article.coverImage.alt || article.title}
                 fill
                 sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                className="object-cover transition-transform duration-200 group-hover:scale-105"
+                className="object-cover transform-gpu transition-transform duration-200 ease-out motion-safe:group-hover:scale-105"
               />
             </div>
           )}

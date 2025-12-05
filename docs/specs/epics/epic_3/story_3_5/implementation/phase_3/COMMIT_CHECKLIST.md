@@ -118,8 +118,8 @@ Related: Story 3.5 Phase 3"
 ## Commit 2: Hover Animations
 
 ### Pre-Implementation
-- [ ] Verifier les animations actuelles dans ArticleCard
-- [ ] Verifier les animations dans FeaturedArticleCard
+- [x] Verifier les animations actuelles dans ArticleCard
+- [x] Verifier les animations dans FeaturedArticleCard
 
 ### Implementation
 
@@ -199,12 +199,12 @@ pnpm dev
 ```
 
 ### Checklist
-- [ ] `globals.css` modifie
-- [ ] `ArticleCard.tsx` modifie
-- [ ] `FeaturedArticleCard.tsx` modifie
-- [ ] Animations fluides (60fps)
-- [ ] `motion-safe:` fonctionne
-- [ ] `pnpm build` passe
+- [x] `globals.css` modifie
+- [x] `ArticleCard.tsx` modifie
+- [x] `FeaturedArticleCard.tsx` modifie
+- [x] Animations fluides (60fps)
+- [x] `motion-safe:` fonctionne
+- [x] `pnpm build` passe
 
 ### Commit
 ```bash

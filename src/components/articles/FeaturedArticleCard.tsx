@@ -150,9 +150,14 @@ export async function FeaturedArticleCard({
     <article className={cn('group', className)}>
       <Card
         className={cn(
-          'overflow-hidden transition-all duration-300',
-          'hover:shadow-xl hover:scale-[1.01]',
-          'focus-within:ring-2 focus-within:ring-primary',
+          'overflow-hidden',
+          // GPU-accelerated, smooth transitions
+          'transform-gpu transition-all duration-300 ease-out',
+          // Motion-safe hover effects
+          'motion-safe:hover:shadow-xl motion-safe:hover:scale-[1.01]',
+          // Focus ring for accessibility
+          'focus-within:ring-2 focus-within:ring-primary focus-within:ring-offset-2 focus-within:ring-offset-background',
+          className,
         )}
       >
         {/* Cover Image - Full width with 16:9 aspect ratio, max height 400px */}
@@ -164,7 +169,7 @@ export async function FeaturedArticleCard({
               fill
               priority
               sizes="100vw"
-              className="object-cover transition-transform duration-300 group-hover:scale-105"
+              className="object-cover transform-gpu transition-transform duration-300 ease-out motion-safe:group-hover:scale-105"
             />
           </div>
         )}
