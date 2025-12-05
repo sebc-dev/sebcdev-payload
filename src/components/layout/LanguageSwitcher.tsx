@@ -12,13 +12,23 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { FrenchFlag, BritishFlag } from '@/components/icons/flags'
+import { locales as configLocales, type Locale } from '@/i18n/config'
+import type { ComponentType, SVGProps } from 'react'
 
-const locales = [
-  { code: 'fr', Flag: FrenchFlag },
-  { code: 'en', Flag: BritishFlag },
-] as const
+/**
+ * Mapping from locale codes to flag components
+ * Add new entries here when adding new locales to i18n/config.ts
+ */
+const localeFlags: Record<Locale, ComponentType<SVGProps<SVGSVGElement>>> = {
+  fr: FrenchFlag,
+  en: BritishFlag,
+}
 
-type LocaleCode = (typeof locales)[number]['code']
+/** Derived locale list with flag components from centralized config */
+const locales = configLocales.map((code) => ({
+  code,
+  Flag: localeFlags[code],
+}))
 
 /**
  * LanguageSwitcher Component
@@ -42,7 +52,7 @@ interface LanguageSwitcherProps {
 }
 
 export function LanguageSwitcher({ className }: LanguageSwitcherProps) {
-  const locale = useLocale() as LocaleCode
+  const locale = useLocale() as Locale
   const t = useTranslations('language')
   const pathname = usePathname()
   const router = useRouter()
@@ -50,7 +60,7 @@ export function LanguageSwitcher({ className }: LanguageSwitcherProps) {
   const currentLocale = locales.find((l) => l.code === locale) ?? locales[0]
   const CurrentFlag = currentLocale.Flag
 
-  const handleLocaleChange = (newLocale: LocaleCode) => {
+  const handleLocaleChange = (newLocale: Locale) => {
     router.replace(pathname, { locale: newLocale })
   }
 
