@@ -128,6 +128,7 @@ Déclenchement manuel via : **Actions > Quality Gate > Run workflow** (sélectio
 **Build & Tests :**
 
 - **Vitest (Unit/Integration)** : Tests unitaires avec couverture + tests d'intégration (Layer 2)
+  - Integration tests require `PAYLOAD_SECRET` env variable. Set in GitHub Actions secrets for CI, or locally via `.env` file. Missing this will fail `pnpm test:int`.
 - **Next.js Build** : `next build --experimental-build-mode compile` sans connexion D1 (Layer 3)
 - **Playwright E2E** : Tests E2E et accessibilité WCAG 2.1 AA (FR/EN) (Layer 3.5)
 - **Stryker** : Mutation testing sur modules critiques (Layer 5, optionnel via workflow_dispatch)
