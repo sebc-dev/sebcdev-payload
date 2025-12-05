@@ -12,6 +12,7 @@ import type { KnipConfig } from 'knip'
 const config: KnipConfig = {
   // Entry points - files that are the roots of the dependency graph
   // Note: The `!` suffix marks entry points for production mode (--production)
+  // Only use `!` for files referenced by string paths that Knip cannot discover via imports
   // @see https://knip.dev/features/production-mode
   entry: [
     // Next.js config (production: required for build)
@@ -35,17 +36,13 @@ const config: KnipConfig = {
     // ESLint flat config - dev only
     'eslint.config.mjs',
 
-    // next-intl request config - referenced by string in next.config.ts (production)
+    // next-intl request config - referenced by string path in next.config.ts (production)
+    // String ref: createNextIntlPlugin('./src/i18n/request.ts')
     'src/i18n/request.ts!',
 
     // Payload custom field components - referenced by string path in collection configs (production)
+    // String ref: Field: '@/fields/code/DynamicCodeField#DynamicCodeField'
     'src/fields/**/*.tsx!',
-
-    // UI component library - shared components used across the app (production)
-    'src/components/**/*.tsx!',
-
-    // Utility functions - used by UI components (production)
-    'src/lib/**/*.ts!',
   ],
 
   // Project files to analyze (includes CSS for TailwindCSS v4 compiler)
