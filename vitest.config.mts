@@ -12,7 +12,7 @@ export default defineConfig({
     environmentMatchGlobs: [['tests/int/**/*.int.spec.ts', 'node']],
     // Run integration tests sequentially to avoid D1 SQLite lock issues
     fileParallelism: false,
-    // Coverage configuration for unit tests
+    // Coverage configuration for included tests (unit and integration)
     coverage: {
       provider: 'v8',
       reporter: ['json-summary', 'text'],
