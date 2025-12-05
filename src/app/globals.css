@@ -79,7 +79,7 @@
     --accent-foreground: hsl(0, 0%, 98%);
 
     /* Destructive: Red #E76E6E - error/danger states */
-    /* Uses dark text for WCAG AA contrast (5.2:1) */
+    /* Uses dark text for WCAG AA contrast (5.38:1) */
     --destructive: hsl(0, 72%, 67%);
     --destructive-foreground: hsl(0, 0%, 12%);
 
