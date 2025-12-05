@@ -120,7 +120,7 @@ export function Footer() {
           {/* Legal Links - Left */}
           <nav
             className="flex flex-wrap justify-center gap-4 md:justify-start"
-            aria-label={a11yT('footerLegalNav')}
+            aria-label={t('sections.legal')}
           >
             {legalLinks.map((link) => (
               <Link
