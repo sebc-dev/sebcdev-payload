@@ -185,14 +185,11 @@ export function MobileMenu() {
                   <SheetClose asChild key={item.key}>
                     <Link
                       href={item.href}
-                      className="text-xl font-medium text-foreground transition-colors hover:text-primary"
-                      style={{
-                        animation:
-                          activeSubMenu === menu
-                            ? `menu-item-in 0.4s ease-out ${0.05 + index * 0.05}s forwards`
-                            : 'none',
-                        opacity: activeSubMenu === menu ? 0 : 1,
-                      }}
+                      className="animate-submenu-item text-xl font-medium text-foreground transition-colors hover:text-primary"
+                      data-animate={activeSubMenu === menu ? 'true' : 'false'}
+                      style={
+                        { '--submenu-delay': `${0.05 + index * 0.05}s` } as React.CSSProperties
+                      }
                     >
                       {item.label}
                     </Link>
