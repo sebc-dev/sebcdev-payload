@@ -35,7 +35,7 @@ import type { ImageLoaderProps } from 'next/image'
  * })
  * // Returns: /images/cover.jpg?w=640&q=75
  */
-export function cloudflareImageLoader({ src, width, quality }: ImageLoaderProps): string {
+function cloudflareImageLoader({ src, width, quality }: ImageLoaderProps): string {
   // Handle external URLs (http/https)
   if (src.startsWith('http://') || src.startsWith('https://')) {
     const url = new URL(src)
@@ -57,3 +57,6 @@ export function cloudflareImageLoader({ src, width, quality }: ImageLoaderProps)
   // Handle local/relative URLs with query parameters
   return `${src}?w=${width}&q=${quality || 75}`
 }
+
+// Next.js requires a default export for custom image loaders
+export default cloudflareImageLoader
