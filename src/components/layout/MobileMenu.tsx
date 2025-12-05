@@ -95,7 +95,7 @@ export function MobileMenu() {
               activeSubMenu ? '-translate-x-full opacity-0' : 'translate-x-0 opacity-100',
             )}
             aria-label={a11yT('mainNavigation')}
-            aria-hidden={activeSubMenu !== null}
+            inert={activeSubMenu !== null ? true : undefined}
           >
             <SheetClose asChild>
               <Link
@@ -166,7 +166,7 @@ export function MobileMenu() {
                   ? 'translate-x-0 opacity-100'
                   : 'translate-x-full opacity-0 pointer-events-none',
               )}
-              aria-hidden={activeSubMenu !== menu}
+              inert={activeSubMenu !== menu ? true : undefined}
             >
               {/* Back button */}
               <button
