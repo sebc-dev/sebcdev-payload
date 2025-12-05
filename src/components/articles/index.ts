@@ -9,6 +9,7 @@
  * - FeaturedArticleCard: Hero/featured article display with H1 title
  * - ArticleGrid: Responsive grid container for displaying multiple articles
  * - RelativeDate: Localized relative time display
+ * - EmptyState: Fallback component when no articles are published
  */
 
 export { CategoryBadge } from './CategoryBadge'
@@ -18,3 +19,4 @@ export { RelativeDate } from '../RelativeDate'
 export { ArticleCard } from './ArticleCard'
 export { FeaturedArticleCard } from './FeaturedArticleCard'
 export { ArticleGrid } from './ArticleGrid'
+export { EmptyState } from '../EmptyState'

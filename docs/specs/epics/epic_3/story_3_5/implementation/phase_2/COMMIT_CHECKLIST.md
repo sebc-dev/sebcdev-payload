@@ -320,11 +320,12 @@ Related: Story 3.5 Phase 2"
 ## Commit 3: EmptyState
 
 ### Pre-Implementation
-- [ ] Verifier que Commit 2 est complete
+- [x] Verifier que Commit 2 est complete
 
 ### Implementation
 
 #### Creer `src/components/EmptyState.tsx`
+- [x] Fichier cree
 
 ```typescript
 import Link from 'next/link'
@@ -384,6 +385,8 @@ export async function EmptyState({ locale, className }: EmptyStateProps) {
 ```
 
 #### Mettre a jour `src/components/articles/index.ts`
+- [x] Fichier mis a jour avec export EmptyState
+
 ```typescript
 export { CategoryBadge } from './CategoryBadge'
 export { ComplexityBadge } from './ComplexityBadge'
@@ -403,13 +406,13 @@ pnpm build
 ```
 
 ### Checklist
-- [ ] Cookie check via `cookies()` de next/headers
-- [ ] CTA conditionnel sur `isAuthenticated`
-- [ ] Icones avec `aria-hidden`
-- [ ] Section avec `aria-labelledby`
-- [ ] `pnpm exec tsc --noEmit` passe
-- [ ] `pnpm lint` passe
-- [ ] `pnpm build` passe
+- [x] Cookie check via `cookies()` de next/headers
+- [x] CTA conditionnel sur `isAuthenticated`
+- [x] Icones avec `aria-hidden`
+- [x] Section avec `aria-labelledby`
+- [x] `pnpm exec tsc --noEmit` passe
+- [x] `pnpm lint` passe
+- [x] `pnpm build` passe
 
 ### Commit
 ```bash
