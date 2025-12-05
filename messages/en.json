@@ -104,5 +104,24 @@
     "footerThemesNav": "Themes navigation",
     "footerCategoriesNav": "Categories navigation",
     "footerLevelsNav": "Levels navigation"
+  },
+  "homepage": {
+    "recentArticles": "Recent articles",
+    "viewAllArticles": "View all articles",
+    "readArticle": "Read article",
+    "minRead": "{minutes} min read",
+    "emptyState": {
+      "title": "Welcome to sebc.dev!",
+      "description": "No articles have been published yet.",
+      "cta": "Create an article"
+    }
+  },
+  "article": {
+    "publishedAgo": "Published {time}",
+    "complexity": {
+      "beginner": "Beginner",
+      "intermediate": "Intermediate",
+      "advanced": "Advanced"
+    }
   }
 }
