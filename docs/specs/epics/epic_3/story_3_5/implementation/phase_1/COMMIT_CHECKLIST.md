@@ -170,8 +170,8 @@ Related: Story 3.5 Phase 1"
 ## Commit 3: ComplexityBadge & TagPill
 
 ### Pre-Implementation
-- [ ] Verifier que le commit 2 est complete
-- [ ] Verifier les couleurs dans UX_UI_Spec.md
+- [x] Verifier que le commit 2 est complete
+- [x] Verifier les couleurs dans UX_UI_Spec.md
 
 ### Implementation
 
@@ -273,16 +273,16 @@ pnpm build
 ```
 
 ### Checklist
-- [ ] `ComplexityBadge.tsx` cree avec les 3 niveaux
-- [ ] Couleurs correctes (green/orange/red)
-- [ ] Emojis corrects (book emojis)
-- [ ] Traductions utilisees via `useTranslations`
-- [ ] `TagPill.tsx` cree
-- [ ] `stopPropagation` pour eviter le click parent
-- [ ] `index.ts` mis a jour avec les 3 exports
-- [ ] `pnpm exec tsc --noEmit` passe
-- [ ] `pnpm lint` passe
-- [ ] `pnpm build` passe
+- [x] `ComplexityBadge.tsx` cree avec les 3 niveaux
+- [x] Couleurs correctes (green/orange/red)
+- [x] Emojis corrects (book emojis)
+- [x] Traductions utilisees via `useTranslations`
+- [x] `TagPill.tsx` cree
+- [x] `stopPropagation` pour eviter le click parent
+- [x] `index.ts` mis a jour avec les 3 exports
+- [x] `pnpm exec tsc --noEmit` passe
+- [x] `pnpm lint` passe
+- [x] `pnpm build` passe
 
 ### Commit
 ```bash
