@@ -1,0 +1,88 @@
+import Link from 'next/link'
+import { Badge } from '@/components/ui/badge'
+import { cn } from '@/lib/utils'
+
+/**
+ * Category interface for type safety
+ * Represents a category that can be displayed in badges
+ */
+interface Category {
+  id: string
+  title: string
+  slug: string
+  color?: string
+  icon?: string
+}
+
+/**
+ * CategoryBadge component props
+ * @param category - The category to display
+ * @param locale - Current locale (e.g., 'fr', 'en')
+ * @param clickable - Whether the badge should be wrapped in a link (default: true)
+ * @param className - Additional CSS classes to apply
+ */
+interface CategoryBadgeProps {
+  category: Category
+  locale: string
+  clickable?: boolean
+  className?: string
+}
+
+/**
+ * CategoryBadge Component
+ *
+ * Displays a category badge with optional dynamic styling and navigation.
+ * When clickable, wraps the badge in a link to the articles Hub with category filter.
+ *
+ * Features:
+ * - Dynamic background color based on category.color (20% opacity with category color text)
+ * - Optional icon display with aria-hidden for semantic correctness
+ * - Clickable variant that links to `/[locale]/articles?category=[slug]`
+ * - Smooth transition effects on hover
+ *
+ * @param props - Component props
+ * @returns JSX element with badge, optionally wrapped in a Link
+ *
+ * @example
+ * ```tsx
+ * <CategoryBadge
+ *   category={{
+ *     id: '1',
+ *     title: 'Tutoriels',
+ *     slug: 'tutorials',
+ *     color: '#06b6d4',
+ *     icon: '🎓'
+ *   }}
+ *   locale="fr"
+ *   clickable={true}
+ * />
+ * ```
+ */
+export function CategoryBadge({
+  category,
+  locale,
+  clickable = true,
+  className,
+}: CategoryBadgeProps) {
+  const style = category.color
+    ? { backgroundColor: `${category.color}20`, color: category.color }
+    : {}
+
+  const badge = (
+    <Badge variant="secondary" className={cn('gap-1.5 transition-colors', className)} style={style}>
+      {category.icon && <span aria-hidden="true">{category.icon}</span>}
+      {category.title}
+    </Badge>
+  )
+
+  if (!clickable) return badge
+
+  return (
+    <Link
+      href={`/${locale}/articles?category=${category.slug}`}
+      className="transition-opacity hover:opacity-80"
+    >
+      {badge}
+    </Link>
+  )
+}

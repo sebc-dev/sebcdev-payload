@@ -19,14 +19,14 @@ Pour chaque commit:
 ## Commit 1: i18n Keys
 
 ### Pre-Implementation
-- [ ] Lire les fichiers `messages/fr.json` et `messages/en.json` existants
-- [ ] Verifier la structure JSON actuelle
+- [x] Lire les fichiers `messages/fr.json` et `messages/en.json` existants
+- [x] Verifier la structure JSON actuelle
 
 ### Implementation
-- [ ] Ajouter la section `homepage` dans `messages/fr.json`
-- [ ] Ajouter la section `article` dans `messages/fr.json`
-- [ ] Ajouter la section `homepage` dans `messages/en.json`
-- [ ] Ajouter la section `article` dans `messages/en.json`
+- [x] Ajouter la section `homepage` dans `messages/fr.json`
+- [x] Ajouter la section `article` dans `messages/fr.json`
+- [x] Ajouter la section `homepage` dans `messages/en.json`
+- [x] Ajouter la section `article` dans `messages/en.json`
 
 ### Validation Commands
 ```bash
@@ -38,10 +38,10 @@ pnpm build
 ```
 
 ### Checklist
-- [ ] JSON syntaxiquement valide (pas d'erreur de parsing)
-- [ ] Toutes les cles presentes en FR et EN
-- [ ] Placeholders `{minutes}` et `{time}` corrects
-- [ ] `pnpm build` passe sans erreur
+- [x] JSON syntaxiquement valide (pas d'erreur de parsing)
+- [x] Toutes les cles presentes en FR et EN
+- [x] Placeholders `{minutes}` et `{time}` corrects
+- [x] `pnpm build` passe sans erreur
 
 ### Commit
 ```bash
@@ -62,8 +62,8 @@ Related: Story 3.5 Phase 1"
 ## Commit 2: CategoryBadge
 
 ### Pre-Implementation
-- [ ] Verifier que `Badge` de shadcn/ui est installe
-- [ ] Creer le dossier `src/components/articles/` si necessaire
+- [x] Verifier que `Badge` de shadcn/ui est installe
+- [x] Creer le dossier `src/components/articles/` si necessaire
 
 ### Implementation
 
@@ -140,20 +140,22 @@ pnpm build
 ```
 
 ### Checklist
-- [ ] Fichier `CategoryBadge.tsx` cree
-- [ ] Fichier `index.ts` cree avec export
-- [ ] Interface `Category` definie
-- [ ] Props `clickable` avec default `true`
-- [ ] `aria-hidden` sur l'icone
-- [ ] Couleur dynamique via style inline
-- [ ] `pnpm exec tsc --noEmit` passe
-- [ ] `pnpm lint` passe
-- [ ] `pnpm build` passe
+- [x] Fichier `CategoryBadge.tsx` cree
+- [x] Fichier `index.ts` cree avec export
+- [x] Interface `Category` definie
+- [x] Props `clickable` avec default `true`
+- [x] `aria-hidden` sur l'icone
+- [x] Couleur dynamique via style inline
+- [x] `pnpm exec tsc --noEmit` passe
+- [x] `pnpm lint` passe
+- [x] `pnpm build` passe
 
-### Commit
+### Commit (Note: Badge component created as prerequisite)
 ```bash
-git add src/components/articles/
+git add src/components/articles/ src/components/ui/badge.tsx
 git commit -m "feat(components): add CategoryBadge component
+
+Create Badge component as prerequisite for CategoryBadge.
 
 Create CategoryBadge component that displays:
 - Category icon and title
