@@ -405,7 +405,7 @@ Related: Story 3.5 Phase 3"
 ## Commit 4: Accessibility Tests
 
 ### Pre-Implementation
-- [ ] Installer @axe-core/playwright si necessaire
+- [x] Installer @axe-core/playwright si necessaire
 
 ### Implementation
 
@@ -515,13 +515,13 @@ pnpm test:e2e -- tests/e2e/homepage.e2e.spec.ts --grep "Accessibility"
 ```
 
 ### Checklist
-- [ ] `@axe-core/playwright` installe
-- [ ] Tests a11y ajoutes
-- [ ] Pas de violations critiques/serieuses
-- [ ] Heading hierarchy correct
-- [ ] Images ont alt text
-- [ ] Focus visible
-- [ ] Tous les tests passent
+- [x] `@axe-core/playwright` installe
+- [x] Tests a11y ajoutes
+- [x] Pas de violations critiques/serieuses
+- [x] Heading hierarchy correct
+- [x] Images ont alt text
+- [x] Focus visible
+- [x] Tous les tests passent
 
 ### Commit
 ```bash

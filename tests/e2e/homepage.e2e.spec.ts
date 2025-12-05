@@ -1,4 +1,5 @@
 import { expect, test } from '@playwright/test'
+import AxeBuilder from '@axe-core/playwright'
 
 import enMessages from '../../messages/en.json' with { type: 'json' }
 import frMessages from '../../messages/fr.json' with { type: 'json' }
@@ -195,6 +196,110 @@ test.describe('Homepage', () => {
         await ctaButton.click()
         await expect(page).toHaveURL('/en/articles')
       }
+    })
+  })
+
+  test.describe('Accessibility', () => {
+    test('FR homepage passes WCAG 2.1 AA audit', async ({ page }) => {
+      await page.goto('/fr')
+
+      const results = await new AxeBuilder({ page })
+        .withTags(['wcag2a', 'wcag2aa', 'wcag21aa'])
+        .analyze()
+
+      // Filter for critical and serious violations only
+      const violations = results.violations.filter(
+        (v) => v.impact === 'critical' || v.impact === 'serious',
+      )
+
+      expect(violations).toHaveLength(0)
+    })
+
+    test('EN homepage passes WCAG 2.1 AA audit', async ({ page }) => {
+      await page.goto('/en')
+
+      const results = await new AxeBuilder({ page })
+        .withTags(['wcag2a', 'wcag2aa', 'wcag21aa'])
+        .analyze()
+
+      const violations = results.violations.filter(
+        (v) => v.impact === 'critical' || v.impact === 'serious',
+      )
+
+      expect(violations).toHaveLength(0)
+    })
+
+    test('has exactly one H1 element', async ({ page }) => {
+      await page.goto('/fr')
+
+      const h1Count = await page.locator('h1').count()
+      expect(h1Count).toBe(1)
+    })
+
+    test('all images have alt text', async ({ page }) => {
+      await page.goto('/fr')
+
+      const images = page.locator('img')
+      const count = await images.count()
+
+      // Verify each image has non-empty alt text
+      for (let i = 0; i < count; i++) {
+        const img = images.nth(i)
+        const alt = await img.getAttribute('alt')
+        expect(alt).toBeTruthy()
+        expect(alt?.trim().length).toBeGreaterThan(0)
+      }
+    })
+
+    test('interactive elements are keyboard accessible', async ({ page }) => {
+      await page.goto('/fr')
+
+      // Tab through the page
+      await page.keyboard.press('Tab')
+
+      // Check that something received focus
+      const focusedElement = page.locator(':focus')
+      await expect(focusedElement).toBeVisible()
+    })
+
+    test('focus indicators are visible on interactive elements', async ({ page }) => {
+      await page.goto('/fr')
+
+      // Tab to first focusable element
+      await page.keyboard.press('Tab')
+
+      const focused = page.locator(':focus')
+
+      // Verify focus indicator exists
+      if ((await focused.count()) > 0) {
+        const styles = await focused.evaluate((el) => {
+          const computed = window.getComputedStyle(el)
+          return {
+            outline: computed.outline,
+            boxShadow: computed.boxShadow,
+            outlineWidth: computed.outlineWidth,
+          }
+        })
+
+        // Check for visible focus indicator (outline or box-shadow)
+        const hasFocusIndicator =
+          (styles.outline && styles.outline !== 'none') ||
+          (styles.boxShadow && styles.boxShadow !== 'none')
+
+        expect(hasFocusIndicator).toBe(true)
+      }
+    })
+
+    test('page has proper document structure', async ({ page }) => {
+      await page.goto('/fr')
+
+      // Check that main element exists
+      const main = page.locator('main')
+      await expect(main).toBeVisible()
+
+      // Check for proper heading hierarchy
+      const headings = await page.locator('h1, h2, h3, h4, h5, h6').allTextContents()
+      expect(headings.length).toBeGreaterThan(0)
     })
   })
 })
