@@ -82,8 +82,9 @@ jobs:
         run: sfw pnpm install --frozen-lockfile
 
       # Generate CI-only fallback secret if PAYLOAD_SECRET is not configured.
-      # This random value is used only for type generation and build validation
-      # in CI - it is never used in production. Meets 32+ char requirement.
+      # This random value is used by multiple CI steps: integration tests,
+      # type generation, build validation, E2E tests, and mutation testing.
+      # It is never used in production. Meets 32+ char requirement.
       - name: Generate CI Payload Secret
         if: env.HAS_PAYLOAD_SECRET != 'true'
         run: echo "PAYLOAD_SECRET_CI=$(openssl rand -hex 32)" >> "$GITHUB_ENV"
