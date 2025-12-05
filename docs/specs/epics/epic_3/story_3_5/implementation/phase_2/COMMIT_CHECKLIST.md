@@ -433,8 +433,8 @@ Related: Story 3.5 Phase 2"
 ## Commit 4: Homepage Page
 
 ### Pre-Implementation
-- [ ] Verifier que les Commits 1-3 sont completes
-- [ ] Sauvegarder une copie de l'ancien `page.tsx` si besoin
+- [x] Verifier que les Commits 1-3 sont completes
+- [x] Sauvegarder une copie de l'ancien `page.tsx` si besoin
 
 ### Implementation
 
@@ -452,9 +452,34 @@ import {
   ArticleGrid,
   EmptyState,
 } from '@/components/articles'
+import type { Article as PayloadArticle } from '@/payload-types'
 
 interface HomePageProps {
   params: Promise<{ locale: string }>
+}
+
+interface Article {
+  id: string
+  title: string
+  slug: string
+  excerpt: string
+  coverImage?: { url: string; alt?: string } | null
+  category: {
+    id: string
+    title: string
+    slug: string
+    color?: string
+    icon?: string
+  }
+  tags: Array<{ id: string; title: string; slug: string }>
+  complexity: 'beginner' | 'intermediate' | 'advanced'
+  readingTime: number
+  publishedAt: string
+}
+
+function mapArticle(payloadArticle: PayloadArticle): Article {
+  // Maps Payload article to component article interface
+  // Handles property name differences (featuredImage -> coverImage, name -> title)
 }
 
 export default async function HomePage({ params }: HomePageProps) {
@@ -466,16 +491,18 @@ export default async function HomePage({ params }: HomePageProps) {
   const payload = await getPayload({ config: payloadConfig })
 
   // Fetch 7 most recent published articles
-  const { docs: articles } = await payload.find({
-    collection: 'posts',
-    locale,
+  const { docs: payloadArticles } = await payload.find({
+    collection: 'articles',
+    locale: locale as 'fr' | 'en',
     limit: 7,
     sort: '-publishedAt',
     where: {
       _status: { equals: 'published' },
     },
     depth: 2,
-  })
+  }) as { docs: PayloadArticle[] }
+
+  const articles = payloadArticles.map(mapArticle)
 
   // Empty state
   if (articles.length === 0) {
@@ -519,6 +546,11 @@ export default async function HomePage({ params }: HomePageProps) {
 }
 ```
 
+### Additional Changes
+- [x] Added `complexity` field to Articles collection (select: beginner/intermediate/advanced)
+- [x] Updated Articles.ts collection definition
+- [x] Regenerated Payload types with `pnpm generate:types:payload`
+
 ### Validation Commands
 ```bash
 pnpm exec tsc --noEmit
@@ -528,16 +560,16 @@ pnpm dev  # Tester manuellement
 ```
 
 ### Checklist
-- [ ] Import des composants via barrel export
-- [ ] Data fetching avec Payload Local API
-- [ ] Empty state affiche si 0 articles
-- [ ] Featured + Grid affiches si articles
-- [ ] CTA vers Hub visible
-- [ ] `setRequestLocale` appele pour static rendering
-- [ ] `pnpm exec tsc --noEmit` passe
-- [ ] `pnpm lint` passe
-- [ ] `pnpm build` passe
-- [ ] `pnpm dev` fonctionne
+- [x] Import des composants via barrel export
+- [x] Data fetching avec Payload Local API
+- [x] Empty state affiche si 0 articles
+- [x] Featured + Grid affiches si articles
+- [x] CTA vers Hub visible
+- [x] `setRequestLocale` appele pour static rendering
+- [x] `pnpm exec tsc --noEmit` passe
+- [x] `pnpm lint` passe
+- [x] `pnpm build` passe
+- [x] `pnpm dev` fonctionne
 
 ### Commit
 ```bash

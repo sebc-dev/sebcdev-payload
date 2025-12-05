@@ -360,6 +360,10 @@ export interface Article {
    * Reading time calculated automatically (minutes)
    */
   readingTime?: number | null;
+  /**
+   * Difficulty level of the article
+   */
+  complexity: 'beginner' | 'intermediate' | 'advanced';
   updatedAt: string;
   createdAt: string;
 }
@@ -533,6 +537,7 @@ export interface ArticlesSelect<T extends boolean = true> {
   publishedAt?: T;
   status?: T;
   readingTime?: T;
+  complexity?: T;
   updatedAt?: T;
   createdAt?: T;
 }

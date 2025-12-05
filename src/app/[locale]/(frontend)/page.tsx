@@ -1,90 +1,161 @@
-import { headers as getHeaders } from 'next/headers.js'
-import Image from 'next/image'
+import Link from 'next/link'
 import { getPayload } from 'payload'
-import React from 'react'
-import { fileURLToPath } from 'url'
 import { getTranslations, setRequestLocale } from 'next-intl/server'
-
-import { Button } from '@/components/ui/button'
+import { ArrowRight } from 'lucide-react'
 import config from '@payload-config'
+import { Button } from '@/components/ui/button'
+import { FeaturedArticleCard, ArticleGrid, EmptyState } from '@/components/articles'
+import type { Article as PayloadArticle } from '@/payload-types'
+
+interface HomePageProps {
+  params: Promise<{ locale: string }>
+}
 
 /**
- * Homepage component with locale support.
- *
- * Migrated from src/app/(frontend)/page.tsx with added:
- * - Locale parameter handling
- * - Static rendering via setRequestLocale
+ * Component article interface (matches FeaturedArticleCard expectations)
  */
-export default async function HomePage({ params }: { params: Promise<{ locale: string }> }) {
+interface Article {
+  id: string
+  title: string
+  slug: string
+  excerpt: string
+  coverImage?: { url: string; alt?: string } | null
+  category: {
+    id: string
+    title: string
+    slug: string
+    color?: string
+    icon?: string
+  }
+  tags: Array<{ id: string; title: string; slug: string }>
+  complexity: 'beginner' | 'intermediate' | 'advanced'
+  readingTime: number
+  publishedAt: string
+}
+
+/**
+ * Maps Payload article to component article interface
+ */
+function mapArticle(payloadArticle: PayloadArticle): Article {
+  const featuredImage = payloadArticle.featuredImage
+  const coverImage =
+    typeof featuredImage === 'object' && featuredImage !== null
+      ? {
+          url: typeof featuredImage.url === 'string' ? featuredImage.url : '',
+          alt:
+            typeof featuredImage === 'object' &&
+            'alt' in featuredImage &&
+            typeof featuredImage.alt === 'string'
+              ? featuredImage.alt
+              : undefined,
+        }
+      : null
+
+  const category = payloadArticle.category
+  const mappedCategory =
+    typeof category === 'object' && category !== null
+      ? {
+          id: String(category.id),
+          title: 'name' in category ? (category.name as string) : '',
+          slug: category.slug || '',
+          color: 'color' in category ? (category.color as string) : undefined,
+          icon: 'icon' in category ? (category.icon as string) : undefined,
+        }
+      : {
+          id: '',
+          title: '',
+          slug: '',
+        }
+
+  const tags = Array.isArray(payloadArticle.tags)
+    ? payloadArticle.tags.map((tag) => {
+        if (typeof tag === 'object' && tag !== null) {
+          return {
+            id: String(tag.id),
+            title: 'name' in tag ? (tag.name as string) : '',
+            slug: tag.slug || '',
+          }
+        }
+        return { id: String(tag), title: '', slug: '' }
+      })
+    : []
+
+  return {
+    id: String(payloadArticle.id),
+    title: payloadArticle.title || '',
+    slug: payloadArticle.slug || '',
+    excerpt: payloadArticle.excerpt || '',
+    coverImage,
+    category: mappedCategory,
+    tags,
+    complexity:
+      (payloadArticle.complexity as 'beginner' | 'intermediate' | 'advanced') || 'intermediate',
+    readingTime: payloadArticle.readingTime || 0,
+    publishedAt: payloadArticle.publishedAt || new Date().toISOString(),
+  }
+}
+
+/**
+ * Homepage component with Payload data fetching.
+ *
+ * Displays:
+ * - Featured article card (hero section)
+ * - Grid of recent articles
+ * - Empty state when no articles
+ * - CTA to articles hub
+ */
+export default async function HomePage({ params }: HomePageProps) {
   const { locale } = await params
   setRequestLocale(locale)
 
-  const tComponents = await getTranslations('components')
-  const tHome = await getTranslations('home')
-  const headers = await getHeaders()
+  const t = await getTranslations('homepage')
   const payloadConfig = await config
   const payload = await getPayload({ config: payloadConfig })
-  const { user } = await payload.auth({ headers })
 
-  const fileURL = `vscode://file/${fileURLToPath(import.meta.url)}`
+  // Fetch 7 most recent published articles
+  const { docs: payloadArticles } = (await payload.find({
+    collection: 'articles',
+    locale: locale as 'fr' | 'en',
+    limit: 7,
+    sort: '-publishedAt',
+    where: {
+      _status: { equals: 'published' },
+    },
+    depth: 2,
+  })) as { docs: PayloadArticle[] }
+
+  // Map Payload articles to component articles
+  const articles = payloadArticles.map(mapArticle)
+
+  // Empty state
+  if (articles.length === 0) {
+    return (
+      <main className="container mx-auto px-4 py-12">
+        <EmptyState locale={locale} />
+      </main>
+    )
+  }
+
+  // Destructure articles
+  const [featuredArticle, ...recentArticles] = articles
 
   return (
-    <div className="mx-auto flex min-h-screen max-w-4xl flex-col items-center justify-between p-6 sm:p-11">
-      <div className="flex flex-grow flex-col items-center justify-center">
-        <picture>
-          <source srcSet="https://raw.githubusercontent.com/payloadcms/payload/main/packages/ui/src/assets/payload-favicon.svg" />
-          <Image
-            alt="Payload Logo"
-            height={65}
-            src="https://raw.githubusercontent.com/payloadcms/payload/main/packages/ui/src/assets/payload-favicon.svg"
-            width={65}
-          />
-        </picture>
-        {!user && (
-          <h1 className="my-6 text-center text-3xl font-bold sm:my-10 sm:text-4xl lg:text-5xl">
-            {tHome('welcome')}
-          </h1>
-        )}
-        {user && (
-          <h1 className="my-6 text-center text-3xl font-bold sm:my-10 sm:text-4xl lg:text-5xl">
-            {tHome('welcomeBack', { email: user.email })}
-          </h1>
-        )}
-        <div className="flex items-center gap-3">
-          <Button asChild>
-            <a href={payloadConfig.routes.admin} rel="noopener noreferrer" target="_blank">
-              {tHome('goToAdmin')}
-            </a>
-          </Button>
-          <Button variant="outline" asChild>
-            <a href="https://payloadcms.com/docs" rel="noopener noreferrer" target="_blank">
-              {tHome('documentation')}
-            </a>
-          </Button>
-        </div>
-      </div>
-      <section className="mt-8 space-y-4">
-        <h2 className="text-xl font-semibold">{tComponents('buttons.title')}</h2>
-        <div className="flex flex-wrap gap-4">
-          <Button>{tComponents('buttons.variant.default')}</Button>
-          <Button variant="secondary">{tComponents('buttons.variant.secondary')}</Button>
-          <Button variant="outline">{tComponents('buttons.variant.outline')}</Button>
-          <Button variant="ghost">{tComponents('buttons.variant.ghost')}</Button>
-          <Button variant="destructive">{tComponents('buttons.variant.destructive')}</Button>
-          <Button variant="link">{tComponents('buttons.variant.link')}</Button>
-        </div>
-        <div className="flex flex-wrap gap-4">
-          <Button size="sm">{tComponents('buttons.size.small')}</Button>
-          <Button size="default">{tComponents('buttons.size.default')}</Button>
-          <Button size="lg">{tComponents('buttons.size.large')}</Button>
-        </div>
+    <main className="container mx-auto px-4 py-8 space-y-12">
+      {/* Featured Article */}
+      <FeaturedArticleCard article={featuredArticle} locale={locale} />
+
+      {/* Recent Articles Grid */}
+      {recentArticles.length > 0 && <ArticleGrid articles={recentArticles} locale={locale} />}
+
+      {/* CTA to Hub */}
+      <section className="flex justify-center py-8">
+        <Button asChild size="lg" variant="outline">
+          <Link href={`/${locale}/articles`}>
+            {t('viewAllArticles')}
+            <ArrowRight className="ml-2 h-4 w-4" aria-hidden="true" />
+          </Link>
+        </Button>
       </section>
-      <div className="mt-8 flex flex-col items-center gap-2 lg:flex-row">
-        <p className="m-0 text-muted-foreground">{tHome('updatePage')}</p>
-        <a className="rounded bg-muted px-2 py-0.5 font-mono text-sm no-underline" href={fileURL}>
-          <code>app/[locale]/(frontend)/page.tsx</code>
-        </a>
-      </div>
-    </div>
+    </main>
   )
 }
