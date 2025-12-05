@@ -84,6 +84,8 @@ export function LanguageSwitcher({ className }: LanguageSwitcherProps) {
                     strokeLinecap="round"
                     strokeLinejoin="round"
                     className="size-4"
+                    aria-hidden="true"
+                    focusable="false"
                   >
                     <polyline points="20 6 9 17 4 12" />
                   </svg>
