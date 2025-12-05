@@ -1,6 +1,5 @@
 import { createNavigation } from 'next-intl/navigation'
-import { defineRouting } from 'next-intl/routing'
-import { locales, defaultLocale } from './config'
+import { routing } from './routing'
 
 /**
  * i18n Navigation Utilities
@@ -8,13 +7,10 @@ import { locales, defaultLocale } from './config'
  * Provides locale-aware Link and usePathname hooks
  * for use in both server and client components.
  *
+ * Reuses the routing configuration from ./routing.ts to ensure
+ * consistent settings (including localeCookie: false for GDPR).
+ *
  * @see https://next-intl-docs.vercel.app/docs/usage/navigation
  */
-
-const routing = defineRouting({
-  locales,
-  defaultLocale,
-  localePrefix: 'always',
-})
 
 export const { Link, usePathname, useRouter, getPathname } = createNavigation(routing)
