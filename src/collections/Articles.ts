@@ -193,5 +193,28 @@ export const Articles: CollectionConfig = {
         description: 'Reading time calculated automatically (minutes)',
       },
     },
+    {
+      name: 'complexity',
+      type: 'select',
+      options: [
+        {
+          label: 'Beginner',
+          value: 'beginner',
+        },
+        {
+          label: 'Intermediate',
+          value: 'intermediate',
+        },
+        {
+          label: 'Advanced',
+          value: 'advanced',
+        },
+      ],
+      defaultValue: 'intermediate',
+      required: true,
+      admin: {
+        description: 'Difficulty level of the article',
+      },
+    },
   ],
 }
