@@ -125,20 +125,17 @@ Déclenchement manuel via : **Actions > Quality Gate > Run workflow** (sélectio
 - **Knip** : Détecte le code mort et imports non utilisés (hallucinations IA)
 - **Type Sync** : Vérifie la cohérence Payload ↔ TypeScript (`payload-types.ts`)
 - **ESLint + Prettier** : Formatage et linting strict (includes Tailwind class ordering)
-- **dependency-cruiser** : Validation architecture (interdiction imports serveur ↔ client)
 
 **Build & Tests :**
 
-- **Vitest (Unit Tests)** : Tests unitaires avec couverture (Layer 2)
-- **Vitest (Integration Tests)** : Tests d'intégration avec PAYLOAD_SECRET (Layer 2)
-- **Coverage Summary** : Rapport de couverture dans les logs CI (Layer 2)
-- **Next.js Build** : `next build --experimental-build-mode compile` (sans connexion D1) (Layer 3)
-- **Playwright E2E** : Tests E2E et accessibilité WCAG 2.1 AA (FR/EN) avec caching (Layer 3.5)
-- **Stryker** : Mutation testing sur modules critiques (optionnel via workflow_dispatch)
+- **Vitest (Unit/Integration)** : Tests unitaires avec couverture + tests d'intégration (Layer 2)
+- **Next.js Build** : `next build --experimental-build-mode compile` sans connexion D1 (Layer 3)
+- **Playwright E2E** : Tests E2E et accessibilité WCAG 2.1 AA (FR/EN) (Layer 3.5)
+- **Stryker** : Mutation testing sur modules critiques (Layer 5, optionnel via workflow_dispatch)
 
 **Architecture & Permissions :**
 
-- **dependency-cruiser** : Validation des dépendances et patterns architecturaux (Layer 4)
+- **dependency-cruiser** : Validation architecture et interdiction imports serveur ↔ client (Layer 4)
 - **Permissions** : GITHUB_TOKEN en read-only par défaut (least privilege)
 
 > **Documentation complète :** [CI-CD Security Architecture](docs/specs/CI-CD-Security.md)
