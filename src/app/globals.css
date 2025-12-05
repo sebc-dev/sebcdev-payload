@@ -218,6 +218,20 @@
 }
 
 /*
+ * Submenu Item Animation
+ * Conditional animation via data-animate attribute for sub-menu items
+ * Uses CSS custom property for staggered delay
+ */
+.animate-submenu-item {
+  opacity: 1;
+}
+
+.animate-submenu-item[data-animate='true'] {
+  opacity: 0;
+  animation: menu-item-in 0.4s ease-out var(--submenu-delay, 0.05s) forwards;
+}
+
+/*
  * Reduced Motion Support
  * Disable animations for users who prefer reduced motion (WCAG 2.1 AA)
  */
@@ -227,7 +241,9 @@
   .animate-menu-item:nth-child(2),
   .animate-menu-item:nth-child(3),
   .animate-menu-item:nth-child(4),
-  .animate-menu-item:nth-child(5) {
+  .animate-menu-item:nth-child(5),
+  .animate-submenu-item,
+  .animate-submenu-item[data-animate='true'] {
     animation: none !important;
     animation-delay: 0s !important;
     transition: none !important;
