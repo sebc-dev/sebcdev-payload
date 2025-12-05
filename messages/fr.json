@@ -104,5 +104,24 @@
     "footerThemesNav": "Navigation par thèmes",
     "footerCategoriesNav": "Navigation par catégories",
     "footerLevelsNav": "Navigation par niveaux"
+  },
+  "homepage": {
+    "recentArticles": "Articles récents",
+    "viewAllArticles": "Voir tous les articles",
+    "readArticle": "Lire l'article",
+    "minRead": "{minutes} min de lecture",
+    "emptyState": {
+      "title": "Bienvenue sur sebc.dev !",
+      "description": "Aucun article n'a encore été publié.",
+      "cta": "Créer un article"
+    }
+  },
+  "article": {
+    "publishedAgo": "Publié {time}",
+    "complexity": {
+      "beginner": "Débutant",
+      "intermediate": "Intermédiaire",
+      "advanced": "Avancé"
+    }
   }
 }
