@@ -15,6 +15,7 @@ Construire l'identité visuelle et la navigation bilingue du blog. Cet epic éta
 1. Implémenter le routing i18n avec `next-intl` pour une navigation bilingue (FR/EN)
 2. Intégrer Tailwind 4 et shadcn/ui avec la charte graphique "Neutral Gray & Teal"
 3. Créer le layout global (Header, Footer) avec sélecteur de langue fonctionnel
+4. Implémenter la Homepage avec article vedette et grille d'articles récents
 
 ### User Value
 
@@ -32,6 +33,7 @@ Construire l'identité visuelle et la navigation bilingue du blog. Cet epic éta
 | 3.2 | Intégration Design System (Dark Mode) | Installer Tailwind 4 et shadcn/ui, appliquer la charte graphique "Neutral Gray & Teal" | IN PROGRESS | 4 | 3/4 (Phase 4 📋) |
 | 3.3 | Layout Global & Navigation | Créer Header et Footer cohérents avec sélecteur de langue fonctionnel | PLANNING | 5 | 0/5 |
 | 3.4 | CI Tests Integration & E2E Maintenance | Intégrer tests unitaires, intégration et E2E au workflow CI, nettoyer tests obsolètes | IN PROGRESS | 3 | 2/3 |
+| 3.5 | Homepage Implementation | Article vedette + grille d'articles récents + Empty State + CTA vers Hub | PLANNING | 3 | 0/3 |
 
 ---
 
@@ -56,10 +58,10 @@ Construire l'identité visuelle et la navigation bilingue du blog. Cet epic éta
 
 ### Progress Summary
 
-- **Stories Started**: 4/4
-- **Stories Completed**: 1/4
-- **Total Phases**: 16 (4 + 4 + 5 + 3)
-- **Phases Completed**: 9 (4 + 3 + 0 + 2)
+- **Stories Started**: 4/5
+- **Stories Completed**: 1/5
+- **Total Phases**: 19 (4 + 4 + 5 + 3 + 3)
+- **Phases Completed**: 9 (4 + 3 + 0 + 2 + 0)
 
 ### Timeline
 
@@ -76,9 +78,17 @@ Construire l'identité visuelle et la navigation bilingue du blog. Cet epic éta
 ```
 Story 3.1 (i18n Routing)
     └── Story 3.3 (Layout) - needs i18n context for language switcher
+    └── Story 3.5 (Homepage) - needs locale context for i18n
 
 Story 3.2 (Design System)
     └── Story 3.3 (Layout) - needs design tokens and components
+    └── Story 3.5 (Homepage) - needs design tokens, components, and typography
+
+Story 3.3 (Layout Global)
+    └── Story 3.5 (Homepage) - needs Header/Footer wrapper
+
+Epic 2 (CMS Core)
+    └── Story 3.5 (Homepage) - needs Posts collection with proper fields
 ```
 
 ### External Dependencies
@@ -108,7 +118,9 @@ Story 3.2 (Design System)
 
 | Date | Update |
 |------|--------|
-| 2025-12-05 | Story 3.4 Phase 1 & 2 COMPLETED: Unit/Integration/E2E tests in CI (4+4 commits), Playwright caching working
+| 2025-12-05 | Story 3.5 PHASE DOCS GENERATED: 3 phases, 14 commits, 22 documentation files |
+| 2025-12-05 | Story 3.5 CREATED: Homepage implementation with featured article + grid (3 phases) |
+| 2025-12-05 | Story 3.4 Phase 1 & 2 COMPLETED: Unit/Integration/E2E tests in CI (4+4 commits), Playwright caching working |
 | 2025-12-05 | Story 3.4 PLANNING: 3 phases planned (~11 commits), CI tests integration |
 | 2025-12-03 | Story 3.3 PLANNING: 5 phases planned (~16-21 commits), layout & navigation |
 | 2025-12-02 | Story 3.2 Phase 3 COMPLETED: Design tokens & visual migration (5 commits) |
@@ -143,7 +155,8 @@ Story 3.2 (Design System)
 - Story 3.1: [story_3_1/story_3.1.md](story_3_1/story_3.1.md) ✅
 - Story 3.2: [story_3_2/story_3.2.md](story_3_2/story_3.2.md) 🚧
 - Story 3.3: [story_3_3/story_3.3.md](story_3_3/story_3.3.md) 📋
-- Story 3.4: [story_3_4/story_3.4.md](story_3_4/story_3.4.md) 📋
+- Story 3.4: [story_3_4/story_3.4.md](story_3_4/story_3.4.md) 🚧
+- Story 3.5: [story_3_5/story_3.5.md](story_3_5/story_3.5.md) 📋 | [PHASES_PLAN](story_3_5/implementation/PHASES_PLAN.md)
 
 ---
 
@@ -174,9 +187,11 @@ Story 3.2 (Design System)
 /plan-story Epic 3 Story 3.2
 /plan-story Epic 3 Story 3.3
 /plan-story Epic 3 Story 3.4
+/plan-story Epic 3 Story 3.5
 
 # Generate phase docs (after planning)
 /generate-phase-doc Epic 3 Story 3.1 Phase 1
+/generate-phase-doc Epic 3 Story 3.5 Phase 1
 
 # Check epic status
 cat docs/specs/epics/epic_3/EPIC_TRACKING.md
