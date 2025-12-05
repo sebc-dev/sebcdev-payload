@@ -113,6 +113,10 @@
     "languageSelection": "Language selection",
     "mainNavigation": "Main navigation",
     "menu": "Menu",
-    "skipToContent": "Skip to main content"
+    "skipToContent": "Skip to main content",
+    "footerThemesNav": "Themes navigation",
+    "footerCategoriesNav": "Categories navigation",
+    "footerLevelsNav": "Levels navigation",
+    "footerLegalNav": "Legal links"
   }
 }

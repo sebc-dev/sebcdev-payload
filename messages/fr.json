@@ -113,6 +113,10 @@
     "languageSelection": "Sélection de la langue",
     "mainNavigation": "Navigation principale",
     "menu": "Menu",
-    "skipToContent": "Aller au contenu principal"
+    "skipToContent": "Aller au contenu principal",
+    "footerThemesNav": "Navigation par thèmes",
+    "footerCategoriesNav": "Navigation par catégories",
+    "footerLevelsNav": "Navigation par niveaux",
+    "footerLegalNav": "Liens légaux"
   }
 }
