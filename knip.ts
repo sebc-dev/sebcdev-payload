@@ -43,11 +43,18 @@ const config: KnipConfig = {
     // Payload custom field components - referenced by string path in collection configs (production)
     // String ref: Field: '@/fields/code/DynamicCodeField#DynamicCodeField'
     'src/fields/**/*.tsx!',
+
+    // Next.js App Router pages and layouts (production)
+    // These are entry points for the frontend that import UI components
+    'src/app/**/page.tsx!',
+    'src/app/**/layout.tsx!',
   ],
 
   // Project files to analyze (includes CSS for TailwindCSS v4 compiler)
   // Root globs include .mts/.mtsx for vitest.config.mts and future configs
-  project: ['src/**/*.{ts,tsx,mts,mtsx,css}', '*.{ts,mts,mtsx,mjs,cjs}'],
+  // Note: The `!` suffix marks project files for production mode (--production)
+  // This ensures Knip follows the import graph from entry points to all dependencies
+  project: ['src/**/*.{ts,tsx,mts,mtsx,css}!', '*.{ts,mts,mtsx,mjs,cjs}'],
 
   // Files to ignore completely
   ignore: [
@@ -135,8 +142,14 @@ const config: KnipConfig = {
 
   // Plugin configurations
   next: {
-    // Let Next.js plugin auto-detect entries
-    entry: [],
+    // Next.js App Router entry points for production mode
+    // These must be explicitly listed with ! suffix for --production flag
+    entry: [
+      'src/app/**/page.tsx!',
+      'src/app/**/layout.tsx!',
+      'src/app/**/route.ts!',
+      'src/app/**/not-found.tsx!',
+    ],
   },
 
   eslint: {
