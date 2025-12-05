@@ -62,7 +62,7 @@
     --popover-foreground: hsl(0, 0%, 98%);
 
     /* Primary: Teal #1DAFA1 - buttons, links, CTAs */
-    /* Uses dark text for WCAG AA contrast (6.19:1) */
+    /* Uses dark text for WCAG AA contrast (6.04:1) */
     --primary: hsl(174, 72%, 40%);
     --primary-foreground: hsl(0, 0%, 12%);
 
