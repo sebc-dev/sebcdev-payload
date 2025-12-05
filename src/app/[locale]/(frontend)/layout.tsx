@@ -13,6 +13,31 @@ export const metadata: Metadata = {
 }
 
 /**
+ * Decorative SVG positioning constants
+ *
+ * These values position the background logo SVGs so their inner edge
+ * aligns with the content area edge (max-w-6xl = 72rem = 1152px).
+ *
+ * Formula: margin = 50% - (content-half-width) - (logo-width)
+ * - 50% centers the reference point
+ * - Subtract half of max-w-6xl (36rem) to reach content edge
+ * - Subtract logo width to position logo outside content area
+ */
+const SVG_POSITION = {
+  /** Half of max-w-6xl (72rem / 2 = 36rem) - distance from center to content edge */
+  CONTENT_HALF_WIDTH: '36rem',
+  /** Logo width for lg-xl breakpoints (1400px) */
+  LOGO_WIDTH_LG: '700px',
+  /** Logo width for 2xl+ breakpoints (1700px) */
+  LOGO_WIDTH_2XL: '850px',
+} as const
+
+/** Computed margin for lg-xl logos: positions logo edge at content edge */
+const marginLg = `calc(50% - ${SVG_POSITION.CONTENT_HALF_WIDTH} - ${SVG_POSITION.LOGO_WIDTH_LG})`
+/** Computed margin for 2xl+ logos: positions logo edge at content edge */
+const margin2xl = `calc(50% - ${SVG_POSITION.CONTENT_HALF_WIDTH} - ${SVG_POSITION.LOGO_WIDTH_2XL})`
+
+/**
  * Frontend layout for locale-specific routes.
  *
  * This layout:
@@ -39,38 +64,35 @@ export default async function FrontendLayout({
       <SkipLink />
       <Header />
       {/* Fixed decorative SVGs - behind content, fixed position on scroll */}
-      {/* lg-xl: 1400px logos, 2xl+: 1700px logos */}
-      {/* Margin = 50% - (content-width/2) - (logo-width) to align logo edge with content edge */}
-
-      {/* Left logo - lg to xl */}
+      {/* Left logo - lg to xl (1400px) */}
       <div
         className="pointer-events-none fixed -top-64 left-0 z-0 hidden h-[1400px] w-[1400px] opacity-[0.10] lg:block 2xl:hidden"
-        style={{ marginLeft: 'calc(50% - 36rem - 700px)' }}
+        style={{ marginLeft: marginLg }}
         aria-hidden="true"
       >
         <Image src="/logo_outline_left.svg" alt="" fill style={{ filter: 'invert(1)' }} />
       </div>
-      {/* Left logo - 2xl+ */}
+      {/* Left logo - 2xl+ (1700px) */}
       <div
         className="pointer-events-none fixed -top-64 left-0 z-0 hidden h-[1700px] w-[1700px] opacity-[0.10] 2xl:block"
-        style={{ marginLeft: 'calc(50% - 36rem - 850px)' }}
+        style={{ marginLeft: margin2xl }}
         aria-hidden="true"
       >
         <Image src="/logo_outline_left.svg" alt="" fill style={{ filter: 'invert(1)' }} />
       </div>
 
-      {/* Right logo - lg to xl */}
+      {/* Right logo - lg to xl (1400px) */}
       <div
         className="pointer-events-none fixed -top-64 right-0 z-0 hidden h-[1400px] w-[1400px] opacity-[0.10] lg:block 2xl:hidden"
-        style={{ marginRight: 'calc(50% - 36rem - 700px)' }}
+        style={{ marginRight: marginLg }}
         aria-hidden="true"
       >
         <Image src="/logo_outline_right.svg" alt="" fill style={{ filter: 'invert(1)' }} />
       </div>
-      {/* Right logo - 2xl+ */}
+      {/* Right logo - 2xl+ (1700px) */}
       <div
         className="pointer-events-none fixed -top-64 right-0 z-0 hidden h-[1700px] w-[1700px] opacity-[0.10] 2xl:block"
-        style={{ marginRight: 'calc(50% - 36rem - 850px)' }}
+        style={{ marginRight: margin2xl }}
         aria-hidden="true"
       >
         <Image src="/logo_outline_right.svg" alt="" fill style={{ filter: 'invert(1)' }} />
