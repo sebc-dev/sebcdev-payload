@@ -31,6 +31,7 @@ Construire l'identité visuelle et la navigation bilingue du blog. Cet epic éta
 | 3.1 | Routing i18n & Middleware | Implémenter le routing bilingue avec `next-intl`, URLs localisées (`/fr`, `/en`) et persistance de la préférence utilisateur | COMPLETED | 4 | 4/4 ✅ |
 | 3.2 | Intégration Design System (Dark Mode) | Installer Tailwind 4 et shadcn/ui, appliquer la charte graphique "Neutral Gray & Teal" | IN PROGRESS | 4 | 3/4 (Phase 4 📋) |
 | 3.3 | Layout Global & Navigation | Créer Header et Footer cohérents avec sélecteur de langue fonctionnel | PLANNING | 5 | 0/5 |
+| 3.4 | CI Tests Integration & E2E Maintenance | Intégrer tests unitaires, intégration et E2E au workflow CI, nettoyer tests obsolètes | PLANNING | 3 | 0/3 |
 
 ---
 
@@ -55,10 +56,10 @@ Construire l'identité visuelle et la navigation bilingue du blog. Cet epic éta
 
 ### Progress Summary
 
-- **Stories Started**: 3/3
-- **Stories Completed**: 1/3
-- **Total Phases**: 13 (4 + 4 + 5)
-- **Phases Completed**: 7 (4 + 3 + 0)
+- **Stories Started**: 4/4
+- **Stories Completed**: 1/4
+- **Total Phases**: 16 (4 + 4 + 5 + 3)
+- **Phases Completed**: 7 (4 + 3 + 0 + 0)
 
 ### Timeline
 
@@ -107,6 +108,7 @@ Story 3.2 (Design System)
 
 | Date | Update |
 |------|--------|
+| 2025-12-05 | Story 3.4 PLANNING: 3 phases planned (~11 commits), CI tests integration |
 | 2025-12-03 | Story 3.3 PLANNING: 5 phases planned (~16-21 commits), layout & navigation |
 | 2025-12-02 | Story 3.2 Phase 3 COMPLETED: Design tokens & visual migration (5 commits) |
 | 2025-12-02 | Story 3.2 Phase 2 COMPLETED: shadcn/ui & utility functions |
@@ -140,6 +142,7 @@ Story 3.2 (Design System)
 - Story 3.1: [story_3_1/story_3.1.md](story_3_1/story_3.1.md) ✅
 - Story 3.2: [story_3_2/story_3.2.md](story_3_2/story_3.2.md) 🚧
 - Story 3.3: [story_3_3/story_3.3.md](story_3_3/story_3.3.md) 📋
+- Story 3.4: [story_3_4/story_3.4.md](story_3_4/story_3.4.md) 📋
 
 ---
 
@@ -169,6 +172,7 @@ Story 3.2 (Design System)
 /plan-story Epic 3 Story 3.1
 /plan-story Epic 3 Story 3.2
 /plan-story Epic 3 Story 3.3
+/plan-story Epic 3 Story 3.4
 
 # Generate phase docs (after planning)
 /generate-phase-doc Epic 3 Story 3.1 Phase 1
