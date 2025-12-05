@@ -28,6 +28,7 @@ const legalLinks = ['privacy', 'terms-of-use', 'terms', 'sitemap'] as const
  */
 export function Footer() {
   const t = useTranslations('footer')
+  const a11yT = useTranslations('accessibility')
   const currentYear = new Date().getFullYear()
 
   return (
@@ -38,7 +39,7 @@ export function Footer() {
           {/* Themes Column */}
           <div>
             <h3 className="mb-4 text-sm font-semibold text-foreground">{t('sections.themes')}</h3>
-            <nav className="flex flex-col gap-2">
+            <nav className="flex flex-col gap-2" aria-label={a11yT('footerThemesNav')}>
               {themes.map((theme) => (
                 <Link
                   key={theme}
@@ -56,7 +57,7 @@ export function Footer() {
             <h3 className="mb-4 text-sm font-semibold text-foreground">
               {t('sections.categories')}
             </h3>
-            <nav className="flex flex-col gap-2">
+            <nav className="flex flex-col gap-2" aria-label={a11yT('footerCategoriesNav')}>
               {categories.map((category) => (
                 <Link
                   key={category}
@@ -72,7 +73,7 @@ export function Footer() {
           {/* Levels Column */}
           <div>
             <h3 className="mb-4 text-sm font-semibold text-foreground">{t('sections.levels')}</h3>
-            <nav className="flex flex-col gap-2">
+            <nav className="flex flex-col gap-2" aria-label={a11yT('footerLevelsNav')}>
               {levels.map((level) => (
                 <Link
                   key={level}
@@ -116,7 +117,10 @@ export function Footer() {
         {/* Bottom Bar: Legal Links (left) | Copyright (right) */}
         <div className="mt-12 flex flex-col-reverse items-center gap-4 border-t border-border pt-6 md:flex-row md:justify-between">
           {/* Legal Links - Left */}
-          <nav className="flex flex-wrap justify-center gap-4 md:justify-start">
+          <nav
+            className="flex flex-wrap justify-center gap-4 md:justify-start"
+            aria-label={a11yT('footerLegalNav')}
+          >
             {legalLinks.map((link) => (
               <Link
                 key={link}
