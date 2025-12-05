@@ -70,6 +70,7 @@ export function MobileMenu() {
     <Sheet onOpenChange={handleOpenChange}>
       <SheetTrigger asChild>
         <button
+          type="button"
           className="flex h-10 w-10 items-center justify-center rounded-md text-foreground hover:bg-accent lg:hidden"
           aria-label={t('open')}
         >
@@ -110,6 +111,7 @@ export function MobileMenu() {
 
             {/* Themes - with submenu */}
             <button
+              type="button"
               onClick={() => setActiveSubMenu('themes')}
               className="animate-menu-item flex items-center gap-2 text-2xl font-medium text-foreground transition-colors hover:text-primary"
               aria-expanded={activeSubMenu === 'themes'}
@@ -121,6 +123,7 @@ export function MobileMenu() {
 
             {/* Categories - with submenu */}
             <button
+              type="button"
               onClick={() => setActiveSubMenu('categories')}
               className="animate-menu-item flex items-center gap-2 text-2xl font-medium text-foreground transition-colors hover:text-primary"
               aria-expanded={activeSubMenu === 'categories'}
@@ -132,6 +135,7 @@ export function MobileMenu() {
 
             {/* Levels - with submenu */}
             <button
+              type="button"
               onClick={() => setActiveSubMenu('levels')}
               className="animate-menu-item flex items-center gap-2 text-2xl font-medium text-foreground transition-colors hover:text-primary"
               aria-expanded={activeSubMenu === 'levels'}
@@ -161,6 +165,7 @@ export function MobileMenu() {
             >
               {/* Back button */}
               <button
+                type="button"
                 onClick={() => setActiveSubMenu(null)}
                 className="mb-8 flex items-center gap-2 text-lg font-medium text-muted-foreground transition-colors hover:text-foreground"
                 aria-label={t('back')}
