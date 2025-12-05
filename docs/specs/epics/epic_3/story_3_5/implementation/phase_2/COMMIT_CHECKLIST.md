@@ -591,7 +591,7 @@ Related: Story 3.5 Phase 2"
 ## Commit 5: SEO Metadata
 
 ### Pre-Implementation
-- [ ] Verifier que Commit 4 est complete
+- [x] Verifier que Commit 4 est complete
 
 ### Implementation
 
@@ -659,16 +659,16 @@ pnpm build
 ```
 
 ### Checklist
-- [ ] `generateMetadata` fonction exportee
-- [ ] Titles en FR et EN
-- [ ] Descriptions en FR et EN
-- [ ] Canonical URLs correctes
-- [ ] hreflang alternates presentes
-- [ ] OpenGraph metadata presente
-- [ ] Twitter card metadata presente
-- [ ] `pnpm exec tsc --noEmit` passe
-- [ ] `pnpm lint` passe
-- [ ] `pnpm build` passe
+- [x] `generateMetadata` fonction exportee
+- [x] Titles en FR et EN
+- [x] Descriptions en FR et EN
+- [x] Canonical URLs correctes
+- [x] hreflang alternates presentes
+- [x] OpenGraph metadata presente
+- [x] Twitter card metadata presente
+- [x] `pnpm exec tsc --noEmit` passe
+- [x] `pnpm lint` passe
+- [x] `pnpm build` passe
 
 ### Commit
 ```bash

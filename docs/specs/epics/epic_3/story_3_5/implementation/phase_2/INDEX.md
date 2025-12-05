@@ -2,8 +2,9 @@
 
 **Story**: 3.5 - Homepage Implementation
 **Phase**: 2 of 3
-**Status**: IN PROGRESS (Commit 1/5 completed)
+**Status**: COMPLETED (5/5 commits)
 **Estimated Commits**: 5
+**Completed**: 2025-12-05
 
 ---
 
@@ -147,13 +148,13 @@ FeaturedArticleCard + ArticleGrid
 
 ## Success Criteria
 
-- [ ] Article vedette affiche en pleine largeur
-- [ ] Grille responsive fonctionne sur mobile/tablet/desktop
-- [ ] Empty state affiche si aucun article
-- [ ] CTA "Creer un article" visible uniquement si authentifie
-- [ ] Data fetching via Payload Local API
-- [ ] SEO metadata correcte (FR/EN)
-- [ ] Build Next.js passe sans erreur
+- [x] Article vedette affiche en pleine largeur
+- [x] Grille responsive fonctionne sur mobile/tablet/desktop
+- [x] Empty state affiche si aucun article
+- [x] CTA "Creer un article" visible uniquement si authentifie
+- [x] Data fetching via Payload Local API
+- [x] SEO metadata correcte (FR/EN)
+- [x] Build Next.js passe sans erreur
 
 ---
 

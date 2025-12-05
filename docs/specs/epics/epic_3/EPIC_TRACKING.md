@@ -33,7 +33,7 @@ Construire l'identité visuelle et la navigation bilingue du blog. Cet epic éta
 | 3.2 | Intégration Design System (Dark Mode) | Installer Tailwind 4 et shadcn/ui, appliquer la charte graphique "Neutral Gray & Teal" | IN PROGRESS | 4 | 3/4 (Phase 4 📋) |
 | 3.3 | Layout Global & Navigation | Créer Header et Footer cohérents avec sélecteur de langue fonctionnel | PLANNING | 5 | 0/5 |
 | 3.4 | CI Tests Integration & E2E Maintenance | Intégrer tests unitaires, intégration et E2E au workflow CI, nettoyer tests obsolètes | IN PROGRESS | 3 | 2/3 |
-| 3.5 | Homepage Implementation | Article vedette + grille d'articles récents + Empty State + CTA vers Hub | PLANNING | 3 | 0/3 |
+| 3.5 | Homepage Implementation | Article vedette + grille d'articles récents + Empty State + CTA vers Hub | IN PROGRESS | 3 | 2/3 ✅ Phase 1-2 |
 
 ---
 
@@ -58,10 +58,10 @@ Construire l'identité visuelle et la navigation bilingue du blog. Cet epic éta
 
 ### Progress Summary
 
-- **Stories Started**: 4/5
+- **Stories Started**: 5/5
 - **Stories Completed**: 1/5
 - **Total Phases**: 19 (4 + 4 + 5 + 3 + 3)
-- **Phases Completed**: 9 (4 + 3 + 0 + 2 + 0)
+- **Phases Completed**: 11 (4 + 3 + 0 + 2 + 2)
 
 ### Timeline
 
@@ -118,6 +118,7 @@ Epic 2 (CMS Core)
 
 | Date | Update |
 |------|--------|
+| 2025-12-05 | Story 3.5 Phase 2 COMPLETED: 5/5 commits done (FeaturedArticleCard, ArticleGrid, EmptyState, Homepage, SEO Metadata) |
 | 2025-12-05 | Story 3.5 PHASE DOCS GENERATED: 3 phases, 14 commits, 22 documentation files |
 | 2025-12-05 | Story 3.5 CREATED: Homepage implementation with featured article + grid (3 phases) |
 | 2025-12-05 | Story 3.4 Phase 1 & 2 COMPLETED: Unit/Integration/E2E tests in CI (4+4 commits), Playwright caching working |
