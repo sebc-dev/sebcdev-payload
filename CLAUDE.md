@@ -116,14 +116,16 @@ Déclenchement manuel via : **Actions > Quality Gate > Run workflow** (sélectio
 
 **Build & Tests :**
 
-- **Next.js Build** : `next build --experimental-build-mode compile` (sans connexion D1)
-- **Vitest** : Tests unitaires et d'intégration
-- **Playwright + axe-core** : Tests E2E et accessibilité WCAG 2.1 AA (FR/EN)
-- **Stryker** : Mutation testing sur modules critiques (optionnel via input)
+- **Vitest (Unit Tests)** : Tests unitaires avec couverture (Layer 2)
+- **Vitest (Integration Tests)** : Tests d'intégration avec PAYLOAD_SECRET (Layer 2)
+- **Coverage Summary** : Rapport de couverture dans les logs CI (Layer 2)
+- **Next.js Build** : `next build --experimental-build-mode compile` (sans connexion D1) (Layer 3)
+- **Playwright E2E** : Tests E2E et accessibilité WCAG 2.1 AA (FR/EN) avec caching (Layer 3.5)
+- **Stryker** : Mutation testing sur modules critiques (optionnel via workflow_dispatch)
 
-**Performance & Déploiement :**
+**Architecture & Permissions :**
 
-- **Lighthouse CI** : Budgets performance (≥90), A11y (=100), SEO (=100)
+- **dependency-cruiser** : Validation des dépendances et patterns architecturaux (Layer 4)
 - **Permissions** : GITHUB_TOKEN en read-only par défaut (least privilege)
 
 > **Documentation complète :** [CI-CD Security Architecture](docs/specs/CI-CD-Security.md)
