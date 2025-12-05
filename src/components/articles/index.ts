@@ -7,6 +7,7 @@
  * - TagPill: Display and link to article tags
  * - ArticleCard: Complete article preview card with all metadata
  * - FeaturedArticleCard: Hero/featured article display with H1 title
+ * - ArticleGrid: Responsive grid container for displaying multiple articles
  * - RelativeDate: Localized relative time display
  */
 
@@ -16,3 +17,4 @@ export { TagPill } from './TagPill'
 export { RelativeDate } from '../RelativeDate'
 export { ArticleCard } from './ArticleCard'
 export { FeaturedArticleCard } from './FeaturedArticleCard'
+export { ArticleGrid } from './ArticleGrid'

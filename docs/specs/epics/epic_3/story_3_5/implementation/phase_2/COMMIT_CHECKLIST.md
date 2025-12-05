@@ -197,7 +197,7 @@ Related: Story 3.5 Phase 2"
 ## Commit 2: ArticleGrid
 
 ### Pre-Implementation
-- [ ] Verifier que Commit 1 est complete
+- [x] Verifier que Commit 1 est complete
 
 ### Implementation
 
@@ -291,14 +291,14 @@ pnpm build
 ```
 
 ### Checklist
-- [ ] Grille responsive (1/2/3 colonnes)
-- [ ] Gaps responsifs (16/20/24px)
-- [ ] Section title avec `aria-labelledby`
-- [ ] Return null si pas d'articles
-- [ ] Title prop optionnel avec fallback i18n
-- [ ] `pnpm exec tsc --noEmit` passe
-- [ ] `pnpm lint` passe
-- [ ] `pnpm build` passe
+- [x] Grille responsive (1/2/3 colonnes)
+- [x] Gaps responsifs (16/20/24px)
+- [x] Section title avec `aria-labelledby`
+- [x] Return null si pas d'articles
+- [x] Title prop optionnel avec fallback i18n
+- [x] `pnpm exec tsc --noEmit` passe
+- [x] `pnpm lint` passe
+- [x] `pnpm build` passe (TypeScript compilation successful)
 
 ### Commit
 ```bash
