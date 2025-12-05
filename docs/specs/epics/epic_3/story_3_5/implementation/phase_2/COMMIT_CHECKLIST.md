@@ -18,12 +18,13 @@ Avant de commencer cette phase:
 ## Commit 1: FeaturedArticleCard
 
 ### Pre-Implementation
-- [ ] Verifier que les composants Phase 1 sont accessibles
-- [ ] Verifier que `lucide-react` est installe pour les icones
+- [x] Verifier que les composants Phase 1 sont accessibles
+- [x] Verifier que `lucide-react` est installe pour les icones
 
 ### Implementation
 
 #### Creer `src/components/articles/FeaturedArticleCard.tsx`
+- [x] Fichier cree
 
 ```typescript
 import Image from 'next/image'
@@ -147,6 +148,8 @@ export async function FeaturedArticleCard({
 ```
 
 #### Mettre a jour `src/components/articles/index.ts`
+- [x] Fichier mis a jour avec export FeaturedArticleCard
+
 ```typescript
 export { CategoryBadge } from './CategoryBadge'
 export { ComplexityBadge } from './ComplexityBadge'
@@ -164,15 +167,15 @@ pnpm build
 ```
 
 ### Checklist
-- [ ] Image avec `priority` pour LCP
-- [ ] `<h1>` pour le titre (unique sur la page)
-- [ ] Hover effects sur carte et image
-- [ ] Tags limites a 5
-- [ ] Icone ArrowRight avec `aria-hidden`
-- [ ] Separateurs avec `aria-hidden`
-- [ ] `pnpm exec tsc --noEmit` passe
-- [ ] `pnpm lint` passe
-- [ ] `pnpm build` passe
+- [x] Image avec `priority` pour LCP
+- [x] `<h1>` pour le titre (unique sur la page)
+- [x] Hover effects sur carte et image
+- [x] Tags limites a 5
+- [x] Icone ArrowRight avec `aria-hidden`
+- [x] Separateurs avec `aria-hidden`
+- [x] `pnpm exec tsc --noEmit` passe
+- [x] `pnpm lint` passe
+- [x] `pnpm build` passe
 
 ### Commit
 ```bash
