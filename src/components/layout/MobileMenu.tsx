@@ -77,7 +77,11 @@ export function MobileMenu() {
           <Menu className="h-6 w-6" />
         </button>
       </SheetTrigger>
-      <SheetContent side="right" className="w-full max-w-full overflow-hidden border-l-0 px-6">
+      <SheetContent
+        side="right"
+        className="w-full max-w-full overflow-hidden border-l-0 px-6"
+        closeLabel={t('close')}
+      >
         <SheetHeader className="text-left">
           <SheetTitle className="text-xl font-bold">sebc.dev</SheetTitle>
         </SheetHeader>
