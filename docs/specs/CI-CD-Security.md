@@ -34,14 +34,21 @@ Le pipeline CI/CD implémente une stratégie de **défense en profondeur** en 4 
 │ Layer 1: Supply Chain (Socket.dev + SHA Pinning)           │
 │          → Bloque les paquets malveillants AVANT l'install  │
 ├─────────────────────────────────────────────────────────────┤
-│ Layer 2: Code Quality (Knip + ESLint + Type Sync)          │
+│ Layer 2: Code Quality & Tests (Knip, ESLint, Tests)        │
 │          → Détecte hallucinations, code mort, drift types   │
+│          → Valide correction fonctionnelle (unit, int)      │
 ├─────────────────────────────────────────────────────────────┤
 │ Layer 3: Build Validation (Next.js no-DB mode)             │
 │          → Garantit buildabilité sans dépendances runtime   │
 ├─────────────────────────────────────────────────────────────┤
-│ Layer 4: Identity (OIDC - Phase 2)                         │
-│          → Élimine secrets statiques, limite blast radius   │
+│ Layer 3.5: E2E Tests (Playwright)                          │
+│          → Valide workflows utilisateur complets             │
+├─────────────────────────────────────────────────────────────┤
+│ Layer 4: Architecture (dependency-cruiser)                  │
+│          → Valide patterns architecturaux                    │
+├─────────────────────────────────────────────────────────────┤
+│ Layer 5: Mutation Testing (Stryker - optionnel)            │
+│          → Mutation testing sur modules critiques            │
 └─────────────────────────────────────────────────────────────┘
 ```
 
@@ -387,7 +394,146 @@ Knip effectue un travail intensif d'analyse AST. Le cache doit être sauvegardé
 
 **Référence** : [Knip CI Documentation](../tech/github/knip-CI.md)
 
-### 3.2 Type Synchronization (Payload ↔ TypeScript)
+### 3.2 Testing (Unit, Integration & E2E)
+
+**Rationale** : Les tests valident automatiquement la correction fonctionnelle du code généré par l'IA. Cette couche détecte les regressions et erreurs logiques que l'analyse statique ne peut pas identifier.
+
+#### 3.2.1 Unit Tests (Vitest)
+
+**Problématique** : Tests unitaires isolent la logique métier de toutes dépendances externes (database, network, filesystem). Ils sont rapides à exécuter en CI et fournissent un feedback immédiat.
+
+**Configuration CI** :
+
+```yaml
+# .github/workflows/quality-gate.yml
+- name: Unit Tests
+  run: pnpm test:unit --coverage
+
+- name: Coverage Summary
+  if: always()
+  run: |
+    if [ -f coverage/coverage-summary.json ]; then
+      echo "## Unit Test Coverage" >> $GITHUB_STEP_SUMMARY
+      echo "" >> $GITHUB_STEP_SUMMARY
+      cat coverage/coverage-summary.json | jq -r '.total | "| Metric | Coverage |\n|--------|----------|\n| Lines | \(.lines.pct)% |\n| Statements | \(.statements.pct)% |\n| Functions | \(.functions.pct)% |\n| Branches | \(.branches.pct)% |"' >> $GITHUB_STEP_SUMMARY
+    fi
+```
+
+**Points critiques** :
+
+- `--coverage` génère `coverage/coverage-summary.json` pour les rapports automatisés
+- `if: always()` affiche le résumé même si les tests échouent
+- `jq` parse le JSON pour un affichage formaté dans le Job Summary GitHub
+
+**Cible de couverture** : Minimum 70% pour les modules critiques, 50% pour les utilitaires.
+
+#### 3.2.2 Integration Tests (Vitest + Payload)
+
+**Problématique** : Les tests d'intégration valident l'interaction avec l'API Payload. Contrairement aux tests unitaires, ils ont besoin de la configuration Payload initialisée.
+
+**Configuration CI** :
+
+```yaml
+# .github/workflows/quality-gate.yml
+- name: Integration Tests
+  env:
+    PAYLOAD_SECRET: ${{ secrets.PAYLOAD_SECRET || env.PAYLOAD_SECRET_CI }}
+  run: pnpm test:int
+```
+
+**Points critiques** :
+
+- `PAYLOAD_SECRET` est obligatoire pour `getPayload()` en tests d'intégration
+- Fallback vers `env.PAYLOAD_SECRET_CI` si le secret n'est pas configuré en GitHub
+- Les tests d'intégration s'exécutent après les tests unitaires car ils dépendent de PAYLOAD_SECRET
+
+**Cas d'utilisation** : Tests de collections Payload, validations de schémas, interactions Drizzle.
+
+#### 3.2.3 E2E Tests (Playwright)
+
+**Problématique** : Les tests E2E valident les workflows utilisateur complets (navigation, formulaires, interactions) dans un navigateur réel. Ils détectent les régressions visuelles et de comportement.
+
+**Configuration CI** :
+
+```yaml
+# .github/workflows/quality-gate.yml
+# Layer 3.5: E2E Testing (after successful build)
+
+- name: Get Playwright Version
+  id: playwright-version
+  run: echo "version=$(pnpm exec playwright --version | head -1)" >> $GITHUB_OUTPUT
+
+- name: Cache Playwright Browsers
+  uses: actions/cache@v4
+  id: playwright-cache
+  with:
+    path: ~/.cache/ms-playwright
+    key: playwright-${{ runner.os }}-${{ steps.playwright-version.outputs.version }}
+
+- name: Install Playwright Browsers
+  if: steps.playwright-cache.outputs.cache-hit != 'true'
+  run: pnpm exec playwright install --with-deps chromium
+
+- name: E2E Tests
+  env:
+    PAYLOAD_SECRET: ${{ secrets.PAYLOAD_SECRET || env.PAYLOAD_SECRET_CI }}
+  run: pnpm test:e2e
+  timeout-minutes: 10
+
+- name: Upload E2E Test Artifacts
+  if: failure()
+  uses: actions/upload-artifact@v4
+  with:
+    name: playwright-report
+    path: |
+      test-results/
+      playwright-report/
+    retention-days: 7
+```
+
+**Points critiques** :
+
+- Les browsers Playwright sont cachés pour éviter le re-téléchargement (économie de 2-3 minutes par run)
+- E2E tests s'exécutent **après** le build Next.js (dépendance)
+- Timeout de 10 minutes pour éviter les tests flaky prolongeant indéfiniment
+- Artifacts (traces, screenshots) uploadés uniquement en cas d'échec pour réduire le coût de stockage
+- `if: failure()` évite d'uploader les artifacts inutiles quand les tests passent
+
+**Bénéfices du Playwright** :
+
+- Support multi-navigateur (Chromium, Firefox, WebKit) - actuellement Chromium activé
+- Traces automatiques en cas d'échec (timeline visuelle du défaut)
+- Support de l'accessibilité WCAG 2.1 AA via intégration axe-core
+
+**Tests actuellement implémentés** :
+
+- `admin-media.e2e.spec.ts` : Upload media via R2
+- `frontend.e2e.spec.ts` : Navigation frontend, articles, recherche
+- `design-system.e2e.spec.ts` : Validation des composants (fonts, colors, a11y)
+- `navigation.e2e.spec.ts` : Navigation menu, breadcrumbs, i18n
+
+#### 3.2.4 Stratégie de Réessai (Retry) pour Tests Flaky
+
+Les tests E2E peuvent être flaky dûs à des timeouts réseau ou des rendus incomplets. La configuration utilise `test.retry()` dans `playwright.config.ts` :
+
+```typescript
+// playwright.config.ts
+export default defineConfig({
+  use: {
+    trace: 'on-first-retry', // Capture une trace uniquement si le test rate son premier essai
+  },
+  webServer: {
+    command: 'pnpm dev',
+    url: 'http://localhost:3000',
+    reuseExistingServer: !process.env.CI,
+    timeout: 60_000, // 1 minute pour démarrer le serveur
+  },
+})
+```
+
+**Avantage** : Réduit les faux négatifs sans multiplier le temps d'exécution (seules les retries capturent les traces).
+
+### 3.3 Type Synchronization (Payload ↔ TypeScript)
 
 **Problématique** : Payload CMS génère des types TypeScript (`src/payload-types.ts`) basés sur les collections configurées. Un désalignement entre la configuration et les types peut causer des runtime errors en production.
 

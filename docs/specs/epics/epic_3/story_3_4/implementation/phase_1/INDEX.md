@@ -2,8 +2,9 @@
 
 **Story**: 3.4 - CI Tests Integration & E2E Test Maintenance
 **Phase**: 1 of 3
-**Status**: NOT STARTED
-**Estimated Commits**: 3
+**Status**: IN PROGRESS
+**Estimated Commits**: 5
+**Actual Commits**: 5 (4 CI changes + 1 documentation)
 
 ---
 
@@ -18,10 +19,12 @@ Ajouter l'exécution des tests unitaires et d'intégration au workflow CI `quali
 3. Rapport de couverture dans les logs CI
 
 ### Success Criteria
-- [ ] `pnpm test:unit` exécuté dans CI
-- [ ] `pnpm test:int` exécuté dans CI avec PAYLOAD_SECRET
-- [ ] Workflow échoue si les tests échouent
-- [ ] Coverage summary visible dans les logs
+- [x] `pnpm test:unit` exécuté dans CI
+- [x] `pnpm test:int` exécuté dans CI avec PAYLOAD_SECRET
+- [x] Workflow échoue si les tests échouent
+- [x] Coverage summary visible dans les logs
+- [x] `pnpm test:e2e` exécuté dans CI après build
+- [x] Documentation CI/CD mise à jour
 
 ---
 
