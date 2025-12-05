@@ -31,7 +31,7 @@ Construire l'identité visuelle et la navigation bilingue du blog. Cet epic éta
 | 3.1 | Routing i18n & Middleware | Implémenter le routing bilingue avec `next-intl`, URLs localisées (`/fr`, `/en`) et persistance de la préférence utilisateur | COMPLETED | 4 | 4/4 ✅ |
 | 3.2 | Intégration Design System (Dark Mode) | Installer Tailwind 4 et shadcn/ui, appliquer la charte graphique "Neutral Gray & Teal" | IN PROGRESS | 4 | 3/4 (Phase 4 📋) |
 | 3.3 | Layout Global & Navigation | Créer Header et Footer cohérents avec sélecteur de langue fonctionnel | PLANNING | 5 | 0/5 |
-| 3.4 | CI Tests Integration & E2E Maintenance | Intégrer tests unitaires, intégration et E2E au workflow CI, nettoyer tests obsolètes | PLANNING | 3 | 0/3 |
+| 3.4 | CI Tests Integration & E2E Maintenance | Intégrer tests unitaires, intégration et E2E au workflow CI, nettoyer tests obsolètes | IN PROGRESS | 3 | 2/3 |
 
 ---
 
@@ -59,7 +59,7 @@ Construire l'identité visuelle et la navigation bilingue du blog. Cet epic éta
 - **Stories Started**: 4/4
 - **Stories Completed**: 1/4
 - **Total Phases**: 16 (4 + 4 + 5 + 3)
-- **Phases Completed**: 7 (4 + 3 + 0 + 0)
+- **Phases Completed**: 9 (4 + 3 + 0 + 2)
 
 ### Timeline
 
@@ -108,6 +108,7 @@ Story 3.2 (Design System)
 
 | Date | Update |
 |------|--------|
+| 2025-12-05 | Story 3.4 Phase 1 & 2 COMPLETED: Unit/Integration/E2E tests in CI (4+4 commits), Playwright caching working
 | 2025-12-05 | Story 3.4 PLANNING: 3 phases planned (~11 commits), CI tests integration |
 | 2025-12-03 | Story 3.3 PLANNING: 5 phases planned (~16-21 commits), layout & navigation |
 | 2025-12-02 | Story 3.2 Phase 3 COMPLETED: Design tokens & visual migration (5 commits) |
