@@ -106,8 +106,8 @@ importers:
         specifier: 4.5.2
         version: 4.5.2(vite@7.2.4(@types/node@22.19.1)(jiti@2.6.1)(lightningcss@1.30.2)(sass@1.77.4)(terser@5.16.9)(tsx@4.20.6)(yaml@2.8.1))
       '@vitest/coverage-v8':
-        specifier: ^3.2.4
-        version: 3.2.4(vitest@3.2.3(@types/debug@4.1.12)(@types/node@22.19.1)(jiti@2.6.1)(jsdom@26.1.0)(lightningcss@1.30.2)(sass@1.77.4)(terser@5.16.9)(tsx@4.20.6)(yaml@2.8.1))
+        specifier: 3.2.3
+        version: 3.2.3(vitest@3.2.3(@types/debug@4.1.12)(@types/node@22.19.1)(jiti@2.6.1)(jsdom@26.1.0)(lightningcss@1.30.2)(sass@1.77.4)(terser@5.16.9)(tsx@4.20.6)(yaml@2.8.1))
       dependency-cruiser:
         specifier: ^17.3.1
         version: 17.3.1
@@ -3464,11 +3464,11 @@ packages:
     peerDependencies:
       vite: ^4.2.0 || ^5.0.0 || ^6.0.0 || ^7.0.0-beta.0
 
-  '@vitest/coverage-v8@3.2.4':
-    resolution: {integrity: sha512-EyF9SXU6kS5Ku/U82E259WSnvg6c8KTjppUncuNdm5QHpe17mwREHnjDzozC8x9MZ0xfBUFSaLkRv4TMA75ALQ==}
+  '@vitest/coverage-v8@3.2.3':
+    resolution: {integrity: sha512-D1QKzngg8PcDoCE8FHSZhREDuEy+zcKmMiMafYse41RZpBE5EDJyKOTdqK3RQfsV2S2nyKor5KCs8PyPRFqKPg==}
     peerDependencies:
-      '@vitest/browser': 3.2.4
-      vitest: 3.2.4
+      '@vitest/browser': 3.2.3
+      vitest: 3.2.3
     peerDependenciesMeta:
       '@vitest/browser':
         optional: true
@@ -11203,7 +11203,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@vitest/coverage-v8@3.2.4(vitest@3.2.3(@types/debug@4.1.12)(@types/node@22.19.1)(jiti@2.6.1)(jsdom@26.1.0)(lightningcss@1.30.2)(sass@1.77.4)(terser@5.16.9)(tsx@4.20.6)(yaml@2.8.1))':
+  '@vitest/coverage-v8@3.2.3(vitest@3.2.3(@types/debug@4.1.12)(@types/node@22.19.1)(jiti@2.6.1)(jsdom@26.1.0)(lightningcss@1.30.2)(sass@1.77.4)(terser@5.16.9)(tsx@4.20.6)(yaml@2.8.1))':
     dependencies:
       '@ampproject/remapping': 2.3.0
       '@bcoe/v8-coverage': 1.0.2
