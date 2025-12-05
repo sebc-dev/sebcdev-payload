@@ -31,19 +31,7 @@
     "back": "Back",
     "close": "Close"
   },
-  "navigation": {
-    "home": "Home",
-    "blog": "Blog",
-    "about": "About",
-    "contact": "Contact",
-    "search": "Search",
-    "articles": "Articles",
-    "categories": "Categories",
-    "themes": "Themes",
-    "levels": "Levels",
-    "allCategories": "All categories",
-    "allThemes": "All themes",
-    "allLevels": "All levels",
+  "taxonomy": {
     "category": {
       "news": "News",
       "deep-dive": "Deep Dive",
@@ -62,6 +50,20 @@
       "advanced": "Advanced"
     }
   },
+  "navigation": {
+    "home": "Home",
+    "blog": "Blog",
+    "about": "About",
+    "contact": "Contact",
+    "search": "Search",
+    "articles": "Articles",
+    "categories": "Categories",
+    "themes": "Themes",
+    "levels": "Levels",
+    "allCategories": "All categories",
+    "allThemes": "All themes",
+    "allLevels": "All levels"
+  },
   "footer": {
     "tagline": "Technical blog about AI, UX, and software engineering",
     "copyright": "© {year} sebc.dev. All rights reserved.",
@@ -70,23 +72,6 @@
       "themes": "Themes",
       "levels": "Levels",
       "legal": "Legal"
-    },
-    "category": {
-      "news": "News",
-      "deep-dive": "Deep Dive",
-      "tutorial": "Tutorial",
-      "case-study": "Case Study",
-      "feedback": "Feedback"
-    },
-    "theme": {
-      "ai": "Artificial Intelligence",
-      "ux": "UX Design",
-      "engineering": "Software Engineering"
-    },
-    "level": {
-      "beginner": "Beginner",
-      "intermediate": "Intermediate",
-      "advanced": "Advanced"
     },
     "legal": {
       "privacy": "Privacy Policy",

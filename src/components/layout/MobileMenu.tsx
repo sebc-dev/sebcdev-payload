@@ -39,6 +39,7 @@ export function MobileMenu() {
   const [activeSubMenu, setActiveSubMenu] = useState<SubMenu>(null)
   const t = useTranslations('mobileMenu')
   const navT = useTranslations('navigation')
+  const taxonomyT = useTranslations('taxonomy')
   const langT = useTranslations('language')
   const a11yT = useTranslations('accessibility')
 
@@ -51,17 +52,17 @@ export function MobileMenu() {
   const subMenuItems = {
     themes: themes.map((theme) => ({
       key: theme,
-      label: navT(`theme.${theme}`),
+      label: taxonomyT(`theme.${theme}`),
       href: `/articles?tags=${theme}`,
     })),
     categories: categories.map((category) => ({
       key: category,
-      label: navT(`category.${category}`),
+      label: taxonomyT(`category.${category}`),
       href: `/articles?category=${category}`,
     })),
     levels: levels.map((level) => ({
       key: level,
-      label: navT(`level.${level}`),
+      label: taxonomyT(`level.${level}`),
       href: `/articles?complexity=${level}`,
     })),
   }
