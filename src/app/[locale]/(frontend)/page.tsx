@@ -1,3 +1,4 @@
+import type { Metadata } from 'next'
 import Link from 'next/link'
 import { getPayload } from 'payload'
 import { getTranslations, setRequestLocale } from 'next-intl/server'
@@ -9,6 +10,52 @@ import type { Article as PayloadArticle } from '@/payload-types'
 
 interface HomePageProps {
   params: Promise<{ locale: string }>
+}
+
+/**
+ * SEO metadata for the homepage
+ * Generates localized titles, descriptions, and hreflang alternates
+ */
+export async function generateMetadata({ params }: HomePageProps): Promise<Metadata> {
+  const { locale } = await params
+
+  const titles: Record<string, string> = {
+    fr: 'Accueil | sebc.dev',
+    en: 'Home | sebc.dev',
+  }
+
+  const descriptions: Record<string, string> = {
+    fr: "Blog technique sur l'IA, l'UX et l'ingenierie logicielle",
+    en: 'Technical blog about AI, UX and software engineering',
+  }
+
+  const title = titles[locale] || titles.fr
+  const description = descriptions[locale] || descriptions.fr
+
+  return {
+    title,
+    description,
+    alternates: {
+      canonical: `https://sebc.dev/${locale}`,
+      languages: {
+        fr: '/fr',
+        en: '/en',
+      },
+    },
+    openGraph: {
+      title,
+      description,
+      url: `https://sebc.dev/${locale}`,
+      siteName: 'sebc.dev',
+      locale: locale === 'en' ? 'en_US' : 'fr_FR',
+      type: 'website',
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title,
+      description,
+    },
+  }
 }
 
 /**
