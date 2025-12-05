@@ -122,8 +122,8 @@ test.describe('Navigation', () => {
       const sheet = page.getByRole('dialog')
       await expect(sheet).toBeVisible()
 
-      // Close button (shadcn Sheet has "Close" as sr-only text)
-      await sheet.getByRole('button', { name: 'Close' }).click()
+      // Close button uses translated label from mobileMenu.close
+      await sheet.getByRole('button', { name: frMessages.mobileMenu.close }).click()
       await expect(sheet).not.toBeVisible()
     })
 
@@ -159,27 +159,58 @@ test.describe('Navigation', () => {
   })
 
   test.describe('Language Switcher', () => {
-    test('language switcher is visible', async ({ page }) => {
+    test.beforeEach(async ({ page }) => {
+      // Set desktop viewport for language switcher tests (hidden on mobile)
+      await page.setViewportSize({ width: 1280, height: 720 })
+    })
+
+    test('language switcher dropdown is visible', async ({ page }) => {
       await page.goto('/fr')
 
-      // Both language options should be visible
-      await expect(page.locator('header').getByRole('link', { name: 'Français' })).toBeVisible()
-      await expect(page.locator('header').getByRole('link', { name: 'English' })).toBeVisible()
+      // Language switcher trigger button should be visible
+      const langSwitcher = page
+        .locator('header')
+        .getByRole('button', { name: frMessages.language.switch })
+      await expect(langSwitcher).toBeVisible()
+    })
+
+    test('dropdown shows language options when opened', async ({ page }) => {
+      await page.goto('/fr')
+
+      // Open the language dropdown
+      const langSwitcher = page
+        .locator('header')
+        .getByRole('button', { name: frMessages.language.switch })
+      await langSwitcher.click()
+
+      // Both language options should be visible in the dropdown menu
+      await expect(page.getByRole('menuitem', { name: 'Français' })).toBeVisible()
+      await expect(page.getByRole('menuitem', { name: 'English' })).toBeVisible()
     })
 
     test('current language is highlighted', async ({ page }) => {
       await page.goto('/fr')
 
-      const frLink = page.locator('header').getByRole('link', { name: 'Français' })
+      // Open the language dropdown
+      const langSwitcher = page
+        .locator('header')
+        .getByRole('button', { name: frMessages.language.switch })
+      await langSwitcher.click()
 
       // French should have aria-current="true"
-      await expect(frLink).toHaveAttribute('aria-current', 'true')
+      const frItem = page.getByRole('menuitem', { name: 'Français' })
+      await expect(frItem).toHaveAttribute('aria-current', 'true')
     })
 
     test('switching to English updates URL', async ({ page }) => {
       await page.goto('/fr')
 
-      await page.locator('header').getByRole('link', { name: 'English' }).click()
+      // Open the language dropdown and click English
+      const langSwitcher = page
+        .locator('header')
+        .getByRole('button', { name: frMessages.language.switch })
+      await langSwitcher.click()
+      await page.getByRole('menuitem', { name: 'English' }).click()
 
       await expect(page).toHaveURL('/en')
       await expect(page.locator('html')).toHaveAttribute('lang', 'en')
@@ -188,22 +219,15 @@ test.describe('Navigation', () => {
     test('switching to French updates URL', async ({ page }) => {
       await page.goto('/en')
 
-      await page.locator('header').getByRole('link', { name: 'Français' }).click()
+      // Open the language dropdown and click French
+      const langSwitcher = page
+        .locator('header')
+        .getByRole('button', { name: enMessages.language.switch })
+      await langSwitcher.click()
+      await page.getByRole('menuitem', { name: 'Français' }).click()
 
       await expect(page).toHaveURL('/fr')
       await expect(page.locator('html')).toHaveAttribute('lang', 'fr')
-    })
-
-    test('language links have correct href', async ({ page }) => {
-      await page.goto('/fr')
-
-      // Verify English link goes to /en
-      const enLink = page.locator('header').getByRole('link', { name: 'English' })
-      await expect(enLink).toHaveAttribute('href', '/en')
-
-      // Verify French link goes to /fr
-      const frLink = page.locator('header').getByRole('link', { name: 'Français' })
-      await expect(frLink).toHaveAttribute('href', '/fr')
     })
   })
 
