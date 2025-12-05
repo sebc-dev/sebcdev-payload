@@ -1,12 +1,13 @@
+import { XIcon } from '@/components/icons/social'
 import { Link } from '@/i18n/navigation'
 import { categories, levels, themes } from '@/lib/constants'
-import { Facebook, Linkedin, Twitter } from 'lucide-react'
+import { Facebook, Linkedin } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 
 const socialLinks = [
   { name: 'Facebook', href: 'https://facebook.com/sebc.dev', icon: Facebook },
   { name: 'LinkedIn', href: 'https://linkedin.com/in/sebcdev', icon: Linkedin },
-  { name: 'X', href: 'https://x.com/sebcdev', icon: Twitter },
+  { name: 'X', href: 'https://x.com/sebcdev', icon: XIcon },
 ] as const
 
 const legalLinks = ['privacy', 'terms-of-use', 'terms', 'sitemap'] as const
