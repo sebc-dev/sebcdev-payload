@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, type CSSProperties } from 'react'
 import { ChevronLeft, ChevronRight, Menu } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 import { Link } from '@/i18n/navigation'
@@ -187,9 +187,7 @@ export function MobileMenu() {
                       href={item.href}
                       className="animate-submenu-item text-xl font-medium text-foreground transition-colors hover:text-primary"
                       data-animate={activeSubMenu === menu ? 'true' : 'false'}
-                      style={
-                        { '--submenu-delay': `${0.05 + index * 0.05}s` } as React.CSSProperties
-                      }
+                      style={{ '--submenu-delay': `${0.05 + index * 0.05}s` } as CSSProperties}
                     >
                       {item.label}
                     </Link>
