@@ -101,6 +101,9 @@ jobs:
       - name: Knip - Dead Code Detection
         run: pnpm exec knip --production
 
+      - name: Unit Tests
+        run: pnpm test:unit
+
       - name: Generate Payload Types
         env:
           PAYLOAD_SECRET: ${{ secrets.PAYLOAD_SECRET || env.PAYLOAD_SECRET_CI }}
