@@ -109,6 +109,19 @@ C'est entendu. Voici la section complète des **Exigences (Requirements)**, cons
 - **CA1** : Une barre de progression de lecture est affichée en haut de la fenêtre (sticky) lors du défilement.
 - **CA2** : Les articles sont présentés sous forme de cartes homogènes (Image, Titre, Extrait, Métadonnées) dans toutes les listes du site.
 
+#### EF9 — Page d'Accueil (Homepage)
+
+**Description** : La page d'accueil présente le contenu le plus récent du blog avec une mise en avant de l'article vedette et un accès rapide aux articles suivants.
+
+**Critères d'acceptation** :
+
+- **CA1** : L'article le plus récent est affiché en vedette sous forme de carte large pleine largeur en tête de page (fait office de Hero).
+- **CA2** : Une grille de 6 articles suivants est affichée sous l'article vedette (layout 3 colonnes desktop, 2 colonnes tablette, 1 colonne mobile).
+- **CA3** : Chaque carte d'article affiche : Image de couverture, Titre, Extrait, Badge catégorie, Temps de lecture, Date de publication relative, Badge niveau de complexité, Tags.
+- **CA4** : Un bouton CTA "Voir tous les articles" est affiché après la grille, redirigeant vers le Hub de Recherche (`/[lang]/articles`).
+- **CA5** : État vide (aucun article publié) : afficher un message d'accueil avec CTA vers l'interface d'administration pour créer le premier article.
+- **CA6** : Les données sont récupérées via l'API Locale Payload (`payload.find`) avec tri par date de publication décroissante et limite de 7 articles.
+
 ### Exigences Non-Fonctionnelles
 
 #### ENF1 — Architecture Edge-Ready
@@ -248,7 +261,7 @@ Voici la proposition :
 
 ### Écrans Clés
 
-1. **Homepage :** Hero section minimaliste, grille des derniers articles, accès rapide aux catégories.
+1. **Homepage :** Article vedette pleine largeur en tête (fait office de Hero), suivi d'une grille de 6 articles récents, bouton CTA vers le Hub de Recherche.
 2. **Article View :** Colonne centrale de lecture (max-width optimisé ~65ch), TOC latérale (desktop) ou flottante (mobile), blocs de code syntax-highlighted.
 3. **Hub de Recherche :** Sidebar de filtres (facettes) à gauche, grille de résultats réactive à droite.
 
