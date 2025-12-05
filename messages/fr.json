@@ -68,7 +68,8 @@
     "sections": {
       "categories": "Catégories",
       "themes": "Thèmes",
-      "levels": "Niveaux"
+      "levels": "Niveaux",
+      "legal": "Mentions légales"
     },
     "category": {
       "news": "Actualités",
@@ -116,7 +117,6 @@
     "skipToContent": "Aller au contenu principal",
     "footerThemesNav": "Navigation par thèmes",
     "footerCategoriesNav": "Navigation par catégories",
-    "footerLevelsNav": "Navigation par niveaux",
-    "footerLegalNav": "Liens légaux"
+    "footerLevelsNav": "Navigation par niveaux"
   }
 }
