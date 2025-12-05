@@ -44,10 +44,8 @@ const config: KnipConfig = {
     // String ref: Field: '@/fields/code/DynamicCodeField#DynamicCodeField'
     'src/fields/**/*.tsx!',
 
-    // Next.js App Router pages and layouts (production)
-    // These are entry points for the frontend that import UI components
-    'src/app/**/page.tsx!',
-    'src/app/**/layout.tsx!',
+    // Note: App Router entry points (page.tsx, layout.tsx, route.ts, not-found.tsx)
+    // are declared in the next.entry plugin configuration below
   ],
 
   // Project files to analyze (includes CSS for TailwindCSS v4 compiler)
