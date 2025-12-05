@@ -23,7 +23,10 @@ export function SkipLink() {
     const main = document.getElementById('main-content')
     if (main) {
       main.focus()
-      main.scrollIntoView({ behavior: 'smooth' })
+      const prefersReducedMotion =
+        typeof window !== 'undefined' &&
+        window.matchMedia?.('(prefers-reduced-motion: reduce)').matches
+      main.scrollIntoView({ behavior: prefersReducedMotion ? 'auto' : 'smooth' })
     }
   }
 
