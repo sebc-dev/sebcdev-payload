@@ -91,13 +91,12 @@ Le projet utilise un pipeline CI/CD "AI-Shield" avec validation multi-couches po
 
 **Layers exécutés** :
 
-1. **Supply Chain Security** : Socket.dev (paquets malveillants)
-2. **Code Quality** : ESLint, Prettier, Knip, Type Sync
-3. **Unit & Integration Tests** : Vitest
-4. **Build Validation** : Next.js Build (no-DB mode)
-5. **E2E Tests** : Playwright (Chromium)
-6. **Architecture Validation** : dependency-cruiser
-7. **Mutation Testing** : Stryker (optional, workflow_dispatch)
+1. **Supply Chain Security** (Layer 1) : Socket.dev (paquets malveillants)
+2. **Code Quality** (Layer 2) : ESLint, Prettier, Knip, Unit/Integration Tests, Coverage, Type Sync
+3. **Build Validation** (Layer 3) : Next.js Build (no-DB mode)
+4. **E2E Tests** (Layer 3.5) : Playwright (Chromium)
+5. **Architecture Validation** (Layer 4) : dependency-cruiser
+6. **Mutation Testing** (Layer 5) : Stryker (optional, workflow_dispatch)
 
 ```bash
 # Checks locaux avant push (recommandé)
