@@ -10,3 +10,5 @@
  */
 
 export { CategoryBadge } from './CategoryBadge'
+export { ComplexityBadge } from './ComplexityBadge'
+export { TagPill } from './TagPill'
