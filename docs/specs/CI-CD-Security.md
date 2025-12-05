@@ -557,7 +557,174 @@ export default defineConfig({
 
 **Référence** : [Payload CI Documentation - Section 2](../tech/github/github-actions-nextjs-payload.md#2-synchronisation-des-types-payload)
 
-### 3.3 ESLint + Prettier + Tailwind Ordering
+### 3.3 Layer 2b: Test Execution
+
+#### 3.3.1 Unit Tests (Vitest)
+
+**Tool**: Vitest
+**Command**: `pnpm test:unit`
+**Coverage**: Generated via @vitest/coverage-v8
+**Purpose**: Validate isolated functions and utilities without external dependencies
+
+**Configuration CI**:
+
+The unit tests are executed as part of Layer 2 code quality validation:
+
+```yaml
+# .github/workflows/quality-gate.yml
+- name: Unit Tests
+  run: pnpm test:unit --coverage
+
+- name: Coverage Summary
+  if: always()
+  run: |
+    if [ -f coverage/coverage-summary.json ]; then
+      echo "## Unit Test Coverage" >> $GITHUB_STEP_SUMMARY
+      echo "" >> $GITHUB_STEP_SUMMARY
+      cat coverage/coverage-summary.json | jq -r '.total | "| Metric | Coverage |\n|--------|----------|\n| Lines | \(.lines.pct)% |\n| Statements | \(.statements.pct)% |\n| Functions | \(.functions.pct)% |\n| Branches | \(.branches.pct)% |"' >> $GITHUB_STEP_SUMMARY
+    fi
+```
+
+**Test Location**: `tests/unit/**/*.spec.ts`
+**Target Coverage**: Minimum 70% for critical modules, 50% for utilities
+
+#### 3.3.2 Integration Tests (Vitest + Payload)
+
+**Tool**: Vitest
+**Command**: `pnpm test:int`
+**Purpose**: Test Payload API interactions and collection schemas
+**Requirements**: PAYLOAD_SECRET environment variable
+
+**Configuration CI**:
+
+```yaml
+# .github/workflows/quality-gate.yml
+- name: Integration Tests
+  env:
+    PAYLOAD_SECRET: ${{ secrets.PAYLOAD_SECRET || env.PAYLOAD_SECRET_CI }}
+  run: pnpm test:int
+```
+
+**Key Points**:
+
+- `PAYLOAD_SECRET` is mandatory for `getPayload()` in integration tests
+- Falls back to `env.PAYLOAD_SECRET_CI` if GitHub Secret is not configured
+- Executes after unit tests as it depends on PAYLOAD_SECRET initialization
+- Uses jsdom environment for DOM operations when needed
+
+**Test Location**: `tests/int/**/*.int.spec.ts`
+**Use Cases**: Collection validation, schema interactions, Drizzle ORM operations
+
+### 3.4 Layer 3b: E2E Tests
+
+#### 3.4.1 End-to-End Tests (Playwright)
+
+**Tool**: Playwright
+**Command**: `pnpm test:e2e`
+**Browser**: Chromium only (CI optimized)
+**Purpose**: Validate complete user journeys and UI behavior in a real browser
+
+**Configuration CI**:
+
+```yaml
+# .github/workflows/quality-gate.yml
+# Layer 3.5: E2E Testing (after successful build)
+
+- name: Get Playwright Version
+  id: playwright-version
+  run: echo "version=$(pnpm exec playwright --version | head -1)" >> $GITHUB_OUTPUT
+
+- name: Cache Playwright Browsers
+  uses: actions/cache@v4
+  id: playwright-cache
+  with:
+    path: ~/.cache/ms-playwright
+    key: playwright-${{ runner.os }}-${{ steps.playwright-version.outputs.version }}
+
+- name: Install Playwright Browsers
+  if: steps.playwright-cache.outputs.cache-hit != 'true'
+  run: pnpm exec playwright install --with-deps chromium
+
+- name: E2E Tests
+  env:
+    PAYLOAD_SECRET: ${{ secrets.PAYLOAD_SECRET || env.PAYLOAD_SECRET_CI }}
+  run: pnpm test:e2e
+  timeout-minutes: 10
+
+- name: Upload E2E Test Artifacts
+  if: failure()
+  uses: actions/upload-artifact@v4
+  with:
+    name: playwright-report
+    path: |
+      test-results/
+      playwright-report/
+    retention-days: 7
+```
+
+**Key Points**:
+
+- Playwright browsers are cached to avoid re-download (saves 2-3 minutes per run)
+- E2E tests execute **after** Next.js build (dependency)
+- 10-minute timeout prevents flaky tests from hanging indefinitely
+- Artifacts (traces, screenshots) uploaded only on failure to reduce storage cost
+- `if: failure()` prevents uploading unnecessary artifacts when tests pass
+
+**Test Location**: `tests/e2e/**/*.e2e.spec.ts`
+
+#### 3.4.2 E2E Test Categories
+
+The E2E test suite covers multiple user journeys:
+
+| File | Purpose | Coverage |
+|------|---------|----------|
+| `frontend.e2e.spec.ts` | Homepage and locale switching | Navigation, i18n switching |
+| `navigation.e2e.spec.ts` | Header, footer, mobile menu | Menu interactions, accessibility |
+| `design-system.e2e.spec.ts` | Visual design validation | Fonts, colors, component styles |
+| `admin-media.e2e.spec.ts` | Admin panel CRUD operations | Media upload, R2 integration |
+
+#### 3.4.3 CI Configuration
+
+**Browser Caching**:
+- Caches based on Playwright version for fast browser installation
+- Only downloads if cache miss occurs
+- Shared across all E2E test runs in the workflow
+
+**Artifact Management**:
+- Playwright generates detailed traces (timeline, network logs, DOM state)
+- Screenshots captured on assertion failures
+- Traces accessible in GitHub Artifacts for debugging
+
+**Timeout Strategy**:
+- 10-minute timeout prevents indefinite hangs from network issues
+- Test retries configured in `playwright.config.ts` with `test.retry()`
+- Traces captured only on first retry to reduce noise
+
+#### 3.4.4 Test Resilience
+
+E2E tests can be flaky due to network timeouts or incomplete renders. The configuration uses retry logic:
+
+```typescript
+// playwright.config.ts
+export default defineConfig({
+  use: {
+    trace: 'on-first-retry', // Capture trace only if first attempt fails
+  },
+  webServer: {
+    command: 'pnpm dev',
+    url: 'http://localhost:3000',
+    reuseExistingServer: !process.env.CI,
+    timeout: 60_000, // 1 minute to start server
+  },
+})
+```
+
+**Benefits**:
+- Reduces false negatives without multiplying execution time
+- Only retries capture traces for efficient debugging
+- Test skipping gracefully handles missing homepage content
+
+### 3.5 ESLint + Prettier + Tailwind Ordering
 
 **Problématique** : Code généré par IA peut ne pas respecter les conventions de formatage, créant du bruit dans les diffs et rendant la revue difficile.
 
