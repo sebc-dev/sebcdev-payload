@@ -358,9 +358,9 @@ test.describe('Navigation', () => {
     test('footer links work', async ({ page }) => {
       await page.goto('/fr')
 
-      // Click a category link in footer (uses footer.category keys)
+      // Click a category link in footer (uses taxonomy.category keys)
       const footer = page.locator('footer')
-      await footer.getByRole('link', { name: frMessages.footer.category.news }).click()
+      await footer.getByRole('link', { name: frMessages.taxonomy.category.news }).click()
 
       await expect(page).toHaveURL('/fr/articles?category=news')
     })

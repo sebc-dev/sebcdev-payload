@@ -29,6 +29,7 @@ const legalLinks = ['privacy', 'terms-of-use', 'terms', 'sitemap'] as const
  */
 export function Footer() {
   const t = useTranslations('footer')
+  const taxonomyT = useTranslations('taxonomy')
   const a11yT = useTranslations('accessibility')
   const currentYear = new Date().getFullYear()
 
@@ -47,7 +48,7 @@ export function Footer() {
                   href={`/articles?tags=${theme}`}
                   className="text-sm text-muted-foreground transition-colors hover:text-foreground"
                 >
-                  {t(`theme.${theme}`)}
+                  {taxonomyT(`theme.${theme}`)}
                 </Link>
               ))}
             </nav>
@@ -65,7 +66,7 @@ export function Footer() {
                   href={`/articles?category=${category}`}
                   className="text-sm text-muted-foreground transition-colors hover:text-foreground"
                 >
-                  {t(`category.${category}`)}
+                  {taxonomyT(`category.${category}`)}
                 </Link>
               ))}
             </nav>
@@ -81,7 +82,7 @@ export function Footer() {
                   href={`/articles?complexity=${level}`}
                   className="text-sm text-muted-foreground transition-colors hover:text-foreground"
                 >
-                  {t(`level.${level}`)}
+                  {taxonomyT(`level.${level}`)}
                 </Link>
               ))}
             </nav>

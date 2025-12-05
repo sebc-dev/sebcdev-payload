@@ -33,6 +33,7 @@ interface NavigationProps {
 
 export function Navigation({ className }: NavigationProps) {
   const t = useTranslations('navigation')
+  const taxonomyT = useTranslations('taxonomy')
   const a11yT = useTranslations('accessibility')
   const pathname = usePathname()
 
@@ -71,7 +72,7 @@ export function Navigation({ className }: NavigationProps) {
         <DropdownMenuContent align="start">
           {themes.map((theme) => (
             <DropdownMenuItem key={theme} asChild>
-              <Link href={`/articles?tags=${theme}`}>{t(`theme.${theme}`)}</Link>
+              <Link href={`/articles?tags=${theme}`}>{taxonomyT(`theme.${theme}`)}</Link>
             </DropdownMenuItem>
           ))}
         </DropdownMenuContent>
@@ -91,7 +92,9 @@ export function Navigation({ className }: NavigationProps) {
         <DropdownMenuContent align="start">
           {categories.map((category) => (
             <DropdownMenuItem key={category} asChild>
-              <Link href={`/articles?category=${category}`}>{t(`category.${category}`)}</Link>
+              <Link href={`/articles?category=${category}`}>
+                {taxonomyT(`category.${category}`)}
+              </Link>
             </DropdownMenuItem>
           ))}
         </DropdownMenuContent>
@@ -114,7 +117,7 @@ export function Navigation({ className }: NavigationProps) {
           </DropdownMenuItem>
           {levels.map((level) => (
             <DropdownMenuItem key={level} asChild>
-              <Link href={`/articles?complexity=${level}`}>{t(`level.${level}`)}</Link>
+              <Link href={`/articles?complexity=${level}`}>{taxonomyT(`level.${level}`)}</Link>
             </DropdownMenuItem>
           ))}
         </DropdownMenuContent>
