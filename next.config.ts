@@ -1,3 +1,4 @@
+import type { NextConfig } from 'next'
 import { withPayload } from '@payloadcms/next/withPayload'
 import createNextIntlPlugin from 'next-intl/plugin'
 
@@ -11,10 +12,9 @@ import createNextIntlPlugin from 'next-intl/plugin'
  */
 const withNextIntl = createNextIntlPlugin('./src/i18n/request.ts')
 
-/** @type {import('next').NextConfig} */
-const nextConfig = {
+const nextConfig: NextConfig = {
   // Required for OpenNext/Cloudflare Workers deployment
-  output: 'standalone' as const,
+  output: 'standalone',
   webpack: (webpackConfig: any) => {
     webpackConfig.resolve.extensionAlias = {
       '.cjs': ['.cts', '.cjs'],
@@ -23,6 +23,25 @@ const nextConfig = {
     }
 
     return webpackConfig
+  },
+  // Image optimization with Cloudflare R2 support
+  images: {
+    loader: 'custom',
+    loaderFile: './src/lib/image-loader.ts',
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: '*.r2.cloudflarestorage.com',
+      },
+      {
+        protocol: 'https',
+        hostname: '*.r2.dev',
+      },
+      {
+        protocol: 'https',
+        hostname: 'raw.githubusercontent.com',
+      },
+    ],
   },
 }
 

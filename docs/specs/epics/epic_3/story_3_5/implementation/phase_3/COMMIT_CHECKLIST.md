@@ -18,8 +18,8 @@
 ## Commit 1: Image Optimization
 
 ### Pre-Implementation
-- [ ] Verifier la config images actuelle dans `next.config.ts`
-- [ ] Identifier les domaines R2 utilises
+- [x] Verifier la config images actuelle dans `next.config.ts`
+- [x] Identifier les domaines R2 utilises
 
 ### Implementation
 
@@ -94,11 +94,11 @@ pnpm dev  # Tester que les images chargent
 ```
 
 ### Checklist
-- [ ] `image-loader.ts` cree
-- [ ] `next.config.ts` modifie
-- [ ] Images chargent correctement
-- [ ] Pas d'erreur console
-- [ ] `pnpm build` passe
+- [x] `image-loader.ts` cree
+- [x] `next.config.ts` modifie
+- [x] Images chargent correctement
+- [x] Pas d'erreur console
+- [x] `pnpm build` passe
 
 ### Commit
 ```bash
