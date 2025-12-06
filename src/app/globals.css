@@ -83,9 +83,9 @@
     --destructive: hsl(0, 72%, 67%);
     --destructive-foreground: hsl(0, 0%, 12%);
 
-    /* Borders & Inputs */
-    --border: hsl(0, 0%, 27%);
-    --input: hsl(0, 0%, 27%);
+    /* Borders & Inputs - subtle dark borders for dark theme */
+    --border: hsl(0, 0%, 20%);
+    --input: hsl(0, 0%, 22%);
 
     /* Focus ring: Teal for keyboard navigation visibility */
     --ring: hsl(174, 72%, 40%);
@@ -138,6 +138,13 @@
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
+
+  /* Shadows - subtle for dark theme */
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.03);
+  --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.05), 0 1px 2px -1px rgb(0 0 0 / 0.05);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.05), 0 2px 4px -2px rgb(0 0 0 / 0.05);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.05), 0 4px 6px -4px rgb(0 0 0 / 0.05);
+  --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.05), 0 8px 10px -6px rgb(0 0 0 / 0.05);
 }
 
 /*
@@ -166,6 +173,13 @@
   html {
     color-scheme: dark;
     scroll-behavior: smooth;
+  }
+
+  /* Default border color for all elements */
+  *,
+  ::after,
+  ::before {
+    border-color: var(--border);
   }
 
   /* Ensure full height for app shell */

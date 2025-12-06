@@ -1,12 +1,12 @@
 import { XIcon } from '@/components/icons/social'
-import { Link } from '@/i18n/navigation'
 import { categories, levels, themes } from '@/lib/constants'
-import { Facebook, Linkedin } from 'lucide-react'
-import { useTranslations } from 'next-intl'
+import { FacebookIcon, LinkedinIcon } from 'lucide-react'
+import { getTranslations } from 'next-intl/server'
+import Link from 'next/link'
 
 const socialLinks = [
-  { name: 'Facebook', href: 'https://facebook.com/sebc.dev', icon: Facebook },
-  { name: 'LinkedIn', href: 'https://linkedin.com/in/sebcdev', icon: Linkedin },
+  { name: 'Facebook', href: 'https://facebook.com/sebc.dev', icon: FacebookIcon },
+  { name: 'LinkedIn', href: 'https://linkedin.com/in/sebcdev', icon: LinkedinIcon },
   { name: 'X', href: 'https://x.com/sebcdev', icon: XIcon },
 ] as const
 
@@ -27,10 +27,10 @@ const legalLinks = ['privacy', 'terms-of-use', 'terms', 'sitemap'] as const
  *
  * @returns Footer element with semantic contentinfo role
  */
-export function Footer() {
-  const t = useTranslations('footer')
-  const taxonomyT = useTranslations('taxonomy')
-  const a11yT = useTranslations('accessibility')
+export async function Footer() {
+  const t = await getTranslations('footer')
+  const taxonomyT = await getTranslations('taxonomy')
+  const a11yT = await getTranslations('accessibility')
   const currentYear = new Date().getFullYear()
 
   return (
