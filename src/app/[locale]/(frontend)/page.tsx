@@ -80,63 +80,61 @@ interface Article {
   publishedAt: string
 }
 
+type PayloadImage = PayloadArticle['featuredImage']
+type PayloadCategory = PayloadArticle['category']
+type PayloadTag = NonNullable<PayloadArticle['tags']>[number]
+
+/** Extracts cover image from Payload featured image */
+function mapCoverImage(featuredImage: PayloadImage): Article['coverImage'] {
+  if (typeof featuredImage !== 'object' || featuredImage === null) return null
+  return {
+    url: typeof featuredImage.url === 'string' ? featuredImage.url : '',
+    alt:
+      'alt' in featuredImage && typeof featuredImage.alt === 'string'
+        ? featuredImage.alt
+        : undefined,
+  }
+}
+
+/** Maps Payload category to component category */
+function mapCategory(category: PayloadCategory): Article['category'] {
+  if (typeof category !== 'object' || category === null) {
+    return { id: '', title: '', slug: '' }
+  }
+  return {
+    id: String(category.id),
+    title: 'name' in category ? (category.name as string) : '',
+    slug: category.slug || '',
+    color: 'color' in category ? (category.color as string) : undefined,
+    icon: 'icon' in category ? (category.icon as string) : undefined,
+  }
+}
+
+/** Maps a single Payload tag to component tag */
+function mapTag(tag: PayloadTag): Article['tags'][number] {
+  if (typeof tag === 'object' && tag !== null) {
+    return {
+      id: String(tag.id),
+      title: 'name' in tag ? (tag.name as string) : '',
+      slug: tag.slug || '',
+    }
+  }
+  return { id: String(tag), title: '', slug: '' }
+}
+
 /**
  * Maps Payload article to component article interface
  */
 function mapArticle(payloadArticle: PayloadArticle): Article {
-  const featuredImage = payloadArticle.featuredImage
-  const coverImage =
-    typeof featuredImage === 'object' && featuredImage !== null
-      ? {
-          url: typeof featuredImage.url === 'string' ? featuredImage.url : '',
-          alt:
-            typeof featuredImage === 'object' &&
-            'alt' in featuredImage &&
-            typeof featuredImage.alt === 'string'
-              ? featuredImage.alt
-              : undefined,
-        }
-      : null
-
-  const category = payloadArticle.category
-  const mappedCategory =
-    typeof category === 'object' && category !== null
-      ? {
-          id: String(category.id),
-          title: 'name' in category ? (category.name as string) : '',
-          slug: category.slug || '',
-          color: 'color' in category ? (category.color as string) : undefined,
-          icon: 'icon' in category ? (category.icon as string) : undefined,
-        }
-      : {
-          id: '',
-          title: '',
-          slug: '',
-        }
-
-  const tags = Array.isArray(payloadArticle.tags)
-    ? payloadArticle.tags.map((tag) => {
-        if (typeof tag === 'object' && tag !== null) {
-          return {
-            id: String(tag.id),
-            title: 'name' in tag ? (tag.name as string) : '',
-            slug: tag.slug || '',
-          }
-        }
-        return { id: String(tag), title: '', slug: '' }
-      })
-    : []
-
   return {
     id: String(payloadArticle.id),
     title: payloadArticle.title || '',
     slug: payloadArticle.slug || '',
     excerpt: payloadArticle.excerpt || '',
-    coverImage,
-    category: mappedCategory,
-    tags,
-    complexity:
-      (payloadArticle.complexity as 'beginner' | 'intermediate' | 'advanced') || 'intermediate',
+    coverImage: mapCoverImage(payloadArticle.featuredImage),
+    category: mapCategory(payloadArticle.category),
+    tags: payloadArticle.tags?.map(mapTag) ?? [],
+    complexity: (payloadArticle.complexity as Article['complexity']) || 'intermediate',
     readingTime: payloadArticle.readingTime || 0,
     publishedAt: payloadArticle.publishedAt || new Date().toISOString(),
   }
