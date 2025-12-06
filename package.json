@@ -35,7 +35,8 @@
     "prepare": "husky",
     "stryker": "stryker run",
     "stryker:incremental": "stryker run --incremental",
-    "stryker:dry": "stryker run --dryRunOnly"
+    "stryker:dry": "stryker run --dryRunOnly",
+    "seed": "cross-env NODE_OPTIONS=--no-deprecation tsx scripts/seed.ts"
   },
   "dependencies": {
     "@opennextjs/cloudflare": "^1.6.5",
@@ -86,6 +87,7 @@
     "prettier": "^3.4.2",
     "prettier-plugin-tailwindcss": "^0.7.1",
     "tailwindcss": "^4.1.17",
+    "tsx": "^4.21.0",
     "typescript": "5.7.3",
     "vite-tsconfig-paths": "5.1.4",
     "vitest": "3.2.3",
