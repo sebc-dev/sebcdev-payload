@@ -166,7 +166,7 @@ export default async function HomePage({ params }: HomePageProps) {
     limit: 7,
     sort: '-publishedAt',
     where: {
-      _status: { equals: 'published' },
+      status: { equals: 'published' },
     },
     depth: 2,
   })) as { docs: PayloadArticle[] }
