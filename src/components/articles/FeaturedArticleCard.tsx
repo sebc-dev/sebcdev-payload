@@ -160,9 +160,9 @@ export async function FeaturedArticleCard({
           className,
         )}
       >
-        {/* Cover Image - Full width with 16:9 aspect ratio, max height 400px */}
+        {/* Cover Image - Full width with fixed height, object-cover for proper fill */}
         {article.coverImage && (
-          <div className="relative aspect-video max-h-[400px] overflow-hidden">
+          <div className="relative h-[250px] sm:h-[300px] lg:h-[400px] w-full overflow-hidden">
             <Image
               src={article.coverImage.url}
               alt={article.coverImage.alt || article.title}
