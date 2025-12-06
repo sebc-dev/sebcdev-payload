@@ -28,7 +28,7 @@ import { useTranslations } from 'next-intl'
  */
 
 interface NavigationProps {
-  className?: string
+  readonly className?: string
 }
 
 export function Navigation({ className }: NavigationProps) {

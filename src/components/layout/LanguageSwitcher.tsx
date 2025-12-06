@@ -48,7 +48,7 @@ const locales = configLocales.map((code) => ({
  * @returns Language dropdown menu
  */
 interface LanguageSwitcherProps {
-  className?: string
+  readonly className?: string
 }
 
 export function LanguageSwitcher({ className }: LanguageSwitcherProps) {

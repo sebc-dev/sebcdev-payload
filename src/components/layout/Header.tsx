@@ -25,7 +25,7 @@ import { Navigation } from './Navigation'
  * @returns Header element with logo and navigation
  */
 interface HeaderProps {
-  className?: string
+  readonly className?: string
 }
 
 export async function Header({ className }: HeaderProps) {
