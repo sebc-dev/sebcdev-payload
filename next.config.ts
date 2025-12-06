@@ -27,7 +27,7 @@ const nextConfig: NextConfig = {
   // Image optimization with Cloudflare R2 support
   images: {
     loader: 'custom',
-    loaderFile: './src/lib/image-loader.ts',
+    loaderFile: './src/lib/image-loader.js',
     remotePatterns: [
       {
         protocol: 'https',
