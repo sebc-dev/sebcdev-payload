@@ -135,77 +135,73 @@ export async function ArticleCard({ article, locale, className }: ArticleCardPro
   const t = await getTranslations('homepage')
 
   return (
-    <article className={cn('group', className)}>
-      <Link href={`/${locale}/articles/${article.slug}`} className="block h-full">
-        <Card
-          className={cn(
-            'h-full overflow-hidden',
-            // GPU-accelerated, smooth transitions
-            'transform-gpu transition-all duration-200 ease-out',
-            // Motion-safe hover effects (respects prefers-reduced-motion)
-            'motion-safe:hover:shadow-lg motion-safe:hover:scale-[1.02]',
-            // Focus ring for accessibility
-            'focus-within:ring-2 focus-within:ring-primary focus-within:ring-offset-2 focus-within:ring-offset-background',
-            className,
-          )}
-        >
-          {/* Cover Image */}
-          {article.coverImage && (
-            <div className="relative aspect-video overflow-hidden">
-              <Image
-                src={article.coverImage.url}
-                alt={article.coverImage.alt || article.title}
-                fill
-                sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                className="object-cover transform-gpu transition-transform duration-200 ease-out motion-safe:group-hover:scale-105"
-              />
-            </div>
-          )}
+    <article className={cn('group relative', className)}>
+      <Card
+        className={cn(
+          'h-full overflow-hidden',
+          // GPU-accelerated, smooth transitions
+          'transform-gpu transition-all duration-200 ease-out',
+          // Motion-safe hover effects (respects prefers-reduced-motion)
+          'motion-safe:hover:shadow-[var(--shadow-md)] motion-safe:hover:scale-[1.02]',
+          // Focus ring for accessibility
+          'focus-within:ring-2 focus-within:ring-primary focus-within:ring-offset-2 focus-within:ring-offset-background',
+          className,
+        )}
+      >
+        {/* Cover Image */}
+        {article.coverImage && (
+          <div className="relative aspect-video overflow-hidden">
+            <Image
+              src={article.coverImage.url}
+              alt={article.coverImage.alt || article.title}
+              fill
+              sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
+              className="object-cover transform-gpu transition-transform duration-200 ease-out motion-safe:group-hover:scale-105"
+            />
+          </div>
+        )}
 
-          <CardHeader className="space-y-2 pb-2">
-            {/* Category Badge */}
-            {/* We prevent default link navigation here since we're inside a larger link */}
-            <div onClick={(e) => e.preventDefault()}>
-              <CategoryBadge category={article.category} locale={locale} clickable={true} />
-            </div>
+        <CardHeader className="space-y-2 pb-2">
+          {/* Category Badge - clickable, outside of main link */}
+          <div className="relative z-10">
+            <CategoryBadge category={article.category} locale={locale} clickable={true} />
+          </div>
 
-            {/* Title */}
-            <h3 className="line-clamp-2 text-lg font-semibold leading-tight transition-colors group-hover:text-primary">
+          {/* Title with main card link */}
+          <h3 className="line-clamp-2 text-lg font-semibold leading-tight transition-colors group-hover:text-primary">
+            <Link
+              href={`/${locale}/articles/${article.slug}`}
+              className="after:absolute after:inset-0"
+            >
               {article.title}
-            </h3>
-          </CardHeader>
+            </Link>
+          </h3>
+        </CardHeader>
 
-          <CardContent className="space-y-3">
-            {/* Excerpt */}
-            <p className="line-clamp-2 text-sm text-muted-foreground">{article.excerpt}</p>
+        <CardContent className="space-y-3">
+          {/* Excerpt */}
+          <p className="line-clamp-2 text-sm text-muted-foreground">{article.excerpt}</p>
 
-            {/* Metadata Row: Reading Time & Publication Date */}
-            <div className="flex items-center gap-2 text-xs text-muted-foreground">
-              <span>{t('minRead', { minutes: article.readingTime })}</span>
-              <span aria-hidden="true">-</span>
-              <RelativeDate date={article.publishedAt} />
+          {/* Metadata Row: Reading Time & Publication Date */}
+          <div className="flex items-center gap-2 text-xs text-muted-foreground">
+            <span>{t('minRead', { minutes: article.readingTime })}</span>
+            <span aria-hidden="true">-</span>
+            <RelativeDate date={article.publishedAt} />
+          </div>
+
+          {/* Complexity Badge */}
+          <ComplexityBadge level={article.complexity} />
+
+          {/* Tags (max 3) - clickable, outside of main link */}
+          {article.tags.length > 0 && (
+            <div className="relative z-10 flex flex-wrap gap-1.5">
+              {article.tags.slice(0, 3).map((tag) => (
+                <TagPill key={tag.id} tag={tag} locale={locale} />
+              ))}
             </div>
-
-            {/* Complexity Badge */}
-            <ComplexityBadge level={article.complexity} />
-
-            {/* Tags (max 3) */}
-            {article.tags.length > 0 && (
-              <div
-                className="flex flex-wrap gap-1.5"
-                onClick={(e) => {
-                  e.preventDefault()
-                  e.stopPropagation()
-                }}
-              >
-                {article.tags.slice(0, 3).map((tag) => (
-                  <TagPill key={tag.id} tag={tag} locale={locale} />
-                ))}
-              </div>
-            )}
-          </CardContent>
-        </Card>
-      </Link>
+          )}
+        </CardContent>
+      </Card>
     </article>
   )
 }

@@ -28,12 +28,10 @@ interface TagPillProps {
  * TagPill Component
  *
  * Displays a tag as a clickable pill that navigates to the articles Hub
- * with a tag filter. Includes event propagation prevention to work properly
- * within clickable parent elements like article cards.
+ * with a tag filter.
  *
  * Features:
  * - Clickable navigation to `/[locale]/articles?tags=[slug]`
- * - Event propagation prevention via stopPropagation
  * - Subtle hover effect for affordance
  * - Outline variant with muted styling
  *
@@ -48,16 +46,16 @@ interface TagPillProps {
  * />
  * ```
  */
-export function TagPill({ tag, locale, className }: TagPillProps) {
+export function TagPill({ tag, locale, className }: Readonly<TagPillProps>) {
   return (
-    <Link
-      href={`/${locale}/articles?tags=${tag.slug}`}
-      className="transition-opacity hover:opacity-80"
-      onClick={(e) => e.stopPropagation()}
-    >
+    <Link href={`/${locale}/articles?tags=${tag.slug}`} className="transition-all hover:scale-105">
       <Badge
         variant="outline"
-        className={cn('bg-muted/50 text-muted-foreground hover:bg-muted', className)}
+        className={cn(
+          'border-primary/30 bg-primary/10 text-primary hover:bg-primary/20 hover:border-primary/50',
+          'transition-colors duration-200',
+          className,
+        )}
       >
         {tag.title}
       </Badge>

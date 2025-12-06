@@ -143,7 +143,7 @@ export async function FeaturedArticleCard({
   article,
   locale,
   className,
-}: FeaturedArticleCardProps) {
+}: Readonly<FeaturedArticleCardProps>) {
   const t = await getTranslations('homepage')
 
   return (
@@ -154,7 +154,7 @@ export async function FeaturedArticleCard({
           // GPU-accelerated, smooth transitions
           'transform-gpu transition-all duration-300 ease-out',
           // Motion-safe hover effects
-          'motion-safe:hover:shadow-xl motion-safe:hover:scale-[1.01]',
+          'motion-safe:hover:shadow-[var(--shadow-lg)] motion-safe:hover:scale-[1.01]',
           // Focus ring for accessibility
           'focus-within:ring-2 focus-within:ring-primary focus-within:ring-offset-2 focus-within:ring-offset-background',
           className,
@@ -208,13 +208,7 @@ export async function FeaturedArticleCard({
 
           {/* Tags (max 5 for featured article) */}
           {article.tags.length > 0 && (
-            <div
-              className="flex flex-wrap gap-2"
-              onClick={(e) => {
-                e.preventDefault()
-                e.stopPropagation()
-              }}
-            >
+            <div className="flex flex-wrap gap-2">
               {article.tags.slice(0, 5).map((tag) => (
                 <TagPill key={tag.id} tag={tag} locale={locale} />
               ))}

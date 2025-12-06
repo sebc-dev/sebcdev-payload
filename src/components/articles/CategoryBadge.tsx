@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import * as LucideIcons from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
 import { cn } from '@/lib/utils'
 
@@ -12,6 +13,36 @@ interface Category {
   slug: string
   color?: string
   icon?: string
+}
+
+/**
+ * Converts a kebab-case icon name to PascalCase for Lucide component lookup
+ * @example "book-open" -> "BookOpen"
+ */
+function toPascalCase(str: string): string {
+  return str
+    .split('-')
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join('')
+}
+
+/**
+ * Gets the Lucide icon component for a given icon name
+ * @param iconName - The kebab-case icon name (e.g., "book-open")
+ * @returns The Lucide icon component or null if not found
+ */
+function getLucideIcon(iconName: string): LucideIcons.LucideIcon | null {
+  const pascalName = toPascalCase(iconName)
+  const icon = (LucideIcons as Record<string, unknown>)[pascalName]
+  // Lucide icons are React forwardRef components (objects with render function)
+  if (icon && typeof icon === 'object' && 'render' in icon) {
+    return icon as unknown as LucideIcons.LucideIcon
+  }
+  // Also check if it's a function (for different export formats)
+  if (typeof icon === 'function') {
+    return icon as LucideIcons.LucideIcon
+  }
+  return null
 }
 
 /**
@@ -68,9 +99,11 @@ export function CategoryBadge({
     ? { backgroundColor: `${category.color}20`, color: category.color }
     : {}
 
+  const IconComponent = category.icon ? getLucideIcon(category.icon) : null
+
   const badge = (
     <Badge variant="secondary" className={cn('gap-1.5 transition-colors', className)} style={style}>
-      {category.icon && <span aria-hidden="true">{category.icon}</span>}
+      {IconComponent && <IconComponent className="size-3.5" aria-hidden="true" />}
       {category.title}
     </Badge>
   )
