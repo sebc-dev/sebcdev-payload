@@ -233,6 +233,18 @@ src/
 
 ## Testing
 
+### Philosophie des Tests
+
+**Les tests doivent valider le bon fonctionnement, pas juste passer.**
+
+Quand un test échoue, il faut :
+
+1. **Corriger l'application**, pas le test (sauf si le test est réellement incorrect)
+2. **Ne jamais affaiblir les assertions** juste pour faire passer un test
+3. **Les tests remontent les vrais problèmes** - c'est leur raison d'être
+
+Exemple concret : Si un test WCAG échoue pour un problème de contraste, corriger les couleurs du composant, pas exclure l'élément du test.
+
 ### Unit Tests (`tests/unit/*.spec.ts`)
 
 - Use Vitest with jsdom environment
@@ -252,6 +264,23 @@ src/
 - Dev server starts automatically
 - Run with: `pnpm test:e2e`
 
+### E2E Tests avec données seedées (`tests/e2e/*-seeded.e2e.spec.ts`)
+
+Les tests `-seeded` nécessitent des données dans la base :
+
+```bash
+# Seeder la base avant de lancer les tests
+pnpm seed
+
+# Lancer les tests E2E (incluant les tests seeded)
+pnpm test:e2e
+
+# Nettoyer et re-seeder si nécessaire
+pnpm seed --clean
+```
+
+Ces tests vérifient le rendu avec de vraies données (articles, catégories, tags) et se skip automatiquement si la base est vide.
+
 ## TypeScript Paths
 
 - `@/*` maps to `./src/*`
@@ -262,3 +291,24 @@ src/
 - Requires `PAYLOAD_SECRET` environment variable
 - `CLOUDFLARE_ENV` controls deployment environment
 - Uses `.env` files (see `.env.example`)
+
+## Development Stashes
+
+### Placeholder Images for Visual Testing
+
+Un stash contenant des images placeholder statiques pour tester visuellement les cards de la homepage sans avoir besoin d'images dans Payload.
+
+```bash
+# Appliquer le stash pour tester localement
+git stash apply stash@{0}
+
+# Contenu du stash:
+# - src/app/[locale]/(frontend)/page.tsx  (code de mapping modifié)
+# - public/placeholders/card-1.jpg à card-7.jpg (images 1200x675)
+
+# Restaurer le code original après test
+git checkout src/app/[locale]/(frontend)/page.tsx
+rm -rf public/placeholders/
+```
+
+> **Note**: Ne pas committer ce stash. Usage local uniquement.

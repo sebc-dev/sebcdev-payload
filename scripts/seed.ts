@@ -23,12 +23,12 @@ import config from '../src/payload.config'
 
 /**
  * Downloads an image from a URL and returns it as a Payload File object.
+ * Uses Uint8Array instead of Buffer for Miniflare compatibility.
  */
 async function downloadImage(
   url: string,
   filename: string,
-  alt: string,
-): Promise<{ data: Buffer; mimetype: string; name: string; size: number } | null> {
+): Promise<{ data: Uint8Array; mimetype: string; name: string; size: number } | null> {
   try {
     const response = await fetch(url, {
       headers: {
@@ -41,14 +41,15 @@ async function downloadImage(
       return null
     }
 
-    const buffer = Buffer.from(await response.arrayBuffer())
+    const arrayBuffer = await response.arrayBuffer()
+    const data = new Uint8Array(arrayBuffer)
     const contentType = response.headers.get('content-type') || 'image/jpeg'
 
     return {
-      data: buffer,
+      data,
       mimetype: contentType,
       name: filename,
-      size: buffer.length,
+      size: data.length,
     }
   } catch (error) {
     console.error(`  ⚠️  Error downloading image: ${url}`, error)
@@ -65,7 +66,7 @@ async function uploadImage(
   filename: string,
   alt: string,
 ): Promise<string | null> {
-  const imageData = await downloadImage(imageUrl, filename, alt)
+  const imageData = await downloadImage(imageUrl, filename)
 
   if (!imageData) {
     return null
@@ -1058,56 +1059,61 @@ async function seedArticles(
   }
 }
 
+// ============================================================================
+// CLEAN FUNCTIONS
+// ============================================================================
+
 /**
- * Updates existing articles with featured images if they don't have one.
+ * Deletes all seeded data (articles, categories, tags, media).
  */
-async function seedImages(payload: BasePayload) {
-  console.log('🖼️  Seeding images for existing articles...')
+async function cleanAll(payload: BasePayload) {
+  console.log('🧹 Cleaning existing seed data...\n')
 
-  for (const imageConfig of ARTICLE_IMAGES) {
-    // Find the article
-    const existing = await payload.find({
-      collection: 'articles',
-      where: { slug: { equals: imageConfig.slug } },
-      limit: 1,
-    })
-
-    if (existing.docs.length === 0) {
-      console.log(`  ⏭️  Article "${imageConfig.slug}" not found, skipping`)
-      continue
-    }
-
-    const article = existing.docs[0]
-
-    // Check if article already has a featured image
-    if (article.featuredImage) {
-      console.log(`  ⏭️  Article "${imageConfig.slug}" already has an image`)
-      continue
-    }
-
-    console.log(`  📷 Uploading image for "${imageConfig.slug}"...`)
-    // Using picsum.photos with seed for consistent images (1200x675 = 16:9 aspect ratio)
-    const imageUrl = `https://picsum.photos/seed/${imageConfig.seed}/1200/675`
-    const featuredImageId = await uploadImage(
-      payload,
-      imageUrl,
-      `${imageConfig.slug}.jpg`,
-      imageConfig.alt.fr,
-    )
-
-    if (featuredImageId) {
-      await payload.update({
-        collection: 'articles',
-        id: article.id,
-        data: {
-          featuredImage: featuredImageId,
-        },
-      })
-      console.log(`  ✅ Added image to article: ${imageConfig.slug}`)
-    } else {
-      console.log(`  ⚠️  Failed to upload image for: ${imageConfig.slug}`)
-    }
+  // Delete articles first (they reference categories, tags, and media)
+  console.log('  🗑️  Deleting articles...')
+  const articles = await payload.find({
+    collection: 'articles',
+    limit: 1000,
+  })
+  for (const article of articles.docs) {
+    await payload.delete({ collection: 'articles', id: article.id })
   }
+  console.log(`    ✅ Deleted ${articles.docs.length} articles`)
+
+  // Delete media (images)
+  console.log('  🗑️  Deleting media...')
+  const media = await payload.find({
+    collection: 'media',
+    limit: 1000,
+  })
+  for (const item of media.docs) {
+    await payload.delete({ collection: 'media', id: item.id })
+  }
+  console.log(`    ✅ Deleted ${media.docs.length} media items`)
+
+  // Delete tags
+  console.log('  🗑️  Deleting tags...')
+  const tags = await payload.find({
+    collection: 'tags',
+    limit: 1000,
+  })
+  for (const tag of tags.docs) {
+    await payload.delete({ collection: 'tags', id: tag.id })
+  }
+  console.log(`    ✅ Deleted ${tags.docs.length} tags`)
+
+  // Delete categories
+  console.log('  🗑️  Deleting categories...')
+  const categories = await payload.find({
+    collection: 'categories',
+    limit: 1000,
+  })
+  for (const cat of categories.docs) {
+    await payload.delete({ collection: 'categories', id: cat.id })
+  }
+  console.log(`    ✅ Deleted ${categories.docs.length} categories`)
+
+  console.log('\n✅ Clean completed!\n')
 }
 
 // ============================================================================
@@ -1115,15 +1121,21 @@ async function seedImages(payload: BasePayload) {
 // ============================================================================
 
 async function seed() {
+  const args = process.argv.slice(2)
+  const shouldClean = args.includes('--clean') || args.includes('-c')
+
   console.log('\n🌱 Starting seed process...\n')
 
   const payload = await getPayload({ config })
 
   try {
+    if (shouldClean) {
+      await cleanAll(payload)
+    }
+
     const categoryMap = await seedCategories(payload)
     const tagMap = await seedTags(payload)
     await seedArticles(payload, categoryMap, tagMap)
-    await seedImages(payload)
 
     console.log('\n✨ Seed completed successfully!\n')
   } catch (error) {
