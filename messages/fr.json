@@ -121,11 +121,6 @@
     }
   },
   "article": {
-    "publishedAgo": "Publié {time}",
-    "complexity": {
-      "beginner": "Débutant",
-      "intermediate": "Intermédiaire",
-      "advanced": "Avancé"
-    }
+    "publishedAgo": "Publié {time}"
   }
 }
