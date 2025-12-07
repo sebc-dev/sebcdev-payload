@@ -1099,47 +1099,83 @@ async function cleanAll(payload: BasePayload) {
 
   // Delete articles first (they reference categories, tags, and media)
   console.log('  🗑️  Deleting articles...')
-  const articles = await payload.find({
-    collection: 'articles',
-    limit: 1000,
-  })
-  for (const article of articles.docs) {
-    await payload.delete({ collection: 'articles', id: article.id })
+  let articlesDeleted = 0
+  let hasMoreArticles = true
+  while (hasMoreArticles) {
+    const articles = await payload.find({
+      collection: 'articles',
+      limit: 100,
+    })
+    if (articles.docs.length === 0) {
+      hasMoreArticles = false
+    } else {
+      for (const article of articles.docs) {
+        await payload.delete({ collection: 'articles', id: article.id })
+      }
+      articlesDeleted += articles.docs.length
+    }
   }
-  console.log(`    ✅ Deleted ${articles.docs.length} articles`)
+  console.log(`    ✅ Deleted ${articlesDeleted} articles`)
 
   // Delete media (images)
   console.log('  🗑️  Deleting media...')
-  const media = await payload.find({
-    collection: 'media',
-    limit: 1000,
-  })
-  for (const item of media.docs) {
-    await payload.delete({ collection: 'media', id: item.id })
+  let mediaDeleted = 0
+  let hasMoreMedia = true
+  while (hasMoreMedia) {
+    const media = await payload.find({
+      collection: 'media',
+      limit: 100,
+    })
+    if (media.docs.length === 0) {
+      hasMoreMedia = false
+    } else {
+      for (const item of media.docs) {
+        await payload.delete({ collection: 'media', id: item.id })
+      }
+      mediaDeleted += media.docs.length
+    }
   }
-  console.log(`    ✅ Deleted ${media.docs.length} media items`)
+  console.log(`    ✅ Deleted ${mediaDeleted} media items`)
 
   // Delete tags
   console.log('  🗑️  Deleting tags...')
-  const tags = await payload.find({
-    collection: 'tags',
-    limit: 1000,
-  })
-  for (const tag of tags.docs) {
-    await payload.delete({ collection: 'tags', id: tag.id })
+  let tagsDeleted = 0
+  let hasMoreTags = true
+  while (hasMoreTags) {
+    const tags = await payload.find({
+      collection: 'tags',
+      limit: 100,
+    })
+    if (tags.docs.length === 0) {
+      hasMoreTags = false
+    } else {
+      for (const tag of tags.docs) {
+        await payload.delete({ collection: 'tags', id: tag.id })
+      }
+      tagsDeleted += tags.docs.length
+    }
   }
-  console.log(`    ✅ Deleted ${tags.docs.length} tags`)
+  console.log(`    ✅ Deleted ${tagsDeleted} tags`)
 
   // Delete categories
   console.log('  🗑️  Deleting categories...')
-  const categories = await payload.find({
-    collection: 'categories',
-    limit: 1000,
-  })
-  for (const cat of categories.docs) {
-    await payload.delete({ collection: 'categories', id: cat.id })
+  let categoriesDeleted = 0
+  let hasMoreCategories = true
+  while (hasMoreCategories) {
+    const categories = await payload.find({
+      collection: 'categories',
+      limit: 100,
+    })
+    if (categories.docs.length === 0) {
+      hasMoreCategories = false
+    } else {
+      for (const cat of categories.docs) {
+        await payload.delete({ collection: 'categories', id: cat.id })
+      }
+      categoriesDeleted += categories.docs.length
+    }
   }
-  console.log(`    ✅ Deleted ${categories.docs.length} categories`)
+  console.log(`    ✅ Deleted ${categoriesDeleted} categories`)
 
   console.log('\n✅ Clean completed!\n')
 }
