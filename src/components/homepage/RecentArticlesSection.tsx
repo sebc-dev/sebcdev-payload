@@ -43,6 +43,7 @@ interface RawArticle {
   complexity?: 'beginner' | 'intermediate' | 'advanced'
   readingTime?: number
   publishedAt?: string
+  createdAt: string
 }
 
 /**
