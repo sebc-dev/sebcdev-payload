@@ -115,7 +115,7 @@ function mapArticle(payloadArticle: PayloadArticle): ArticleData {
     tags: payloadArticle.tags?.map(mapTag) ?? [],
     complexity: (payloadArticle.complexity as ArticleData['complexity']) || 'intermediate',
     readingTime: payloadArticle.readingTime || 0,
-    publishedAt: payloadArticle.publishedAt || new Date().toISOString(),
+    publishedAt: payloadArticle.publishedAt || payloadArticle.createdAt,
   }
 }
 
