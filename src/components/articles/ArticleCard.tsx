@@ -75,7 +75,7 @@ interface ArticleCardProps {
  *     slug: 'getting-started-react',
  *     excerpt: 'Learn the basics of React...',
  *     coverImage: { url: '/images/react.jpg', alt: 'React logo' },
- *     category: { id: '1', title: 'Tutoriels', slug: 'tutorials', color: '#06b6d4', icon: '🎓' },
+ *     category: { id: '1', title: 'Tutoriels', slug: 'tutorials', color: '#06b6d4', icon: 'graduation-cap' },
  *     tags: [{ id: '1', title: 'React', slug: 'react' }],
  *     complexity: 'beginner',
  *     readingTime: 5,
