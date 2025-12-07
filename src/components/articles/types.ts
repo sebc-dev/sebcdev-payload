@@ -37,6 +37,12 @@ export interface CoverImageData {
 }
 
 /**
+ * Complexity level for articles
+ * Represents the difficulty level of an article
+ */
+export type Complexity = 'beginner' | 'intermediate' | 'advanced'
+
+/**
  * Article interface for type safety
  * Represents the complete article data needed to render article components
  */
@@ -48,7 +54,7 @@ export interface ArticleData {
   coverImage?: CoverImageData | null
   category: CategoryData
   tags: TagData[]
-  complexity: 'beginner' | 'intermediate' | 'advanced'
+  complexity: Complexity
   readingTime: number
   publishedAt: string
 }
