@@ -175,9 +175,24 @@ test.describe('Homepage', () => {
       // Check that main element is visible
       await expect(mainElements.first()).toBeVisible()
 
-      // Check for proper heading hierarchy
-      const headings = await page.locator('h1, h2, h3, h4, h5, h6').allTextContents()
-      expect(headings.length).toBeGreaterThan(0)
+      // Check for proper heading hierarchy (WCAG 2.1 - no skipped levels)
+      const headingLevels = await page
+        .locator('h1, h2, h3, h4, h5, h6')
+        .evaluateAll((elements) => elements.map((el) => parseInt(el.tagName.substring(1), 10)))
+
+      expect(headingLevels.length).toBeGreaterThan(0)
+
+      // Validate heading hierarchy: no level should increase by more than 1
+      for (let i = 1; i < headingLevels.length; i++) {
+        const previous = headingLevels[i - 1]
+        const current = headingLevels[i]
+        const levelJump = current - previous
+
+        expect(
+          levelJump,
+          `Heading hierarchy skip detected: h${previous} → h${current}. Headings should not skip levels.`,
+        ).toBeLessThanOrEqual(1)
+      }
     })
   })
 })
