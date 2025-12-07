@@ -1075,7 +1075,12 @@ async function seedArticles(
 // ============================================================================
 
 /**
- * Deletes all seeded data (articles, categories, tags, media).
+ * Deletes ALL data from content collections (articles, categories, tags, media).
+ *
+ * WARNING: This function removes ALL records, not just seeded data.
+ * It is intended for development environments to reset the database.
+ *
+ * Safety: Requires --force flag in production to prevent accidental data loss.
  */
 async function cleanAll(payload: BasePayload) {
   // Safety check: prevent accidental production data deletion
@@ -1090,7 +1095,7 @@ async function cleanAll(payload: BasePayload) {
     console.warn('⚠️  Running clean in PRODUCTION mode with --force flag!')
   }
 
-  console.log('🧹 Cleaning existing seed data...\n')
+  console.log('🧹 Cleaning all content data...\n')
 
   // Delete articles first (they reference categories, tags, and media)
   console.log('  🗑️  Deleting articles...')
