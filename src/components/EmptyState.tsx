@@ -6,7 +6,6 @@ import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 
 interface EmptyStateProps {
-  locale: string
   className?: string
 }
 
@@ -20,10 +19,9 @@ interface EmptyStateProps {
  * Authentication is determined by the presence of the
  * 'payload-token' cookie, which Payload CMS sets on login.
  *
- * @param locale - Current locale (e.g., 'en', 'fr')
  * @param className - Optional CSS classes to apply to the section
  */
-export async function EmptyState({ locale: _locale, className }: EmptyStateProps) {
+export async function EmptyState({ className }: EmptyStateProps) {
   const t = await getTranslations('homepage.emptyState')
 
   // Check authentication via payload-token cookie
