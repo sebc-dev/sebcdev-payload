@@ -9,6 +9,13 @@ import { FeaturedArticleCard, ArticleGrid, EmptyState } from '@/components/artic
 import type { ArticleData } from '@/components/articles/types'
 import type { Article as PayloadArticle } from '@/payload-types'
 
+/**
+ * Force dynamic rendering to avoid pre-rendering during build.
+ * Required because this page fetches data from Payload which needs
+ * PAYLOAD_SECRET at runtime, not available during static build.
+ */
+export const dynamic = 'force-dynamic'
+
 interface HomePageProps {
   params: Promise<{ locale: string }>
 }
