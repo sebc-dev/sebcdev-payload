@@ -121,41 +121,52 @@ export async function RecentArticlesSection({
     // Transform articles to match ArticleCard interface
     const transformedArticles = articles
       .filter((article) => article.category)
-      .map((article) => ({
-        id: String(article.id),
-        title: article.title,
-        slug: article.slug,
-        excerpt: article.excerpt,
-        coverImage: article.featuredImage
+      .map((article) => {
+        // Extract URL from featuredImage, ensuring it's a valid non-empty string
+        const imageUrl =
+          typeof article.featuredImage === 'string' && article.featuredImage.trim()
+            ? article.featuredImage
+            : typeof article.featuredImage === 'object' &&
+                article.featuredImage?.url &&
+                typeof article.featuredImage.url === 'string' &&
+                article.featuredImage.url.trim()
+              ? article.featuredImage.url
+              : undefined
+
+        // Only create coverImage if we have a valid URL
+        const coverImage = imageUrl
           ? {
-              url:
-                typeof article.featuredImage === 'object' && article.featuredImage.url
-                  ? article.featuredImage.url
-                  : typeof article.featuredImage === 'string'
-                    ? article.featuredImage
-                    : undefined,
+              url: imageUrl,
               alt:
-                typeof article.featuredImage === 'object' && article.featuredImage.alt
+                typeof article.featuredImage === 'object' && article.featuredImage?.alt
                   ? article.featuredImage.alt
                   : article.title,
             }
-          : undefined,
-        category: {
-          id: String(article.category!.id),
-          title: article.category!.title,
-          slug: article.category!.slug,
-          color: article.category!.color,
-          icon: article.category!.icon,
-        },
-        tags: (article.tags || []).map((tag) => ({
-          id: String(tag.id),
-          title: tag.title,
-          slug: tag.slug,
-        })),
-        complexity: article.complexity || 'beginner',
-        readingTime: article.readingTime || 0,
-        publishedAt: article.publishedAt || new Date().toISOString(),
-      }))
+          : undefined
+
+        return {
+          id: String(article.id),
+          title: article.title,
+          slug: article.slug,
+          excerpt: article.excerpt,
+          coverImage,
+          category: {
+            id: String(article.category!.id),
+            title: article.category!.title,
+            slug: article.category!.slug,
+            color: article.category!.color,
+            icon: article.category!.icon,
+          },
+          tags: (article.tags || []).map((tag) => ({
+            id: String(tag.id),
+            title: tag.title,
+            slug: tag.slug,
+          })),
+          complexity: article.complexity || 'beginner',
+          readingTime: article.readingTime || 0,
+          publishedAt: article.publishedAt || new Date().toISOString(),
+        }
+      })
 
     // If no articles, show empty state
     if (transformedArticles.length === 0) {
