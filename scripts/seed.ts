@@ -91,7 +91,7 @@ async function uploadImage(
       file: imageData as File,
     })
 
-    return media.id
+    return String(media.id)
   } catch (error) {
     console.error(`  ⚠️  Error uploading image: ${filename}`, error)
     return null
