@@ -12,11 +12,11 @@
  * - EmptyState: Fallback component when no articles are published
  *
  * Shared types:
- * - ArticleData, CategoryData, TagData, CoverImageData: Shared interfaces for article components
+ * - ArticleData, CategoryData, TagData, CoverImageData, Complexity: Shared interfaces for article components
  */
 
 // Types
-export type { ArticleData, CategoryData, TagData, CoverImageData } from './types'
+export type { ArticleData, CategoryData, TagData, CoverImageData, Complexity } from './types'
 
 // Components
 export { CategoryBadge } from './CategoryBadge'

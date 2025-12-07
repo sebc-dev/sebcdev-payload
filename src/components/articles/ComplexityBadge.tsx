@@ -3,8 +3,7 @@
 import { useTranslations } from 'next-intl'
 import { Badge } from '@/components/ui/badge'
 import { cn } from '@/lib/utils'
-
-type Complexity = 'beginner' | 'intermediate' | 'advanced'
+import type { Complexity } from './types'
 
 /**
  * ComplexityBadge component props
