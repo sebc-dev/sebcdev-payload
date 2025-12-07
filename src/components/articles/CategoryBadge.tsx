@@ -72,7 +72,7 @@ export function CategoryBadge({
 
   return (
     <Link
-      href={`/${locale}/articles?category=${category.slug}`}
+      href={`/${locale}/articles?category=${encodeURIComponent(category.slug)}`}
       className="transition-opacity hover:opacity-80"
     >
       {badge}
