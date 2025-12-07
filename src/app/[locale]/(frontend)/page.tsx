@@ -74,8 +74,10 @@ type PayloadTag = NonNullable<PayloadArticle['tags']>[number]
 /** Extracts cover image from Payload featured image */
 function mapCoverImage(featuredImage: PayloadImage): ArticleData['coverImage'] {
   if (typeof featuredImage !== 'object' || featuredImage === null) return null
+  const url = typeof featuredImage.url === 'string' ? featuredImage.url.trim() : ''
+  if (!url) return null
   return {
-    url: typeof featuredImage.url === 'string' ? featuredImage.url : '',
+    url,
     alt:
       'alt' in featuredImage && typeof featuredImage.alt === 'string'
         ? featuredImage.alt
