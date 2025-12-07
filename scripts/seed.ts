@@ -1151,18 +1151,37 @@ async function seed() {
 
   const payload = await getPayload({ config })
 
+  // Track completed steps for better error reporting
+  const completedSteps: string[] = []
+  let currentStep = ''
+
   try {
     if (shouldClean) {
+      currentStep = 'clean'
       await cleanAll(payload)
+      completedSteps.push('clean')
     }
 
+    currentStep = 'categories'
     const categoryMap = await seedCategories(payload)
+    completedSteps.push('categories')
+
+    currentStep = 'tags'
     const tagMap = await seedTags(payload)
+    completedSteps.push('tags')
+
+    currentStep = 'articles'
     await seedArticles(payload, categoryMap, tagMap)
+    completedSteps.push('articles')
 
     console.log('\n✨ Seed completed successfully!\n')
   } catch (error) {
-    console.error('\n❌ Seed failed:', error)
+    console.error(`\n❌ Seed failed during step: ${currentStep}`)
+    if (completedSteps.length > 0) {
+      console.error(`   ✅ Completed steps: ${completedSteps.join(' → ')}`)
+    }
+    console.error(`   💡 The seed is idempotent - you can safely re-run it to continue`)
+    console.error('\nError details:', error)
     process.exit(1)
   }
 
