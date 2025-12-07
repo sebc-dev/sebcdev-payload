@@ -79,7 +79,7 @@ interface FeaturedArticleCardProps {
  *     slug: 'scalable-react-apps',
  *     excerpt: 'Learn advanced patterns for building large-scale React applications...',
  *     coverImage: { url: '/images/react-scale.jpg', alt: 'React at scale' },
- *     category: { id: '1', title: 'Tutoriels', slug: 'tutorials', color: '#06b6d4', icon: '🎓' },
+ *     category: { id: '1', title: 'Tutoriels', slug: 'tutorials', color: '#06b6d4', icon: 'graduation-cap' },
  *     tags: [
  *       { id: '1', title: 'React', slug: 'react' },
  *       { id: '2', title: 'Performance', slug: 'performance' },
