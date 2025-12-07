@@ -110,7 +110,6 @@ export async function FeaturedArticleCard({
           'motion-safe:hover:shadow-[var(--shadow-lg)] motion-safe:hover:scale-[1.01]',
           // Focus ring for accessibility
           'focus-within:ring-2 focus-within:ring-primary focus-within:ring-offset-2 focus-within:ring-offset-background',
-          className,
         )}
       >
         {/* Cover Image - Full width with fixed height, object-cover for proper fill */}
