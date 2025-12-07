@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import { Badge } from '@/components/ui/badge'
 import { cn } from '@/lib/utils'
-import { getLucideIcon } from '@/lib/lucide-icons'
+import { getLucideIcon, type LucideCategoryIcon } from '@/lib/lucide-icons'
 
 /**
  * Category interface for type safety
@@ -12,7 +12,7 @@ interface Category {
   title: string
   slug: string
   color?: string
-  icon?: string
+  icon?: LucideCategoryIcon
 }
 
 /**

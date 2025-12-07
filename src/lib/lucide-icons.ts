@@ -280,9 +280,12 @@ export const LUCIDE_ICON_COMPONENTS: Record<LucideCategoryIcon, LucideIcon> = {
  * Gets the Lucide icon component for a given icon name.
  * Uses explicit whitelist mapping for type safety.
  *
- * @param iconName - The kebab-case icon name (e.g., "book-open")
+ * @param iconName - The icon name from Payload's icon field, or null/undefined
  * @returns The Lucide icon component or null if not found
  */
-export function getLucideIcon(iconName: string): LucideIcon | null {
-  return LUCIDE_ICON_COMPONENTS[iconName as LucideCategoryIcon] ?? null
+export function getLucideIcon(iconName: LucideCategoryIcon | null | undefined): LucideIcon | null {
+  if (iconName == null) {
+    return null
+  }
+  return LUCIDE_ICON_COMPONENTS[iconName] ?? null
 }

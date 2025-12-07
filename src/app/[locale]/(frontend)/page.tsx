@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button'
 import { FeaturedArticleCard, ArticleGrid, EmptyState } from '@/components/articles'
 import type { ArticleData } from '@/components/articles/types'
 import type { Article as PayloadArticle } from '@/payload-types'
+import type { LucideCategoryIcon } from '@/lib/lucide-icons'
 
 /**
  * Force dynamic rendering to avoid pre-rendering during build.
@@ -92,7 +93,7 @@ function mapCategory(category: PayloadCategory): ArticleData['category'] {
     title: 'name' in category ? (category.name as string) : '',
     slug: category.slug || '',
     color: 'color' in category ? (category.color as string) : undefined,
-    icon: 'icon' in category ? (category.icon as string) : undefined,
+    icon: 'icon' in category ? (category.icon as LucideCategoryIcon) : undefined,
   }
 }
 

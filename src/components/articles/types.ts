@@ -1,3 +1,5 @@
+import type { LucideCategoryIcon } from '@/lib/lucide-icons'
+
 /**
  * Shared type definitions for article components
  *
@@ -14,7 +16,7 @@ export interface CategoryData {
   title: string
   slug: string
   color?: string
-  icon?: string
+  icon?: LucideCategoryIcon
 }
 
 /**
