@@ -29,11 +29,15 @@ async function downloadImage(
   url: string,
   filename: string,
 ): Promise<{ data: Uint8Array; mimetype: string; name: string; size: number } | null> {
+  const controller = new AbortController()
+  const timeout = setTimeout(() => controller.abort(), 10000) // 10s timeout
+
   try {
     const response = await fetch(url, {
       headers: {
         'User-Agent': 'Mozilla/5.0 (compatible; SeedScript/1.0)',
       },
+      signal: controller.signal,
     })
 
     if (!response.ok) {
@@ -52,8 +56,14 @@ async function downloadImage(
       size: data.length,
     }
   } catch (error) {
+    if (error instanceof Error && error.name === 'AbortError') {
+      console.error(`  ⚠️  Timeout downloading image: ${url} (10s exceeded)`)
+      return null
+    }
     console.error(`  ⚠️  Error downloading image: ${url}`, error)
     return null
+  } finally {
+    clearTimeout(timeout)
   }
 }
 
