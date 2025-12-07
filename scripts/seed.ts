@@ -1187,6 +1187,20 @@ async function cleanAll(payload: BasePayload) {
 async function seed() {
   const args = process.argv.slice(2)
   const shouldClean = args.includes('--clean') || args.includes('-c')
+  const hasForce = args.includes('--force') || args.includes('-f')
+
+  // Safety check: prevent accidental production seeding
+  if (process.env.NODE_ENV === 'production' && !hasForce) {
+    console.error('❌ Cannot run seed in production without --force flag')
+    console.error('   Seeding would add demo data to your production database.')
+    console.error('   If you really want to proceed, run:')
+    console.error('   NODE_ENV=production pnpm seed --force')
+    process.exit(1)
+  }
+
+  if (process.env.NODE_ENV === 'production') {
+    console.warn('⚠️  Running seed in PRODUCTION mode with --force flag!')
+  }
 
   console.log('\n🌱 Starting seed process...\n')
 
