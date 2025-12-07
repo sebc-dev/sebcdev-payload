@@ -98,7 +98,6 @@ export async function ArticleCard({ article, locale, className }: ArticleCardPro
           'motion-safe:hover:shadow-[var(--shadow-md)] motion-safe:hover:scale-[1.02]',
           // Focus ring for accessibility
           'focus-within:ring-2 focus-within:ring-primary focus-within:ring-offset-2 focus-within:ring-offset-background',
-          className,
         )}
       >
         {/* Cover Image */}
