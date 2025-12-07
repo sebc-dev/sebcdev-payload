@@ -43,7 +43,7 @@ export const Articles: CollectionConfig = {
   },
   admin: {
     useAsTitle: 'title',
-    defaultColumns: ['title', 'status', 'publishedAt'],
+    defaultColumns: ['title', 'status', 'complexity', 'publishedAt'],
     group: 'Content',
   },
   hooks: {
