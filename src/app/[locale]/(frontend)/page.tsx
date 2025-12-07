@@ -22,6 +22,8 @@ interface HomePageProps {
   params: Promise<{ locale: string }>
 }
 
+const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://sebc.dev'
+
 /**
  * SEO metadata for the homepage
  * Generates localized titles, descriptions, and hreflang alternates
@@ -46,7 +48,7 @@ export async function generateMetadata({ params }: HomePageProps): Promise<Metad
     title,
     description,
     alternates: {
-      canonical: `https://sebc.dev/${locale}`,
+      canonical: `${baseUrl}/${locale}`,
       languages: {
         fr: '/fr',
         en: '/en',
@@ -55,7 +57,7 @@ export async function generateMetadata({ params }: HomePageProps): Promise<Metad
     openGraph: {
       title,
       description,
-      url: `https://sebc.dev/${locale}`,
+      url: `${baseUrl}/${locale}`,
       siteName: 'sebc.dev',
       locale: locale === 'en' ? 'en_US' : 'fr_FR',
       type: 'website',
