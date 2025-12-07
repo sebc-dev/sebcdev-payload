@@ -1,8 +1,8 @@
 import { XIcon } from '@/components/icons/social'
+import { Link } from '@/i18n/navigation'
 import { categories, levels, themes } from '@/lib/constants'
 import { FacebookIcon, LinkedinIcon } from 'lucide-react'
 import { getTranslations } from 'next-intl/server'
-import Link from 'next/link'
 
 const socialLinks = [
   { name: 'Facebook', href: 'https://facebook.com/sebc.dev', icon: FacebookIcon },
