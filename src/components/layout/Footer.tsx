@@ -42,7 +42,7 @@ export async function Footer() {
         <div className="grid grid-cols-1 gap-8 text-center sm:grid-cols-2 md:text-left lg:grid-cols-4">
           {/* Themes Column */}
           <div>
-            <h3 className="mb-4 text-sm font-semibold text-foreground">{t('sections.themes')}</h3>
+            <h2 className="mb-4 text-sm font-semibold text-foreground">{t('sections.themes')}</h2>
             <nav className="flex flex-col gap-2" aria-label={a11yT('footerThemesNav')}>
               {themes.map((theme) => (
                 <Link
@@ -58,9 +58,9 @@ export async function Footer() {
 
           {/* Categories Column */}
           <div>
-            <h3 className="mb-4 text-sm font-semibold text-foreground">
+            <h2 className="mb-4 text-sm font-semibold text-foreground">
               {t('sections.categories')}
-            </h3>
+            </h2>
             <nav className="flex flex-col gap-2" aria-label={a11yT('footerCategoriesNav')}>
               {categories.map((category) => (
                 <Link
@@ -76,7 +76,7 @@ export async function Footer() {
 
           {/* Levels Column */}
           <div>
-            <h3 className="mb-4 text-sm font-semibold text-foreground">{t('sections.levels')}</h3>
+            <h2 className="mb-4 text-sm font-semibold text-foreground">{t('sections.levels')}</h2>
             <nav className="flex flex-col gap-2" aria-label={a11yT('footerLevelsNav')}>
               {levels.map((level) => (
                 <Link
