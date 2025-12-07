@@ -14,8 +14,16 @@ export default function cloudflareImageLoader({ src, width, quality }) {
   if (src.startsWith('http://') || src.startsWith('https://')) {
     const url = new URL(src)
 
-    // Check if this is a Cloudflare R2 URL
-    if (url.hostname.includes('r2.cloudflarestorage.com') || url.hostname.includes('r2.dev')) {
+    // Validate hostname ends with allowed R2 domains (prevents SSRF via hostname manipulation)
+    const isR2Host = (hostname) => {
+      const allowedSuffixes = ['.r2.cloudflarestorage.com', '.r2.dev']
+      const allowedExact = ['r2.cloudflarestorage.com', 'r2.dev']
+      return (
+        allowedExact.includes(hostname) ||
+        allowedSuffixes.some((suffix) => hostname.endsWith(suffix))
+      )
+    }
+    if (isR2Host(url.hostname)) {
       // Add Cloudflare image resizing parameters
       url.searchParams.set('width', width.toString())
       if (quality) {
