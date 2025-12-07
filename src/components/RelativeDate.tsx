@@ -50,6 +50,11 @@ export function RelativeDate({ date, className }: RelativeDateProps) {
   const format = useFormatter()
   const dateObj = typeof date === 'string' ? new Date(date) : date
 
+  // Validate date - return empty span if invalid
+  if (!(dateObj instanceof Date) || isNaN(dateObj.getTime())) {
+    return <span className={className} />
+  }
+
   // Format as relative time using next-intl (e.g., "il y a 2 jours")
   const relativeTime = format.relativeTime(dateObj)
 
