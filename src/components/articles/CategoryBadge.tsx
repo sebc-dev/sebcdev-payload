@@ -1,19 +1,8 @@
 import Link from 'next/link'
 import { Badge } from '@/components/ui/badge'
 import { cn } from '@/lib/utils'
-import { getLucideIcon, type LucideCategoryIcon } from '@/lib/lucide-icons'
-
-/**
- * Category interface for type safety
- * Represents a category that can be displayed in badges
- */
-interface Category {
-  id: string
-  title: string
-  slug: string
-  color?: string
-  icon?: LucideCategoryIcon
-}
+import { getLucideIcon } from '@/lib/lucide-icons'
+import type { CategoryData } from './types'
 
 /**
  * CategoryBadge component props
@@ -23,7 +12,7 @@ interface Category {
  * @param className - Additional CSS classes to apply
  */
 interface CategoryBadgeProps {
-  category: Category
+  category: CategoryData
   locale: string
   clickable?: boolean
   className?: string
