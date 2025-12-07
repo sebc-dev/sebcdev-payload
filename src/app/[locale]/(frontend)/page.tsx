@@ -175,9 +175,9 @@ export default async function HomePage({ params }: HomePageProps) {
   // Empty state
   if (articles.length === 0) {
     return (
-      <main className="container mx-auto px-4 py-12">
+      <div className="container mx-auto px-4 py-12">
         <EmptyState locale={locale} />
-      </main>
+      </div>
     )
   }
 
@@ -185,7 +185,7 @@ export default async function HomePage({ params }: HomePageProps) {
   const [featuredArticle, ...recentArticles] = articles
 
   return (
-    <main className="container mx-auto px-4 py-8 space-y-12">
+    <div className="container mx-auto px-4 py-8 space-y-12">
       {/* Featured Article */}
       <FeaturedArticleCard article={featuredArticle} locale={locale} />
 
@@ -201,6 +201,6 @@ export default async function HomePage({ params }: HomePageProps) {
           </Link>
         </Button>
       </section>
-    </main>
+    </div>
   )
 }

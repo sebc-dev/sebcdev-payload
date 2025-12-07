@@ -1,19 +1,17 @@
 import { expect, test } from '@playwright/test'
 import AxeBuilder from '@axe-core/playwright'
 
-import enMessages from '../../messages/en.json' with { type: 'json' }
-import frMessages from '../../messages/fr.json' with { type: 'json' }
-
 /**
- * Homepage E2E Tests
+ * Homepage E2E Tests - Base Tests
  *
- * Comprehensive tests for the homepage including:
- * - Page load (FR/EN)
- * - Featured article display
- * - Article grid rendering
- * - Hub CTA navigation
- * - Empty state handling
+ * These tests verify the homepage works correctly regardless of data state.
+ * They focus on:
+ * - Page load and basic structure
  * - Responsive viewports
+ * - Multilingual routing
+ * - Accessibility compliance
+ *
+ * For tests with seeded article data, see homepage-seeded.e2e.spec.ts
  */
 test.describe('Homepage', () => {
   test.describe('Page Load', () => {
@@ -27,115 +25,6 @@ test.describe('Homepage', () => {
       await page.goto('/en')
       await expect(page).toHaveTitle(/sebc\.dev/)
       await expect(page.locator('main')).toBeVisible()
-    })
-  })
-
-  test.describe('Featured Article', () => {
-    test('displays featured article with H1 title', async ({ page }) => {
-      await page.goto('/fr')
-
-      // Check for H1 (featured article title)
-      const h1 = page.locator('h1')
-      const h1Count = await h1.count()
-
-      // If there are articles, should have exactly one H1
-      if (h1Count > 0) {
-        expect(h1Count).toBe(1)
-        await expect(h1).toBeVisible()
-      }
-    })
-
-    test('displays read article CTA', async ({ page }) => {
-      await page.goto('/fr')
-
-      const readButton = page.getByRole('link', {
-        name: new RegExp(frMessages.homepage.readArticle, 'i'),
-      })
-
-      // If featured article exists, CTA should be visible
-      if ((await readButton.count()) > 0) {
-        await expect(readButton.first()).toBeVisible()
-      }
-    })
-  })
-
-  test.describe('Article Grid', () => {
-    test('displays recent articles section', async ({ page }) => {
-      await page.goto('/fr')
-
-      // Section title
-      const sectionTitle = page.getByRole('heading', {
-        name: new RegExp(frMessages.homepage.recentArticles, 'i'),
-      })
-
-      // If there are more than 1 article, section should exist
-      const h1Exists = (await page.locator('h1').count()) > 0
-      if (h1Exists) {
-        // May or may not have recent articles depending on data
-        // Just check the page doesn't crash
-        await expect(page.locator('main')).toBeVisible()
-      }
-    })
-  })
-
-  test.describe('Hub CTA', () => {
-    test('displays view all articles button', async ({ page }) => {
-      await page.goto('/fr')
-
-      const ctaButton = page.getByRole('link', {
-        name: new RegExp(frMessages.homepage.viewAllArticles, 'i'),
-      })
-
-      // If there are articles, CTA should exist
-      if ((await ctaButton.count()) > 0) {
-        await expect(ctaButton).toBeVisible()
-      }
-    })
-
-    test('navigates to Hub on click', async ({ page }) => {
-      await page.goto('/fr')
-
-      const ctaButton = page.getByRole('link', {
-        name: new RegExp(frMessages.homepage.viewAllArticles, 'i'),
-      })
-
-      if ((await ctaButton.count()) > 0) {
-        await ctaButton.click()
-        await expect(page).toHaveURL('/fr/articles')
-      }
-    })
-  })
-
-  test.describe('Empty State', () => {
-    test('displays welcome message when no articles', async ({ page }) => {
-      await page.goto('/fr')
-
-      const emptyTitle = page.getByRole('heading', {
-        name: new RegExp(frMessages.homepage.emptyState.title, 'i'),
-      })
-
-      // If empty state is visible, check content
-      if (await emptyTitle.isVisible()) {
-        await expect(emptyTitle).toBeVisible()
-        await expect(
-          page.getByText(new RegExp(frMessages.homepage.emptyState.description, 'i')),
-        ).toBeVisible()
-      }
-    })
-
-    test('hides create CTA when not authenticated', async ({ page }) => {
-      await page.goto('/fr')
-
-      const emptyTitle = page.getByRole('heading', {
-        name: new RegExp(frMessages.homepage.emptyState.title, 'i'),
-      })
-
-      if (await emptyTitle.isVisible()) {
-        const createCta = page.getByRole('link', {
-          name: new RegExp(frMessages.homepage.emptyState.cta, 'i'),
-        })
-        await expect(createCta).not.toBeVisible()
-      }
     })
   })
 
@@ -170,32 +59,6 @@ test.describe('Homepage', () => {
       await page.goto('/en')
       const htmlLang = await page.locator('html').getAttribute('lang')
       expect(htmlLang).toBe('en')
-    })
-  })
-
-  test.describe('Navigation', () => {
-    test('can navigate from featured article to article page', async ({ page }) => {
-      await page.goto('/fr')
-
-      const h1Link = page.locator('h1 a').first()
-
-      if (await h1Link.isVisible()) {
-        await h1Link.click()
-        await expect(page).toHaveURL(/\/fr\/articles\//)
-      }
-    })
-
-    test('EN navigation works correctly', async ({ page }) => {
-      await page.goto('/en')
-
-      const ctaButton = page.getByRole('link', {
-        name: new RegExp(enMessages.homepage.viewAllArticles, 'i'),
-      })
-
-      if ((await ctaButton.count()) > 0) {
-        await ctaButton.click()
-        await expect(page).toHaveURL('/en/articles')
-      }
     })
   })
 
@@ -242,12 +105,23 @@ test.describe('Homepage', () => {
       const images = page.locator('img')
       const count = await images.count()
 
-      // Verify each image has non-empty alt text
+      // Verify each image has non-empty alt text (except decorative images with aria-hidden)
       for (let i = 0; i < count; i++) {
         const img = images.nth(i)
         const alt = await img.getAttribute('alt')
-        expect(alt).toBeTruthy()
-        expect(alt?.trim().length).toBeGreaterThan(0)
+        const ariaHidden = await img.evaluate((el) => {
+          // Check if image or parent has aria-hidden
+          return (
+            el.getAttribute('aria-hidden') === 'true' || el.closest('[aria-hidden="true"]') !== null
+          )
+        })
+
+        // Decorative images (aria-hidden) can have empty alt
+        // Content images must have non-empty alt
+        if (!ariaHidden) {
+          expect(alt, `Image ${i} is missing alt text`).toBeTruthy()
+          expect(alt?.trim().length, `Image ${i} has empty alt text`).toBeGreaterThan(0)
+        }
       }
     })
 
@@ -293,9 +167,13 @@ test.describe('Homepage', () => {
     test('page has proper document structure', async ({ page }) => {
       await page.goto('/fr')
 
-      // Check that main element exists
-      const main = page.locator('main')
-      await expect(main).toBeVisible()
+      // Check that there is exactly one main element (WCAG requirement)
+      const mainElements = page.locator('main')
+      const mainCount = await mainElements.count()
+      expect(mainCount, 'Page should have exactly one <main> element').toBe(1)
+
+      // Check that main element is visible
+      await expect(mainElements.first()).toBeVisible()
 
       // Check for proper heading hierarchy
       const headings = await page.locator('h1, h2, h3, h4, h5, h6').allTextContents()

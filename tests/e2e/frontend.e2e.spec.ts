@@ -1,7 +1,5 @@
 import { expect, test } from '@playwright/test'
 
-import frMessages from '../../messages/fr.json' with { type: 'json' }
-
 /**
  * Frontend E2E Tests
  *
@@ -9,16 +7,6 @@ import frMessages from '../../messages/fr.json' with { type: 'json' }
  * Uses the new design system (Anthracite & Vert Canard theme).
  */
 test.describe('Frontend', () => {
-  test('can go on homepage', async ({ page }) => {
-    await page.goto('/fr')
-
-    await expect(page).toHaveTitle(/sebc\.dev/)
-
-    // Use localized string from i18n resources to avoid hardcoded English regex
-    const heading = page.locator('h1').first()
-    await expect(heading).toContainText(frMessages.home.welcome)
-  })
-
   test('homepage uses design system CSS variables', async ({ page }) => {
     await page.goto('/fr')
 

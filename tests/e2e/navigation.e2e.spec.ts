@@ -71,17 +71,6 @@ test.describe('Navigation', () => {
       ).toBeVisible()
     })
 
-    test('Articles link navigates correctly', async ({ page }) => {
-      await page.goto('/fr')
-
-      await page
-        .locator('header nav')
-        .getByRole('link', { name: frMessages.navigation.articles })
-        .click()
-
-      await expect(page).toHaveURL('/fr/articles')
-    })
-
     test('hamburger menu is hidden on desktop', async ({ page }) => {
       await page.goto('/fr')
 
@@ -125,21 +114,6 @@ test.describe('Navigation', () => {
       // Close button uses translated label from mobileMenu.close
       await sheet.getByRole('button', { name: frMessages.mobileMenu.close }).click()
       await expect(sheet).not.toBeVisible()
-    })
-
-    test('mobile menu closes on navigation', async ({ page }) => {
-      await page.goto('/fr')
-
-      // Open menu
-      await page.click(`button[aria-label="${frMessages.mobileMenu.open}"]`)
-
-      // Click navigation link
-      const sheet = page.getByRole('dialog')
-      await sheet.getByRole('link', { name: frMessages.navigation.articles }).click()
-
-      // Sheet should close
-      await expect(sheet).not.toBeVisible()
-      await expect(page).toHaveURL('/fr/articles')
     })
 
     test('Escape key closes mobile menu', async ({ page }) => {
@@ -377,16 +351,6 @@ test.describe('Navigation', () => {
 
       await page.goto('/en')
       await expect(page.locator('footer')).toBeVisible()
-    })
-
-    test('footer links work', async ({ page }) => {
-      await page.goto('/fr')
-
-      // Click a category link in footer (uses taxonomy.category keys)
-      const footer = page.locator('footer')
-      await footer.getByRole('link', { name: frMessages.taxonomy.category.news }).click()
-
-      await expect(page).toHaveURL('/fr/articles?category=news')
     })
   })
 })

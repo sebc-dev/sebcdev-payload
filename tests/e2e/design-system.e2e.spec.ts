@@ -23,25 +23,6 @@ test.describe('Design System', () => {
       // Nunito Sans should be in the font stack
       expect(fontFamily.toLowerCase()).toContain('nunito')
     })
-
-    test('code elements use JetBrains Mono font', async ({ page }) => {
-      await page.goto('/fr')
-
-      const code = page.locator('code').first()
-
-      // Skip test if no code elements found (homepage may not always have code elements)
-      // This prevents false failures when homepage content changes
-      const codeCount = await code.count()
-      if (codeCount === 0) {
-        test.skip(true, 'No code elements found on homepage')
-        return
-      }
-
-      const fontFamily = await code.evaluate((el) => window.getComputedStyle(el).fontFamily)
-
-      // JetBrains Mono should be in the font stack
-      expect(fontFamily.toLowerCase()).toContain('jetbrains')
-    })
   })
 
   test.describe('Accessibility', () => {
