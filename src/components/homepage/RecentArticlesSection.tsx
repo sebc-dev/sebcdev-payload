@@ -5,6 +5,7 @@ import config from '@payload-config'
 import { Button } from '@/components/ui/button'
 import { ArticleCard } from '@/components/articles'
 import { cn } from '@/lib/utils'
+import type { LucideCategoryIcon } from '@/lib/lucide-icons'
 
 interface RecentArticlesSectionProps {
   locale: string
@@ -33,7 +34,7 @@ interface RawArticle {
     title: string
     slug: string
     color?: string
-    icon?: string
+    icon?: LucideCategoryIcon
   }
   tags?: Array<{
     id: string | number
