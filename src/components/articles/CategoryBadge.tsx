@@ -41,7 +41,7 @@ interface CategoryBadgeProps {
  *     title: 'Tutoriels',
  *     slug: 'tutorials',
  *     color: '#06b6d4',
- *     icon: '🎓'
+ *     icon: 'graduation-cap'
  *   }}
  *   locale="fr"
  *   clickable={true}
