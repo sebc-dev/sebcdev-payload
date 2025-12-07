@@ -28,9 +28,11 @@ const legalLinks = ['privacy', 'terms-of-use', 'terms', 'sitemap'] as const
  * @returns Footer element with semantic contentinfo role
  */
 export async function Footer() {
-  const t = await getTranslations('footer')
-  const taxonomyT = await getTranslations('taxonomy')
-  const a11yT = await getTranslations('accessibility')
+  const [t, taxonomyT, a11yT] = await Promise.all([
+    getTranslations('footer'),
+    getTranslations('taxonomy'),
+    getTranslations('accessibility'),
+  ])
   const currentYear = new Date().getFullYear()
 
   return (
