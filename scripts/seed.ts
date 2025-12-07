@@ -1077,6 +1077,18 @@ async function seedArticles(
  * Deletes all seeded data (articles, categories, tags, media).
  */
 async function cleanAll(payload: BasePayload) {
+  // Safety check: prevent accidental production data deletion
+  if (process.env.NODE_ENV === 'production') {
+    const args = process.argv.slice(2)
+    if (!args.includes('--force')) {
+      console.error('❌ Cannot run --clean in production without --force flag')
+      console.error('   If you really want to delete all data, run:')
+      console.error('   NODE_ENV=production pnpm seed --clean --force')
+      process.exit(1)
+    }
+    console.warn('⚠️  Running clean in PRODUCTION mode with --force flag!')
+  }
+
   console.log('🧹 Cleaning existing seed data...\n')
 
   // Delete articles first (they reference categories, tags, and media)
