@@ -128,12 +128,39 @@ test.describe('Homepage', () => {
     test('interactive elements are keyboard accessible', async ({ page }) => {
       await page.goto('/fr')
 
-      // Tab through the page
-      await page.keyboard.press('Tab')
+      // Track unique focused elements to detect focus traps and ensure multiple elements are reachable
+      const focusedElements: string[] = []
+      const maxTabs = 15 // Reasonable number to traverse main interactive elements
 
-      // Check that something received focus
-      const focusedElement = page.locator(':focus')
-      await expect(focusedElement).toBeVisible()
+      for (let i = 0; i < maxTabs; i++) {
+        await page.keyboard.press('Tab')
+
+        const focused = page.locator(':focus')
+        if ((await focused.count()) > 0) {
+          // Get a unique identifier for the focused element
+          const identifier = await focused.evaluate((el) => {
+            const tagName = el.tagName.toLowerCase()
+            const role = el.getAttribute('role') || ''
+            const ariaLabel = el.getAttribute('aria-label') || ''
+            const text = el.textContent?.trim().slice(0, 30) || ''
+            return `${tagName}${role ? `[role=${role}]` : ''}${ariaLabel ? `[aria-label="${ariaLabel}"]` : ''}:${text}`
+          })
+
+          // Only add if not already in the list (avoid counting same element twice)
+          if (!focusedElements.includes(identifier)) {
+            focusedElements.push(identifier)
+          }
+        }
+      }
+
+      // Assert that at least 3 different elements received focus (avoids focus traps)
+      expect(
+        focusedElements.length,
+        `Expected at least 3 focusable elements, but found ${focusedElements.length}: ${focusedElements.join(', ')}`,
+      ).toBeGreaterThanOrEqual(3)
+
+      // Verify focus didn't get stuck (if we have multiple unique elements, focus is moving)
+      expect(focusedElements.length).toBeGreaterThan(1)
     })
 
     test('focus indicators are visible on interactive elements', async ({ page }) => {
