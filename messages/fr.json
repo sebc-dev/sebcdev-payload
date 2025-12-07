@@ -114,6 +114,10 @@
       "title": "Bienvenue sur sebc.dev !",
       "description": "Aucun article n'a encore été publié.",
       "cta": "Créer un article"
+    },
+    "errorState": {
+      "title": "Échec du chargement des articles",
+      "description": "Veuillez réessayer plus tard ou contacter le support si le problème persiste."
     }
   },
   "article": {

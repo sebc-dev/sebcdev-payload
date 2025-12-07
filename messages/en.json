@@ -114,6 +114,10 @@
       "title": "Welcome to sebc.dev!",
       "description": "No articles have been published yet.",
       "cta": "Create an article"
+    },
+    "errorState": {
+      "title": "Failed to load articles",
+      "description": "Please try again later or contact support if the problem persists."
     }
   },
   "article": {
