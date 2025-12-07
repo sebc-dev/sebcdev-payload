@@ -63,7 +63,7 @@ const COMPLEXITY_CONFIG: Record<Complexity, { emoji: string; classes: string }> 
  * ```
  */
 export function ComplexityBadge({ level, className }: ComplexityBadgeProps) {
-  const t = useTranslations('article.complexity')
+  const t = useTranslations('taxonomy.level')
   const config = COMPLEXITY_CONFIG[level]
 
   return (
