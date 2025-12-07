@@ -3,6 +3,7 @@ import { Badge } from '@/components/ui/badge'
 import { cn } from '@/lib/utils'
 import { getLucideIcon } from '@/lib/lucide-icons'
 import type { CategoryData } from './types'
+import type { Locale } from '@/i18n/config'
 
 /**
  * CategoryBadge component props
@@ -13,7 +14,7 @@ import type { CategoryData } from './types'
  */
 interface CategoryBadgeProps {
   category: CategoryData
-  locale: string
+  locale: Locale
   clickable?: boolean
   className?: string
 }

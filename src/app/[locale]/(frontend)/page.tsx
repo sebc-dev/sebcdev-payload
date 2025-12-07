@@ -9,6 +9,7 @@ import { FeaturedArticleCard, ArticleGrid, EmptyState } from '@/components/artic
 import type { ArticleData } from '@/components/articles/types'
 import type { Article as PayloadArticle } from '@/payload-types'
 import type { LucideCategoryIcon } from '@/lib/lucide-icons'
+import type { Locale } from '@/i18n/config'
 
 /**
  * Force dynamic rendering to avoid pre-rendering during build.
@@ -139,7 +140,8 @@ function mapArticle(payloadArticle: PayloadArticle): ArticleData {
  * - CTA to articles hub
  */
 export default async function HomePage({ params }: HomePageProps) {
-  const { locale } = await params
+  const { locale: localeParam } = await params
+  const locale = localeParam as Locale
   setRequestLocale(locale)
 
   const t = await getTranslations('homepage')
@@ -149,7 +151,7 @@ export default async function HomePage({ params }: HomePageProps) {
   // Fetch 7 most recent published articles
   const { docs: payloadArticles } = (await payload.find({
     collection: 'articles',
-    locale: locale as 'fr' | 'en',
+    locale,
     limit: 7,
     sort: '-publishedAt',
     where: {

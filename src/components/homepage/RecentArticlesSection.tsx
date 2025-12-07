@@ -6,9 +6,10 @@ import { Button } from '@/components/ui/button'
 import { ArticleCard } from '@/components/articles'
 import { cn } from '@/lib/utils'
 import type { LucideCategoryIcon } from '@/lib/lucide-icons'
+import type { Locale } from '@/i18n/config'
 
 interface RecentArticlesSectionProps {
-  locale: string
+  locale: Locale
   className?: string
   limit?: number
 }
