@@ -9,12 +9,14 @@ import type { ArticleData } from './types'
  * @param locale - Current locale (e.g., 'fr', 'en')
  * @param title - Optional custom section title (uses i18n fallback if not provided)
  * @param className - Additional CSS classes to apply to the section
+ * @param headingId - Optional unique ID for the heading element (for aria-labelledby)
  */
 interface ArticleGridProps {
   articles: ArticleData[]
   locale: string
   title?: string
   className?: string
+  headingId?: string
 }
 
 /**
@@ -78,9 +80,16 @@ interface ArticleGridProps {
  * />
  * ```
  */
-export async function ArticleGrid({ articles, locale, title, className }: ArticleGridProps) {
+export async function ArticleGrid({
+  articles,
+  locale,
+  title,
+  className,
+  headingId,
+}: ArticleGridProps) {
   const t = await getTranslations('homepage')
   const sectionTitle = title ?? t('recentArticles')
+  const id = headingId ?? 'article-grid-heading'
 
   // Return null if no articles to prevent rendering empty section
   if (articles.length === 0) {
@@ -88,9 +97,9 @@ export async function ArticleGrid({ articles, locale, title, className }: Articl
   }
 
   return (
-    <section className={cn('space-y-6', className)} aria-labelledby="recent-articles-heading">
+    <section className={cn('space-y-6', className)} aria-labelledby={id}>
       {/* Section Title */}
-      <h2 id="recent-articles-heading" className="text-2xl font-bold">
+      <h2 id={id} className="text-2xl font-bold">
         {sectionTitle}
       </h2>
 
