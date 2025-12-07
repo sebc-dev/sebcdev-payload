@@ -214,10 +214,8 @@ export async function RecentArticlesSection({
     return (
       <section className={cn('py-12', className)}>
         <div className="rounded-lg border border-dashed border-destructive/30 bg-destructive/10 px-6 py-8 text-center">
-          <h2 className="mb-2 text-lg font-semibold text-destructive">Failed to load articles</h2>
-          <p className="text-sm text-muted-foreground">
-            Please try again later or contact support if the problem persists.
-          </p>
+          <h2 className="mb-2 text-lg font-semibold text-destructive">{t('errorState.title')}</h2>
+          <p className="text-sm text-muted-foreground">{t('errorState.description')}</p>
         </div>
       </section>
     )
