@@ -8,6 +8,7 @@ import { ComplexityBadge } from './ComplexityBadge'
 import { TagPill } from './TagPill'
 import { RelativeDate } from '../RelativeDate'
 import type { ArticleData } from './types'
+import type { Locale } from '@/i18n/config'
 
 /**
  * ArticleCard component props
@@ -17,7 +18,7 @@ import type { ArticleData } from './types'
  */
 interface ArticleCardProps {
   article: ArticleData
-  locale: string
+  locale: Locale
   className?: string
 }
 

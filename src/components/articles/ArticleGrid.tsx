@@ -2,6 +2,7 @@ import { getTranslations } from 'next-intl/server'
 import { cn } from '@/lib/utils'
 import { ArticleCard } from './ArticleCard'
 import type { ArticleData } from './types'
+import type { Locale } from '@/i18n/config'
 
 /**
  * ArticleGrid component props
@@ -13,7 +14,7 @@ import type { ArticleData } from './types'
  */
 interface ArticleGridProps {
   articles: ArticleData[]
-  locale: string
+  locale: Locale
   title?: string
   className?: string
   headingId?: string
