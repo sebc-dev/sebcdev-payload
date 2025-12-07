@@ -115,6 +115,7 @@ export async function RecentArticlesSection({
         complexity: true,
         readingTime: true,
         publishedAt: true,
+        createdAt: true,
       },
     })
 
