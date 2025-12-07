@@ -1,4 +1,9 @@
 /**
+ * Allowed R2 bucket hostnames for image optimization (prevents SSRF)
+ */
+const ALLOWED_R2_HOSTS = new Set(['pub-0d00b88484b3494192ddce7103e3d06d.r2.dev'])
+
+/**
  * Cloudflare Image Loader
  *
  * Custom image loader for Next.js to optimize images served from Cloudflare R2.
@@ -14,12 +19,8 @@ export default function cloudflareImageLoader({ src, width, quality }) {
   if (src.startsWith('http://') || src.startsWith('https://')) {
     const url = new URL(src)
 
-    // Validate hostname against allowed R2 bucket (prevents SSRF)
-    const isR2Host = (hostname) => {
-      const allowedHosts = ['pub-0d00b88484b3494192ddce7103e3d06d.r2.dev']
-      return allowedHosts.includes(hostname)
-    }
-    if (isR2Host(url.hostname)) {
+    // Validate hostname against allowed R2 bucket
+    if (ALLOWED_R2_HOSTS.has(url.hostname)) {
       // Add Cloudflare image resizing parameters
       url.searchParams.set('width', width.toString())
       if (quality) {
