@@ -1,16 +1,7 @@
 import Link from 'next/link'
 import { Badge } from '@/components/ui/badge'
 import { cn } from '@/lib/utils'
-
-/**
- * Tag interface for type safety
- * Represents a tag that can be displayed in pills
- */
-interface Tag {
-  id: string
-  title: string
-  slug: string
-}
+import type { TagData } from './types'
 
 /**
  * TagPill component props
@@ -19,7 +10,7 @@ interface Tag {
  * @param className - Additional CSS classes to apply
  */
 interface TagPillProps {
-  tag: Tag
+  tag: TagData
   locale: string
   className?: string
 }
