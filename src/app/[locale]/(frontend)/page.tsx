@@ -6,6 +6,7 @@ import { ArrowRight } from 'lucide-react'
 import config from '@payload-config'
 import { Button } from '@/components/ui/button'
 import { FeaturedArticleCard, ArticleGrid, EmptyState } from '@/components/articles'
+import type { ArticleData } from '@/components/articles/types'
 import type { Article as PayloadArticle } from '@/payload-types'
 
 interface HomePageProps {
@@ -58,34 +59,12 @@ export async function generateMetadata({ params }: HomePageProps): Promise<Metad
   }
 }
 
-/**
- * Component article interface (matches FeaturedArticleCard expectations)
- */
-interface Article {
-  id: string
-  title: string
-  slug: string
-  excerpt: string
-  coverImage?: { url: string; alt?: string } | null
-  category: {
-    id: string
-    title: string
-    slug: string
-    color?: string
-    icon?: string
-  }
-  tags: Array<{ id: string; title: string; slug: string }>
-  complexity: 'beginner' | 'intermediate' | 'advanced'
-  readingTime: number
-  publishedAt: string
-}
-
 type PayloadImage = PayloadArticle['featuredImage']
 type PayloadCategory = PayloadArticle['category']
 type PayloadTag = NonNullable<PayloadArticle['tags']>[number]
 
 /** Extracts cover image from Payload featured image */
-function mapCoverImage(featuredImage: PayloadImage): Article['coverImage'] {
+function mapCoverImage(featuredImage: PayloadImage): ArticleData['coverImage'] {
   if (typeof featuredImage !== 'object' || featuredImage === null) return null
   return {
     url: typeof featuredImage.url === 'string' ? featuredImage.url : '',
@@ -97,7 +76,7 @@ function mapCoverImage(featuredImage: PayloadImage): Article['coverImage'] {
 }
 
 /** Maps Payload category to component category */
-function mapCategory(category: PayloadCategory): Article['category'] {
+function mapCategory(category: PayloadCategory): ArticleData['category'] {
   if (typeof category !== 'object' || category === null) {
     return { id: '', title: '', slug: '' }
   }
@@ -111,7 +90,7 @@ function mapCategory(category: PayloadCategory): Article['category'] {
 }
 
 /** Maps a single Payload tag to component tag */
-function mapTag(tag: PayloadTag): Article['tags'][number] {
+function mapTag(tag: PayloadTag): ArticleData['tags'][number] {
   if (typeof tag === 'object' && tag !== null) {
     return {
       id: String(tag.id),
@@ -125,7 +104,7 @@ function mapTag(tag: PayloadTag): Article['tags'][number] {
 /**
  * Maps Payload article to component article interface
  */
-function mapArticle(payloadArticle: PayloadArticle): Article {
+function mapArticle(payloadArticle: PayloadArticle): ArticleData {
   return {
     id: String(payloadArticle.id),
     title: payloadArticle.title || '',
@@ -134,7 +113,7 @@ function mapArticle(payloadArticle: PayloadArticle): Article {
     coverImage: mapCoverImage(payloadArticle.featuredImage),
     category: mapCategory(payloadArticle.category),
     tags: payloadArticle.tags?.map(mapTag) ?? [],
-    complexity: (payloadArticle.complexity as Article['complexity']) || 'intermediate',
+    complexity: (payloadArticle.complexity as ArticleData['complexity']) || 'intermediate',
     readingTime: payloadArticle.readingTime || 0,
     publishedAt: payloadArticle.publishedAt || new Date().toISOString(),
   }

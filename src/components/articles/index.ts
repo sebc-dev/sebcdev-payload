@@ -10,8 +10,15 @@
  * - ArticleGrid: Responsive grid container for displaying multiple articles
  * - RelativeDate: Localized relative time display
  * - EmptyState: Fallback component when no articles are published
+ *
+ * Shared types:
+ * - ArticleData, CategoryData, TagData, CoverImageData: Shared interfaces for article components
  */
 
+// Types
+export type { ArticleData, CategoryData, TagData, CoverImageData } from './types'
+
+// Components
 export { CategoryBadge } from './CategoryBadge'
 export { ComplexityBadge } from './ComplexityBadge'
 export { TagPill } from './TagPill'

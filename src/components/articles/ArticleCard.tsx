@@ -7,54 +7,7 @@ import { CategoryBadge } from './CategoryBadge'
 import { ComplexityBadge } from './ComplexityBadge'
 import { TagPill } from './TagPill'
 import { RelativeDate } from '../RelativeDate'
-
-/**
- * Category interface for type safety
- * Used in article cards to display category information
- */
-interface Category {
-  id: string
-  title: string
-  slug: string
-  color?: string
-  icon?: string
-}
-
-/**
- * Tag interface for type safety
- * Used in article cards to display article tags
- */
-interface Tag {
-  id: string
-  title: string
-  slug: string
-}
-
-/**
- * Cover image information interface
- * Represents the article's cover image with URL and alt text
- */
-interface CoverImage {
-  url: string
-  alt?: string
-}
-
-/**
- * Article interface for type safety
- * Represents the complete article data needed to render ArticleCard
- */
-interface Article {
-  id: string
-  title: string
-  slug: string
-  excerpt: string
-  coverImage?: CoverImage | null
-  category: Category
-  tags: Tag[]
-  complexity: 'beginner' | 'intermediate' | 'advanced'
-  readingTime: number
-  publishedAt: string
-}
+import type { ArticleData } from './types'
 
 /**
  * ArticleCard component props
@@ -63,7 +16,7 @@ interface Article {
  * @param className - Additional CSS classes to apply to the card
  */
 interface ArticleCardProps {
-  article: Article
+  article: ArticleData
   locale: string
   className?: string
 }
