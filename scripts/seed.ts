@@ -75,7 +75,7 @@ async function uploadImage(
   imageUrl: string,
   filename: string,
   alt: string,
-): Promise<string | null> {
+): Promise<number | null> {
   const imageData = await downloadImage(imageUrl, filename)
 
   if (!imageData) {
@@ -91,7 +91,7 @@ async function uploadImage(
       file: imageData as File,
     })
 
-    return String(media.id)
+    return media.id
   } catch (error) {
     console.error(`  ⚠️  Error uploading image: ${filename}`, error)
     return null
@@ -178,12 +178,12 @@ const TAGS = [
 function createLexicalRoot(children: unknown[]) {
   return {
     root: {
-      type: 'root',
-      format: '',
+      type: 'root' as const,
+      format: '' as const,
       indent: 0,
       version: 1,
       children,
-      direction: 'ltr',
+      direction: 'ltr' as const,
     },
   }
 }
@@ -906,7 +906,7 @@ test('homepage accessibility', async ({ page }) => {
 async function seedCategories(payload: BasePayload) {
   console.log('🏷️  Seeding categories...')
 
-  const categoryMap: Record<string, string> = {}
+  const categoryMap: Record<string, number> = {}
 
   for (const cat of CATEGORIES) {
     // Check if category already exists
@@ -955,7 +955,7 @@ async function seedCategories(payload: BasePayload) {
 async function seedTags(payload: BasePayload) {
   console.log('🔖 Seeding tags...')
 
-  const tagMap: Record<string, string> = {}
+  const tagMap: Record<string, number> = {}
 
   for (const tag of TAGS) {
     // Check if tag already exists
@@ -999,8 +999,8 @@ async function seedTags(payload: BasePayload) {
 
 async function seedArticles(
   payload: BasePayload,
-  categoryMap: Record<string, string>,
-  tagMap: Record<string, string>,
+  categoryMap: Record<string, number>,
+  tagMap: Record<string, number>,
 ) {
   console.log('📝 Seeding articles...')
 
@@ -1022,7 +1022,7 @@ async function seedArticles(
 
     // Upload featured image
     const imageConfig = ARTICLE_IMAGES.find((img) => img.slug === article.slug)
-    let featuredImageId: string | null = null
+    let featuredImageId: number | null = null
 
     if (imageConfig) {
       console.log(`  📷 Uploading image for "${article.slug}"...`)
@@ -1042,7 +1042,7 @@ async function seedArticles(
         title: article.title.fr,
         slug: article.slug,
         excerpt: article.excerpt.fr,
-        content: article.content.fr,
+        content: article.content.fr as any,
         category: categoryId,
         tags: tagIds,
         complexity: article.complexity,
@@ -1054,13 +1054,14 @@ async function seedArticles(
     })
 
     // Update English locale
+
     await payload.update({
       collection: 'articles',
       id: created.id,
       data: {
         title: article.title.en,
         excerpt: article.excerpt.en,
-        content: article.content.en,
+        content: article.content.en as any,
       },
       locale: 'en',
     })
