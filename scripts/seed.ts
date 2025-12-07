@@ -1018,7 +1018,18 @@ async function seedArticles(
     }
 
     const categoryId = categoryMap[article.category]
-    const tagIds = article.tags.map((tagSlug) => tagMap[tagSlug]).filter(Boolean)
+    if (!categoryId) {
+      throw new Error(`Article "${article.slug}" references unknown category "${article.category}"`)
+    }
+
+    const missingTags = article.tags.filter((tagSlug) => !tagMap[tagSlug])
+    if (missingTags.length > 0) {
+      throw new Error(
+        `Article "${article.slug}" references unknown tags: ${missingTags.join(', ')}`,
+      )
+    }
+
+    const tagIds = article.tags.map((tagSlug) => tagMap[tagSlug])
 
     // Upload featured image
     const imageConfig = ARTICLE_IMAGES.find((img) => img.slug === article.slug)
