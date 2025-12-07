@@ -125,7 +125,7 @@ function mapArticle(payloadArticle: PayloadArticle): ArticleData {
     excerpt: payloadArticle.excerpt || '',
     coverImage: mapCoverImage(payloadArticle.featuredImage),
     category: mapCategory(payloadArticle.category),
-    tags: payloadArticle.tags?.map(mapTag) ?? [],
+    tags: payloadArticle.tags?.map(mapTag).filter((tag) => tag.title && tag.slug) ?? [],
     complexity: (payloadArticle.complexity as ArticleData['complexity']) || 'intermediate',
     readingTime: payloadArticle.readingTime || 0,
     publishedAt: payloadArticle.publishedAt || payloadArticle.createdAt,
