@@ -171,24 +171,24 @@ test.describe('Homepage', () => {
 
       const focused = page.locator(':focus')
 
-      // Verify focus indicator exists
-      if ((await focused.count()) > 0) {
-        const styles = await focused.evaluate((el) => {
-          const computed = window.getComputedStyle(el)
-          return {
-            outline: computed.outline,
-            boxShadow: computed.boxShadow,
-            outlineWidth: computed.outlineWidth,
-          }
-        })
+      // Assert an element received focus (fail if Tab doesn't work)
+      await expect(focused, 'Expected an element to receive focus after Tab').toHaveCount(1)
 
-        // Check for visible focus indicator (outline or box-shadow)
-        const hasFocusIndicator =
-          (styles.outline && styles.outline !== 'none') ||
-          (styles.boxShadow && styles.boxShadow !== 'none')
+      const styles = await focused.evaluate((el) => {
+        const computed = window.getComputedStyle(el)
+        return {
+          outline: computed.outline,
+          boxShadow: computed.boxShadow,
+          outlineWidth: computed.outlineWidth,
+        }
+      })
 
-        expect(hasFocusIndicator).toBe(true)
-      }
+      // Check for visible focus indicator (outline or box-shadow)
+      const hasFocusIndicator =
+        (styles.outline && styles.outline !== 'none') ||
+        (styles.boxShadow && styles.boxShadow !== 'none')
+
+      expect(hasFocusIndicator).toBe(true)
     })
 
     test('page has proper document structure', async ({ page }) => {
