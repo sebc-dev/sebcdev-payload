@@ -1,3 +1,4 @@
+import Link from 'next/link'
 import { getPayload } from 'payload'
 import { getTranslations } from 'next-intl/server'
 import config from '@payload-config'
@@ -176,7 +177,9 @@ export async function RecentArticlesSection({
             <h2 className="mb-4 text-2xl font-bold">{t('emptyState.title')}</h2>
             <p className="mb-6 text-muted-foreground">{t('emptyState.description')}</p>
             <Button asChild>
-              <a href={`/${locale}/admin/collections/articles/create`}>{t('emptyState.cta')}</a>
+              <Link href={`/${locale}/admin/collections/articles/create`}>
+                {t('emptyState.cta')}
+              </Link>
             </Button>
           </div>
         </section>
@@ -199,7 +202,7 @@ export async function RecentArticlesSection({
         {/* CTA: View All Articles */}
         <div className="flex justify-center">
           <Button asChild size="lg" variant="outline">
-            <a href={`/${locale}/articles`}>{t('viewAllArticles')}</a>
+            <Link href={`/${locale}/articles`}>{t('viewAllArticles')}</Link>
           </Button>
         </div>
       </section>
