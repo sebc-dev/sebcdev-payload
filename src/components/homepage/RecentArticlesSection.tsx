@@ -165,7 +165,7 @@ export async function RecentArticlesSection({
           })),
           complexity: article.complexity || 'beginner',
           readingTime: article.readingTime || 0,
-          publishedAt: article.publishedAt || new Date().toISOString(),
+          publishedAt: article.publishedAt || article.createdAt,
         }
       })
 
