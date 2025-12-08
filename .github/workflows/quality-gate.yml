@@ -331,6 +331,10 @@ jobs:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           PAYLOAD_SECRET: ${{ secrets.PAYLOAD_SECRET }}
+          # NODE_ENV=production is REQUIRED to run migrations on remote D1
+          # Without this, migrations run on local SQLite instead of Cloudflare D1
+          # See: src/payload.config.ts - cloudflareRemoteBindings logic
+          NODE_ENV: production
         run: |
           echo "::group::Running D1 Migrations"
           pnpm payload migrate
