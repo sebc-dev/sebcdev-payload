@@ -47,7 +47,10 @@ interface TagPillProps {
  */
 export function TagPill({ tag, locale, className }: Readonly<TagPillProps>) {
   return (
-    <Link href={`/${locale}/articles?tags=${tag.slug}`} className="transition-all hover:scale-105">
+    <Link
+      href={`/${locale}/articles?tags=${encodeURIComponent(tag.slug)}`}
+      className="transition-all hover:scale-105"
+    >
       <Badge
         variant="outline"
         className={cn(
