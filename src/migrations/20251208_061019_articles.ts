@@ -126,12 +126,9 @@ export async function up({ db }: MigrateUpArgs): Promise<void> {
   await addColumnIfNotExists(db, '`media`', '`caption`', 'text')
 
   // Add articles_id column to payload_locked_documents_rels if not exists
-  await addColumnIfNotExists(
-    db,
-    '`payload_locked_documents_rels`',
-    '`articles_id`',
-    'integer REFERENCES articles(id)',
-  )
+  // Note: No FK constraint - SQLite cannot DROP COLUMN with inline FK.
+  // Payload enforces referential integrity at the application level.
+  await addColumnIfNotExists(db, '`payload_locked_documents_rels`', '`articles_id`', 'integer')
   await db.run(
     sql`CREATE INDEX IF NOT EXISTS \`payload_locked_documents_rels_articles_id_idx\` ON \`payload_locked_documents_rels\` (\`articles_id\`);`,
   )
