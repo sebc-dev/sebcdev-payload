@@ -56,7 +56,7 @@ export function CategoryBadge({
   className,
 }: CategoryBadgeProps) {
   const style = category.color
-    ? { backgroundColor: `${category.color}20`, color: category.color }
+    ? { backgroundColor: `${category.color}33`, color: category.color }
     : {}
 
   const IconComponent = category.icon ? getLucideIcon(category.icon) : null
