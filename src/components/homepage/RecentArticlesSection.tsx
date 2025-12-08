@@ -5,6 +5,7 @@ import config from '@payload-config'
 import { Button } from '@/components/ui/button'
 import { ArticleCard } from '@/components/articles'
 import { cn } from '@/lib/utils'
+import { logger } from '@/lib/logger'
 import type { LucideCategoryIcon } from '@/lib/lucide-icons'
 import type { Locale } from '@/i18n/config'
 
@@ -212,7 +213,13 @@ export async function RecentArticlesSection({
       </section>
     )
   } catch (error) {
-    console.error('Error fetching articles:', error)
+    logger.error('Failed to fetch articles', {
+      component: 'RecentArticlesSection',
+      action: 'fetch articles',
+      locale,
+      limit,
+      error,
+    })
 
     // Fallback: Show error message
     return (
