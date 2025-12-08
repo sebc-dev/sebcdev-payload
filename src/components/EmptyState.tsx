@@ -5,8 +5,11 @@ import { FileText, PenLine } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 
+type HeadingLevel = 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6'
+
 interface EmptyStateProps {
   className?: string
+  headingLevel?: HeadingLevel
 }
 
 /**
@@ -21,7 +24,7 @@ interface EmptyStateProps {
  *
  * @param className - Optional CSS classes to apply to the section
  */
-export async function EmptyState({ className }: EmptyStateProps) {
+export async function EmptyState({ className, headingLevel = 'h2' }: EmptyStateProps) {
   const t = await getTranslations('homepage.emptyState')
 
   // Check authentication via payload-token cookie
@@ -38,10 +41,15 @@ export async function EmptyState({ className }: EmptyStateProps) {
         <FileText className="h-12 w-12 text-muted-foreground" aria-hidden="true" />
       </div>
 
-      {/* Title */}
-      <h1 id="empty-state-title" className="mb-2 text-2xl font-bold">
-        {t('title')}
-      </h1>
+      {/* Title - Heading level configurable for proper document hierarchy */}
+      {(() => {
+        const Heading = headingLevel
+        return (
+          <Heading id="empty-state-title" className="mb-2 text-2xl font-bold">
+            {t('title')}
+          </Heading>
+        )
+      })()}
 
       {/* Description */}
       <p className="mb-8 max-w-md text-muted-foreground">{t('description')}</p>

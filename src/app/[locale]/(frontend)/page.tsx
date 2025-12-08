@@ -169,7 +169,7 @@ export default async function HomePage({ params }: HomePageProps) {
   if (articles.length === 0) {
     return (
       <div className="container mx-auto px-4 py-12">
-        <EmptyState />
+        <EmptyState headingLevel="h1" />
       </div>
     )
   }
