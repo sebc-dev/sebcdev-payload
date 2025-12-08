@@ -37,6 +37,15 @@ pnpm generate:types:payload # Generate Payload types only
 
 # Database
 pnpm payload migrate:create # Create new migration
+
+# Database Migrations (IMPORTANT)
+# Local migrations (development SQLite):
+pnpm payload migrate
+
+# Remote migrations (production D1 - REQUIRES NODE_ENV=production):
+NODE_ENV=production pnpm payload migrate
+# Or use the deploy script which sets NODE_ENV automatically:
+pnpm deploy:database
 ```
 
 ## Commit Conventions

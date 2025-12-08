@@ -13,6 +13,10 @@ import { Users, Media, Categories, Tags, Articles } from './collections'
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
 
+// IMPORTANT: Remote D1 bindings require NODE_ENV=production
+// - For migrations: NODE_ENV=production pnpm payload migrate
+// - For dev mode: pnpm dev (uses local SQLite via Wrangler)
+// - For production runtime: Cloudflare Workers sets NODE_ENV=production automatically
 const cloudflareRemoteBindings = process.env.NODE_ENV === 'production'
 const cloudflare =
   process.argv.find((value) => value.match(/^(generate|migrate):?/)) || !cloudflareRemoteBindings
