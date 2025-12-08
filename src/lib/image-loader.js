@@ -33,6 +33,9 @@ export default function cloudflareImageLoader({ src, width, quality }) {
     return src
   }
 
-  // Handle local/relative URLs with query parameters
-  return `${src}?w=${width}&q=${quality || 75}`
+  // Handle local/relative URLs - parse to preserve existing query params
+  const url = new URL(src, 'http://dummy')
+  url.searchParams.set('w', width.toString())
+  url.searchParams.set('q', (quality || 75).toString())
+  return url.pathname + url.search
 }
