@@ -88,7 +88,10 @@ async function uploadImage(
       data: {
         alt,
       },
-      file: imageData as File,
+      // Uint8Array is used instead of Buffer for Miniflare/Workers compatibility.
+      // Payload's File type expects Buffer, but Workers runtime accepts Uint8Array.
+      // See downloadImage() JSDoc for rationale.
+      file: imageData as unknown as File,
     })
 
     return media.id
