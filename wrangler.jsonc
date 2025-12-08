@@ -35,16 +35,16 @@
       "binding": "R2",
       "bucket_name": "sebcdev-payload-cache",
       "preview_bucket_name": "sebcdev-payload-cache",
-    }
+    },
   ],
   "observability": {
     "logs": {
       "enabled": false,
       "head_sampling_rate": 1,
       "invocation_logs": true,
-      "persist": true
-    }
-  }
+      "persist": true,
+    },
+  },
 
   // Here's how to configure an additional environment
   // It can be deployed with `CLOUDFLARE_ENV=staging pnpm run deploy`
