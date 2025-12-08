@@ -108,7 +108,7 @@ async function uploadImage(
 const CATEGORIES = [
   {
     name: { fr: 'Actualités', en: 'News' },
-    slug: 'actualites',
+    slug: 'news',
     color: '#0ea5e9',
     icon: 'newspaper',
     description: {
@@ -118,7 +118,7 @@ const CATEGORIES = [
   },
   {
     name: { fr: 'Tutoriels', en: 'Tutorials' },
-    slug: 'tutoriels',
+    slug: 'tutorial',
     color: '#06b6d4',
     icon: 'book-open',
     description: {
@@ -128,7 +128,7 @@ const CATEGORIES = [
   },
   {
     name: { fr: 'Décryptage', en: 'Deep Dive' },
-    slug: 'decryptage',
+    slug: 'deep-dive',
     color: '#6366f1',
     icon: 'lightbulb',
     description: {
@@ -138,7 +138,7 @@ const CATEGORIES = [
   },
   {
     name: { fr: 'Étude de Cas', en: 'Case Study' },
-    slug: 'etude-cas',
+    slug: 'case-study',
     color: '#ec4899',
     icon: 'target',
     description: {
@@ -148,7 +148,7 @@ const CATEGORIES = [
   },
   {
     name: { fr: "Retour d'Expérience", en: 'Feedback' },
-    slug: 'retour-experience',
+    slug: 'feedback',
     color: '#f59e0b',
     icon: 'message-circle',
     description: {
@@ -481,7 +481,7 @@ export default buildConfig({
         ),
       ]),
     },
-    category: 'tutoriels',
+    category: 'tutorial',
     tags: ['nextjs', 'cloudflare', 'typescript', 'performance'],
     complexity: 'advanced' as const,
     publishedAt: new Date('2025-12-05T10:00:00Z'),
@@ -556,7 +556,7 @@ async function submitForm(formData: FormData) {
         ),
       ]),
     },
-    category: 'tutoriels',
+    category: 'tutorial',
     tags: ['react', 'ux-design', 'performance'],
     complexity: 'intermediate' as const,
     publishedAt: new Date('2025-12-03T14:00:00Z'),
@@ -619,7 +619,7 @@ async function submitForm(formData: FormData) {
         ),
       ]),
     },
-    category: 'decryptage',
+    category: 'deep-dive',
     tags: ['ai-llm', 'typescript', 'nextjs'],
     complexity: 'intermediate' as const,
     publishedAt: new Date('2025-12-01T09:00:00Z'),
@@ -684,7 +684,7 @@ async function submitForm(formData: FormData) {
         ),
       ]),
     },
-    category: 'etude-cas',
+    category: 'case-study',
     tags: ['payload-cms', 'typescript'],
     complexity: 'beginner' as const,
     publishedAt: new Date('2025-11-29T11:00:00Z'),
@@ -759,7 +759,7 @@ test('homepage accessibility', async ({ page }) => {
         ),
       ]),
     },
-    category: 'tutoriels',
+    category: 'tutorial',
     tags: ['accessibility', 'nextjs', 'react'],
     complexity: 'intermediate' as const,
     publishedAt: new Date('2025-11-27T15:00:00Z'),
@@ -836,7 +836,7 @@ test('homepage accessibility', async ({ page }) => {
         ),
       ]),
     },
-    category: 'tutoriels',
+    category: 'tutorial',
     tags: ['css', 'ux-design'],
     complexity: 'intermediate' as const,
     publishedAt: new Date('2025-11-25T10:00:00Z'),
@@ -895,7 +895,7 @@ test('homepage accessibility', async ({ page }) => {
         ),
       ]),
     },
-    category: 'retour-experience',
+    category: 'feedback',
     tags: ['typescript', 'cloudflare', 'performance'],
     complexity: 'beginner' as const,
     publishedAt: new Date('2025-11-23T08:00:00Z'),
