@@ -15,6 +15,11 @@ const ALLOWED_R2_HOSTS = new Set(['pub-0d00b88484b3494192ddce7103e3d06d.r2.dev']
  * @returns {string} Optimized image URL
  */
 export default function cloudflareImageLoader({ src, width, quality }) {
+  // Pass through data: and blob: URLs unchanged
+  if (src.startsWith('data:') || src.startsWith('blob:')) {
+    return src
+  }
+
   // Handle external URLs (http/https)
   if (src.startsWith('http://') || src.startsWith('https://')) {
     const url = new URL(src)
