@@ -2,6 +2,7 @@ import Link from 'next/link'
 import { Badge } from '@/components/ui/badge'
 import { cn } from '@/lib/utils'
 import type { TagData } from './types'
+import type { Locale } from '@/i18n/config'
 
 /**
  * TagPill component props
@@ -11,7 +12,7 @@ import type { TagData } from './types'
  */
 interface TagPillProps {
   tag: TagData
-  locale: string
+  locale: Locale
   className?: string
 }
 
