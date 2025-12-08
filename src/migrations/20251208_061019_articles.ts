@@ -22,6 +22,27 @@ async function addColumnIfNotExists(
   }
 }
 
+/**
+ * Helper to drop a column from a table, ignoring errors if column doesn't exist.
+ * SQLite 3.35.0+ (used by Cloudflare D1) supports ALTER TABLE DROP COLUMN.
+ */
+async function dropColumnIfExists(
+  db: MigrateDownArgs['db'],
+  table: string,
+  column: string,
+): Promise<void> {
+  try {
+    await db.run(sql`ALTER TABLE ${sql.raw(table)} DROP COLUMN ${sql.raw(column)};`)
+  } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : String(error)
+    const errorLower = errorMessage.toLowerCase()
+    if (errorLower.includes('no such column') || errorLower.includes('does not exist')) {
+      return
+    }
+    throw error
+  }
+}
+
 export async function up({ db }: MigrateUpArgs): Promise<void> {
   // Create articles table
   await db.run(sql`CREATE TABLE IF NOT EXISTS \`articles\` (
@@ -120,6 +141,15 @@ export async function up({ db }: MigrateUpArgs): Promise<void> {
 }
 
 export async function down({ db }: MigrateDownArgs): Promise<void> {
+  // Drop index and column from payload_locked_documents_rels BEFORE dropping articles table
+  // This removes the FK reference that would otherwise block DROP TABLE articles
+  await db.run(sql`DROP INDEX IF EXISTS \`payload_locked_documents_rels_articles_id_idx\`;`)
+  await dropColumnIfExists(db, '`payload_locked_documents_rels`', '`articles_id`')
+
+  // Drop caption column from media (added in up())
+  await dropColumnIfExists(db, '`media`', '`caption`')
+
+  // Drop articles tables
   await db.run(sql`DROP TABLE IF EXISTS \`articles_rels\`;`)
   await db.run(sql`DROP TABLE IF EXISTS \`articles_locales\`;`)
   await db.run(sql`DROP TABLE IF EXISTS \`articles\`;`)
