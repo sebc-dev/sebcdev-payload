@@ -85,7 +85,7 @@ jobs:
   # Summary - All checks must pass
   # ============================================
   summary:
-    name: Quality Gate Summary
+    name: Quality Checks
     needs: [core-checks, security, tests, architecture]
     if: always()
     runs-on: ubuntu-latest
