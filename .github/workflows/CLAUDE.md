@@ -29,6 +29,7 @@ Les autres checks sont requis pour merger mais doivent être lancés manuellemen
 - ESLint
 - Prettier
 - Type Sync (génère et vérifie `payload-types.ts`)
+- Unit Tests (Vitest, rapides)
 - Next.js Build (mode compile, sans DB)
 
 ### tests.yml
