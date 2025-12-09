@@ -41,6 +41,19 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       # ============================================
+      # Build
+      # ============================================
+
+      - name: Build Next.js and OpenNext
+        env:
+          PAYLOAD_SECRET: ${{ secrets.PAYLOAD_SECRET }}
+        run: |
+          echo "::group::Building Next.js application"
+          pnpm build
+          echo "::endgroup::"
+          echo "::notice::✅ Build completed successfully"
+
+      # ============================================
       # D1 Migrations
       # ============================================
 
