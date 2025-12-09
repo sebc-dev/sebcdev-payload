@@ -28,9 +28,13 @@ on:
           - '7'
           - '14'
 
-# Minimal permissions for the orchestrator workflow
+# Permissions needed for nested workflows
+# - contents: read - for checkout
+# - issues: write, pull-requests: write - for Socket.dev in security.yml
 permissions:
   contents: read
+  issues: write
+  pull-requests: write
 
 jobs:
   # ============================================

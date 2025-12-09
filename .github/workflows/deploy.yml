@@ -51,18 +51,7 @@ jobs:
           echo "::group::Building Next.js application"
           pnpm build
           echo "::endgroup::"
-
-          # Verify build artifacts exist
-          if [ ! -f ".open-next/worker.js" ]; then
-            echo "::error::Build failed - .open-next/worker.js not found"
-            echo "Contents of .open-next directory:"
-            ls -la .open-next/ 2>/dev/null || echo "Directory .open-next does not exist"
-            exit 1
-          fi
-
           echo "::notice::✅ Build completed successfully"
-          echo "Build artifacts:"
-          ls -la .open-next/
 
       # ============================================
       # D1 Migrations
@@ -84,21 +73,6 @@ jobs:
       # Cloudflare Workers Deploy
       # ============================================
 
-      - name: Verify build artifacts before deploy
-        run: |
-          echo "Current directory: $(pwd)"
-          echo "Checking .open-next directory..."
-          if [ ! -d ".open-next" ]; then
-            echo "::error::.open-next directory does not exist!"
-            exit 1
-          fi
-          ls -la .open-next/
-          if [ ! -f ".open-next/worker.js" ]; then
-            echo "::error::.open-next/worker.js not found!"
-            exit 1
-          fi
-          echo "✅ Build artifacts verified"
-
       - name: Deploy to Cloudflare Workers
         id: deploy
         uses: cloudflare/wrangler-action@392082e81ffbcb9ebdde27400634aa004b35ea37 # v3.14.0
@@ -106,7 +80,6 @@ jobs:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           command: deploy
-          workingDirectory: '.'
         env:
           PAYLOAD_SECRET: ${{ secrets.PAYLOAD_SECRET }}
 
