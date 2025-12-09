@@ -124,6 +124,7 @@
     "publishedAgo": "Published {time}",
     "readingTime": "{minutes} min read",
     "tagsLabel": "Tags",
+    "contentUnavailable": "Content unavailable",
     "notFound": {
       "title": "Article not found",
       "description": "The article you're looking for doesn't exist or has been removed.",
