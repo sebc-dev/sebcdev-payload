@@ -407,14 +407,17 @@ function textLink(url: string, linkText: string, newTab?: boolean) {
 
 /**
  * Creates a Lexical list item node.
+ * @param children - The list item content
+ * @param indent - Indentation level (default: 0)
+ * @param value - Item value for ordered lists (default: 1)
  */
-function listItem(children: unknown[], indent = 0) {
+function listItem(children: unknown[], indent = 0, value = 1) {
   return {
     type: 'listitem',
     format: '',
     indent,
     version: 1,
-    value: 1,
+    value,
     direction: 'ltr',
     children,
   }
@@ -423,8 +426,8 @@ function listItem(children: unknown[], indent = 0) {
 /**
  * Creates a simple list item with text.
  */
-function simpleListItem(content: string, indent = 0) {
-  return listItem([text(content)], indent)
+function simpleListItem(content: string, indent = 0, value = 1) {
+  return listItem([text(content)], indent, value)
 }
 
 /**
