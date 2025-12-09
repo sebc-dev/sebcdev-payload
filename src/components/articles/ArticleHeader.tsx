@@ -11,6 +11,7 @@
  */
 
 import { getTranslations } from 'next-intl/server'
+import { cn } from '@/lib/utils'
 import { CategoryBadge } from './CategoryBadge'
 import { ComplexityBadge } from './ComplexityBadge'
 import { RelativeDate } from '../RelativeDate'
@@ -20,13 +21,14 @@ import type { Locale } from '@/i18n/config'
 interface ArticleHeaderProps {
   article: ArticleData
   locale: Locale
+  className?: string
 }
 
-export async function ArticleHeader({ article, locale }: ArticleHeaderProps) {
+export async function ArticleHeader({ article, locale, className }: ArticleHeaderProps) {
   const t = await getTranslations('article')
 
   return (
-    <header className="space-y-4 pb-8 border-b border-border">
+    <header className={cn('space-y-4 pb-8 border-b border-border', className)}>
       {/* Category Badge */}
       {article.category && (
         <CategoryBadge category={article.category} locale={locale} clickable={true} />
