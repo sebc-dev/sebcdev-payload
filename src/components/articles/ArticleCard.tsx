@@ -116,9 +116,11 @@ export async function ArticleCard({ article, locale, className }: ArticleCardPro
 
         <CardHeader className="space-y-2 pb-2">
           {/* Category Badge - clickable, outside of main link */}
-          <div className="relative z-10">
-            <CategoryBadge category={article.category} locale={locale} clickable={true} />
-          </div>
+          {article.category && (
+            <div className="relative z-10">
+              <CategoryBadge category={article.category} locale={locale} clickable={true} />
+            </div>
+          )}
 
           {/* Title with main card link */}
           <h3 className="line-clamp-2 text-lg font-semibold leading-tight transition-colors group-hover:text-primary">

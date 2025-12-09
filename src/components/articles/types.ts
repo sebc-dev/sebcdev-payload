@@ -54,7 +54,7 @@ export interface ArticleData {
   slug: string
   excerpt: string
   coverImage?: CoverImageData | null
-  category: CategoryData
+  category: CategoryData | null
   tags: TagData[]
   complexity: Complexity
   readingTime: number
