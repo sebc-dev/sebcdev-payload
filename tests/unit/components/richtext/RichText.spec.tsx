@@ -31,7 +31,7 @@ describe('RichText', () => {
     expect(container.firstChild).toBeNull()
   })
 
-  it('returns null for empty content', () => {
+  it('renders empty wrapper for content with no children', () => {
     const content: LexicalContent = {
       root: {
         type: 'root',
@@ -40,8 +40,11 @@ describe('RichText', () => {
       },
     }
     const { container } = render(<RichText content={content} />)
-    // Empty children array results in empty array serialization, which renders as []
-    // This is expected behavior - the component renders but with no visible content
+    // Empty children array results in empty ReactNode[] which renders as an empty wrapper
+    // The wrapper div with prose classes is still rendered, but with no visible text content
+    const wrapper = container.firstChild as HTMLElement
+    expect(wrapper).toBeTruthy()
+    expect(wrapper?.className).toContain('prose')
     expect(container.textContent).toBe('')
   })
 
