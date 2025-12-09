@@ -47,8 +47,8 @@ export function isSpecialProtocol(url: string): boolean {
 
 export function Link({ node }: LinkProps) {
   const url = node.fields?.url || '#'
-  const newTab = node.fields?.newTab ?? isExternalUrl(url)
   const isExternal = isExternalUrl(url)
+  const newTab = node.fields?.newTab ?? isExternal
   const isSpecial = isSpecialProtocol(url)
 
   const className =
