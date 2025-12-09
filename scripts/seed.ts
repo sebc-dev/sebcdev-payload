@@ -391,7 +391,7 @@ function link(url: string, children: unknown[], newTab?: boolean) {
     direction: 'ltr',
     fields: {
       url,
-      newTab: newTab ?? undefined,
+      newTab,
       linkType: 'custom' as const,
     },
     children,
