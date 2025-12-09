@@ -1,0 +1,117 @@
+# .github/workflows/mutation.yml
+# Mutation Testing - Stryker mutation testing
+#
+# Triggers:
+#   - workflow_dispatch: Manual trigger only
+#   - workflow_call: Can be called by other workflows (full-quality-gate)
+#
+# Optional - not required for merge.
+
+name: Mutation Testing
+
+on:
+  workflow_dispatch:
+    inputs:
+      report_retention_days:
+        description: 'Mutation report retention (days)'
+        required: false
+        default: '5'
+        type: choice
+        options:
+          - '3'
+          - '5'
+          - '7'
+          - '14'
+  workflow_call:
+    inputs:
+      report_retention_days:
+        description: 'Mutation report retention (days)'
+        required: false
+        default: '5'
+        type: string
+
+jobs:
+  mutation:
+    name: Mutation Testing
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+
+    env:
+      HAS_PAYLOAD_SECRET: ${{ secrets.PAYLOAD_SECRET != '' }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3 # v6.0.0
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@41ff72655975bd51cab0327fa583b6e92b6d3061 # v4.2.0
+        with:
+          version: 9
+
+      - name: Setup Node.js
+        uses: actions/setup-node@2028fbc5c25fe9cf00d9f06a71cc4710d4507903 # v6.0.0
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Generate CI Payload Secret
+        if: env.HAS_PAYLOAD_SECRET != 'true'
+        run: echo "PAYLOAD_SECRET_CI=$(openssl rand -hex 32)" >> "$GITHUB_ENV"
+
+      # ============================================
+      # Mutation Testing (Stryker)
+      # ============================================
+
+      - name: Cache Stryker Incremental Results
+        uses: actions/cache@5a3ec84eff668545956fd18022155c47e93e2684 # v4.2.3
+        with:
+          path: |
+            reports/mutation/stryker-incremental.json
+            .stryker-tmp
+          key: stryker-${{ runner.os }}-${{ hashFiles('src/lib/**/*.ts', 'src/utilities/**/*.ts', 'src/hooks/**/*.ts') }}
+          restore-keys: stryker-${{ runner.os }}-
+
+      - name: Stryker Mutation Testing
+        env:
+          PAYLOAD_SECRET: ${{ secrets.PAYLOAD_SECRET || env.PAYLOAD_SECRET_CI }}
+        run: |
+          echo "## 🧬 Mutation Testing Report" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          pnpm stryker:incremental
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "📊 Full report available in artifacts" >> $GITHUB_STEP_SUMMARY
+
+      - name: Compress Mutation Report
+        id: compress-report
+        if: always()
+        env:
+          MAX_ARTIFACT_SIZE_BYTES: 52428800
+        run: |
+          if [ -d "reports/mutation" ]; then
+            tar -czvf /tmp/mutation-report.tar.gz -C reports mutation
+            FILE_SIZE=$(stat -c%s /tmp/mutation-report.tar.gz)
+            FILE_SIZE_HUMAN=$(du -h /tmp/mutation-report.tar.gz | cut -f1)
+            echo "📦 Compressed mutation report: ${FILE_SIZE_HUMAN} (${FILE_SIZE} bytes)"
+
+            if [ "$FILE_SIZE" -gt "$MAX_ARTIFACT_SIZE_BYTES" ]; then
+              echo "::warning::Mutation report exceeds 50MB limit (${FILE_SIZE_HUMAN}), skipping upload"
+              echo "skip_upload=true" >> "$GITHUB_OUTPUT"
+            else
+              echo "skip_upload=false" >> "$GITHUB_OUTPUT"
+            fi
+          else
+            echo "skip_upload=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Upload Mutation Report
+        if: steps.compress-report.outputs.skip_upload != 'true' && always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: mutation-report
+          path: /tmp/mutation-report.tar.gz
+          retention-days: ${{ inputs.report_retention_days || '5' }}
