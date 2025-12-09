@@ -28,6 +28,10 @@ on:
           - '7'
           - '14'
 
+# Minimal permissions for the orchestrator workflow
+permissions:
+  contents: read
+
 jobs:
   # ============================================
   # Core Checks (ESLint, Prettier, Type Sync, Build)
