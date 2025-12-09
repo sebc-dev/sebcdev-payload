@@ -29,13 +29,10 @@ on:
           - '7'
           - '14'
 
-# Permissions needed for nested workflows
-# - contents: read - for checkout
-# - issues: write, pull-requests: write - for Socket.dev in security.yml
+# Minimal permissions (least privilege)
+# Socket.dev firewall-free mode doesn't require issues/PR write access
 permissions:
   contents: read
-  issues: write
-  pull-requests: write
 
 jobs:
   # ============================================
