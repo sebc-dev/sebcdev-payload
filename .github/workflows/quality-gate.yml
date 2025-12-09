@@ -2,8 +2,7 @@
 # Quality Gate Pipeline - AI-Shield Defense Strategy
 #
 # Triggers:
-#   - pull_request: Auto-run on PRs targeting main (reports status to PR)
-#   - workflow_dispatch: Manual trigger for any branch
+#   - workflow_dispatch: Manual trigger only
 #
 # Purpose: Multi-layer code quality validation before merge
 #
@@ -12,8 +11,6 @@
 name: Quality Gate
 
 on:
-  pull_request:
-    branches: [main]
   workflow_dispatch:
     inputs:
       run_mutation_tests:
