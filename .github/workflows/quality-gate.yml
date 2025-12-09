@@ -1,0 +1,402 @@
+# .github/workflows/quality-gate.yml
+# Quality Gate Pipeline - AI-Shield Defense Strategy
+#
+# Triggers:
+#   - pull_request: Auto-run on PRs targeting main (reports status to PR)
+#   - workflow_dispatch: Manual trigger for any branch
+#
+# Purpose: Multi-layer code quality validation before merge
+#
+# Documentation: docs/specs/CI-CD-Security.md
+
+name: Quality Gate
+
+on:
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      run_mutation_tests:
+        description: 'Run Stryker mutation testing (CPU intensive)'
+        required: false
+        default: false
+        type: boolean
+      mutation_report_retention_days:
+        description: 'Mutation report retention (days)'
+        required: false
+        default: '5'
+        type: choice
+        options:
+          - '3'
+          - '5'
+          - '7'
+          - '14'
+
+jobs:
+  quality-gate:
+    name: Quality Checks
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      issues: write # For Socket.dev comments
+      pull-requests: write # For Socket.dev PR updates
+
+    env:
+      # Expose secret to env for conditional checks (secrets context not allowed in step if)
+      HAS_PAYLOAD_SECRET: ${{ secrets.PAYLOAD_SECRET != '' }}
+
+    steps:
+      # ============================================
+      # SETUP: Checkout & Dependencies
+      # ============================================
+
+      - name: Checkout repository
+        uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3 # v6.0.0
+        with:
+          fetch-depth: 0 # Full history for git diff operations
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@41ff72655975bd51cab0327fa583b6e92b6d3061 # v4.2.0
+        with:
+          version: 9
+
+      - name: Setup Node.js
+        uses: actions/setup-node@2028fbc5c25fe9cf00d9f06a71cc4710d4507903 # v6.0.0
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+
+      # ============================================
+      # LAYER 1: Supply Chain Security
+      # ============================================
+
+      # Socket Firewall wraps package manager to detect malicious packages
+      # See: https://github.com/SocketDev/action
+      - name: Setup Socket Firewall
+        uses: SocketDev/action@4337a545deecc20f19a909e52db7a2f6ba292f42 # v1.2.0
+        with:
+          mode: firewall-free
+
+      - name: Install dependencies (with Socket scan)
+        run: sfw pnpm install --frozen-lockfile
+
+      # Generate CI-only fallback secret if PAYLOAD_SECRET is not configured.
+      # This random value is used by multiple CI steps: integration tests,
+      # type generation, build validation, E2E tests, and mutation testing.
+      # It is never used in production. Meets 32+ char requirement.
+      - name: Generate CI Payload Secret
+        if: env.HAS_PAYLOAD_SECRET != 'true'
+        run: echo "PAYLOAD_SECRET_CI=$(openssl rand -hex 32)" >> "$GITHUB_ENV"
+
+      # ============================================
+      # LAYER 2: Code Quality
+      # ============================================
+
+      - name: ESLint
+        run: pnpm lint --format stylish
+
+      - name: Prettier Check
+        run: pnpm exec prettier --check .
+
+      - name: Knip - Dead Code Detection
+        run: pnpm exec knip --production
+
+      - name: Unit Tests
+        run: pnpm test:unit --coverage
+
+      - name: Coverage Summary
+        if: always()
+        run: |
+          if [ -f coverage/coverage-summary.json ]; then
+            echo "## Unit Test Coverage" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            cat coverage/coverage-summary.json | jq -r '.total | "| Metric | Coverage |\n|--------|----------|\n| Lines | \(.lines.pct)% |\n| Statements | \(.statements.pct)% |\n| Functions | \(.functions.pct)% |\n| Branches | \(.branches.pct)% |"' >> $GITHUB_STEP_SUMMARY
+          fi
+
+      - name: Integration Tests
+        env:
+          PAYLOAD_SECRET: ${{ secrets.PAYLOAD_SECRET || env.PAYLOAD_SECRET_CI }}
+        run: pnpm test:int
+
+      - name: Generate Payload Types
+        env:
+          PAYLOAD_SECRET: ${{ secrets.PAYLOAD_SECRET || env.PAYLOAD_SECRET_CI }}
+        run: pnpm generate:types:payload
+
+      - name: Verify Type Sync
+        run: |
+          if git diff --exit-code src/payload-types.ts; then
+            echo "✅ Payload types are synchronized"
+          else
+            echo "❌ ERROR: Payload types are out of sync!"
+            echo "Run 'pnpm generate:types:payload' and commit the changes"
+            git diff src/payload-types.ts
+            exit 1
+          fi
+
+      # ============================================
+      # LAYER 3: Build Validation
+      # ============================================
+
+      - name: Cache Next.js Build
+        uses: actions/cache@5a3ec84eff668545956fd18022155c47e93e2684 # v4.2.3
+        with:
+          path: .next/cache
+          # Cache invalidates only on dependency or config changes, not source files.
+          # Next.js build cache handles incremental compilation internally.
+          key: nextjs-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml', 'next.config.ts', 'tsconfig.json') }}
+          restore-keys: |
+            nextjs-${{ runner.os }}-
+
+      # --experimental-build-mode compile: Required for No-DB builds.
+      # Cloudflare D1 is not accessible in GitHub Actions, so we use compile-only
+      # mode which validates TypeScript and generates bundles without executing
+      # runtime code that would require database connectivity.
+      # See: docs/specs/CI-CD-Security.md Section 4.1
+      - name: Next.js Build (No-DB Mode)
+        run: pnpm exec next build --experimental-build-mode compile
+        env:
+          PAYLOAD_SECRET: ${{ secrets.PAYLOAD_SECRET || env.PAYLOAD_SECRET_CI }}
+
+      # ============================================
+      # LAYER 3.5: E2E Testing (Playwright)
+      # ============================================
+
+      - name: Get Playwright Version
+        id: playwright-version
+        run: echo "version=$(pnpm exec playwright --version | head -1)" >> $GITHUB_OUTPUT
+
+      - name: Cache Playwright Browsers
+        uses: actions/cache@5a3ec84eff668545956fd18022155c47e93e2684 # v4.2.3
+        id: playwright-cache
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ steps.playwright-version.outputs.version }}
+
+      - name: Install Playwright Browsers
+        if: steps.playwright-cache.outputs.cache-hit != 'true'
+        run: pnpm exec playwright install --with-deps chromium
+
+      - name: E2E Tests
+        env:
+          PAYLOAD_SECRET: ${{ secrets.PAYLOAD_SECRET || env.PAYLOAD_SECRET_CI }}
+        run: pnpm test:e2e
+        timeout-minutes: 10
+
+      - name: Upload E2E Test Artifacts
+        if: failure()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: playwright-report
+          path: |
+            test-results/
+            playwright-report/
+          retention-days: 7
+
+      # ============================================
+      # LAYER 4: Architecture Validation
+      # ============================================
+
+      - name: dependency-cruiser - Architecture Validation
+        id: depcruise
+        run: |
+          echo "## Architecture Validation" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+          if pnpm exec depcruise src --config .dependency-cruiser.cjs --output-type err-long 2>&1 | tee depcruise-output.txt; then
+            echo "### :white_check_mark: No architectural violations detected" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "All import boundaries and dependency rules are respected." >> $GITHUB_STEP_SUMMARY
+          else
+            echo "### :x: Architectural violations detected" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+            cat depcruise-output.txt >> $GITHUB_STEP_SUMMARY
+            echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+            exit 1
+          fi
+
+      # ============================================
+      # LAYER 5: Mutation Testing (Optional - workflow_dispatch only)
+      # ============================================
+      # NOTE: Stryker mutation testing is intentionally disabled for pull_request events.
+      # Mutation testing is CPU-intensive and time-consuming, so it runs only when
+      # explicitly requested via workflow_dispatch with run_mutation_tests=true.
+      # To run mutation tests: Actions > Quality Gate > Run workflow > Check "Run Stryker"
+
+      - name: Cache Stryker Incremental Results
+        if: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.run_mutation_tests == 'true' }}
+        uses: actions/cache@5a3ec84eff668545956fd18022155c47e93e2684 # v4.2.3
+        with:
+          path: |
+            reports/mutation/stryker-incremental.json
+            .stryker-tmp
+          key: stryker-${{ runner.os }}-${{ hashFiles('src/lib/**/*.ts', 'src/utilities/**/*.ts', 'src/hooks/**/*.ts') }}
+          restore-keys: stryker-${{ runner.os }}-
+
+      - name: Stryker Mutation Testing
+        if: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.run_mutation_tests == 'true' }}
+        env:
+          PAYLOAD_SECRET: ${{ secrets.PAYLOAD_SECRET || env.PAYLOAD_SECRET_CI }}
+        run: |
+          echo "## 🧬 Mutation Testing Report" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          pnpm stryker:incremental
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "📊 Full report available in artifacts" >> $GITHUB_STEP_SUMMARY
+
+      - name: Compress Mutation Report
+        id: compress-report
+        if: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.run_mutation_tests == 'true' && always() }}
+        env:
+          # Max artifact size: 50MB (52428800 bytes)
+          MAX_ARTIFACT_SIZE_BYTES: 52428800
+        run: |
+          if [ -d "reports/mutation" ]; then
+            tar -czvf /tmp/mutation-report.tar.gz -C reports mutation
+            FILE_SIZE=$(stat -c%s /tmp/mutation-report.tar.gz)
+            FILE_SIZE_HUMAN=$(du -h /tmp/mutation-report.tar.gz | cut -f1)
+            echo "📦 Compressed mutation report: ${FILE_SIZE_HUMAN} (${FILE_SIZE} bytes)"
+
+            if [ "$FILE_SIZE" -gt "$MAX_ARTIFACT_SIZE_BYTES" ]; then
+              echo "::warning::Mutation report exceeds 50MB limit (${FILE_SIZE_HUMAN}), skipping upload"
+              echo "skip_upload=true" >> "$GITHUB_OUTPUT"
+            else
+              echo "skip_upload=false" >> "$GITHUB_OUTPUT"
+            fi
+          else
+            echo "skip_upload=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Upload Mutation Report
+        if: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.run_mutation_tests == 'true' && steps.compress-report.outputs.skip_upload != 'true' && always() }}
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: mutation-report
+          path: /tmp/mutation-report.tar.gz
+          retention-days: ${{ github.event.inputs.mutation_report_retention_days || '5' }}
+
+      # ============================================
+      # SUMMARY
+      # ============================================
+
+      - name: Quality Gate Summary
+        run: |
+          echo "::notice::✅ Layer 1: Supply Chain Security (Socket Firewall)"
+          echo "::notice::✅ Layer 2: Code Quality (ESLint, Prettier, Knip, Type Sync)"
+          echo "::notice::✅ Layer 3: Build Validation (Next.js No-DB Mode)"
+          echo "::notice::✅ Layer 4: Architecture Validation (dependency-cruiser)"
+          # Stryker only runs via workflow_dispatch with run_mutation_tests=true (CPU-intensive)
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ] && [ "${{ github.event.inputs.run_mutation_tests }}" = "true" ]; then
+            echo "::notice::✅ Layer 5: Mutation Testing (Stryker)"
+          else
+            echo "::notice::⏭️ Layer 5: Mutation Testing (Skipped - only available via workflow_dispatch)"
+          fi
+
+  # ============================================
+  # DEPLOYMENT: Cloudflare Workers
+  # ============================================
+
+  deploy:
+    name: Deploy to Cloudflare
+    needs: [quality-gate]
+    runs-on: ubuntu-latest
+    # Only deploy on main branch pushes or manual dispatch
+    if: github.ref == 'refs/heads/main' || github.event_name == 'workflow_dispatch'
+
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3 # v6.0.0
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@41ff72655975bd51cab0327fa583b6e92b6d3061 # v4.2.0
+        with:
+          version: 9
+
+      - name: Setup Node.js
+        uses: actions/setup-node@2028fbc5c25fe9cf00d9f06a71cc4710d4507903 # v6.0.0
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Run D1 Migrations
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          PAYLOAD_SECRET: ${{ secrets.PAYLOAD_SECRET }}
+          # NODE_ENV=production is REQUIRED to run migrations on remote D1
+          # Without this, migrations run on local SQLite instead of Cloudflare D1
+          # See: src/payload.config.ts - cloudflareRemoteBindings logic
+          NODE_ENV: production
+        run: |
+          echo "::group::Running D1 Migrations"
+          pnpm payload migrate
+          echo "::endgroup::"
+          echo "::notice::✅ D1 migrations completed successfully"
+
+      - name: Deploy to Cloudflare Workers
+        id: deploy
+        uses: cloudflare/wrangler-action@392082e81ffbcb9ebdde27400634aa004b35ea37 # v3.14.0
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: deploy
+        env:
+          PAYLOAD_SECRET: ${{ secrets.PAYLOAD_SECRET }}
+
+      - name: Output Deployment URL
+        run: |
+          echo "## Deployment Successful" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**URL**: ${{ steps.deploy.outputs.deployment-url }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Commit**: ${{ github.sha }}" >> $GITHUB_STEP_SUMMARY
+
+      - name: Wait for Deployment Availability
+        run: |
+          URL="${{ steps.deploy.outputs.deployment-url }}"
+          echo "Waiting for $URL to become available..."
+
+          MAX_RETRIES=30
+          RETRY_INTERVAL=2
+
+          for i in $(seq 1 $MAX_RETRIES); do
+            if curl -s -f -o /dev/null "$URL"; then
+              echo "::notice::✅ Deployment is live at $URL"
+              exit 0
+            fi
+            echo "Attempt $i/$MAX_RETRIES - Waiting ${RETRY_INTERVAL}s..."
+            sleep $RETRY_INTERVAL
+          done
+
+          echo "::error::Deployment URL not reachable after $((MAX_RETRIES * RETRY_INTERVAL))s"
+          exit 1
+
+      - name: Smoke Test
+        run: |
+          URL="${{ steps.deploy.outputs.deployment-url }}"
+
+          echo "::group::Testing Homepage"
+          HTTP_STATUS=$(curl -s -o /dev/null -w "%{http_code}" "$URL")
+          if [ "$HTTP_STATUS" = "200" ]; then
+            echo "✅ Homepage returned 200 OK"
+          else
+            echo "::warning::Homepage returned $HTTP_STATUS (expected 200)"
+          fi
+          echo "::endgroup::"
+
+          echo "::group::Testing Admin Panel"
+          HTTP_STATUS=$(curl -s -o /dev/null -w "%{http_code}" "$URL/admin")
+          if [ "$HTTP_STATUS" = "200" ] || [ "$HTTP_STATUS" = "302" ]; then
+            echo "✅ Admin panel accessible (status: $HTTP_STATUS)"
+          else
+            echo "::warning::Admin panel returned $HTTP_STATUS"
+          fi
+          echo "::endgroup::"
