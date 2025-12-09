@@ -462,6 +462,15 @@ describe('isExternalUrl', () => {
   it('returns false for invalid URLs', () => {
     expect(isExternalUrl('not-a-url')).toBe(false)
   })
+
+  it('returns false for same-origin absolute URLs', () => {
+    // jsdom sets window.location.origin to 'http://localhost'
+    const currentOrigin = window.location.origin
+
+    // Test with the default jsdom origin
+    expect(isExternalUrl(`${currentOrigin}/about`)).toBe(false)
+    expect(isExternalUrl(`${currentOrigin}/articles/test`)).toBe(false)
+  })
 })
 
 describe('isSpecialProtocol', () => {
