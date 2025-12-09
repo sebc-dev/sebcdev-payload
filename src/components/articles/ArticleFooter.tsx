@@ -18,11 +18,11 @@ interface ArticleFooterProps {
 }
 
 export async function ArticleFooter({ tags, locale }: ArticleFooterProps) {
-  const t = await getTranslations('article')
-
-  if (tags.length === 0) {
+  if (!tags || tags.length === 0) {
     return null
   }
+
+  const t = await getTranslations('article')
 
   return (
     <footer className="pt-8 mt-8 border-t border-border">
