@@ -215,3 +215,16 @@ export function isTextNode(node: LexicalNode): node is TextNode {
 export function isHeadingNode(node: LexicalNode): node is HeadingNode {
   return node.type === 'heading'
 }
+
+/**
+ * Type guard for LexicalContent - validates minimal structure
+ */
+export function isLexicalContent(value: unknown): value is LexicalContent {
+  return (
+    typeof value === 'object' &&
+    value !== null &&
+    'root' in value &&
+    typeof (value as LexicalContent).root === 'object' &&
+    (value as LexicalContent).root?.type === 'root'
+  )
+}

@@ -16,8 +16,7 @@ import type { ArticleData } from '@/components/articles/types'
 import type { Article as PayloadArticle, Category, Tag } from '@/payload-types'
 import type { LucideCategoryIcon } from '@/lib/lucide-icons'
 import type { Locale } from '@/i18n/config'
-import { RichText } from '@/components/richtext'
-import type { LexicalContent } from '@/components/richtext'
+import { RichText, isLexicalContent } from '@/components/richtext'
 
 /**
  * Force dynamic rendering.
@@ -106,7 +105,11 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
 
       {/* Content - Rendered via RichText serializer */}
       <div className="py-8">
-        <RichText content={payloadArticle.content as LexicalContent} />
+        {isLexicalContent(payloadArticle.content) ? (
+          <RichText content={payloadArticle.content} />
+        ) : (
+          <p className="text-muted-foreground italic">Contenu non disponible</p>
+        )}
       </div>
 
       {/* Footer: Tags */}
