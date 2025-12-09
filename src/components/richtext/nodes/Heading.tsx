@@ -44,7 +44,7 @@ export function slugify(text: string): string {
     .replace(/-+/g, '-') // Remove duplicate hyphens
 }
 
-const headingStyles: Record<string, string> = {
+const headingStyles: Record<HeadingNode['tag'], string> = {
   h1: 'text-4xl font-bold mt-8 mb-4',
   h2: 'text-3xl font-bold mt-8 mb-4',
   h3: 'text-2xl font-semibold mt-6 mb-3',
