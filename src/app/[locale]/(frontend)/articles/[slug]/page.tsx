@@ -16,6 +16,8 @@ import type { ArticleData } from '@/components/articles/types'
 import type { Article as PayloadArticle, Category, Tag } from '@/payload-types'
 import type { LucideCategoryIcon } from '@/lib/lucide-icons'
 import type { Locale } from '@/i18n/config'
+import { RichText } from '@/components/richtext'
+import type { LexicalContent } from '@/components/richtext'
 
 /**
  * Force dynamic rendering.
@@ -102,16 +104,9 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
       {/* Header: Title, Category, Metadata */}
       <ArticleHeader article={article} locale={locale} />
 
-      {/* Content Placeholder - Phase 2 will add Lexical rendering */}
-      <div className="py-8 prose prose-gray dark:prose-invert max-w-none">
-        <div className="p-4 bg-muted rounded-lg border border-dashed border-border">
-          <p className="text-sm text-muted-foreground mb-2">
-            [Content will be rendered here in Phase 2]
-          </p>
-          <pre className="text-xs overflow-auto">
-            {JSON.stringify(payloadArticle.content, null, 2).slice(0, 500)}...
-          </pre>
-        </div>
+      {/* Content - Rendered via RichText serializer */}
+      <div className="py-8">
+        <RichText content={payloadArticle.content as LexicalContent} />
       </div>
 
       {/* Footer: Tags */}
