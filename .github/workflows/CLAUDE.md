@@ -142,7 +142,7 @@ cloudflare/wrangler-action@392082e81ffbcb9ebdde27400634aa004b35ea37 # v3.14.0
 
 ## workflow_call
 
-Les workflows suivants supportent `workflow_call` pour être appelés par `quality-gate.yml` :
+Les workflows suivants supportent `workflow_call` et peuvent être appelés par `quality-gate.yml` :
 - `tests.yml`
 - `security.yml`
 - `architecture.yml`
