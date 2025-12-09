@@ -9,6 +9,7 @@ import { getPayload } from 'payload'
 import config from '@payload-config'
 import type { Article } from '@/payload-types'
 import type { Locale } from '@/i18n/config'
+import { isValidSlug } from '@/lib/validators'
 
 /**
  * Result type for article fetch operations
@@ -30,6 +31,11 @@ export interface ArticleFetchResult {
  * if (!article) notFound()
  */
 export async function getArticleBySlug(slug: string, locale: Locale): Promise<ArticleFetchResult> {
+  // Validate slug format before DB query to avoid unnecessary calls
+  if (!isValidSlug(slug)) {
+    return { article: null }
+  }
+
   try {
     const payload = await getPayload({ config })
 

@@ -46,6 +46,32 @@ function normalizeSlug(value: string | null | undefined): string | null | undefi
 export const slugifyTaxonomy: FieldHook = ({ value }) => normalizeSlug(value as string)
 
 /**
+ * Slug validation regex pattern.
+ * Matches: lowercase letters, numbers, hyphens between segments.
+ * Does not match: uppercase, consecutive hyphens, leading/trailing hyphens.
+ */
+export const SLUG_REGEX = /^[a-z0-9]+(?:-[a-z0-9]+)*$/
+
+/**
+ * Checks if a slug is valid (boolean version for runtime checks).
+ * Use this for pre-validation before DB queries to avoid unnecessary calls.
+ *
+ * @param slug The slug to validate
+ * @returns true if valid, false otherwise
+ *
+ * @example
+ * isValidSlug('my-article-123') // true
+ * isValidSlug('') // false
+ * isValidSlug('UPPERCASE') // false
+ * isValidSlug('my--slug') // false
+ */
+export function isValidSlug(slug: string | null | undefined): boolean {
+  if (!slug || typeof slug !== 'string') return false
+  const trimmed = slug.trim()
+  return trimmed.length > 0 && SLUG_REGEX.test(trimmed)
+}
+
+/**
  * Validates that a slug matches the expected format:
  * - Lowercase letters and numbers only
  * - Hyphens allowed between segments (not at start/end)
@@ -66,9 +92,8 @@ export function validateTaxonomySlug(
   entityName = 'taxonomy',
 ): true | string {
   if (!value) return true
-  const slugRegex = /^[a-z0-9]+(?:-[a-z0-9]+)*$/
   return (
-    slugRegex.test(value) ||
+    SLUG_REGEX.test(value) ||
     `Slug must contain only lowercase letters, numbers, and hyphens (e.g., "my-${entityName}-name")`
   )
 }
