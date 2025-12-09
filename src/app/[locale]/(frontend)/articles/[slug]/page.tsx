@@ -109,7 +109,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
             [Content will be rendered here in Phase 2]
           </p>
           <pre className="text-xs overflow-auto">
-            {JSON.stringify(payloadArticle.content, null, 2)?.slice(0, 500)}...
+            {JSON.stringify(payloadArticle.content, null, 2).slice(0, 500)}...
           </pre>
         </div>
       </div>
