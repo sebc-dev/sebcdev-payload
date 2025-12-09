@@ -99,7 +99,7 @@ Le projet utilise une **architecture modulaire** de workflows GitHub Actions pou
 | **Security** | Manuel | Socket.dev, Knip (dead code) |
 | **Architecture** | Manuel | dependency-cruiser |
 | **Mutation** | Manuel | Stryker (optionnel) |
-| **Full Quality Gate** | Manuel | Tous les checks requis |
+| **Quality Gate** | Manuel | Tous les checks requis |
 | **Deploy** | Manuel | D1 Migrations + Cloudflare Workers |
 
 **Principe** : Seuls les Core Checks s'exécutent automatiquement sur PR. Les autres checks sont requis pour merger mais doivent être lancés manuellement.
@@ -113,7 +113,7 @@ gh workflow run "Tests"                  # Unit, Integration, E2E
 gh workflow run "Security"               # Socket.dev, Knip
 gh workflow run "Architecture"           # dependency-cruiser
 gh workflow run "Mutation Testing"       # Stryker
-gh workflow run "Full Quality Gate"      # Tout sauf mutation
+gh workflow run "Quality Gate"           # Tout sauf mutation
 gh workflow run "Deploy"                 # Déploiement Cloudflare
 ```
 
@@ -140,7 +140,7 @@ Les checks suivants sont **requis pour merger sur main** (via branch protection)
 - Security (manuel)
 - Architecture (manuel)
 
-> **Tip** : Utiliser `gh workflow run "Full Quality Gate"` pour lancer tous les checks requis en une seule commande.
+> **Tip** : Utiliser `gh workflow run "Quality Gate"` pour lancer tous les checks requis en une seule commande.
 
 ### Outils de Qualité
 
@@ -161,7 +161,7 @@ Les checks suivants sont **requis pour merger sur main** (via branch protection)
 Déploiement **manuel uniquement** via le workflow Deploy :
 
 ```
-Full Quality Gate ✓ → Deploy → D1 Migrations → Wrangler Deploy → Smoke Tests
+Quality Gate ✓ → Deploy → D1 Migrations → Wrangler Deploy → Smoke Tests
 ```
 
 **Commandes de déploiement manuel**:

@@ -11,7 +11,7 @@ Architecture modulaire des workflows CI/CD pour optimiser les temps d'exécution
 | **Security** | `security.yml` | Manuel | Oui |
 | **Architecture** | `architecture.yml` | Manuel | Oui |
 | **Mutation Testing** | `mutation.yml` | Manuel | Non (optionnel) |
-| **Full Quality Gate** | `full-quality-gate.yml` | Manuel | Orchestre tous |
+| **Quality Gate** | `quality-gate.yml` | Manuel | Orchestre tous |
 | **Deploy** | `deploy.yml` | Manuel | N/A |
 
 ## Principe
@@ -69,7 +69,7 @@ Les autres checks sont requis pour merger mais doivent être lancés manuellemen
 **Inputs** :
 - `report_retention_days` : 3, 5, 7, ou 14 jours
 
-### full-quality-gate.yml
+### quality-gate.yml
 
 **Déclenchement** : `workflow_dispatch` uniquement
 
@@ -105,11 +105,11 @@ gh workflow run "Tests"
 gh workflow run "Security"
 gh workflow run "Architecture"
 gh workflow run "Mutation Testing"
-gh workflow run "Full Quality Gate"
+gh workflow run "Quality Gate"
 gh workflow run "Deploy"
 
 # Avec options
-gh workflow run "Full Quality Gate" -f run_mutation_tests=true
+gh workflow run "Quality Gate" -f run_mutation_tests=true
 gh workflow run "Mutation Testing" -f report_retention_days=7
 ```
 
@@ -145,7 +145,7 @@ cloudflare/wrangler-action@392082e81ffbcb9ebdde27400634aa004b35ea37 # v3.14.0
 
 ## workflow_call
 
-Les workflows suivants supportent `workflow_call` pour être appelés par `full-quality-gate.yml` :
+Les workflows suivants supportent `workflow_call` pour être appelés par `quality-gate.yml` :
 - `tests.yml`
 - `security.yml`
 - `architecture.yml`
