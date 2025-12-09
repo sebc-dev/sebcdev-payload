@@ -61,6 +61,15 @@ describe('getArticleBySlug', () => {
     expect(result.error).toBe(errorMessage)
   })
 
+  it('handles non-Error exceptions with Unknown error message', async () => {
+    mockFind.mockRejectedValueOnce('string error')
+
+    const result = await getArticleBySlug('test-article', 'fr')
+
+    expect(result.article).toBeNull()
+    expect(result.error).toBe('Unknown error')
+  })
+
   it('uses correct locale parameter', async () => {
     mockFind.mockResolvedValueOnce({ docs: [mockArticle] })
 
