@@ -106,7 +106,9 @@ export function serializeNode(node: LexicalNode, index: number): ReactNode {
 
     default:
       // Unknown node type - render children if available
-      console.warn(`[serializeLexical] Unknown node type: ${node.type}`)
+      if (process.env.NODE_ENV !== 'production') {
+        console.warn(`[serializeLexical] Unknown node type: ${node.type}`)
+      }
       if (hasChildren(node)) {
         return <span key={index}>{serializeChildren(node.children)}</span>
       }
