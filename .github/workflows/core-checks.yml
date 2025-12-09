@@ -4,6 +4,7 @@
 # Triggers:
 #   - pull_request: Auto-run on PRs targeting main
 #   - workflow_dispatch: Manual trigger
+#   - workflow_call: Called by full-quality-gate.yml
 #
 # This is the ONLY workflow that runs automatically on PRs.
 # Other checks (tests, security, architecture) must be triggered manually
@@ -15,6 +16,7 @@ on:
   pull_request:
     branches: [main]
   workflow_dispatch:
+  workflow_call:
 
 jobs:
   core-checks:
