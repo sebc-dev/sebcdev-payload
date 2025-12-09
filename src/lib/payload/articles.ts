@@ -10,6 +10,7 @@ import config from '@payload-config'
 import type { Article } from '@/payload-types'
 import type { Locale } from '@/i18n/config'
 import { isValidSlug } from '@/lib/validators'
+import { logger } from '@/lib/logger'
 
 /**
  * Result type for article fetch operations
@@ -55,10 +56,15 @@ export async function getArticleBySlug(slug: string, locale: Locale): Promise<Ar
       article: docs[0] ?? null,
     }
   } catch (error) {
-    console.error('[getArticleBySlug] Error:', error)
+    const normalizedError = error instanceof Error ? error : new Error(String(error))
+    logger.error('Failed to fetch article by slug', {
+      slug: trimmedSlug,
+      locale,
+      error: normalizedError,
+    })
     return {
       article: null,
-      error: error instanceof Error ? error.message : 'Unknown error',
+      error: normalizedError.message,
     }
   }
 }
