@@ -93,7 +93,7 @@ export function validateTaxonomySlug(
 ): true | string {
   if (!value) return true
   return (
-    SLUG_REGEX.test(value) ||
+    isValidSlug(value) ||
     `Slug must contain only lowercase letters, numbers, and hyphens (e.g., "my-${entityName}-name")`
   )
 }
