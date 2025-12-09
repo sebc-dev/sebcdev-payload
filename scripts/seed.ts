@@ -176,6 +176,78 @@ const TAGS = [
 // ============================================================================
 
 /**
+ * Text format bitmask values (from Lexical)
+ * Can be combined with bitwise OR: BOLD | ITALIC = 3
+ */
+const TEXT_FORMAT = {
+  BOLD: 1,
+  ITALIC: 2,
+  STRIKETHROUGH: 4,
+  UNDERLINE: 8,
+  CODE: 16,
+  SUBSCRIPT: 32,
+  SUPERSCRIPT: 64,
+} as const
+
+/**
+ * Creates a Lexical text node with optional formatting.
+ */
+function text(content: string, format: number = 0) {
+  return {
+    type: 'text',
+    format,
+    mode: 'normal',
+    style: '',
+    detail: 0,
+    text: content,
+    version: 1,
+  }
+}
+
+/**
+ * Creates a bold text node.
+ */
+function bold(content: string) {
+  return text(content, TEXT_FORMAT.BOLD)
+}
+
+/**
+ * Creates an italic text node.
+ */
+function italic(content: string) {
+  return text(content, TEXT_FORMAT.ITALIC)
+}
+
+/**
+ * Creates an underlined text node.
+ */
+function underline(content: string) {
+  return text(content, TEXT_FORMAT.UNDERLINE)
+}
+
+/**
+ * Creates a strikethrough text node.
+ */
+function strikethrough(content: string) {
+  return text(content, TEXT_FORMAT.STRIKETHROUGH)
+}
+
+/**
+ * Creates an inline code text node.
+ */
+function inlineCode(content: string) {
+  return text(content, TEXT_FORMAT.CODE)
+}
+
+/**
+ * Creates a text node with combined formats.
+ * Example: boldItalic("text") = bold + italic
+ */
+function boldItalic(content: string) {
+  return text(content, TEXT_FORMAT.BOLD | TEXT_FORMAT.ITALIC)
+}
+
+/**
  * Creates a Lexical root structure with the given children.
  */
 function createLexicalRoot(children: unknown[]) {
@@ -192,33 +264,30 @@ function createLexicalRoot(children: unknown[]) {
 }
 
 /**
- * Creates a Lexical paragraph node.
+ * Creates a Lexical paragraph node with mixed content (text nodes with different formats).
  */
-function paragraph(text: string) {
+function paragraphWithChildren(children: unknown[]) {
   return {
     type: 'paragraph',
     format: '',
     indent: 0,
     version: 1,
     direction: 'ltr',
-    children: [
-      {
-        type: 'text',
-        format: 0,
-        mode: 'normal',
-        style: '',
-        detail: 0,
-        text,
-        version: 1,
-      },
-    ],
+    children,
   }
 }
 
 /**
- * Creates a Lexical heading node.
+ * Creates a Lexical paragraph node with plain text.
  */
-function heading(text: string, tag: 'h2' | 'h3' = 'h2') {
+function paragraph(content: string) {
+  return paragraphWithChildren([text(content)])
+}
+
+/**
+ * Creates a Lexical heading node (h1-h6).
+ */
+function heading(content: string, tag: 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' = 'h2') {
   return {
     type: 'heading',
     format: '',
@@ -226,17 +295,25 @@ function heading(text: string, tag: 'h2' | 'h3' = 'h2') {
     version: 1,
     tag,
     direction: 'ltr',
-    children: [
-      {
-        type: 'text',
-        format: 0,
-        mode: 'normal',
-        style: '',
-        detail: 0,
-        text,
-        version: 1,
-      },
-    ],
+    children: [text(content)],
+  }
+}
+
+/**
+ * Creates a Lexical heading node with mixed content.
+ */
+function headingWithChildren(
+  children: unknown[],
+  tag: 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' = 'h2',
+) {
+  return {
+    type: 'heading',
+    format: '',
+    indent: 0,
+    version: 1,
+    tag,
+    direction: 'ltr',
+    children,
   }
 }
 
@@ -258,6 +335,85 @@ function codeBlock(code: string, language = 'typescript') {
 }
 
 /**
+ * Creates a Lexical blockquote node.
+ */
+function blockquote(content: string) {
+  return {
+    type: 'quote',
+    format: '',
+    indent: 0,
+    version: 1,
+    direction: 'ltr',
+    children: [text(content)],
+  }
+}
+
+/**
+ * Creates a Lexical blockquote node with mixed content.
+ */
+function blockquoteWithChildren(children: unknown[]) {
+  return {
+    type: 'quote',
+    format: '',
+    indent: 0,
+    version: 1,
+    direction: 'ltr',
+    children,
+  }
+}
+
+/**
+ * Creates a Lexical link node.
+ * @param url - The URL (can be internal path, external URL, mailto:, or tel:)
+ * @param children - The link text content (array of text nodes)
+ * @param newTab - Force open in new tab (auto-detected for external URLs)
+ */
+function link(url: string, children: unknown[], newTab?: boolean) {
+  return {
+    type: 'link',
+    format: '',
+    indent: 0,
+    version: 1,
+    direction: 'ltr',
+    fields: {
+      url,
+      newTab: newTab ?? undefined,
+      linkType: 'custom' as const,
+    },
+    children,
+  }
+}
+
+/**
+ * Creates a simple text link.
+ */
+function textLink(url: string, linkText: string, newTab?: boolean) {
+  return link(url, [text(linkText)], newTab)
+}
+
+/**
+ * Creates a Lexical list item node.
+ */
+function listItem(children: unknown[], indent = 0) {
+  return {
+    type: 'listitem',
+    format: '',
+    indent,
+    version: 1,
+    value: 1,
+    direction: 'ltr',
+    children,
+  }
+}
+
+/**
+ * Creates a simple list item with text.
+ */
+function simpleListItem(content: string, indent = 0) {
+  return listItem([text(content)], indent)
+}
+
+/**
  * Creates a Lexical unordered list node.
  */
 function bulletList(items: string[]) {
@@ -270,25 +426,106 @@ function bulletList(items: string[]) {
     start: 1,
     tag: 'ul',
     direction: 'ltr',
-    children: items.map((item) => ({
-      type: 'listitem',
-      format: '',
-      indent: 0,
-      version: 1,
-      value: 1,
-      direction: 'ltr',
-      children: [
-        {
-          type: 'text',
-          format: 0,
-          mode: 'normal',
-          style: '',
-          detail: 0,
-          text: item,
-          version: 1,
-        },
-      ],
-    })),
+    children: items.map((item) => simpleListItem(item)),
+  }
+}
+
+/**
+ * Creates a Lexical unordered list node with complex list items.
+ */
+function bulletListWithItems(items: ReturnType<typeof listItem>[]) {
+  return {
+    type: 'list',
+    format: '',
+    indent: 0,
+    version: 1,
+    listType: 'bullet',
+    start: 1,
+    tag: 'ul',
+    direction: 'ltr',
+    children: items,
+  }
+}
+
+/**
+ * Creates a Lexical ordered list node.
+ */
+function orderedList(items: string[]) {
+  return {
+    type: 'list',
+    format: '',
+    indent: 0,
+    version: 1,
+    listType: 'number',
+    start: 1,
+    tag: 'ol',
+    direction: 'ltr',
+    children: items.map((item) => simpleListItem(item)),
+  }
+}
+
+/**
+ * Creates a Lexical ordered list node with complex list items.
+ */
+function orderedListWithItems(items: ReturnType<typeof listItem>[]) {
+  return {
+    type: 'list',
+    format: '',
+    indent: 0,
+    version: 1,
+    listType: 'number',
+    start: 1,
+    tag: 'ol',
+    direction: 'ltr',
+    children: items,
+  }
+}
+
+/**
+ * Creates a list item with text content AND a nested sub-list.
+ * This is the proper Lexical structure for nested lists:
+ * The sub-list is a direct child of the listitem node.
+ *
+ * @param content - Text content for the list item
+ * @param nestedList - A nested list (bullet or ordered) to include
+ */
+function listItemWithNestedList(
+  content: string,
+  nestedList: ReturnType<typeof bulletList | typeof orderedList>,
+) {
+  return {
+    type: 'listitem',
+    format: '',
+    indent: 0,
+    version: 1,
+    value: 1,
+    direction: 'ltr',
+    children: [text(content), nestedList],
+  }
+}
+
+/**
+ * Creates a nested bullet list structure.
+ * Example: nestedBulletList([
+ *   { text: 'Item 1', children: ['Sub 1.1', 'Sub 1.2'] },
+ *   { text: 'Item 2' },
+ * ])
+ */
+function nestedBulletList(items: Array<{ text: string; children?: string[] }>) {
+  return {
+    type: 'list',
+    format: '',
+    indent: 0,
+    version: 1,
+    listType: 'bullet',
+    start: 1,
+    tag: 'ul',
+    direction: 'ltr',
+    children: items.map((item) =>
+      item.children
+        ? listItemWithNestedList(item.text, bulletList(item.children))
+        : simpleListItem(item.text),
+    ),
   }
 }
 
@@ -339,6 +576,11 @@ const ARTICLE_IMAGES = [
     slug: 'parcours-wordpress-edge',
     seed: 107,
     alt: { fr: 'Évolution du développement web', en: 'Web development evolution' },
+  },
+  {
+    slug: 'guide-formatage-richtext',
+    seed: 108,
+    alt: { fr: 'Guide de formatage rich text', en: 'Rich text formatting guide' },
   },
 ] as const
 
@@ -899,6 +1141,359 @@ test('homepage accessibility', async ({ page }) => {
     tags: ['typescript', 'cloudflare', 'performance'],
     complexity: 'beginner' as const,
     publishedAt: new Date('2025-11-23T08:00:00Z'),
+  },
+  {
+    title: {
+      fr: 'Guide Complet du Formatage Rich Text',
+      en: 'Complete Rich Text Formatting Guide',
+    },
+    slug: 'guide-formatage-richtext',
+    excerpt: {
+      fr: 'Découvrez toutes les possibilités de formatage rich text : texte en gras, italique, souligné, barré, code inline, titres, listes, citations et liens.',
+      en: 'Discover all rich text formatting possibilities: bold, italic, underline, strikethrough, inline code, headings, lists, blockquotes and links.',
+    },
+    content: {
+      fr: createLexicalRoot([
+        // Introduction
+        paragraph(
+          "Cet article présente toutes les fonctionnalités de formatage disponibles dans l'éditeur rich text. Il sert également de référence pour tester le rendu.",
+        ),
+
+        // H1 - Formatage de texte
+        heading('Formatage de Texte', 'h1'),
+        paragraphWithChildren([
+          text('Le texte peut être formaté de plusieurs façons : '),
+          bold('en gras'),
+          text(', '),
+          italic('en italique'),
+          text(', '),
+          underline('souligné'),
+          text(', '),
+          strikethrough('barré'),
+          text(', ou en '),
+          inlineCode('code inline'),
+          text('. On peut aussi '),
+          boldItalic('combiner gras et italique'),
+          text('.'),
+        ]),
+
+        // H2 - Niveaux de titres
+        heading('Niveaux de Titres', 'h2'),
+        paragraph(
+          'Les titres permettent de structurer le contenu. Voici les différents niveaux disponibles :',
+        ),
+        heading('Titre de niveau 1 (H1)', 'h1'),
+        heading('Titre de niveau 2 (H2)', 'h2'),
+        heading('Titre de niveau 3 (H3)', 'h3'),
+        heading('Titre de niveau 4 (H4)', 'h4'),
+        heading('Titre de niveau 5 (H5)', 'h5'),
+        heading('Titre de niveau 6 (H6)', 'h6'),
+
+        // H2 - Paragraphes
+        heading('Paragraphes', 'h2'),
+        paragraph(
+          'Les paragraphes sont les blocs de base du contenu. Ils peuvent contenir du texte simple ou du texte formaté.',
+        ),
+        paragraphWithChildren([
+          text('Ce paragraphe contient du texte avec '),
+          bold('différents'),
+          text(' '),
+          italic('styles'),
+          text(' de '),
+          underline('formatage'),
+          text(' mélangés dans la même phrase.'),
+        ]),
+
+        // H2 - Listes
+        heading('Listes', 'h2'),
+
+        // H3 - Listes à puces
+        heading('Listes à Puces (non ordonnées)', 'h3'),
+        bulletList([
+          'Premier élément de la liste',
+          'Deuxième élément de la liste',
+          'Troisième élément de la liste',
+        ]),
+
+        // H3 - Listes numérotées
+        heading('Listes Numérotées (ordonnées)', 'h3'),
+        orderedList([
+          'Première étape du processus',
+          'Deuxième étape du processus',
+          'Troisième étape du processus',
+        ]),
+
+        // H3 - Listes imbriquées
+        heading('Listes Imbriquées', 'h3'),
+        nestedBulletList([
+          {
+            text: 'Catégorie principale A',
+            children: ['Sous-élément A.1', 'Sous-élément A.2'],
+          },
+          {
+            text: 'Catégorie principale B',
+            children: ['Sous-élément B.1', 'Sous-élément B.2'],
+          },
+          { text: 'Catégorie principale C (sans enfants)' },
+        ]),
+
+        // H3 - Listes avec formatage
+        heading('Listes avec Formatage', 'h3'),
+        bulletListWithItems([
+          listItem([bold('Gras'), text(' : pour mettre en évidence')]),
+          listItem([italic('Italique'), text(' : pour les citations ou termes étrangers')]),
+          listItem([inlineCode('Code'), text(' : pour les éléments techniques')]),
+        ]),
+
+        // H2 - Citations
+        heading('Citations (Blockquotes)', 'h2'),
+        blockquote(
+          "Une citation simple avec du texte. Les blockquotes sont utiles pour mettre en avant des passages importants ou des citations d'auteurs.",
+        ),
+        blockquoteWithChildren([
+          text('Une citation peut aussi contenir du texte '),
+          bold('formaté'),
+          text(' avec des éléments en '),
+          italic('italique'),
+          text(' ou même du '),
+          inlineCode('code'),
+          text('.'),
+        ]),
+
+        // H2 - Liens
+        heading('Liens', 'h2'),
+
+        // H3 - Liens internes
+        heading('Liens Internes (Next.js)', 'h3'),
+        paragraphWithChildren([
+          text(
+            'Les liens internes utilisent le composant Link de Next.js pour une navigation côté client : ',
+          ),
+          textLink('/fr', "Retour à la page d'accueil"),
+          text(' ou '),
+          textLink('/fr/articles', 'voir tous les articles'),
+          text('.'),
+        ]),
+
+        // H3 - Liens externes
+        heading('Liens Externes (nouvel onglet)', 'h3'),
+        paragraphWithChildren([
+          text("Les liens externes s'ouvrent dans un nouvel onglet : "),
+          textLink('https://nextjs.org', 'Documentation Next.js'),
+          text(', '),
+          textLink('https://payloadcms.com', 'Payload CMS'),
+          text(', ou '),
+          textLink('https://github.com', 'GitHub'),
+          text('.'),
+        ]),
+
+        // H3 - Liens mailto et tel
+        heading('Liens Spéciaux (mailto, tel)', 'h3'),
+        paragraphWithChildren([
+          text("Pour contacter quelqu'un : "),
+          textLink('mailto:contact@example.com', 'Envoyer un email'),
+          text(' ou '),
+          textLink('tel:+33123456789', 'Appeler le +33 1 23 45 67 89'),
+          text('.'),
+        ]),
+
+        // H2 - Code
+        heading('Blocs de Code', 'h2'),
+        paragraph(
+          "Les blocs de code permettent d'afficher du code source avec coloration syntaxique :",
+        ),
+        codeBlock(
+          `// Exemple TypeScript
+interface User {
+  id: string
+  name: string
+  email: string
+}
+
+function greet(user: User): string {
+  return \`Hello, \${user.name}!\`
+}`,
+          'typescript',
+        ),
+
+        // Conclusion
+        heading('Conclusion', 'h2'),
+        paragraphWithChildren([
+          text(
+            "Ce guide couvre l'ensemble des fonctionnalités de formatage disponibles. Pour plus d'informations, consultez la ",
+          ),
+          textLink('https://lexical.dev', 'documentation Lexical'),
+          text('.'),
+        ]),
+      ]),
+      en: createLexicalRoot([
+        // Introduction
+        paragraph(
+          'This article presents all the formatting features available in the rich text editor. It also serves as a reference for testing rendering.',
+        ),
+
+        // H1 - Text Formatting
+        heading('Text Formatting', 'h1'),
+        paragraphWithChildren([
+          text('Text can be formatted in several ways: '),
+          bold('bold'),
+          text(', '),
+          italic('italic'),
+          text(', '),
+          underline('underlined'),
+          text(', '),
+          strikethrough('strikethrough'),
+          text(', or as '),
+          inlineCode('inline code'),
+          text('. You can also '),
+          boldItalic('combine bold and italic'),
+          text('.'),
+        ]),
+
+        // H2 - Heading Levels
+        heading('Heading Levels', 'h2'),
+        paragraph('Headings help structure content. Here are the different levels available:'),
+        heading('Heading Level 1 (H1)', 'h1'),
+        heading('Heading Level 2 (H2)', 'h2'),
+        heading('Heading Level 3 (H3)', 'h3'),
+        heading('Heading Level 4 (H4)', 'h4'),
+        heading('Heading Level 5 (H5)', 'h5'),
+        heading('Heading Level 6 (H6)', 'h6'),
+
+        // H2 - Paragraphs
+        heading('Paragraphs', 'h2'),
+        paragraph(
+          'Paragraphs are the basic building blocks of content. They can contain plain text or formatted text.',
+        ),
+        paragraphWithChildren([
+          text('This paragraph contains text with '),
+          bold('different'),
+          text(' '),
+          italic('formatting'),
+          text(' '),
+          underline('styles'),
+          text(' mixed in the same sentence.'),
+        ]),
+
+        // H2 - Lists
+        heading('Lists', 'h2'),
+
+        // H3 - Bullet Lists
+        heading('Bullet Lists (unordered)', 'h3'),
+        bulletList(['First list item', 'Second list item', 'Third list item']),
+
+        // H3 - Numbered Lists
+        heading('Numbered Lists (ordered)', 'h3'),
+        orderedList([
+          'First step of the process',
+          'Second step of the process',
+          'Third step of the process',
+        ]),
+
+        // H3 - Nested Lists
+        heading('Nested Lists', 'h3'),
+        nestedBulletList([
+          {
+            text: 'Main category A',
+            children: ['Sub-item A.1', 'Sub-item A.2'],
+          },
+          {
+            text: 'Main category B',
+            children: ['Sub-item B.1', 'Sub-item B.2'],
+          },
+          { text: 'Main category C (no children)' },
+        ]),
+
+        // H3 - Lists with Formatting
+        heading('Lists with Formatting', 'h3'),
+        bulletListWithItems([
+          listItem([bold('Bold'), text(': to emphasize')]),
+          listItem([italic('Italic'), text(': for quotes or foreign terms')]),
+          listItem([inlineCode('Code'), text(': for technical elements')]),
+        ]),
+
+        // H2 - Blockquotes
+        heading('Blockquotes', 'h2'),
+        blockquote(
+          'A simple blockquote with text. Blockquotes are useful for highlighting important passages or author quotes.',
+        ),
+        blockquoteWithChildren([
+          text('A blockquote can also contain '),
+          bold('formatted'),
+          text(' text with '),
+          italic('italic'),
+          text(' elements or even '),
+          inlineCode('code'),
+          text('.'),
+        ]),
+
+        // H2 - Links
+        heading('Links', 'h2'),
+
+        // H3 - Internal Links
+        heading('Internal Links (Next.js)', 'h3'),
+        paragraphWithChildren([
+          text('Internal links use the Next.js Link component for client-side navigation: '),
+          textLink('/en', 'Back to homepage'),
+          text(' or '),
+          textLink('/en/articles', 'view all articles'),
+          text('.'),
+        ]),
+
+        // H3 - External Links
+        heading('External Links (new tab)', 'h3'),
+        paragraphWithChildren([
+          text('External links open in a new tab: '),
+          textLink('https://nextjs.org', 'Next.js Documentation'),
+          text(', '),
+          textLink('https://payloadcms.com', 'Payload CMS'),
+          text(', or '),
+          textLink('https://github.com', 'GitHub'),
+          text('.'),
+        ]),
+
+        // H3 - mailto and tel links
+        heading('Special Links (mailto, tel)', 'h3'),
+        paragraphWithChildren([
+          text('To contact someone: '),
+          textLink('mailto:contact@example.com', 'Send an email'),
+          text(' or '),
+          textLink('tel:+33123456789', 'Call +33 1 23 45 67 89'),
+          text('.'),
+        ]),
+
+        // H2 - Code
+        heading('Code Blocks', 'h2'),
+        paragraph('Code blocks display source code with syntax highlighting:'),
+        codeBlock(
+          `// TypeScript example
+interface User {
+  id: string
+  name: string
+  email: string
+}
+
+function greet(user: User): string {
+  return \`Hello, \${user.name}!\`
+}`,
+          'typescript',
+        ),
+
+        // Conclusion
+        heading('Conclusion', 'h2'),
+        paragraphWithChildren([
+          text(
+            'This guide covers all available formatting features. For more information, see the ',
+          ),
+          textLink('https://lexical.dev', 'Lexical documentation'),
+          text('.'),
+        ]),
+      ]),
+    },
+    category: 'tutorial',
+    tags: ['typescript', 'payload-cms', 'react'],
+    complexity: 'beginner' as const,
+    publishedAt: new Date('2025-12-07T09:00:00Z'),
   },
 ]
 
