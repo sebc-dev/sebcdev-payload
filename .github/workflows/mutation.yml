@@ -73,7 +73,7 @@ jobs:
           path: |
             reports/mutation/stryker-incremental.json
             .stryker-tmp
-          key: stryker-${{ runner.os }}-${{ hashFiles('src/lib/**/*.ts', 'src/utilities/**/*.ts', 'src/hooks/**/*.ts') }}
+          key: stryker-${{ runner.os }}-${{ hashFiles('src/lib/**/*.ts', 'src/hooks/**/*.ts') }}
           restore-keys: stryker-${{ runner.os }}-
 
       - name: Stryker Mutation Testing
