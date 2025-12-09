@@ -31,8 +31,9 @@ export interface ArticleFetchResult {
  * if (!article) notFound()
  */
 export async function getArticleBySlug(slug: string, locale: Locale): Promise<ArticleFetchResult> {
-  // Validate slug format before DB query to avoid unnecessary calls
-  if (!isValidSlug(slug)) {
+  // Trim and validate slug format before DB query
+  const trimmedSlug = slug?.trim() ?? ''
+  if (!isValidSlug(trimmedSlug)) {
     return { article: null }
   }
 
@@ -43,7 +44,7 @@ export async function getArticleBySlug(slug: string, locale: Locale): Promise<Ar
       collection: 'articles',
       locale,
       where: {
-        slug: { equals: slug },
+        slug: { equals: trimmedSlug },
         status: { equals: 'published' },
       },
       depth: 2, // Include relations (category, tags)
