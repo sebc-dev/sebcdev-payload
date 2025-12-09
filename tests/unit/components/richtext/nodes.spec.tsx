@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react'
 import { describe, it, expect, vi } from 'vitest'
 import { render } from '@testing-library/react'
 
@@ -8,7 +9,7 @@ vi.mock('next/link', () => ({
     href,
     className,
   }: {
-    children: React.ReactNode
+    children: ReactNode
     href: string
     className?: string
   }) => (
