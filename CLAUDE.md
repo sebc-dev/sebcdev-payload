@@ -88,27 +88,40 @@ Exemples:
 
 ## CI/CD Pipeline & Security
 
-### Quality Gate Workflow
+### Stratégie de Workflows
 
-Le projet utilise un pipeline CI/CD "AI-Shield" avec validation multi-couches pour détecter les hallucinations IA et garantir la qualité du code.
+Le projet utilise une **architecture modulaire** de workflows GitHub Actions pour optimiser les temps de CI :
 
-**Stratégie de déclenchement** :
+| Workflow | Déclenchement | Contenu |
+|----------|---------------|---------|
+| **Core Checks** | Auto sur PR | ESLint, Prettier, Type Sync, Next.js Build |
+| **Tests** | Manuel | Unit, Integration, E2E (Playwright) |
+| **Security** | Manuel | Socket.dev, Knip (dead code) |
+| **Architecture** | Manuel | dependency-cruiser |
+| **Mutation** | Manuel | Stryker (optionnel) |
+| **Full Quality Gate** | Manuel | Tous les checks requis |
+| **Deploy** | Manuel | D1 Migrations + Cloudflare Workers |
 
-- Exécution automatique sur `pull_request` vers `main`
-- Déclenchement manuel disponible via `workflow_dispatch`
-- **Requis pour merger** : Status check via branch protection
+**Principe** : Seuls les Core Checks s'exécutent automatiquement sur PR. Les autres checks sont requis pour merger mais doivent être lancés manuellement.
 
-**Layers exécutés** :
-
-1. **Supply Chain Security** (Layer 1) : Socket.dev (paquets malveillants)
-2. **Code Quality** (Layer 2) : ESLint, Prettier, Knip, Unit/Integration Tests, Coverage, Type Sync
-3. **Build Validation** (Layer 3) : Next.js Build (no-DB mode)
-4. **E2E Tests** (Layer 3.5) : Playwright (Chromium)
-5. **Architecture Validation** (Layer 4) : dependency-cruiser
-6. **Mutation Testing** (Layer 5) : Stryker (optional, workflow_dispatch)
+### Lancer les Workflows
 
 ```bash
-# Checks locaux avant push (recommandé)
+# Via GitHub CLI
+gh workflow run "Core Checks"           # ESLint, Prettier, Type Sync, Build
+gh workflow run "Tests"                  # Unit, Integration, E2E
+gh workflow run "Security"               # Socket.dev, Knip
+gh workflow run "Architecture"           # dependency-cruiser
+gh workflow run "Mutation Testing"       # Stryker
+gh workflow run "Full Quality Gate"      # Tout sauf mutation
+gh workflow run "Deploy"                 # Déploiement Cloudflare
+```
+
+Ou via l'interface : **Actions > [Workflow] > Run workflow**
+
+### Checks Locaux (recommandés avant push)
+
+```bash
 pnpm lint                    # ESLint + Prettier
 pnpm generate:types:payload  # Sync types Payload → TypeScript
 pnpm test:unit               # Unit tests (Vitest)
@@ -118,43 +131,37 @@ pnpm test:e2e                # E2E tests (Playwright)
 pnpm depcruise               # Architecture validation
 ```
 
-### GitHub Actions Workflow
+### Branch Protection
 
-Déclenchement manuel via : **Actions > Quality Gate > Run workflow** (sélectionner la branche)
+Les checks suivants sont **requis pour merger sur main** (via branch protection) :
 
-**Supply Chain Security :**
+- Core Checks (auto)
+- Tests (manuel)
+- Security (manuel)
+- Architecture (manuel)
 
-- **Socket.dev** : Bloque les paquets malveillants/suspects (typosquatting, installation scripts)
-- **SHA Pinning** : Actions GitHub tierces épinglées par SHA complet
-- **Dependabot** : Maintenance automatique des dépendances et actions
+> **Tip** : Utiliser `gh workflow run "Full Quality Gate"` pour lancer tous les checks requis en une seule commande.
 
-**Code Quality Gates :**
+### Outils de Qualité
 
-- **Knip** : Détecte le code mort et imports non utilisés (hallucinations IA)
-- **Type Sync** : Vérifie la cohérence Payload ↔ TypeScript (`payload-types.ts`)
-- **ESLint + Prettier** : Formatage et linting strict (includes Tailwind class ordering)
-
-**Build & Tests :**
-
-- **Vitest (Unit/Integration)** : Tests unitaires avec couverture + tests d'intégration (Layer 2)
-  - Integration tests require `PAYLOAD_SECRET` env variable. Set in GitHub Actions secrets for CI, or locally via `.env` file. Missing this will fail `pnpm test:int`.
-- **Next.js Build** : `next build --experimental-build-mode compile` sans connexion D1 (Layer 3)
-- **Playwright E2E** : Tests E2E et accessibilité WCAG 2.1 AA (FR/EN) (Layer 3.5)
-- **Stryker** : Mutation testing sur modules critiques (Layer 5, optionnel via workflow_dispatch)
-
-**Architecture & Permissions :**
-
-- **dependency-cruiser** : Validation architecture et interdiction imports serveur ↔ client (Layer 4)
-- **Permissions** : GITHUB_TOKEN en read-only par défaut (least privilege)
+| Outil | But |
+|-------|-----|
+| **Socket.dev** | Supply chain security (paquets malveillants, typosquatting) |
+| **Knip** | Détection code mort (anti-hallucination IA) |
+| **ESLint + Prettier** | Linting et formatage (Tailwind class ordering) |
+| **Type Sync** | Cohérence Payload ↔ TypeScript |
+| **dependency-cruiser** | Validation architecture (imports serveur/client) |
+| **Playwright** | Tests E2E et accessibilité WCAG 2.1 AA |
+| **Stryker** | Mutation testing (qualité des tests) |
 
 > **Documentation complète :** [CI-CD Security Architecture](docs/specs/CI-CD-Security.md)
 
 ### Deployment Pipeline
 
-Déploiement automatique après succès de la Quality Gate sur la branche `main`:
+Déploiement **manuel uniquement** via le workflow Deploy :
 
 ```
-Quality Gate ✓ → D1 Migrations → Wrangler Deploy → Validation (URL + Smoke Tests)
+Full Quality Gate ✓ → Deploy → D1 Migrations → Wrangler Deploy → Smoke Tests
 ```
 
 **Commandes de déploiement manuel**:

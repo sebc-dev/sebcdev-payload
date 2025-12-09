@@ -1,0 +1,111 @@
+# .github/workflows/core-checks.yml
+# Core Checks - Minimal validation on every PR
+#
+# Triggers:
+#   - pull_request: Auto-run on PRs targeting main
+#   - workflow_dispatch: Manual trigger
+#
+# This is the ONLY workflow that runs automatically on PRs.
+# Other checks (tests, security, architecture) must be triggered manually
+# but are still required for merge via branch protection.
+
+name: Core Checks
+
+on:
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  core-checks:
+    name: Core Checks
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3 # v6.0.0
+        with:
+          fetch-depth: 0
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@41ff72655975bd51cab0327fa583b6e92b6d3061 # v4.2.0
+        with:
+          version: 9
+
+      - name: Setup Node.js
+        uses: actions/setup-node@2028fbc5c25fe9cf00d9f06a71cc4710d4507903 # v6.0.0
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      # Generate CI-only fallback secret for type generation
+      - name: Generate CI Payload Secret
+        run: echo "PAYLOAD_SECRET_CI=$(openssl rand -hex 32)" >> "$GITHUB_ENV"
+
+      # ============================================
+      # ESLint + Prettier
+      # ============================================
+
+      - name: ESLint
+        run: pnpm lint --format stylish
+
+      - name: Prettier Check
+        run: pnpm exec prettier --check .
+
+      # ============================================
+      # Type Sync Verification
+      # ============================================
+
+      - name: Generate Payload Types
+        env:
+          PAYLOAD_SECRET: ${{ secrets.PAYLOAD_SECRET || env.PAYLOAD_SECRET_CI }}
+        run: pnpm generate:types:payload
+
+      - name: Verify Type Sync
+        run: |
+          if git diff --exit-code src/payload-types.ts; then
+            echo "✅ Payload types are synchronized"
+          else
+            echo "❌ ERROR: Payload types are out of sync!"
+            echo "Run 'pnpm generate:types:payload' and commit the changes"
+            git diff src/payload-types.ts
+            exit 1
+          fi
+
+      # ============================================
+      # Next.js Build (No-DB Mode)
+      # ============================================
+
+      - name: Cache Next.js Build
+        uses: actions/cache@5a3ec84eff668545956fd18022155c47e93e2684 # v4.2.3
+        with:
+          path: .next/cache
+          key: nextjs-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml', 'next.config.ts', 'tsconfig.json') }}
+          restore-keys: |
+            nextjs-${{ runner.os }}-
+
+      - name: Next.js Build (No-DB Mode)
+        run: pnpm exec next build --experimental-build-mode compile
+        env:
+          PAYLOAD_SECRET: ${{ secrets.PAYLOAD_SECRET || env.PAYLOAD_SECRET_CI }}
+
+      # ============================================
+      # Summary
+      # ============================================
+
+      - name: Summary
+        run: |
+          echo "## ✅ Core Checks Passed" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "- ESLint: ✅" >> $GITHUB_STEP_SUMMARY
+          echo "- Prettier: ✅" >> $GITHUB_STEP_SUMMARY
+          echo "- Type Sync: ✅" >> $GITHUB_STEP_SUMMARY
+          echo "- Next.js Build: ✅" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "⚠️ **Note**: Other checks (tests, security, architecture) must be run manually before merge." >> $GITHUB_STEP_SUMMARY
