@@ -59,15 +59,17 @@ export function Heading({ node }: HeadingProps) {
   const id = slugify(text)
 
   return (
-    <Tag id={id} className={`${headingStyles[node.tag]} group scroll-mt-20`}>
+    <Tag id={id || undefined} className={`${headingStyles[node.tag]} group scroll-mt-20`}>
       {serializeChildren(node.children)}
-      <a
-        href={`#${id}`}
-        className="ml-2 opacity-0 group-hover:opacity-100 transition-opacity text-muted-foreground"
-        aria-label={`Link to ${text}`}
-      >
-        #
-      </a>
+      {id && (
+        <a
+          href={`#${id}`}
+          className="ml-2 opacity-0 group-hover:opacity-100 transition-opacity text-muted-foreground"
+          aria-label={`Link to ${text}`}
+        >
+          #
+        </a>
+      )}
     </Tag>
   )
 }
