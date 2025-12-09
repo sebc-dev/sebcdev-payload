@@ -13,24 +13,40 @@ interface ListProps {
 
 interface ListItemProps {
   node: ListItemNode
+  isCheckList?: boolean
 }
 
 export function List({ node }: ListProps) {
+  const isCheckList = node.listType === 'check'
   const Tag = node.listType === 'number' ? 'ol' : 'ul'
-  const listStyle = node.listType === 'number' ? 'list-decimal' : 'list-disc'
+  const listStyle =
+    node.listType === 'number' ? 'list-decimal' : isCheckList ? 'list-none' : 'list-disc'
 
   return (
     <Tag className={`${listStyle} pl-6 mb-4 space-y-1`} start={node.start}>
       {node.children.map((child, index) => (
-        <ListItem key={index} node={child} />
+        <ListItem key={index} node={child} isCheckList={isCheckList} />
       ))}
     </Tag>
   )
 }
 
-export function ListItem({ node }: ListItemProps) {
+export function ListItem({ node, isCheckList = false }: ListItemProps) {
   // Check if this list item contains a nested list
   const hasNestedList = node.children.some((child) => child.type === 'list')
 
-  return <li className={hasNestedList ? 'list-none' : ''}>{serializeChildren(node.children)}</li>
+  return (
+    <li className={hasNestedList ? 'list-none' : ''}>
+      {isCheckList && (
+        <input
+          type="checkbox"
+          checked={node.checked ?? false}
+          readOnly
+          className="mr-2 pointer-events-none"
+          aria-label={node.checked ? 'Completed' : 'Not completed'}
+        />
+      )}
+      {serializeChildren(node.children)}
+    </li>
+  )
 }
