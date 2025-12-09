@@ -248,6 +248,20 @@ function boldItalic(content: string) {
 }
 
 /**
+ * Creates a subscript text node.
+ */
+function subscript(content: string) {
+  return text(content, TEXT_FORMAT.SUBSCRIPT)
+}
+
+/**
+ * Creates a superscript text node.
+ */
+function superscript(content: string) {
+  return text(content, TEXT_FORMAT.SUPERSCRIPT)
+}
+
+/**
  * Creates a Lexical root structure with the given children.
  */
 function createLexicalRoot(children: unknown[]) {
