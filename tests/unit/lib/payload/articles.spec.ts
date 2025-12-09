@@ -61,13 +61,13 @@ describe('getArticleBySlug', () => {
     expect(result.error).toBe(errorMessage)
   })
 
-  it('handles non-Error exceptions with Unknown error message', async () => {
+  it('handles non-Error exceptions by converting to string', async () => {
     mockFind.mockRejectedValueOnce('string error')
 
     const result = await getArticleBySlug('test-article', 'fr')
 
     expect(result.article).toBeNull()
-    expect(result.error).toBe('Unknown error')
+    expect(result.error).toBe('string error')
   })
 
   it('early-returns for invalid slug without calling payload.find', async () => {
