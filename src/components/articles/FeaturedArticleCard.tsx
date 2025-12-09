@@ -130,10 +130,14 @@ export async function FeaturedArticleCard({
         <CardHeader className="space-y-4 pb-4">
           {/* Metadata Row: Category - Reading Time - Date - Complexity */}
           <div className="flex flex-wrap items-center gap-3 text-sm">
-            <CategoryBadge category={article.category} locale={locale} clickable={false} />
-            <span className="text-muted-foreground" aria-hidden="true">
-              -
-            </span>
+            {article.category && (
+              <>
+                <CategoryBadge category={article.category} locale={locale} clickable={false} />
+                <span className="text-muted-foreground" aria-hidden="true">
+                  -
+                </span>
+              </>
+            )}
             <span className="text-muted-foreground">
               {t('minRead', { minutes: article.readingTime })}
             </span>

@@ -28,7 +28,9 @@ export async function ArticleHeader({ article, locale }: ArticleHeaderProps) {
   return (
     <header className="space-y-4 pb-8 border-b border-border">
       {/* Category Badge */}
-      <CategoryBadge category={article.category} locale={locale} clickable={true} />
+      {article.category && (
+        <CategoryBadge category={article.category} locale={locale} clickable={true} />
+      )}
 
       {/* Title */}
       <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold leading-tight tracking-tight">

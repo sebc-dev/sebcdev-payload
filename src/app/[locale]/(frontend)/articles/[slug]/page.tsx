@@ -54,7 +54,7 @@ function mapPayloadToArticleData(article: PayloadArticle): ArticleData {
         color: article.category.color ?? undefined,
         icon: (article.category.icon as LucideCategoryIcon) ?? undefined,
       }
-    : { id: '', title: '', slug: '' }
+    : null
 
   // Map tags
   const tags =
