@@ -105,21 +105,41 @@ jobs:
       - name: Smoke Test
         run: |
           URL="${{ steps.deploy.outputs.deployment-url }}"
+          TMPDIR=$(mktemp -d)
+          trap "rm -rf $TMPDIR" EXIT
 
           echo "::group::Testing Homepage"
-          HTTP_STATUS=$(curl -s -o /dev/null -w "%{http_code}" "$URL")
+          HOMEPAGE_FILE="$TMPDIR/homepage.html"
+          HTTP_STATUS=$(curl -s -o "$HOMEPAGE_FILE" -w "%{http_code}" "$URL")
+
           if [ "$HTTP_STATUS" = "200" ]; then
-            echo "✅ Homepage returned 200 OK"
+            # Verify content is not empty and contains HTML
+            if [ -s "$HOMEPAGE_FILE" ] && grep -qi "<html" "$HOMEPAGE_FILE"; then
+              echo "✅ Homepage returned 200 OK with valid HTML content"
+            else
+              echo "::warning::Homepage returned 200 but content appears invalid"
+            fi
           else
-            echo "::warning::Homepage returned $HTTP_STATUS (expected 200)"
+            echo "::error::Homepage returned $HTTP_STATUS (expected 200)"
+            exit 1
           fi
           echo "::endgroup::"
 
           echo "::group::Testing Admin Panel"
-          HTTP_STATUS=$(curl -s -o /dev/null -w "%{http_code}" "$URL/admin")
-          if [ "$HTTP_STATUS" = "200" ] || [ "$HTTP_STATUS" = "302" ]; then
-            echo "✅ Admin panel accessible (status: $HTTP_STATUS)"
+          ADMIN_FILE="$TMPDIR/admin.html"
+          HTTP_STATUS=$(curl -s -L -o "$ADMIN_FILE" -w "%{http_code}" "$URL/admin")
+
+          if [ "$HTTP_STATUS" = "200" ]; then
+            # Admin should show login form or dashboard
+            if [ -s "$ADMIN_FILE" ] && grep -qiE "(login|payload|admin)" "$ADMIN_FILE"; then
+              echo "✅ Admin panel accessible with expected content"
+            else
+              echo "::warning::Admin panel returned 200 but content appears unexpected"
+            fi
+          elif [ "$HTTP_STATUS" = "302" ]; then
+            echo "✅ Admin panel redirecting (expected for auth)"
           else
-            echo "::warning::Admin panel returned $HTTP_STATUS"
+            echo "::error::Admin panel returned $HTTP_STATUS"
+            exit 1
           fi
           echo "::endgroup::"
