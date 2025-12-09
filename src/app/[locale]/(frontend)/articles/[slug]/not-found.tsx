@@ -6,11 +6,12 @@
  */
 
 import Link from 'next/link'
-import { getTranslations } from 'next-intl/server'
+import { getLocale, getTranslations } from 'next-intl/server'
 import { FileQuestion } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 
 export default async function ArticleNotFound() {
+  const locale = await getLocale()
   const t = await getTranslations('article.notFound')
 
   return (
@@ -27,7 +28,7 @@ export default async function ArticleNotFound() {
 
         {/* CTA */}
         <Button asChild>
-          <Link href="/">{t('backToHome')}</Link>
+          <Link href={`/${locale}`}>{t('backToHome')}</Link>
         </Button>
       </div>
     </div>
