@@ -9,7 +9,7 @@
  */
 
 import { notFound } from 'next/navigation'
-import { setRequestLocale } from 'next-intl/server'
+import { setRequestLocale, getTranslations } from 'next-intl/server'
 import { getArticleBySlug } from '@/lib/payload/articles'
 import { ArticleHeader, ArticleFooter } from '@/components/articles'
 import type { ArticleData } from '@/components/articles/types'
@@ -86,6 +86,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
   const { locale: localeParam, slug } = await params
   const locale = localeParam as Locale
   setRequestLocale(locale)
+  const t = await getTranslations('article')
 
   // Fetch article by slug
   const { article: payloadArticle } = await getArticleBySlug(slug, locale)
@@ -108,7 +109,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
         {isLexicalContent(payloadArticle.content) ? (
           <RichText content={payloadArticle.content} />
         ) : (
-          <p className="text-muted-foreground italic">Contenu non disponible</p>
+          <p className="text-muted-foreground italic">{t('contentUnavailable')}</p>
         )}
       </div>
 
