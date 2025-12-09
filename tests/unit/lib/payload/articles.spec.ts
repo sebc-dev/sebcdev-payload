@@ -90,6 +90,18 @@ describe('getArticleBySlug', () => {
     )
   })
 
+  it('queries the articles collection', async () => {
+    mockFind.mockResolvedValueOnce({ docs: [mockArticle] })
+
+    await getArticleBySlug('test-article', 'fr')
+
+    expect(mockFind).toHaveBeenCalledWith(
+      expect.objectContaining({
+        collection: 'articles',
+      }),
+    )
+  })
+
   it('filters by published status', async () => {
     mockFind.mockResolvedValueOnce({ docs: [mockArticle] })
 
