@@ -46,10 +46,8 @@ Les autres checks sont requis pour merger mais doivent être lancés manuellemen
 **Déclenchement** : `workflow_dispatch` + `workflow_call`
 
 **Contenu** :
-- Socket.dev (supply chain security)
+- Socket.dev (supply chain security, mode firewall-free)
 - Knip (dead code detection)
-
-**Permissions spéciales** : `issues: write`, `pull-requests: write` (pour Socket.dev)
 
 ### architecture.yml
 
@@ -118,8 +116,7 @@ gh workflow run "Mutation Testing" -f report_retention_days=7
 ### Permissions (Least Privilege)
 
 Tous les workflows déclarent des permissions explicites :
-- `contents: read` (par défaut)
-- `issues: write`, `pull-requests: write` (security.yml pour Socket.dev)
+- `contents: read` (par défaut pour tous les workflows)
 
 ### Actions SHA-Pinned
 
