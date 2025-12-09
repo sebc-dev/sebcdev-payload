@@ -121,6 +121,13 @@
     }
   },
   "article": {
-    "publishedAgo": "Published {time}"
+    "publishedAgo": "Published {time}",
+    "readingTime": "{minutes} min read",
+    "tagsLabel": "Tags",
+    "notFound": {
+      "title": "Article not found",
+      "description": "The article you're looking for doesn't exist or has been removed.",
+      "backToHome": "Back to home"
+    }
   }
 }
