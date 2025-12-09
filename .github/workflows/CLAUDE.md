@@ -150,7 +150,7 @@ Les workflows suivants supportent `workflow_call` pour être appelés par `full-
 - `architecture.yml`
 - `mutation.yml`
 
-`core-checks.yml` supporte aussi `workflow_call` implicitement.
+`core-checks.yml` supporte aussi `workflow_call` explicitement.
 
 ## Branch Protection
 
