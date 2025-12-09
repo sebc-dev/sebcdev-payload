@@ -70,6 +70,14 @@ describe('getArticleBySlug', () => {
     expect(result.error).toBe('Unknown error')
   })
 
+  it('early-returns for invalid slug without calling payload.find', async () => {
+    const result = await getArticleBySlug('INVALID--SLUG', 'fr')
+
+    expect(result.article).toBeNull()
+    expect(result.error).toBeUndefined()
+    expect(mockFind).not.toHaveBeenCalled()
+  })
+
   it('uses correct locale parameter', async () => {
     mockFind.mockResolvedValueOnce({ docs: [mockArticle] })
 
