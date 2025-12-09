@@ -51,7 +51,18 @@ jobs:
           echo "::group::Building Next.js application"
           pnpm build
           echo "::endgroup::"
+
+          # Verify build artifacts exist
+          if [ ! -f ".open-next/worker.js" ]; then
+            echo "::error::Build failed - .open-next/worker.js not found"
+            echo "Contents of .open-next directory:"
+            ls -la .open-next/ 2>/dev/null || echo "Directory .open-next does not exist"
+            exit 1
+          fi
+
           echo "::notice::✅ Build completed successfully"
+          echo "Build artifacts:"
+          ls -la .open-next/
 
       # ============================================
       # D1 Migrations
