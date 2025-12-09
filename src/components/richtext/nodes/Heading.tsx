@@ -6,7 +6,8 @@
  */
 
 import { serializeChildren } from '../serialize'
-import type { HeadingNode, LexicalNode, TextNode } from '../types'
+import type { HeadingNode, LexicalNode } from '../types'
+import { hasChildren, isTextNode } from '../types'
 
 interface HeadingProps {
   node: HeadingNode
@@ -18,11 +19,11 @@ interface HeadingProps {
 function extractText(children: LexicalNode[]): string {
   return children
     .map((child) => {
-      if (child.type === 'text') {
-        return (child as TextNode).text
+      if (isTextNode(child)) {
+        return child.text
       }
-      if ('children' in child && Array.isArray(child.children)) {
-        return extractText(child.children as LexicalNode[])
+      if (hasChildren(child)) {
+        return extractText(child.children)
       }
       return ''
     })
