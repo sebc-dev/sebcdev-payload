@@ -81,6 +81,13 @@ jobs:
           fi
 
       # ============================================
+      # Unit Tests (Fast)
+      # ============================================
+
+      - name: Unit Tests
+        run: pnpm test:unit
+
+      # ============================================
       # Next.js Build (No-DB Mode)
       # ============================================
 
@@ -108,6 +115,7 @@ jobs:
           echo "- ESLint: ✅" >> $GITHUB_STEP_SUMMARY
           echo "- Prettier: ✅" >> $GITHUB_STEP_SUMMARY
           echo "- Type Sync: ✅" >> $GITHUB_STEP_SUMMARY
+          echo "- Unit Tests: ✅" >> $GITHUB_STEP_SUMMARY
           echo "- Next.js Build: ✅" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "⚠️ **Note**: Other checks (tests, security, architecture) must be run manually before merge." >> $GITHUB_STEP_SUMMARY
