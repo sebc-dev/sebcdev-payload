@@ -32,7 +32,7 @@ This epic contains **3 stories** as defined in the PRD:
 
 | Story | Title | Description | Status | Phases | Progress |
 |-------|-------|-------------|--------|--------|----------|
-| 4.1 | Rendu Article & MDX | Affichage du contenu riche (code syntax-highlighted, images, mise en forme) via React Server Components | 📋 NOT STARTED | - | 0/0 |
+| 4.1 | Rendu Article & MDX | Affichage du contenu riche (code syntax-highlighted, images, mise en forme) via React Server Components | 🚧 IN PROGRESS | 5 | 0/5 |
 | 4.2 | Table des Matières (TOC) & Progression | Barre de progression de lecture sticky et Table des Matières cliquable pour navigation | 📋 NOT STARTED | - | 0/0 |
 | 4.3 | Live Preview | Mode prévisualisation temps réel Payload avec écran scindé pour l'auteur | 📋 NOT STARTED | - | 0/0 |
 
@@ -88,10 +88,10 @@ cat docs/specs/epics/epic_4/EPIC_TRACKING.md
 
 ### Progress Summary
 
-- **Stories Started**: 0 / 3
+- **Stories Started**: 1 / 3
 - **Stories Completed**: 0 / 3
-- **Total Phases**: TBD (once stories are planned)
-- **Phases Completed**: 0 / TBD
+- **Total Phases**: 5 (Story 4.1 planned)
+- **Phases Completed**: 0 / 5
 
 **Completion**: 0%
 
@@ -140,6 +140,8 @@ Track epic-level milestones here:
 
 | Date | Update |
 |------|--------|
+| 2025-12-09 | Phase 1 documentation generated (7 files) |
+| 2025-12-09 | Story 4.1 planifiée en 5 phases |
 | 2025-12-09 | Epic 4 initialisé, structure créée |
 
 ---
@@ -184,7 +186,7 @@ Track epic-level milestones here:
 
 ### During Epic Execution
 
-- [ ] First story planned (/plan-story)
+- [x] First story planned (/plan-story)
 - [ ] First phase completed
 - [ ] First story validated
 - [ ] Metrics updated
