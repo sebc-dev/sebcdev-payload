@@ -7,7 +7,7 @@ export default defineConfig({
   test: {
     environment: 'jsdom',
     setupFiles: ['./vitest.setup.ts'],
-    include: ['tests/unit/**/*.spec.ts', 'tests/int/**/*.int.spec.ts'],
+    include: ['tests/unit/**/*.spec.{ts,tsx}', 'tests/int/**/*.int.spec.ts'],
     // Use node environment for integration tests (no DOM needed, avoids jsdom TextEncoder issues)
     environmentMatchGlobs: [['tests/int/**/*.int.spec.ts', 'node']],
     // Run integration tests sequentially to avoid D1 SQLite lock issues
