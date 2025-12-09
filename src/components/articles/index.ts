@@ -10,6 +10,8 @@
  * - ArticleGrid: Responsive grid container for displaying multiple articles
  * - RelativeDate: Localized relative time display
  * - EmptyState: Fallback component when no articles are published
+ * - ArticleHeader: Article page header with metadata (category, title, complexity, reading time, date)
+ * - ArticleFooter: Article page footer with tags section
  *
  * Shared types:
  * - ArticleData, CategoryData, TagData, CoverImageData, Complexity: Shared interfaces for article components
