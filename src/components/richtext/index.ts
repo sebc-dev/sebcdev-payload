@@ -30,7 +30,7 @@ export type {
   TextFormat,
   NodeRendererProps,
 } from './types'
-export { TEXT_FORMAT, hasChildren, isTextNode, isHeadingNode } from './types'
+export { TEXT_FORMAT, hasChildren, isTextNode, isHeadingNode, isLexicalContent } from './types'
 
 // Node components (for advanced usage)
 export { Paragraph } from './nodes/Paragraph'
