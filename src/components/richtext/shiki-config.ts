@@ -56,7 +56,14 @@ export async function getHighlighter(): Promise<Highlighter> {
       langs: SUPPORTED_LANGUAGES,
     })
   }
-  return highlighterPromise
+
+  try {
+    return await highlighterPromise
+  } catch (error) {
+    // Reset cache on failure to allow retry on next call
+    highlighterPromise = null
+    throw error
+  }
 }
 
 /**
