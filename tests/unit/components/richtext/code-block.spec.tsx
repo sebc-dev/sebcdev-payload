@@ -15,7 +15,7 @@ vi.mock('@/components/richtext/shiki-config', () => ({
 // Mock CopyButton to avoid client component issues in tests
 vi.mock('@/components/ui/copy-button', () => ({
   CopyButton: ({ text }: { text: string }) => (
-    <button data-testid="copy-button" data-text={text}>
+    <button type="button" data-testid="copy-button" data-text={text}>
       Copy
     </button>
   ),
