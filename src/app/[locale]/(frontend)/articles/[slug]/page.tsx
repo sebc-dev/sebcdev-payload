@@ -8,6 +8,7 @@
  * Example: /fr/articles/mon-premier-article
  */
 
+import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { setRequestLocale, getTranslations } from 'next-intl/server'
 import { getArticleBySlug } from '@/lib/payload/articles'
@@ -17,6 +18,7 @@ import type { Article as PayloadArticle, Category, Tag, Media } from '@/payload-
 import type { LucideCategoryIcon } from '@/lib/lucide-icons'
 import type { Locale } from '@/i18n/config'
 import { RichText, isLexicalContent } from '@/components/richtext'
+import { generateArticleMetadata, generate404Metadata, type ArticleSEOData } from '@/lib/seo'
 
 /**
  * Force dynamic rendering.
@@ -47,6 +49,54 @@ function isPopulatedTag(tag: number | Tag): tag is Tag {
  */
 function isPopulatedMedia(media: number | Media | null | undefined): media is Media {
   return typeof media === 'object' && media !== null && 'url' in media
+}
+
+/**
+ * Generate metadata for the article page (SEO)
+ */
+export async function generateMetadata({ params }: ArticlePageProps): Promise<Metadata> {
+  const { locale, slug } = await params
+
+  try {
+    const { article } = await getArticleBySlug(slug, locale as Locale)
+
+    if (!article) {
+      return generate404Metadata(locale)
+    }
+
+    // Map Payload article to SEO data
+    const seoData: ArticleSEOData = {
+      title: article.title,
+      excerpt: article.excerpt ?? '',
+      slug: article.slug,
+      publishedAt: article.publishedAt ?? article.createdAt,
+      updatedAt: article.updatedAt,
+      featuredImage: isPopulatedMedia(article.featuredImage)
+        ? {
+            url: article.featuredImage.url ?? '',
+            alt: article.featuredImage.alt ?? article.title,
+            width: article.featuredImage.width ?? 1200,
+            height: article.featuredImage.height ?? 630,
+          }
+        : null,
+      category: isPopulatedCategory(article.category)
+        ? {
+            name: article.category.name,
+            slug: article.category.slug,
+          }
+        : null,
+      tags: article.tags?.filter(isPopulatedTag).map((tag) => ({
+        name: tag.name,
+        slug: tag.slug,
+      })),
+      locale: locale as 'fr' | 'en',
+    }
+
+    return generateArticleMetadata(seoData)
+  } catch (error) {
+    console.error('Error generating metadata:', error)
+    return generate404Metadata(locale)
+  }
 }
 
 /**
