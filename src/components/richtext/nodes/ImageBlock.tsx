@@ -54,17 +54,20 @@ export function ImageBlock({ node }: ImageBlockProps) {
     return null
   }
 
-  const { url, alt = '', width = 800, height = 450 } = value
+  const { url, alt, width = 800, height = 450 } = value
 
   // Extract caption from fields if available
   const caption = fields?.caption as string | undefined
+
+  // Compute alt: explicit alt > caption > empty (decorative)
+  const computedAlt = typeof alt === 'string' && alt.trim() ? alt : (caption ?? '')
 
   return (
     <figure className="my-8">
       <div className="relative overflow-hidden rounded-lg">
         <Image
           src={url}
-          alt={alt}
+          alt={computedAlt}
           width={width}
           height={height}
           className="h-auto w-full object-cover"
