@@ -18,7 +18,12 @@ import type { Article as PayloadArticle, Category, Tag, Media } from '@/payload-
 import type { LucideCategoryIcon } from '@/lib/lucide-icons'
 import type { Locale } from '@/i18n/config'
 import { RichText, isLexicalContent } from '@/components/richtext'
-import { generateArticleMetadata, generate404Metadata, type ArticleSEOData } from '@/lib/seo'
+import {
+  generateArticleMetadata,
+  generate404Metadata,
+  ArticleJsonLdScript,
+  type ArticleSEOData,
+} from '@/lib/seo'
 
 /**
  * Force dynamic rendering.
@@ -96,6 +101,38 @@ export async function generateMetadata({ params }: ArticlePageProps): Promise<Me
   } catch (error) {
     console.error('Error generating metadata:', error)
     return generate404Metadata(locale)
+  }
+}
+
+/**
+ * Map Payload article to SEO data for JSON-LD
+ */
+function mapPayloadToSEOData(article: PayloadArticle, locale: Locale): ArticleSEOData {
+  return {
+    title: article.title,
+    excerpt: article.excerpt ?? '',
+    slug: article.slug,
+    publishedAt: article.publishedAt ?? article.createdAt,
+    updatedAt: article.updatedAt,
+    featuredImage: isPopulatedMedia(article.featuredImage)
+      ? {
+          url: article.featuredImage.url ?? '',
+          alt: article.featuredImage.alt ?? article.title,
+          width: article.featuredImage.width ?? 1200,
+          height: article.featuredImage.height ?? 630,
+        }
+      : null,
+    category: isPopulatedCategory(article.category)
+      ? {
+          name: article.category.name,
+          slug: article.category.slug,
+        }
+      : null,
+    tags: article.tags?.filter(isPopulatedTag).map((tag) => ({
+      name: tag.name,
+      slug: tag.slug,
+    })),
+    locale: locale as 'fr' | 'en',
   }
 }
 
@@ -182,27 +219,35 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
   // Map to component data
   const article = mapPayloadToArticleData(payloadArticle)
 
+  // Map to SEO data for JSON-LD
+  const seoData = mapPayloadToSEOData(payloadArticle, locale)
+
   return (
-    <article className="container mx-auto px-4 py-8 max-w-prose">
-      {/* Hero: Featured Image */}
-      {article.heroCoverImage && (
-        <ArticleHero image={article.heroCoverImage} title={article.title} />
-      )}
+    <>
+      {/* JSON-LD Structured Data */}
+      <ArticleJsonLdScript article={seoData} />
 
-      {/* Header: Title, Category, Metadata */}
-      <ArticleHeader article={article} locale={locale} />
-
-      {/* Content - Rendered via RichText serializer */}
-      <div className="py-8">
-        {isLexicalContent(payloadArticle.content) ? (
-          <RichText content={payloadArticle.content} />
-        ) : (
-          <p className="text-muted-foreground italic">{t('contentUnavailable')}</p>
+      <article className="container mx-auto px-4 py-8 max-w-prose">
+        {/* Hero: Featured Image */}
+        {article.heroCoverImage && (
+          <ArticleHero image={article.heroCoverImage} title={article.title} />
         )}
-      </div>
 
-      {/* Footer: Tags */}
-      <ArticleFooter tags={article.tags} locale={locale} />
-    </article>
+        {/* Header: Title, Category, Metadata */}
+        <ArticleHeader article={article} locale={locale} />
+
+        {/* Content - Rendered via RichText serializer */}
+        <div className="py-8">
+          {isLexicalContent(payloadArticle.content) ? (
+            <RichText content={payloadArticle.content} />
+          ) : (
+            <p className="text-muted-foreground italic">{t('contentUnavailable')}</p>
+          )}
+        </div>
+
+        {/* Footer: Tags */}
+        <ArticleFooter tags={article.tags} locale={locale} />
+      </article>
+    </>
   )
 }
