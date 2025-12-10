@@ -11,9 +11,9 @@
 import { notFound } from 'next/navigation'
 import { setRequestLocale, getTranslations } from 'next-intl/server'
 import { getArticleBySlug } from '@/lib/payload/articles'
-import { ArticleHeader, ArticleFooter } from '@/components/articles'
-import type { ArticleData } from '@/components/articles/types'
-import type { Article as PayloadArticle, Category, Tag } from '@/payload-types'
+import { ArticleHeader, ArticleFooter, ArticleHero } from '@/components/articles'
+import type { ArticleData, CoverImage } from '@/components/articles/types'
+import type { Article as PayloadArticle, Category, Tag, Media } from '@/payload-types'
 import type { LucideCategoryIcon } from '@/lib/lucide-icons'
 import type { Locale } from '@/i18n/config'
 import { RichText, isLexicalContent } from '@/components/richtext'
@@ -43,9 +43,18 @@ function isPopulatedTag(tag: number | Tag): tag is Tag {
 }
 
 /**
+ * Type guard for populated Media
+ */
+function isPopulatedMedia(media: number | Media | null | undefined): media is Media {
+  return typeof media === 'object' && media !== null && 'url' in media
+}
+
+/**
  * Map Payload article to component ArticleData
  */
-function mapPayloadToArticleData(article: PayloadArticle): ArticleData {
+function mapPayloadToArticleData(
+  article: PayloadArticle,
+): ArticleData & { heroCoverImage: CoverImage | null } {
   // Map category
   const category = isPopulatedCategory(article.category)
     ? {
@@ -68,12 +77,32 @@ function mapPayloadToArticleData(article: PayloadArticle): ArticleData {
       }))
       .filter((tag) => tag.title && tag.slug) ?? []
 
+  // Map featured image for hero (with full metadata)
+  const heroCoverImage: CoverImage | null = isPopulatedMedia(article.featuredImage)
+    ? {
+        url: article.featuredImage.url ?? '',
+        alt: article.featuredImage.alt ?? '',
+        width: article.featuredImage.width ?? 1200,
+        height: article.featuredImage.height ?? 630,
+        blurDataURL: undefined, // Payload doesn't generate blur by default
+      }
+    : null
+
+  // Map cover image for card display (simplified)
+  const coverImage = isPopulatedMedia(article.featuredImage)
+    ? {
+        url: article.featuredImage.url ?? '',
+        alt: article.featuredImage.alt ?? undefined,
+      }
+    : null
+
   return {
     id: String(article.id),
     title: article.title,
     slug: article.slug,
     excerpt: article.excerpt ?? '',
-    coverImage: null, // Phase 4 will handle featured image
+    coverImage,
+    heroCoverImage,
     category,
     tags,
     complexity: article.complexity,
@@ -101,6 +130,11 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
 
   return (
     <article className="container mx-auto px-4 py-8 max-w-prose">
+      {/* Hero: Featured Image */}
+      {article.heroCoverImage && (
+        <ArticleHero image={article.heroCoverImage} title={article.title} />
+      )}
+
       {/* Header: Title, Category, Metadata */}
       <ArticleHeader article={article} locale={locale} />
 
