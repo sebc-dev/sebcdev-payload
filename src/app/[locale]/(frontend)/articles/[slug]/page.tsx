@@ -23,6 +23,7 @@ import {
   generate404Metadata,
   ArticleJsonLdScript,
   type ArticleSEOData,
+  type SupportedLocale,
 } from '@/lib/seo'
 import { logger } from '@/lib/logger'
 
@@ -99,7 +100,7 @@ export async function generateMetadata({ params }: ArticlePageProps): Promise<Me
     const { article } = await getArticleBySlug(slug, locale as Locale)
 
     if (!article) {
-      return generate404Metadata(locale)
+      return generate404Metadata(locale as SupportedLocale)
     }
 
     const seoData = mapPayloadToSEOData(article, locale as Locale)
@@ -111,7 +112,7 @@ export async function generateMetadata({ params }: ArticlePageProps): Promise<Me
       locale,
       error: normalizedError,
     })
-    return generate404Metadata(locale)
+    return generate404Metadata(locale as SupportedLocale)
   }
 }
 

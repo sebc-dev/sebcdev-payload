@@ -5,7 +5,7 @@
  */
 
 import type { Metadata } from 'next'
-import type { ArticleSEOData, SiteConfig, OGImage } from './types'
+import type { ArticleSEOData, SiteConfig, OGImage, SupportedLocale } from './types'
 
 /**
  * Site configuration
@@ -124,7 +124,7 @@ export function generateArticleMetadata(article: ArticleSEOData): Metadata {
 /**
  * Generate metadata for 404 page
  */
-export function generate404Metadata(locale: string): Metadata {
+export function generate404Metadata(locale: SupportedLocale): Metadata {
   const title = locale === 'fr' ? 'Article non trouvé' : 'Article not found'
   const description =
     locale === 'fr'
