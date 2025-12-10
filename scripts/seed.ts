@@ -333,18 +333,17 @@ function headingWithChildren(
 
 /**
  * Creates a Lexical code block node.
+ * This generates a native Lexical 'code' node compatible with our CodeBlock component.
  */
 function codeBlock(code: string, language = 'typescript') {
   return {
-    type: 'block',
+    type: 'code',
     format: '',
     indent: 0,
-    version: 2,
-    fields: {
-      language,
-      code,
-    },
-    blockType: 'code',
+    version: 1,
+    language,
+    direction: 'ltr',
+    children: [text(code)],
   }
 }
 
