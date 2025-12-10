@@ -84,7 +84,10 @@ export function generateArticleJsonLd(article: ArticleSEOData): ArticleJsonLd {
   }
 
   if (article.featuredImage?.url) {
-    jsonLd.image = article.featuredImage.url
+    // Ensure absolute URL for Schema.org compliance
+    jsonLd.image = article.featuredImage.url.startsWith('http')
+      ? article.featuredImage.url
+      : new URL(article.featuredImage.url, siteConfig.url).toString()
   }
 
   if (article.tags && article.tags.length > 0) {
