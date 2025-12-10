@@ -96,7 +96,7 @@ function mapPayloadToArticleData(
     isPopulatedMedia(article.featuredImage) && article.featuredImage.url
       ? {
           url: article.featuredImage.url,
-          alt: article.featuredImage.alt ?? undefined,
+          alt: article.featuredImage.alt ?? '',
         }
       : null
 
