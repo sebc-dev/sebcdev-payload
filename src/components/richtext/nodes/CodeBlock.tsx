@@ -7,6 +7,7 @@
 
 import type { CodeNode, LexicalNode, TextNode } from '../types'
 import { getHighlighter, getFallbackLanguage, CODE_THEME } from '../shiki-config'
+import { CopyButton } from '@/components/ui/copy-button'
 
 interface CodeBlockProps {
   node: CodeNode
@@ -53,13 +54,13 @@ export async function CodeBlock({ node }: CodeBlockProps) {
   const languageLabel = language === 'text' ? 'Plain Text' : language.toUpperCase()
 
   return (
-    <div className="my-6 overflow-hidden rounded-lg border border-border">
+    <div className="group my-6 overflow-hidden rounded-lg border border-border">
       {/* Header with language indicator */}
       <div className="flex items-center justify-between border-b border-border bg-muted/50 px-4 py-2">
         <span className="font-mono text-xs uppercase tracking-wider text-muted-foreground">
           {languageLabel}
         </span>
-        {/* CopyButton will be added in Commit 4 */}
+        <CopyButton text={code} className="opacity-0 transition-opacity group-hover:opacity-100" />
       </div>
 
       {/* Code content */}
