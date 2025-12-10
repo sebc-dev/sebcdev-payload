@@ -59,6 +59,7 @@
     "payload": "3.63.0",
     "react": "19.1.2",
     "react-dom": "19.1.2",
+    "shiki": "^3.19.0",
     "tailwind-merge": "^3.4.0"
   },
   "devDependencies": {
