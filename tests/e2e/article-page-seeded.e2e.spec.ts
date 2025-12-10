@@ -25,8 +25,8 @@ const TEST_ARTICLE = {
 }
 
 /**
- * Helper: navigate to article and skip test if not seeded
- * Returns the page if article exists, otherwise skips the test
+ * Helper: navigate to article and skip test if not seeded.
+ * Navigates to the article page and skips the test if database is not seeded.
  */
 async function gotoArticleOrSkip(page: Page, locale: 'fr' | 'en' = 'fr'): Promise<void> {
   await page.goto(`/${locale}/articles/${TEST_ARTICLE.slug}`)
