@@ -92,8 +92,9 @@ test.describe('Article Page', () => {
       const codeBlockHeader = page.locator('[data-testid="codeblock-language"]').first()
       await expect(codeBlockHeader).toBeVisible()
       const languageLabel = await codeBlockHeader.textContent()
-      expect(languageLabel).toBeTruthy()
-      expect(languageLabel?.length).toBeGreaterThan(0)
+      expect(typeof languageLabel).toBe('string')
+      if (typeof languageLabel !== 'string') return
+      expect(languageLabel.length).toBeGreaterThan(0)
     })
 
     test('displays category badge', async ({ page }) => {
