@@ -348,6 +348,40 @@ describe('List', () => {
     expect(ul?.className).toContain('mb-4')
     expect(ul?.className).toContain('space-y-1')
   })
+
+  it('renders checklist with checkbox inputs', () => {
+    const node: ListNode = {
+      type: 'list',
+      listType: 'check',
+      tag: 'ul',
+      version: 1,
+      children: [
+        {
+          type: 'listitem',
+          version: 1,
+          checked: true,
+          children: [{ type: 'text', text: 'Completed task', format: 0, version: 1 }],
+        },
+        {
+          type: 'listitem',
+          version: 1,
+          checked: false,
+          children: [{ type: 'text', text: 'Pending task', format: 0, version: 1 }],
+        },
+      ],
+    }
+
+    const { container } = render(<List node={node} />)
+    const ul = container.querySelector('ul')
+    const checkboxes = container.querySelectorAll('input[type="checkbox"]')
+
+    expect(ul?.className).toContain('list-none')
+    expect(checkboxes.length).toBe(2)
+    expect((checkboxes[0] as HTMLInputElement).checked).toBe(true)
+    expect(checkboxes[0].getAttribute('aria-label')).toBe('Completed')
+    expect((checkboxes[1] as HTMLInputElement).checked).toBe(false)
+    expect(checkboxes[1].getAttribute('aria-label')).toBe('Not completed')
+  })
 })
 
 describe('ListItem', () => {
@@ -378,6 +412,37 @@ describe('ListItem', () => {
     const { container } = render(<ListItem node={node} />)
     expect(container.querySelector('strong')).toBeTruthy()
     expect(container.textContent).toBe('Normal bold')
+  })
+
+  it('renders nested list with list-none class on parent', () => {
+    const nestedList: ListNode = {
+      type: 'list',
+      listType: 'bullet',
+      tag: 'ul',
+      version: 1,
+      children: [
+        {
+          type: 'listitem',
+          version: 1,
+          children: [{ type: 'text', text: 'Nested item', format: 0, version: 1 }],
+        },
+      ],
+    }
+
+    const node: ListItemNode = {
+      type: 'listitem',
+      version: 1,
+      children: [{ type: 'text', text: 'Parent item', format: 0, version: 1 }, nestedList],
+    }
+
+    const { container } = render(<ListItem node={node} />)
+    const parentLi = container.querySelector('li')
+    const nestedUl = container.querySelector('ul')
+
+    expect(parentLi).toBeTruthy()
+    expect(parentLi?.className).toContain('list-none')
+    expect(nestedUl).toBeTruthy()
+    expect(nestedUl?.className).toContain('list-disc')
   })
 })
 
