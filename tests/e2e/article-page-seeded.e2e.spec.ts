@@ -1,10 +1,12 @@
-import { expect, test } from '@playwright/test'
+import { expect, test, type Page } from '@playwright/test'
 
 /**
  * Article Page E2E Tests
  *
  * Tests article page rendering, navigation, and SEO elements.
  * Requires seeded data (run: pnpm seed --clean)
+ *
+ * These tests are SKIPPED in CI (no seed data) and run locally after: pnpm seed --clean
  */
 
 // Seed data constants (must match scripts/seed.ts)
@@ -21,33 +23,22 @@ const TEST_ARTICLE = {
 }
 
 /**
- * Check if database is seeded before running tests
+ * Helper: navigate to article and skip test if not seeded
+ * Returns the page if article exists, otherwise skips the test
  */
-let isSeeded = false
-let seedCheckDone = false
+async function gotoArticleOrSkip(page: Page, locale: 'fr' | 'en' = 'fr'): Promise<void> {
+  await page.goto(`/${locale}/articles/${TEST_ARTICLE.slug}`)
+  const h1Text = await page.locator('h1').textContent()
 
-test.beforeAll(async ({ browser }) => {
-  const page = await browser.newPage()
-  try {
-    await page.goto(`/fr/articles/${TEST_ARTICLE.slug}`)
-    const title = await page.title()
-    isSeeded = !title.includes('404') && !title.includes('non trouvé')
-  } finally {
-    await page.close()
-  }
-  seedCheckDone = true
-})
-
-test.beforeEach(async () => {
-  if (seedCheckDone && !isSeeded) {
+  if (h1Text?.includes('non trouvé') || h1Text?.includes('Not Found')) {
     test.skip(true, 'Database not seeded - run: pnpm seed --clean')
   }
-})
+}
 
 test.describe('Article Page', () => {
   test.describe('Content Rendering', () => {
     test('displays article title in H1', async ({ page }) => {
-      await page.goto(`/fr/articles/${TEST_ARTICLE.slug}`)
+      await gotoArticleOrSkip(page, 'fr')
 
       const h1 = page.locator('h1')
       await expect(h1).toBeVisible()
@@ -55,7 +46,7 @@ test.describe('Article Page', () => {
     })
 
     test('displays article title in EN locale', async ({ page }) => {
-      await page.goto(`/en/articles/${TEST_ARTICLE.slug}`)
+      await gotoArticleOrSkip(page, 'en')
 
       const h1 = page.locator('h1')
       await expect(h1).toBeVisible()
@@ -63,7 +54,7 @@ test.describe('Article Page', () => {
     })
 
     test('renders article content (RichText)', async ({ page }) => {
-      await page.goto(`/fr/articles/${TEST_ARTICLE.slug}`)
+      await gotoArticleOrSkip(page, 'fr')
 
       // Article should have paragraphs
       const paragraphs = page.locator('article p')
@@ -72,7 +63,7 @@ test.describe('Article Page', () => {
     })
 
     test('renders code blocks with syntax highlighting', async ({ page }) => {
-      await page.goto(`/fr/articles/${TEST_ARTICLE.slug}`)
+      await gotoArticleOrSkip(page, 'fr')
 
       // Look for code blocks (pre > code)
       const codeBlocks = page.locator('pre code')
@@ -90,7 +81,7 @@ test.describe('Article Page', () => {
     })
 
     test('displays category badge', async ({ page }) => {
-      await page.goto(`/fr/articles/${TEST_ARTICLE.slug}`)
+      await gotoArticleOrSkip(page, 'fr')
 
       // Category badge should be visible
       const categoryBadge = page.getByText(TEST_ARTICLE.fr.category).first()
@@ -98,7 +89,7 @@ test.describe('Article Page', () => {
     })
 
     test('displays reading time', async ({ page }) => {
-      await page.goto(`/fr/articles/${TEST_ARTICLE.slug}`)
+      await gotoArticleOrSkip(page, 'fr')
 
       const readingTime = page.getByText(/min de lecture/i)
       await expect(readingTime.first()).toBeVisible()
@@ -107,7 +98,7 @@ test.describe('Article Page', () => {
 
   test.describe('SEO Metadata', () => {
     test('has correct page title', async ({ page }) => {
-      await page.goto(`/fr/articles/${TEST_ARTICLE.slug}`)
+      await gotoArticleOrSkip(page, 'fr')
 
       const title = await page.title()
       expect(title).toContain(TEST_ARTICLE.fr.title)
@@ -115,7 +106,7 @@ test.describe('Article Page', () => {
     })
 
     test('has meta description', async ({ page }) => {
-      await page.goto(`/fr/articles/${TEST_ARTICLE.slug}`)
+      await gotoArticleOrSkip(page, 'fr')
 
       const description = await page.locator('meta[name="description"]').getAttribute('content')
       expect(description).toBeTruthy()
@@ -123,7 +114,7 @@ test.describe('Article Page', () => {
     })
 
     test('has Open Graph meta tags', async ({ page }) => {
-      await page.goto(`/fr/articles/${TEST_ARTICLE.slug}`)
+      await gotoArticleOrSkip(page, 'fr')
 
       const ogTitle = await page.locator('meta[property="og:title"]').getAttribute('content')
       const ogType = await page.locator('meta[property="og:type"]').getAttribute('content')
@@ -135,7 +126,7 @@ test.describe('Article Page', () => {
     })
 
     test('has Twitter Card meta tags', async ({ page }) => {
-      await page.goto(`/fr/articles/${TEST_ARTICLE.slug}`)
+      await gotoArticleOrSkip(page, 'fr')
 
       const twitterCard = await page.locator('meta[name="twitter:card"]').getAttribute('content')
       const twitterTitle = await page.locator('meta[name="twitter:title"]').getAttribute('content')
@@ -145,7 +136,7 @@ test.describe('Article Page', () => {
     })
 
     test('has hreflang alternates', async ({ page }) => {
-      await page.goto(`/fr/articles/${TEST_ARTICLE.slug}`)
+      await gotoArticleOrSkip(page, 'fr')
 
       const frAlternate = page.locator('link[rel="alternate"][hreflang="fr"]')
       const enAlternate = page.locator('link[rel="alternate"][hreflang="en"]')
@@ -161,7 +152,7 @@ test.describe('Article Page', () => {
     })
 
     test('has JSON-LD structured data', async ({ page }) => {
-      await page.goto(`/fr/articles/${TEST_ARTICLE.slug}`)
+      await gotoArticleOrSkip(page, 'fr')
 
       const jsonLdScript = page.locator('script[type="application/ld+json"]')
       const jsonLdContent = await jsonLdScript.textContent()
@@ -198,7 +189,7 @@ test.describe('Article Page', () => {
 
     test('article exists in both locales', async ({ page }) => {
       // Test FR locale
-      await page.goto(`/fr/articles/${TEST_ARTICLE.slug}`)
+      await gotoArticleOrSkip(page, 'fr')
       await expect(page.locator('h1')).toContainText(TEST_ARTICLE.fr.title)
 
       // Test EN locale (same article)
@@ -210,7 +201,7 @@ test.describe('Article Page', () => {
   test.describe('Responsive Layout', () => {
     test('mobile: article renders correctly', async ({ page }) => {
       await page.setViewportSize({ width: 375, height: 667 })
-      await page.goto(`/fr/articles/${TEST_ARTICLE.slug}`)
+      await gotoArticleOrSkip(page, 'fr')
 
       await expect(page.locator('h1')).toBeVisible()
       await expect(page.locator('article')).toBeVisible()
@@ -218,7 +209,7 @@ test.describe('Article Page', () => {
 
     test('tablet: article renders correctly', async ({ page }) => {
       await page.setViewportSize({ width: 768, height: 1024 })
-      await page.goto(`/fr/articles/${TEST_ARTICLE.slug}`)
+      await gotoArticleOrSkip(page, 'fr')
 
       await expect(page.locator('h1')).toBeVisible()
       await expect(page.locator('article')).toBeVisible()
@@ -226,7 +217,7 @@ test.describe('Article Page', () => {
 
     test('desktop: article renders correctly', async ({ page }) => {
       await page.setViewportSize({ width: 1280, height: 800 })
-      await page.goto(`/fr/articles/${TEST_ARTICLE.slug}`)
+      await gotoArticleOrSkip(page, 'fr')
 
       await expect(page.locator('h1')).toBeVisible()
       await expect(page.locator('article')).toBeVisible()
