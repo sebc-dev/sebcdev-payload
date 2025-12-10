@@ -1,0 +1,225 @@
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
+import { renderHook, act } from '@testing-library/react'
+import { useReadingProgress } from '@/hooks/use-reading-progress'
+
+describe('useReadingProgress', () => {
+  let scrollY = 0
+  let innerHeight = 800
+  let scrollHeight = 2000
+
+  beforeEach(() => {
+    // Reset values
+    scrollY = 0
+    innerHeight = 800
+    scrollHeight = 2000
+
+    // Mock window.scrollY as a getter
+    Object.defineProperty(window, 'scrollY', {
+      get: () => scrollY,
+      configurable: true,
+    })
+
+    // Mock window.innerHeight
+    Object.defineProperty(window, 'innerHeight', {
+      get: () => innerHeight,
+      configurable: true,
+    })
+
+    // Mock document.documentElement.scrollHeight
+    Object.defineProperty(document.documentElement, 'scrollHeight', {
+      get: () => scrollHeight,
+      configurable: true,
+    })
+
+    // Mock requestAnimationFrame to execute immediately
+    vi.spyOn(window, 'requestAnimationFrame').mockImplementation((cb) => {
+      cb(0)
+      return 0
+    })
+
+    vi.spyOn(window, 'cancelAnimationFrame').mockImplementation(() => {})
+  })
+
+  afterEach(() => {
+    vi.restoreAllMocks()
+  })
+
+  describe('document-based tracking (no ref)', () => {
+    it('returns 0 when at top of page', () => {
+      scrollY = 0
+
+      const { result } = renderHook(() => useReadingProgress())
+
+      expect(result.current).toBe(0)
+    })
+
+    it('returns 100 when at bottom of page', () => {
+      // scrollableHeight = 2000 - 800 = 1200
+      // scrollY = 1200 = 100%
+      scrollY = 1200
+
+      const { result } = renderHook(() => useReadingProgress())
+
+      expect(result.current).toBe(100)
+    })
+
+    it('returns 50 when halfway through document', () => {
+      // scrollableHeight = 2000 - 800 = 1200
+      // scrollY = 600 = 50%
+      scrollY = 600
+
+      const { result } = renderHook(() => useReadingProgress())
+
+      expect(result.current).toBe(50)
+    })
+
+    it('returns 100 when document is shorter than viewport', () => {
+      scrollHeight = 600
+      innerHeight = 800
+
+      const { result } = renderHook(() => useReadingProgress())
+
+      expect(result.current).toBe(100)
+    })
+  })
+
+  describe('article-ref based tracking', () => {
+    it('returns 0 when article top is at viewport top', () => {
+      scrollY = 0
+
+      const mockElement = {
+        getBoundingClientRect: () => ({
+          top: 0,
+          bottom: 2000,
+          height: 2000,
+          left: 0,
+          right: 0,
+          width: 0,
+          x: 0,
+          y: 0,
+          toJSON: () => ({}),
+        }),
+        offsetHeight: 2000,
+      } as HTMLElement
+
+      const mockRef = { current: mockElement }
+
+      const { result } = renderHook(() => useReadingProgress(mockRef))
+
+      expect(result.current).toBe(0)
+    })
+
+    it('returns 100 when scrolled past article', () => {
+      // Article starts at y=0, height=2000, viewport=800
+      // End = 0 + 2000 - 800 = 1200
+      // When scrollY = 1200, we're at end
+      scrollY = 1200
+
+      const mockElement = {
+        getBoundingClientRect: () => ({
+          // When scrollY=1200 and element starts at 0, rect.top = -1200
+          top: -scrollY,
+          bottom: 2000 - scrollY,
+          height: 2000,
+          left: 0,
+          right: 0,
+          width: 0,
+          x: 0,
+          y: -scrollY,
+          toJSON: () => ({}),
+        }),
+        offsetHeight: 2000,
+      } as HTMLElement
+
+      const mockRef = { current: mockElement }
+
+      const { result } = renderHook(() => useReadingProgress(mockRef))
+
+      expect(result.current).toBe(100)
+    })
+
+    it('returns 50 when halfway through article', () => {
+      // Article starts at y=0, height=2000, viewport=800
+      // End = 0 + 2000 - 800 = 1200
+      // When scrollY = 600, we're at 50%
+      scrollY = 600
+
+      const mockElement = {
+        getBoundingClientRect: () => ({
+          top: -scrollY,
+          bottom: 2000 - scrollY,
+          height: 2000,
+          left: 0,
+          right: 0,
+          width: 0,
+          x: 0,
+          y: -scrollY,
+          toJSON: () => ({}),
+        }),
+        offsetHeight: 2000,
+      } as HTMLElement
+
+      const mockRef = { current: mockElement }
+
+      const { result } = renderHook(() => useReadingProgress(mockRef))
+
+      expect(result.current).toBe(50)
+    })
+  })
+
+  describe('scroll event handling', () => {
+    it('updates progress on scroll event', async () => {
+      scrollY = 0
+
+      const { result } = renderHook(() => useReadingProgress())
+      expect(result.current).toBe(0)
+
+      // Simulate scroll
+      scrollY = 600
+      act(() => {
+        window.dispatchEvent(new Event('scroll'))
+      })
+
+      expect(result.current).toBe(50)
+    })
+
+    it('cleans up scroll listener on unmount', () => {
+      const removeEventListenerSpy = vi.spyOn(window, 'removeEventListener')
+
+      const { unmount } = renderHook(() => useReadingProgress())
+      unmount()
+
+      expect(removeEventListenerSpy).toHaveBeenCalledWith('scroll', expect.any(Function))
+    })
+  })
+
+  describe('edge cases', () => {
+    it('clamps negative values to 0', () => {
+      // Force a negative calculation by having scroll before document start
+      scrollY = -100
+
+      const { result } = renderHook(() => useReadingProgress())
+
+      expect(result.current).toBe(0)
+    })
+
+    it('clamps values over 100 to 100', () => {
+      // Scroll past the end
+      scrollY = 2000
+
+      const { result } = renderHook(() => useReadingProgress())
+
+      expect(result.current).toBe(100)
+    })
+
+    it('handles null ref gracefully by falling back to document', () => {
+      scrollY = 600 // 50% of document
+      const mockRef = { current: null }
+
+      const { result } = renderHook(() => useReadingProgress(mockRef))
+
+      // Should fall back to document-based calculation = 50%
+      expect(result.current).toBe(50)
+    })
+  })
+})
