@@ -12,9 +12,11 @@ const TEST_ARTICLE = {
   slug: 'nextjs-cloudflare-workers',
   fr: {
     title: 'Déployer une Application Next.js sur Cloudflare Workers',
+    category: 'Tutoriels',
   },
   en: {
     title: 'Deploy a Next.js Application on Cloudflare Workers',
+    category: 'Tutorials',
   },
 }
 
@@ -91,7 +93,7 @@ test.describe('Article Page', () => {
       await page.goto(`/fr/articles/${TEST_ARTICLE.slug}`)
 
       // Category badge should be visible
-      const categoryBadge = page.getByText('Tutoriels').first()
+      const categoryBadge = page.getByText(TEST_ARTICLE.fr.category).first()
       await expect(categoryBadge).toBeVisible()
     })
 
