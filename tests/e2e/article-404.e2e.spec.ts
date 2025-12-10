@@ -37,7 +37,8 @@ test.describe('Article 404 Handling', () => {
     await page.goto(`/fr/articles/${NON_EXISTENT_SLUGS[2]}`)
 
     // 404 page must have a link back to homepage for good UX
-    const homeLink = page.getByRole('link', { name: /accueil|home|retour/i })
+    // Use exact match to avoid matching "Retour d'Expérience" category link
+    const homeLink = page.getByRole('link', { name: /retour à l'accueil/i })
 
     await expect(homeLink).toBeVisible()
     await homeLink.click()
@@ -48,7 +49,8 @@ test.describe('Article 404 Handling', () => {
     await page.goto(`/fr/articles/${NON_EXISTENT_SLUGS[0]}`)
 
     // 404 pages must have noindex for SEO
-    const robotsMeta = page.locator('meta[name="robots"]')
+    // Use .first() since there may be multiple robots meta tags
+    const robotsMeta = page.locator('meta[name="robots"]').first()
     await expect(robotsMeta).toHaveAttribute('content', /noindex/)
   })
 
