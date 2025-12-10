@@ -15,10 +15,12 @@ const TEST_ARTICLE = {
   fr: {
     title: 'Déployer une Application Next.js sur Cloudflare Workers',
     category: 'Tutoriels',
+    readingTimePattern: /min de lecture/i,
   },
   en: {
     title: 'Deploy a Next.js Application on Cloudflare Workers',
     category: 'Tutorials',
+    readingTimePattern: /min read/i,
   },
 }
 
@@ -92,9 +94,10 @@ test.describe('Article Page', () => {
     })
 
     test('displays reading time', async ({ page }) => {
-      await gotoArticleOrSkip(page, 'fr')
+      const locale = 'fr'
+      await gotoArticleOrSkip(page, locale)
 
-      const readingTime = page.getByText(/min de lecture/i)
+      const readingTime = page.getByText(TEST_ARTICLE[locale].readingTimePattern)
       await expect(readingTime.first()).toBeVisible()
     })
   })
