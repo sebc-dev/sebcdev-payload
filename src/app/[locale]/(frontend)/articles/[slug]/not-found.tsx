@@ -15,7 +15,7 @@ export default async function ArticleNotFound() {
   const t = await getTranslations('article.notFound')
 
   return (
-    <div className="container mx-auto px-4 py-16 text-center">
+    <div className="container mx-auto px-4 py-16 text-center" data-testid="not-found-page">
       <div className="max-w-md mx-auto space-y-6">
         {/* Icon */}
         <FileQuestion className="h-16 w-16 mx-auto text-muted-foreground" aria-hidden="true" />
