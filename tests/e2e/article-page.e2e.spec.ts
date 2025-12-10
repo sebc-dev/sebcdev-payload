@@ -176,14 +176,13 @@ test.describe('Article Page', () => {
     test('locale switch preserves article', async ({ page }) => {
       await page.goto(`/fr/articles/${TEST_ARTICLE.slug}`)
 
-      // Find and click locale switcher
+      // Locale switcher must be visible for multilingual navigation
       const localeSwitcher = page.getByRole('link', { name: /en/i }).first()
 
-      if (await localeSwitcher.isVisible()) {
-        await localeSwitcher.click()
-        await expect(page).toHaveURL(`/en/articles/${TEST_ARTICLE.slug}`)
-        await expect(page.locator('h1')).toContainText(TEST_ARTICLE.en.title)
-      }
+      await expect(localeSwitcher).toBeVisible()
+      await localeSwitcher.click()
+      await expect(page).toHaveURL(`/en/articles/${TEST_ARTICLE.slug}`)
+      await expect(page.locator('h1')).toContainText(TEST_ARTICLE.en.title)
     })
   })
 
