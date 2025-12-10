@@ -19,13 +19,25 @@ const TEST_ARTICLE = {
 }
 
 /**
- * Skip tests if database not seeded
+ * Check if database is seeded before running tests
  */
-test.beforeEach(async ({ page }) => {
-  await page.goto(`/fr/articles/${TEST_ARTICLE.slug}`)
-  const title = await page.title()
+let isSeeded = false
+let seedCheckDone = false
 
-  if (title.includes('404') || title.includes('non trouvé')) {
+test.beforeAll(async ({ browser }) => {
+  const page = await browser.newPage()
+  try {
+    await page.goto(`/fr/articles/${TEST_ARTICLE.slug}`)
+    const title = await page.title()
+    isSeeded = !title.includes('404') && !title.includes('non trouvé')
+  } finally {
+    await page.close()
+  }
+  seedCheckDone = true
+})
+
+test.beforeEach(async () => {
+  if (seedCheckDone && !isSeeded) {
     test.skip(true, 'Database not seeded - run: pnpm seed --clean')
   }
 })

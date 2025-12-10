@@ -103,6 +103,9 @@ test.describe('Design System', () => {
 })
 
 test.describe('Admin Panel Isolation', () => {
+  // Admin panel tests are slower due to Payload's heavy JS bundle
+  test.setTimeout(60000)
+
   test('admin panel loads without JavaScript errors', async ({ page }) => {
     const errors: string[] = []
     page.on('console', (msg) => {
@@ -116,7 +119,11 @@ test.describe('Admin Panel Isolation', () => {
     // Should redirect to login or show admin UI
     await expect(page).toHaveURL(/\/admin/)
 
-    await page.waitForLoadState('networkidle')
+    // Wait for Payload admin to render - look for login form or dashboard
+    // Using domcontentloaded + short delay instead of networkidle (Payload keeps polling)
+    await page.waitForLoadState('domcontentloaded')
+    // Give time for React hydration and initial JS errors to surface
+    await page.waitForTimeout(2000)
 
     // Filter out expected errors (like auth-related)
     const unexpectedErrors = errors.filter(
@@ -129,8 +136,10 @@ test.describe('Admin Panel Isolation', () => {
   test('admin panel uses its own styles (not frontend theme)', async ({ page }) => {
     await page.goto('/admin')
 
-    // Wait for page to fully load
-    await page.waitForLoadState('networkidle')
+    // Wait for Payload admin to render (using domcontentloaded instead of networkidle)
+    await page.waitForLoadState('domcontentloaded')
+    // Wait for CSS to apply
+    await page.waitForTimeout(1000)
 
     // Admin should NOT have our custom anthracite background (#1A1D23)
     // because admin panel has isolated styles
