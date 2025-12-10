@@ -282,3 +282,92 @@
     transform: none !important;
   }
 }
+
+/*
+ * Article Prose Styles
+ *
+ * Optimal reading experience with:
+ * - ~65ch max-width for comfortable reading
+ * - Consistent vertical rhythm (1.5rem base)
+ * - Proper spacing for headings, lists, blockquotes
+ * - Full-width allowance for images and code blocks
+ */
+.article-prose {
+  /* Optimal reading width */
+  --prose-width: 65ch;
+
+  /* Vertical rhythm base */
+  --rhythm: 1.5rem;
+}
+
+/* Constrain all elements to prose width */
+.article-prose > * {
+  max-width: var(--prose-width);
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Allow full-width elements (images, code blocks) */
+.article-prose > figure,
+.article-prose > pre,
+.article-prose > .full-width {
+  max-width: none;
+}
+
+/* Headings spacing */
+.article-prose h1,
+.article-prose h2,
+.article-prose h3,
+.article-prose h4 {
+  margin-top: calc(var(--rhythm) * 2);
+  margin-bottom: var(--rhythm);
+}
+
+.article-prose h1:first-child,
+.article-prose h2:first-child,
+.article-prose h3:first-child {
+  margin-top: 0;
+}
+
+/* Paragraph spacing */
+.article-prose p {
+  margin-bottom: var(--rhythm);
+  line-height: 1.75;
+}
+
+/* List spacing */
+.article-prose ul,
+.article-prose ol {
+  margin-bottom: var(--rhythm);
+  padding-left: 1.5rem;
+}
+
+.article-prose li {
+  margin-bottom: calc(var(--rhythm) * 0.5);
+}
+
+/* Blockquote styling */
+.article-prose blockquote {
+  margin: calc(var(--rhythm) * 1.5) auto;
+  padding: var(--rhythm);
+  border-left: 4px solid var(--primary);
+  background-color: hsl(0 0% 27% / 0.3);
+  border-radius: 0 0.5rem 0.5rem 0;
+}
+
+/* Code block spacing */
+.article-prose pre {
+  margin: calc(var(--rhythm) * 1.5) 0;
+}
+
+/* Image spacing */
+.article-prose figure {
+  margin: calc(var(--rhythm) * 2) 0;
+}
+
+/* Focus visible for accessibility */
+.article-prose a:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+  border-radius: 2px;
+}

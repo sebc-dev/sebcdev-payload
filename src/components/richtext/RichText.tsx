@@ -29,6 +29,7 @@ export function RichText({ content, className }: RichTextProps) {
   return (
     <div
       className={cn(
+        'article-prose',
         'prose prose-invert max-w-none',
         'prose-headings:text-foreground',
         'prose-p:text-foreground/90',
