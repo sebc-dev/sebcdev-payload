@@ -65,7 +65,7 @@ export function generateArticleJsonLd(article: ArticleSEOData): ArticleJsonLd {
       ...(siteConfig.logo && {
         logo: {
           '@type': 'ImageObject',
-          url: `${siteConfig.url}${siteConfig.logo.url}`,
+          url: new URL(siteConfig.logo.url, siteConfig.url).toString(),
           width: siteConfig.logo.width,
           height: siteConfig.logo.height,
         },
