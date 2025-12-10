@@ -52,8 +52,8 @@ test.describe('Article 404 Handling', () => {
     await expect(robotsMeta).toHaveAttribute('content', /noindex/)
   })
 
-  test('handles special characters in slug gracefully', async ({ page }) => {
-    const specialSlug = 'article-with-special-chars-123'
+  test('handles unicode and accented characters in slug gracefully', async ({ page }) => {
+    const specialSlug = 'article-éèç-über-日本語'
     const response = await page.goto(`/fr/articles/${encodeURIComponent(specialSlug)}`)
 
     // Should not crash, either 404 or valid response
