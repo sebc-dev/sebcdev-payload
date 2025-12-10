@@ -1,8 +1,5 @@
 import { expect, test } from '@playwright/test'
 
-import enMessages from '../../messages/en.json' with { type: 'json' }
-import frMessages from '../../messages/fr.json' with { type: 'json' }
-
 /**
  * Article Page E2E Tests
  *
