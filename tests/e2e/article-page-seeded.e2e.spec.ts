@@ -176,10 +176,12 @@ test.describe('Article Page', () => {
 
       // Both images should exist and be non-empty strings
       expect(typeof ogImage).toBe('string')
-      expect(ogImage?.length).toBeGreaterThan(0)
+      if (typeof ogImage !== 'string') return
+      expect(ogImage.length).toBeGreaterThan(0)
 
       expect(typeof twitterImage).toBe('string')
-      expect(twitterImage?.length).toBeGreaterThan(0)
+      if (typeof twitterImage !== 'string') return
+      expect(twitterImage.length).toBeGreaterThan(0)
 
       // Images should be consistent (same source URL)
       expect(ogImage).toBe(twitterImage)
