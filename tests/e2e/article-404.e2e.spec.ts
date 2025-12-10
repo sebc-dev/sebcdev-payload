@@ -47,12 +47,9 @@ test.describe('Article 404 Handling', () => {
   test('404 page has noindex meta tag', async ({ page }) => {
     await page.goto(`/fr/articles/${NON_EXISTENT_SLUGS[0]}`)
 
-    const robotsMeta = await page.locator('meta[name="robots"]').getAttribute('content')
-
-    // 404 pages should not be indexed
-    if (robotsMeta) {
-      expect(robotsMeta).toContain('noindex')
-    }
+    // 404 pages must have noindex for SEO
+    const robotsMeta = page.locator('meta[name="robots"]')
+    await expect(robotsMeta).toHaveAttribute('content', /noindex/)
   })
 
   test('handles special characters in slug gracefully', async ({ page }) => {
