@@ -112,8 +112,10 @@ test.describe('Article Page', () => {
       await gotoArticleOrSkip(page, 'fr')
 
       const description = await page.locator('meta[name="description"]').getAttribute('content')
-      expect(description).toBeTruthy()
-      expect(description!.length).toBeGreaterThan(10)
+      expect(typeof description).toBe('string')
+      if (typeof description === 'string') {
+        expect(description.length).toBeGreaterThan(10)
+      }
     })
 
     test('has Open Graph meta tags', async ({ page }) => {
@@ -160,9 +162,12 @@ test.describe('Article Page', () => {
       const jsonLdScript = page.locator('script[type="application/ld+json"]')
       const jsonLdContent = await jsonLdScript.textContent()
 
-      expect(jsonLdContent).toBeTruthy()
+      expect(typeof jsonLdContent).toBe('string')
+      if (typeof jsonLdContent !== 'string') {
+        throw new Error('JSON-LD content is not a string')
+      }
 
-      const jsonLd = JSON.parse(jsonLdContent!)
+      const jsonLd = JSON.parse(jsonLdContent)
       expect(jsonLd['@context']).toBe('https://schema.org')
       expect(jsonLd['@type']).toBe('Article')
       expect(jsonLd.headline).toContain(TEST_ARTICLE.fr.title)
