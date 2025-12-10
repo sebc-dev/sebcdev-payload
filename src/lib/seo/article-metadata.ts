@@ -66,7 +66,11 @@ function getAlternates(slug: string): Metadata['alternates'] {
  */
 export function generateArticleMetadata(article: ArticleSEOData): Metadata {
   const title = `${article.title} | ${siteConfig.name}`
-  const description = article.excerpt || `Read ${article.title} on ${siteConfig.name}`
+  const description =
+    article.excerpt ||
+    (article.locale === 'fr'
+      ? `Lire ${article.title} sur ${siteConfig.name}`
+      : `Read ${article.title} on ${siteConfig.name}`)
   const url = getArticleUrl(article.slug, article.locale)
   const ogImage = getOGImage(article)
 
