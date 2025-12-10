@@ -89,8 +89,7 @@ test.describe('Article Page', () => {
       await expect(preElement).toBeVisible()
 
       // Verify language label is displayed in the code block header
-      // The CodeBlock component renders a header with the language name (e.g., "JSON", "TYPESCRIPT")
-      const codeBlockHeader = page.locator('.font-mono.text-xs.uppercase').first()
+      const codeBlockHeader = page.locator('[data-testid="codeblock-language"]').first()
       await expect(codeBlockHeader).toBeVisible()
       const languageLabel = await codeBlockHeader.textContent()
       expect(languageLabel).toBeTruthy()
