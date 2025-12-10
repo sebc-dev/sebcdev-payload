@@ -136,7 +136,9 @@ test.describe('Article Page', () => {
       const description = await page.locator('meta[name="description"]').getAttribute('content')
       expect(typeof description).toBe('string')
       if (typeof description === 'string') {
-        expect(description.length).toBeGreaterThan(10)
+        // SEO best practice: 50-160 chars, but we allow up to 300 to catch truncated/malformed descriptions
+        expect(description.length).toBeGreaterThanOrEqual(50)
+        expect(description.length).toBeLessThanOrEqual(300)
       }
     })
 
