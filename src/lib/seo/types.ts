@@ -5,6 +5,11 @@
  */
 
 /**
+ * Supported locales for SEO
+ */
+export type SupportedLocale = 'fr' | 'en'
+
+/**
  * Article data needed for SEO metadata
  */
 export interface ArticleSEOData {
@@ -27,7 +32,7 @@ export interface ArticleSEOData {
     name: string
     slug: string
   }>
-  locale: 'fr' | 'en'
+  locale: SupportedLocale
 }
 
 /**
