@@ -112,6 +112,8 @@ export default defineConfig({
         command: 'pnpm dev',
         reuseExistingServer: true,
         url: baseURL,
+        // In CI, Next.js cold start can be slow (especially first compile)
+        timeout: process.env.CI ? 120000 : 60000,
       }
     : undefined,
 })
