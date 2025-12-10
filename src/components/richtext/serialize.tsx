@@ -16,6 +16,7 @@ import type {
   ListItemNode,
   QuoteNode,
   LinkNode,
+  CodeNode,
 } from './types'
 import { TEXT_FORMAT, hasChildren, isTextNode } from './types'
 import { Paragraph } from './nodes/Paragraph'
@@ -23,6 +24,7 @@ import { Heading } from './nodes/Heading'
 import { List, ListItem } from './nodes/List'
 import { Quote } from './nodes/Quote'
 import { Link } from './nodes/Link'
+import { CodeBlock } from './nodes/CodeBlock'
 
 /**
  * Main entry point: serialize Lexical content to React
@@ -89,12 +91,7 @@ export function serializeNode(node: LexicalNode, index: number): ReactNode {
       return <Link key={index} node={node as LinkNode} />
 
     case 'code':
-      // Phase 3 - render as plain code for now
-      return (
-        <pre key={index} className="bg-muted p-4 rounded-lg overflow-x-auto my-4">
-          <code>{hasChildren(node) ? serializeChildren(node.children) : null}</code>
-        </pre>
-      )
+      return <CodeBlock key={index} node={node as CodeNode} />
 
     case 'upload':
       // Phase 4 - placeholder
