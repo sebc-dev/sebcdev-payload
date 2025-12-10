@@ -28,11 +28,12 @@ const TEST_ARTICLE = {
  */
 async function gotoArticleOrSkip(page: Page, locale: 'fr' | 'en' = 'fr'): Promise<void> {
   await page.goto(`/${locale}/articles/${TEST_ARTICLE.slug}`)
-  const h1Text = (await page.locator('h1').textContent()) ?? ''
-  const h1Lower = h1Text.toLowerCase()
 
-  // Skip if article not found (handles both FR "non trouvé" and EN "not found")
-  if (h1Lower.includes('non trouvé') || h1Lower.includes('not found')) {
+  // Skip if article not found - check for <article> element which only exists on valid article pages
+  const articleElement = page.locator('article')
+  const articleExists = (await articleElement.count()) > 0
+
+  if (!articleExists) {
     test.skip(true, 'Database not seeded - run: pnpm seed --clean')
   }
 }
