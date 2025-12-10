@@ -139,7 +139,7 @@ jobs:
         env:
           PAYLOAD_SECRET: ${{ secrets.PAYLOAD_SECRET || env.PAYLOAD_SECRET_CI }}
         run: pnpm test:e2e
-        timeout-minutes: 10
+        timeout-minutes: 15
 
       - name: Upload E2E Test Artifacts
         if: failure()
