@@ -78,23 +78,27 @@ function mapPayloadToArticleData(
       .filter((tag) => tag.title && tag.slug) ?? []
 
   // Map featured image for hero (with full metadata)
-  const heroCoverImage: CoverImage | null = isPopulatedMedia(article.featuredImage)
-    ? {
-        url: article.featuredImage.url ?? '',
-        alt: article.featuredImage.alt ?? '',
-        width: article.featuredImage.width ?? 1200,
-        height: article.featuredImage.height ?? 630,
-        blurDataURL: undefined, // Payload doesn't generate blur by default
-      }
-    : null
+  // Only create CoverImage if URL is non-empty to avoid next/image errors
+  const heroCoverImage: CoverImage | null =
+    isPopulatedMedia(article.featuredImage) && article.featuredImage.url
+      ? {
+          url: article.featuredImage.url,
+          alt: article.featuredImage.alt ?? '',
+          width: article.featuredImage.width ?? 1200,
+          height: article.featuredImage.height ?? 630,
+          blurDataURL: undefined, // Payload doesn't generate blur by default
+        }
+      : null
 
   // Map cover image for card display (simplified)
-  const coverImage = isPopulatedMedia(article.featuredImage)
-    ? {
-        url: article.featuredImage.url ?? '',
-        alt: article.featuredImage.alt ?? undefined,
-      }
-    : null
+  // Only create if URL is non-empty
+  const coverImage =
+    isPopulatedMedia(article.featuredImage) && article.featuredImage.url
+      ? {
+          url: article.featuredImage.url,
+          alt: article.featuredImage.alt ?? undefined,
+        }
+      : null
 
   return {
     id: String(article.id),
