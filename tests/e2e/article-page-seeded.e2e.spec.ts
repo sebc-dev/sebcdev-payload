@@ -112,6 +112,14 @@ test.describe('Article Page', () => {
       const readingTime = page.getByText(TEST_ARTICLE[locale].readingTimePattern)
       await expect(readingTime.first()).toBeVisible()
     })
+
+    test('displays reading time in EN locale', async ({ page }) => {
+      const locale = 'en'
+      await gotoArticleOrSkip(page, locale)
+
+      const readingTime = page.getByText(TEST_ARTICLE[locale].readingTimePattern)
+      await expect(readingTime.first()).toBeVisible()
+    })
   })
 
   test.describe('SEO Metadata', () => {
