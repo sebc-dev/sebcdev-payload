@@ -164,6 +164,23 @@ test.describe('Article Page', () => {
       expect(twitterTitle).toContain(TEST_ARTICLE.fr.title)
     })
 
+    test('has social share images', async ({ page }) => {
+      await gotoArticleOrSkip(page, 'fr')
+
+      const ogImage = await page.locator('meta[property="og:image"]').getAttribute('content')
+      const twitterImage = await page.locator('meta[name="twitter:image"]').getAttribute('content')
+
+      // Both images should exist and be non-empty strings
+      expect(typeof ogImage).toBe('string')
+      expect(ogImage?.length).toBeGreaterThan(0)
+
+      expect(typeof twitterImage).toBe('string')
+      expect(twitterImage?.length).toBeGreaterThan(0)
+
+      // Images should be consistent (same source URL)
+      expect(ogImage).toBe(twitterImage)
+    })
+
     test('has hreflang alternates', async ({ page }) => {
       await gotoArticleOrSkip(page, 'fr')
 
