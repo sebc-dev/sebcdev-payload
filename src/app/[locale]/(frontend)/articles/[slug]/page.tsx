@@ -24,6 +24,7 @@ import {
   ArticleJsonLdScript,
   type ArticleSEOData,
 } from '@/lib/seo'
+import { logger } from '@/lib/logger'
 
 /**
  * Force dynamic rendering.
@@ -99,7 +100,12 @@ export async function generateMetadata({ params }: ArticlePageProps): Promise<Me
 
     return generateArticleMetadata(seoData)
   } catch (error) {
-    console.error('Error generating metadata:', error)
+    const normalizedError = error instanceof Error ? error : new Error(String(error))
+    logger.error('Failed to generate article metadata', {
+      slug,
+      locale,
+      error: normalizedError,
+    })
     return generate404Metadata(locale)
   }
 }
