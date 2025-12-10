@@ -11,6 +11,9 @@ import { useState, useCallback, useRef, useEffect } from 'react'
 import { Check, Copy, X } from 'lucide-react'
 import { Button } from './button'
 
+/** Duration in ms to show feedback (success/error) before resetting */
+const FEEDBACK_DURATION_MS = 2000
+
 interface CopyButtonProps {
   text: string
   className?: string
@@ -43,7 +46,7 @@ export function CopyButton({ text, className }: CopyButtonProps) {
     if (timeoutRef.current) {
       clearTimeout(timeoutRef.current)
     }
-    timeoutRef.current = setTimeout(() => setError(false), 2000)
+    timeoutRef.current = setTimeout(() => setError(false), FEEDBACK_DURATION_MS)
   }, [])
 
   const handleCopy = useCallback(async () => {
@@ -61,7 +64,7 @@ export function CopyButton({ text, className }: CopyButtonProps) {
       if (timeoutRef.current) {
         clearTimeout(timeoutRef.current)
       }
-      timeoutRef.current = setTimeout(() => setCopied(false), 2000)
+      timeoutRef.current = setTimeout(() => setCopied(false), FEEDBACK_DURATION_MS)
     } catch (err) {
       showError(`Failed to copy: ${err}`)
     }
