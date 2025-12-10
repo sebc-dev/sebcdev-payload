@@ -64,6 +64,12 @@ export async function CodeBlock({ node }: CodeBlockProps) {
       </div>
 
       {/* Code content */}
+      {/*
+       * SECURITY: dangerouslySetInnerHTML is safe here because Shiki's codeToHtml()
+       * escapes all code content by default, treating it as text rather than markup.
+       * Characters like <, >, &, and quotes are converted to HTML entities.
+       * See: https://shiki.style/guide/install#codetohtml
+       */}
       <div
         className="overflow-x-auto text-sm [&>pre]:m-0 [&>pre]:bg-transparent [&>pre]:p-4"
         dangerouslySetInnerHTML={{ __html: html }}
