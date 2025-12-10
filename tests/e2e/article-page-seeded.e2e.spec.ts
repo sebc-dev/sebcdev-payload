@@ -132,7 +132,7 @@ test.describe('Article Page', () => {
       const ogType = await page.locator('meta[property="og:type"]').getAttribute('content')
       const ogUrl = await page.locator('meta[property="og:url"]').getAttribute('content')
 
-      expect(ogTitle).toBeTruthy()
+      expect(ogTitle).toContain(TEST_ARTICLE.fr.title)
       expect(ogType).toBe('article')
       expect(ogUrl).toContain(`/fr/articles/${TEST_ARTICLE.slug}`)
     })
@@ -143,8 +143,9 @@ test.describe('Article Page', () => {
       const twitterCard = await page.locator('meta[name="twitter:card"]').getAttribute('content')
       const twitterTitle = await page.locator('meta[name="twitter:title"]').getAttribute('content')
 
-      expect(twitterCard).toBeTruthy()
-      expect(twitterTitle).toBeTruthy()
+      // Article has featured image → summary_large_image, otherwise summary
+      expect(['summary', 'summary_large_image']).toContain(twitterCard)
+      expect(twitterTitle).toContain(TEST_ARTICLE.fr.title)
     })
 
     test('has hreflang alternates', async ({ page }) => {
