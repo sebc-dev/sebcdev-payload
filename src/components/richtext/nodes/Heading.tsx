@@ -5,9 +5,13 @@
  * Generates URL-friendly IDs from heading text.
  */
 
+import { slugify } from '@/lib/toc'
 import { serializeChildren } from '../serialize'
 import type { HeadingNode, LexicalNode } from '../types'
 import { hasChildren, isTextNode } from '../types'
+
+// Re-export slugify for backwards compatibility
+export { slugify }
 
 interface HeadingProps {
   node: HeadingNode
@@ -28,20 +32,6 @@ function extractText(children: LexicalNode[]): string {
       return ''
     })
     .join('')
-}
-
-/**
- * Generate URL-friendly slug from text
- */
-export function slugify(text: string): string {
-  return text
-    .toLowerCase()
-    .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '') // Remove accents
-    .replace(/[^a-z0-9\s-]/g, '') // Remove special chars
-    .trim()
-    .replace(/\s+/g, '-') // Replace spaces with hyphens
-    .replace(/-+/g, '-') // Remove duplicate hyphens
 }
 
 const headingStyles: Record<HeadingNode['tag'], string> = {
