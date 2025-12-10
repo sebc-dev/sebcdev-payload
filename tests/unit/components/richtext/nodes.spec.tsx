@@ -212,6 +212,23 @@ describe('Heading', () => {
 
     expect(heading?.id).toBe('hello-world')
   })
+
+  it('handles empty heading without id or anchor', () => {
+    const node: HeadingNode = {
+      type: 'heading',
+      tag: 'h2',
+      version: 1,
+      children: [{ type: 'text', text: '', format: 0, version: 1 }],
+    }
+
+    const { container } = render(<Heading node={node} />)
+    const heading = container.querySelector('h2')
+    const anchor = container.querySelector('a')
+
+    expect(heading).toBeTruthy()
+    expect(heading?.id).toBeFalsy()
+    expect(anchor).toBeNull()
+  })
 })
 
 describe('List', () => {
