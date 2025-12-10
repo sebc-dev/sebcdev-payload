@@ -39,6 +39,20 @@ export const SUPPORTED_LANGUAGES: BundledLanguage[] = [
 export const CODE_THEME = 'github-dark' as const
 
 /**
+ * Language aliases for common alternative names
+ */
+const LANGUAGE_ALIASES: Readonly<Record<string, BundledLanguage>> = {
+  js: 'javascript',
+  ts: 'typescript',
+  sh: 'bash',
+  zsh: 'bash',
+  yml: 'yaml',
+  py: 'python',
+  md: 'markdown',
+  gql: 'graphql',
+}
+
+/**
  * Singleton highlighter instance
  * Cached for performance
  */
@@ -86,19 +100,8 @@ export function getFallbackLanguage(lang: string | undefined): BundledLanguage |
   if (!lang) return 'text'
   if (isSupportedLanguage(lang)) return lang
 
-  // Common aliases
-  const aliases: Record<string, BundledLanguage> = {
-    js: 'javascript',
-    ts: 'typescript',
-    sh: 'bash',
-    zsh: 'bash',
-    yml: 'yaml',
-    py: 'python',
-    md: 'markdown',
-    gql: 'graphql',
-  }
-
-  if (aliases[lang]) return aliases[lang]
+  const aliased = LANGUAGE_ALIASES[lang]
+  if (aliased) return aliased
 
   return 'text'
 }
