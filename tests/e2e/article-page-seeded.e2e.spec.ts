@@ -159,12 +159,8 @@ test.describe('Article Page', () => {
       const jsonLdScript = page.locator('script[type="application/ld+json"]')
       const jsonLdContent = await jsonLdScript.textContent()
 
-      expect(typeof jsonLdContent).toBe('string')
-      if (typeof jsonLdContent !== 'string') {
-        throw new Error('JSON-LD content is not a string')
-      }
-
-      const jsonLd = JSON.parse(jsonLdContent)
+      expect(jsonLdContent).toBeTruthy()
+      const jsonLd = JSON.parse(jsonLdContent as string)
       expect(jsonLd['@context']).toBe('https://schema.org')
       expect(jsonLd['@type']).toBe('Article')
       expect(jsonLd.headline).toContain(TEST_ARTICLE.fr.title)
