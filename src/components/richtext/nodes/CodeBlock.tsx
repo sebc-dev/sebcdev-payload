@@ -57,7 +57,10 @@ export async function CodeBlock({ node }: CodeBlockProps) {
     <div className="group my-6 overflow-hidden rounded-lg border border-border">
       {/* Header with language indicator */}
       <div className="flex items-center justify-between border-b border-border bg-muted/50 px-4 py-2">
-        <span className="font-mono text-xs uppercase tracking-wider text-muted-foreground">
+        <span
+          className="font-mono text-xs uppercase tracking-wider text-muted-foreground"
+          data-testid="codeblock-language"
+        >
           {languageLabel}
         </span>
         <CopyButton text={code} className="opacity-0 transition-opacity group-hover:opacity-100" />
