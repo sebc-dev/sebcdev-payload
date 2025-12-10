@@ -61,6 +61,10 @@ describe('CodeBlock', () => {
     }
 
     const { container } = render(await CodeBlock({ node }))
+    const copyButton = container.querySelector('[data-testid="copy-button"]')
+
+    // Verify extractText correctly concatenates children with linebreaks
+    expect(copyButton?.getAttribute('data-text')).toBe('line 1\nline 2')
     expect(container.querySelector('pre')).toBeTruthy()
   })
 
