@@ -152,12 +152,16 @@ test.describe('Article Page', () => {
 
       const frAlternate = page.locator('link[rel="alternate"][hreflang="fr"]')
       const enAlternate = page.locator('link[rel="alternate"][hreflang="en"]')
+      const xDefaultAlternate = page.locator('link[rel="alternate"][hreflang="x-default"]')
 
       const frHref = await frAlternate.getAttribute('href')
       const enHref = await enAlternate.getAttribute('href')
+      const xDefaultHref = await xDefaultAlternate.getAttribute('href')
 
       expect(frHref).toContain(`/fr/articles/${TEST_ARTICLE.slug}`)
       expect(enHref).toContain(`/en/articles/${TEST_ARTICLE.slug}`)
+      // x-default points to French version as the default locale
+      expect(xDefaultHref).toContain(`/fr/articles/${TEST_ARTICLE.slug}`)
     })
 
     test('has JSON-LD structured data', async ({ page }) => {
