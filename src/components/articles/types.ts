@@ -39,6 +39,18 @@ export interface CoverImageData {
 }
 
 /**
+ * Cover image with full metadata for hero rendering
+ * Includes dimensions for proper aspect ratio and optional blur placeholder
+ */
+export interface CoverImage {
+  url: string
+  alt: string
+  width: number
+  height: number
+  blurDataURL?: string
+}
+
+/**
  * Complexity level for articles
  * Represents the difficulty level of an article
  */
