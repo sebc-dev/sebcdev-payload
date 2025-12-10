@@ -35,7 +35,23 @@ export function CopyButton({ text, className }: CopyButtonProps) {
     }
   }, [])
 
+  // Helper to show error state with timeout
+  const showError = useCallback((message: string) => {
+    console.error(message)
+    setError(true)
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current)
+    }
+    timeoutRef.current = setTimeout(() => setError(false), 2000)
+  }, [])
+
   const handleCopy = useCallback(async () => {
+    // Feature detection: fail fast if clipboard API unavailable
+    if (!navigator.clipboard) {
+      showError('Clipboard API not available in this context')
+      return
+    }
+
     try {
       await navigator.clipboard.writeText(text)
       setCopied(true)
@@ -45,16 +61,9 @@ export function CopyButton({ text, className }: CopyButtonProps) {
       }
       timeoutRef.current = setTimeout(() => setCopied(false), 2000)
     } catch (err) {
-      // Clipboard API may fail in some contexts
-      console.error('Failed to copy:', err)
-      setError(true)
-      // Clear any existing timeout before setting a new one
-      if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current)
-      }
-      timeoutRef.current = setTimeout(() => setError(false), 2000)
+      showError(`Failed to copy: ${err}`)
     }
-  }, [text])
+  }, [text, showError])
 
   // Determine icon and aria-label based on state
   const getIcon = () => {
