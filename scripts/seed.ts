@@ -498,6 +498,24 @@ function orderedListWithItems(items: ReturnType<typeof listItem>[]) {
 }
 
 /**
+ * Creates a Lexical upload node (inline image).
+ *
+ * Payload Lexical stores upload nodes with `value` as the media document ID.
+ * When fetched with depth >= 1, Payload automatically populates the full Media object.
+ *
+ * @param mediaId - The ID of the uploaded media document
+ */
+function uploadNode(mediaId: number) {
+  return {
+    type: 'upload',
+    format: '',
+    version: 2,
+    relationTo: 'media',
+    value: mediaId,
+  }
+}
+
+/**
  * Creates a list item with text content AND a nested sub-list.
  * This is the proper Lexical structure for nested lists:
  * The sub-list is a direct child of the listitem node.
@@ -599,6 +617,15 @@ const ARTICLE_IMAGES = [
     alt: { fr: 'Guide de formatage rich text', en: 'Rich text formatting guide' },
   },
 ] as const
+
+// Inline image for testing ImageBlock rendering
+const INLINE_IMAGE = {
+  seed: 200,
+  alt: {
+    fr: "Exemple d'image inline dans un article",
+    en: 'Example of inline image in an article',
+  },
+}
 
 const ARTICLES = [
   {
@@ -1618,6 +1645,16 @@ async function seedArticles(
 ) {
   console.log('📝 Seeding articles...')
 
+  // Upload inline image for the rich text guide article
+  console.log('  📷 Uploading inline image for rich text guide...')
+  const inlineImageUrl = `https://picsum.photos/seed/${INLINE_IMAGE.seed}/800/450`
+  const inlineImageId = await uploadImage(
+    payload,
+    inlineImageUrl,
+    'inline-example.jpg',
+    INLINE_IMAGE.alt.fr,
+  )
+
   for (const article of ARTICLES) {
     // Check if article already exists
     const existing = await payload.find({
@@ -1661,13 +1698,22 @@ async function seedArticles(
       )
     }
 
+    // For the rich text guide, inject inline image into content
+    let contentFr = article.content.fr
+    let contentEn = article.content.en
+
+    if (article.slug === 'guide-formatage-richtext' && inlineImageId) {
+      contentFr = createRichTextGuideContent('fr', inlineImageId)
+      contentEn = createRichTextGuideContent('en', inlineImageId)
+    }
+
     const created = await payload.create({
       collection: 'articles',
       data: {
         title: article.title.fr,
         slug: article.slug,
         excerpt: article.excerpt.fr,
-        content: article.content.fr as any,
+        content: contentFr as any,
         category: categoryId,
         tags: tagIds,
         complexity: article.complexity,
@@ -1686,12 +1732,212 @@ async function seedArticles(
       data: {
         title: article.title.en,
         excerpt: article.excerpt.en,
-        content: article.content.en as any,
+        content: contentEn as any,
       },
       locale: 'en',
     })
 
     console.log(`  ✅ Created article: ${article.title.fr}`)
+  }
+}
+
+/**
+ * Creates the rich text guide content with inline image.
+ * This function generates the content dynamically to include the uploaded image ID.
+ */
+function createRichTextGuideContent(locale: 'fr' | 'en', inlineImageId: number) {
+  if (locale === 'fr') {
+    return createLexicalRoot([
+      // Introduction
+      paragraph(
+        "Cet article présente toutes les fonctionnalités de formatage disponibles dans l'éditeur rich text. Il sert également de référence pour tester le rendu.",
+      ),
+
+      // H1 - Formatage de texte
+      heading('Formatage de Texte', 'h1'),
+      paragraphWithChildren([
+        text('Le texte peut être formaté de plusieurs façons : '),
+        bold('en gras'),
+        text(', '),
+        italic('en italique'),
+        text(', '),
+        underline('souligné'),
+        text(', '),
+        strikethrough('barré'),
+        text(', ou en '),
+        inlineCode('code inline'),
+        text('. On peut aussi '),
+        boldItalic('combiner gras et italique'),
+        text('.'),
+      ]),
+
+      // H2 - Images inline
+      heading('Images Inline', 'h2'),
+      paragraph(
+        "Les images peuvent être insérées directement dans le contenu de l'article. Elles sont optimisées automatiquement avec next/image et le loader Cloudflare.",
+      ),
+      uploadNode(inlineImageId),
+      paragraph(
+        "L'image ci-dessus est un exemple d'image inline. Elle s'adapte à la largeur du conteneur et supporte les légendes.",
+      ),
+
+      // H2 - Niveaux de titres
+      heading('Niveaux de Titres', 'h2'),
+      paragraph(
+        'Les titres permettent de structurer le contenu. Voici les différents niveaux disponibles :',
+      ),
+      heading('Titre de niveau 1 (H1)', 'h1'),
+      heading('Titre de niveau 2 (H2)', 'h2'),
+      heading('Titre de niveau 3 (H3)', 'h3'),
+      heading('Titre de niveau 4 (H4)', 'h4'),
+      heading('Titre de niveau 5 (H5)', 'h5'),
+      heading('Titre de niveau 6 (H6)', 'h6'),
+
+      // H2 - Listes
+      heading('Listes', 'h2'),
+
+      // H3 - Listes à puces
+      heading('Listes à Puces (non ordonnées)', 'h3'),
+      bulletList([
+        'Premier élément de la liste',
+        'Deuxième élément de la liste',
+        'Troisième élément de la liste',
+      ]),
+
+      // H3 - Listes numérotées
+      heading('Listes Numérotées (ordonnées)', 'h3'),
+      orderedList([
+        'Première étape du processus',
+        'Deuxième étape du processus',
+        'Troisième étape du processus',
+      ]),
+
+      // H2 - Citations
+      heading('Citations (Blockquotes)', 'h2'),
+      blockquote(
+        "Une citation simple avec du texte. Les blockquotes sont utiles pour mettre en avant des passages importants ou des citations d'auteurs.",
+      ),
+
+      // H2 - Code
+      heading('Blocs de Code', 'h2'),
+      paragraph(
+        "Les blocs de code permettent d'afficher du code source avec coloration syntaxique :",
+      ),
+      codeBlock(
+        `// Exemple TypeScript
+interface User {
+  id: string
+  name: string
+  email: string
+}
+
+function greet(user: User): string {
+  return \`Hello, \${user.name}!\`
+}`,
+        'typescript',
+      ),
+
+      // Conclusion
+      heading('Conclusion', 'h2'),
+      paragraphWithChildren([
+        text(
+          "Ce guide couvre l'ensemble des fonctionnalités de formatage disponibles. Pour plus d'informations, consultez la ",
+        ),
+        textLink('https://lexical.dev', 'documentation Lexical'),
+        text('.'),
+      ]),
+    ])
+  } else {
+    return createLexicalRoot([
+      // Introduction
+      paragraph(
+        'This article presents all the formatting features available in the rich text editor. It also serves as a reference for testing rendering.',
+      ),
+
+      // H1 - Text Formatting
+      heading('Text Formatting', 'h1'),
+      paragraphWithChildren([
+        text('Text can be formatted in several ways: '),
+        bold('bold'),
+        text(', '),
+        italic('italic'),
+        text(', '),
+        underline('underlined'),
+        text(', '),
+        strikethrough('strikethrough'),
+        text(', or as '),
+        inlineCode('inline code'),
+        text('. You can also '),
+        boldItalic('combine bold and italic'),
+        text('.'),
+      ]),
+
+      // H2 - Inline Images
+      heading('Inline Images', 'h2'),
+      paragraph(
+        'Images can be inserted directly into article content. They are automatically optimized with next/image and the Cloudflare loader.',
+      ),
+      uploadNode(inlineImageId),
+      paragraph(
+        'The image above is an example of an inline image. It adapts to the container width and supports captions.',
+      ),
+
+      // H2 - Heading Levels
+      heading('Heading Levels', 'h2'),
+      paragraph('Headings help structure content. Here are the different levels available:'),
+      heading('Heading Level 1 (H1)', 'h1'),
+      heading('Heading Level 2 (H2)', 'h2'),
+      heading('Heading Level 3 (H3)', 'h3'),
+      heading('Heading Level 4 (H4)', 'h4'),
+      heading('Heading Level 5 (H5)', 'h5'),
+      heading('Heading Level 6 (H6)', 'h6'),
+
+      // H2 - Lists
+      heading('Lists', 'h2'),
+
+      // H3 - Bullet Lists
+      heading('Bullet Lists (unordered)', 'h3'),
+      bulletList(['First list item', 'Second list item', 'Third list item']),
+
+      // H3 - Numbered Lists
+      heading('Numbered Lists (ordered)', 'h3'),
+      orderedList([
+        'First step of the process',
+        'Second step of the process',
+        'Third step of the process',
+      ]),
+
+      // H2 - Blockquotes
+      heading('Blockquotes', 'h2'),
+      blockquote(
+        'A simple blockquote with text. Blockquotes are useful for highlighting important passages or author quotes.',
+      ),
+
+      // H2 - Code
+      heading('Code Blocks', 'h2'),
+      paragraph('Code blocks display source code with syntax highlighting:'),
+      codeBlock(
+        `// TypeScript example
+interface User {
+  id: string
+  name: string
+  email: string
+}
+
+function greet(user: User): string {
+  return \`Hello, \${user.name}!\`
+}`,
+        'typescript',
+      ),
+
+      // Conclusion
+      heading('Conclusion', 'h2'),
+      paragraphWithChildren([
+        text('This guide covers all available formatting features. For more information, see the '),
+        textLink('https://lexical.dev', 'Lexical documentation'),
+        text('.'),
+      ]),
+    ])
   }
 }
 

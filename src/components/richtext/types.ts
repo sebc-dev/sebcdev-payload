@@ -141,17 +141,24 @@ export interface CodeNode extends BaseLexicalNode {
 }
 
 /**
- * Upload/Image node - for Phase 4 (placeholder for now)
+ * Upload/Image node - Lexical upload node for media files
+ *
+ * When stored, `value` is the media document ID (number).
+ * When fetched with depth >= 1, Payload populates `value` as the full Media object.
  */
 export interface UploadNode extends BaseLexicalNode {
   type: 'upload'
-  value: {
-    id: number | string
-    url?: string
-    alt?: string
-    width?: number
-    height?: number
-  }
+  /** Media document ID (when unpopulated) or populated Media object */
+  value:
+    | number
+    | string
+    | {
+        id: number | string
+        url?: string
+        alt?: string
+        width?: number
+        height?: number
+      }
   fields?: Record<string, unknown>
   relationTo?: string
 }

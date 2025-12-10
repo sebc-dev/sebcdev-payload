@@ -71,7 +71,7 @@ export async function CodeBlock({ node }: CodeBlockProps) {
        * See: https://shiki.style/guide/install#codetohtml
        */}
       <div
-        className="overflow-x-auto text-sm [&>pre]:m-0 [&>pre]:bg-transparent [&>pre]:p-4"
+        className="overflow-x-auto text-sm [&_pre]:!m-0 [&_pre]:bg-transparent [&_pre]:p-4 [&_code]:!p-0"
         dangerouslySetInnerHTML={{ __html: html }}
       />
     </div>

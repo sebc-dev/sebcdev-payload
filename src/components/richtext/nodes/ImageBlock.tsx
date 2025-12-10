@@ -15,6 +15,15 @@ interface ImageBlockProps {
 }
 
 /**
+ * Type guard for populated Media object
+ */
+function isPopulatedMedia(
+  value: UploadNode['value'],
+): value is { id: number | string; url?: string; alt?: string; width?: number; height?: number } {
+  return typeof value === 'object' && value !== null && 'url' in value
+}
+
+/**
  * ImageBlock - Renders Lexical upload nodes as optimized images
  *
  * Features:
@@ -22,15 +31,25 @@ interface ImageBlockProps {
  * - Supports captions via figcaption
  * - Responsive sizing with proper aspect ratio
  * - Accessibility via alt text
- * - Handles missing URL gracefully
+ * - Handles unpopulated and populated Media references
  */
 export function ImageBlock({ node }: ImageBlockProps) {
   const { value, fields } = node
 
-  // Validate required image data
-  if (!value?.url) {
+  // Check if value is populated (object with url) or unpopulated (just ID)
+  if (!isPopulatedMedia(value)) {
     if (process.env.NODE_ENV !== 'production') {
-      console.warn('[ImageBlock] Missing image URL in upload node')
+      console.warn(
+        '[ImageBlock] Upload node value is not populated (missing url). Ensure depth >= 1 when fetching.',
+      )
+    }
+    return null
+  }
+
+  // Validate URL exists
+  if (!value.url) {
+    if (process.env.NODE_ENV !== 'production') {
+      console.warn('[ImageBlock] Populated media missing URL')
     }
     return null
   }
