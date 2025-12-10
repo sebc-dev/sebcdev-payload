@@ -664,6 +664,7 @@ describe('Link', () => {
     const anchor = container.querySelector('a')
 
     expect(anchor?.getAttribute('target')).toBe('_blank')
+    expect(anchor?.getAttribute('rel')).toBe('noopener noreferrer')
   })
 
   it('applies correct styling classes', () => {
