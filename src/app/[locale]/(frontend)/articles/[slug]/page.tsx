@@ -58,59 +58,6 @@ function isPopulatedMedia(media: number | Media | null | undefined): media is Me
 }
 
 /**
- * Generate metadata for the article page (SEO)
- */
-export async function generateMetadata({ params }: ArticlePageProps): Promise<Metadata> {
-  const { locale, slug } = await params
-
-  try {
-    const { article } = await getArticleBySlug(slug, locale as Locale)
-
-    if (!article) {
-      return generate404Metadata(locale)
-    }
-
-    // Map Payload article to SEO data
-    const seoData: ArticleSEOData = {
-      title: article.title,
-      excerpt: article.excerpt ?? '',
-      slug: article.slug,
-      publishedAt: article.publishedAt ?? article.createdAt,
-      updatedAt: article.updatedAt,
-      featuredImage: isPopulatedMedia(article.featuredImage)
-        ? {
-            url: article.featuredImage.url ?? '',
-            alt: article.featuredImage.alt ?? article.title,
-            width: article.featuredImage.width ?? 1200,
-            height: article.featuredImage.height ?? 630,
-          }
-        : null,
-      category: isPopulatedCategory(article.category)
-        ? {
-            name: article.category.name,
-            slug: article.category.slug,
-          }
-        : null,
-      tags: article.tags?.filter(isPopulatedTag).map((tag) => ({
-        name: tag.name,
-        slug: tag.slug,
-      })),
-      locale: locale as 'fr' | 'en',
-    }
-
-    return generateArticleMetadata(seoData)
-  } catch (error) {
-    const normalizedError = error instanceof Error ? error : new Error(String(error))
-    logger.error('Failed to generate article metadata', {
-      slug,
-      locale,
-      error: normalizedError,
-    })
-    return generate404Metadata(locale)
-  }
-}
-
-/**
  * Map Payload article to SEO data for JSON-LD
  */
 function mapPayloadToSEOData(article: PayloadArticle, locale: Locale): ArticleSEOData {
@@ -139,6 +86,32 @@ function mapPayloadToSEOData(article: PayloadArticle, locale: Locale): ArticleSE
       slug: tag.slug,
     })),
     locale: locale as 'fr' | 'en',
+  }
+}
+
+/**
+ * Generate metadata for the article page (SEO)
+ */
+export async function generateMetadata({ params }: ArticlePageProps): Promise<Metadata> {
+  const { locale, slug } = await params
+
+  try {
+    const { article } = await getArticleBySlug(slug, locale as Locale)
+
+    if (!article) {
+      return generate404Metadata(locale)
+    }
+
+    const seoData = mapPayloadToSEOData(article, locale as Locale)
+    return generateArticleMetadata(seoData)
+  } catch (error) {
+    const normalizedError = error instanceof Error ? error : new Error(String(error))
+    logger.error('Failed to generate article metadata', {
+      slug,
+      locale,
+      error: normalizedError,
+    })
+    return generate404Metadata(locale)
   }
 }
 
