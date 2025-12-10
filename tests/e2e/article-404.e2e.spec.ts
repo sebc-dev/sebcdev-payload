@@ -36,13 +36,12 @@ test.describe('Article 404 Handling', () => {
   test('404 page has navigation back to homepage', async ({ page }) => {
     await page.goto(`/fr/articles/${NON_EXISTENT_SLUGS[2]}`)
 
-    // Should have a link back to homepage or articles
+    // 404 page must have a link back to homepage for good UX
     const homeLink = page.getByRole('link', { name: /accueil|home|retour/i })
 
-    if (await homeLink.isVisible()) {
-      await homeLink.click()
-      await expect(page).toHaveURL(/\/(fr|en)(\/)?$/)
-    }
+    await expect(homeLink).toBeVisible()
+    await homeLink.click()
+    await expect(page).toHaveURL(/\/(fr|en)(\/)?$/)
   })
 
   test('404 page has noindex meta tag', async ({ page }) => {
