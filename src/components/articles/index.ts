@@ -12,9 +12,11 @@
  * - EmptyState: Fallback component when no articles are published
  * - ArticleHeader: Article page header with metadata (category, title, complexity, reading time, date)
  * - ArticleFooter: Article page footer with tags section
+ * - ReadingProgressBar: Sticky progress bar showing reading progress through an article
  *
  * Shared types:
  * - ArticleData, CategoryData, TagData, CoverImageData, Complexity: Shared interfaces for article components
+ * - ReadingProgressBarProps: Props for the ReadingProgressBar component
  */
 
 // Types
@@ -39,3 +41,6 @@ export { ArticleHeader } from './ArticleHeader'
 export { ArticleFooter } from './ArticleFooter'
 export { ArticleHero } from './ArticleHero'
 export { EmptyState } from '../EmptyState'
+
+// Reading Progress
+export { ReadingProgressBar, type ReadingProgressBarProps } from './ReadingProgressBar'
