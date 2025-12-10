@@ -80,9 +80,13 @@ test.describe('Article Page', () => {
         return
       }
 
-      // Code should have syntax highlighting classes
+      // Verify Shiki syntax highlighting is applied (renders pre.shiki)
       const firstCode = codeBlocks.first()
       await expect(firstCode).toBeVisible()
+
+      // Check for Shiki's generated class on the pre element
+      const preElement = page.locator('pre.shiki').first()
+      await expect(preElement).toBeVisible()
     })
 
     test('displays category badge', async ({ page }) => {
