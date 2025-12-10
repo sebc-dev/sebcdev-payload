@@ -146,14 +146,11 @@ test.describe('Article Page', () => {
       const frAlternate = page.locator('link[rel="alternate"][hreflang="fr"]')
       const enAlternate = page.locator('link[rel="alternate"][hreflang="en"]')
 
-      await expect(frAlternate).toHaveAttribute(
-        'href',
-        new RegExp(`/fr/articles/${TEST_ARTICLE.slug}`),
-      )
-      await expect(enAlternate).toHaveAttribute(
-        'href',
-        new RegExp(`/en/articles/${TEST_ARTICLE.slug}`),
-      )
+      const frHref = await frAlternate.getAttribute('href')
+      const enHref = await enAlternate.getAttribute('href')
+
+      expect(frHref).toContain(`/fr/articles/${TEST_ARTICLE.slug}`)
+      expect(enHref).toContain(`/en/articles/${TEST_ARTICLE.slug}`)
     })
 
     test('has JSON-LD structured data', async ({ page }) => {
