@@ -214,7 +214,7 @@ describe('useReadingProgress', () => {
 
     it('handles null ref gracefully by falling back to document', () => {
       scrollY = 600 // 50% of document
-      const mockRef = { current: null }
+      const mockRef: { current: HTMLElement | null } = { current: null }
 
       const { result } = renderHook(() => useReadingProgress(mockRef))
 
