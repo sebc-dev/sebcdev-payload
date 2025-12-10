@@ -18,7 +18,14 @@
  */
 
 // Types
-export type { ArticleData, CategoryData, TagData, CoverImageData, Complexity } from './types'
+export type {
+  ArticleData,
+  CategoryData,
+  TagData,
+  CoverImageData,
+  CoverImage,
+  Complexity,
+} from './types'
 
 // Components
 export { CategoryBadge } from './CategoryBadge'
@@ -30,4 +37,5 @@ export { FeaturedArticleCard } from './FeaturedArticleCard'
 export { ArticleGrid } from './ArticleGrid'
 export { ArticleHeader } from './ArticleHeader'
 export { ArticleFooter } from './ArticleFooter'
+export { ArticleHero } from './ArticleHero'
 export { EmptyState } from '../EmptyState'
