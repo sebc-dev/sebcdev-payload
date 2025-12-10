@@ -146,7 +146,11 @@ export function serializeText(node: TextNode, index: number): ReactNode {
   }
 
   if (format & TEXT_FORMAT.CODE) {
-    text = <code className="bg-muted px-1.5 py-0.5 rounded text-sm font-mono">{text}</code>
+    text = (
+      <code className="rounded border border-border/50 bg-muted/80 px-1.5 py-0.5 font-mono text-sm text-foreground">
+        {text}
+      </code>
+    )
   }
 
   if (format & TEXT_FORMAT.SUBSCRIPT) {
