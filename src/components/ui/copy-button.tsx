@@ -38,6 +38,7 @@ export function CopyButton({ text, className }: CopyButtonProps) {
   // Helper to show error state with timeout
   const showError = useCallback((message: string) => {
     console.error(message)
+    setCopied(false) // Reset opposite state
     setError(true)
     if (timeoutRef.current) {
       clearTimeout(timeoutRef.current)
@@ -54,6 +55,7 @@ export function CopyButton({ text, className }: CopyButtonProps) {
 
     try {
       await navigator.clipboard.writeText(text)
+      setError(false) // Reset opposite state
       setCopied(true)
       // Clear any existing timeout before setting a new one
       if (timeoutRef.current) {
