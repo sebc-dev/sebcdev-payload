@@ -141,8 +141,8 @@ describe('TOCLink', () => {
     })
 
     it('uses instant scroll when prefers-reduced-motion', () => {
-      // Mock reduced motion preference
-      window.matchMedia = vi.fn().mockImplementation((query) => ({
+      // Override shared mock to return matches: true for reduced motion query
+      ;(window.matchMedia as ReturnType<typeof vi.fn>).mockImplementationOnce((query) => ({
         matches: query === '(prefers-reduced-motion: reduce)',
         media: query,
         onchange: null,
