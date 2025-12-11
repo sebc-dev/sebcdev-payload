@@ -12,6 +12,9 @@ describe('useReadingProgress', () => {
   let originalInnerHeight: PropertyDescriptor | undefined
   let originalScrollHeight: PropertyDescriptor | undefined
 
+  // Spies for RAF - declared at describe level for reuse
+  let rafSpy: ReturnType<typeof vi.spyOn<typeof window, 'requestAnimationFrame'>>
+
   beforeEach(() => {
     // Reset values
     scrollY = 0
@@ -41,8 +44,8 @@ describe('useReadingProgress', () => {
       configurable: true,
     })
 
-    // Mock requestAnimationFrame to execute immediately
-    vi.spyOn(window, 'requestAnimationFrame').mockImplementation((cb) => {
+    // Mock requestAnimationFrame to execute immediately (default behavior)
+    rafSpy = vi.spyOn(window, 'requestAnimationFrame').mockImplementation((cb) => {
       cb(0)
       return 0
     })
@@ -353,7 +356,7 @@ describe('useReadingProgress', () => {
       let rafCallback: FrameRequestCallback | null = null
       let rafCallCount = 0
 
-      vi.spyOn(window, 'requestAnimationFrame').mockImplementation((cb) => {
+      rafSpy.mockImplementation((cb) => {
         rafCallback = cb
         rafCallCount++
         return rafCallCount
