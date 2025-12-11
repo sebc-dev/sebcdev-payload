@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
-import { render, screen } from '@testing-library/react'
+import { render, screen, fireEvent } from '@testing-library/react'
 import type { TOCHeading } from '@/lib/toc/types'
 
 // Mock the hooks - must be before component import
@@ -149,13 +149,16 @@ describe('TableOfContents', () => {
   })
 
   describe('navigation callback', () => {
-    it('passes onNavigate to TOCLinks', () => {
+    it('passes onNavigate to TOCLinks and calls it on click', () => {
       const onNavigate = vi.fn()
       render(<TableOfContents headings={mockHeadings} onNavigate={onNavigate} />)
 
-      // TOCLink should receive the onNavigate prop
-      // This is tested implicitly - if TOCLink calls it, it means it was passed
-      expect(screen.getAllByRole('link')).toHaveLength(4)
+      // Click on the first link
+      const firstLink = screen.getByText('Introduction')
+      fireEvent.click(firstLink)
+
+      // Verify onNavigate was called
+      expect(onNavigate).toHaveBeenCalledTimes(1)
     })
   })
 
