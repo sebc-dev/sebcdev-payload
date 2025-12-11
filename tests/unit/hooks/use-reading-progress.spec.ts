@@ -251,6 +251,35 @@ describe('useReadingProgress', () => {
       // Short article not visible = 0%
       expect(result.current).toBe(0)
     })
+
+    it('returns 0 for short article scrolled past viewport top', () => {
+      // Article height=400, originally at Y=100, now scrolled past
+      // This documents current behavior: scrolled-past short articles show 0%
+      scrollY = 600
+      innerHeight = 800
+
+      const mockElement = {
+        getBoundingClientRect: () => ({
+          top: 100 - scrollY, // -500 (above viewport)
+          bottom: 500 - scrollY, // -100 (above viewport)
+          height: 400,
+          left: 0,
+          right: 0,
+          width: 0,
+          x: 0,
+          y: 100 - scrollY,
+          toJSON: () => ({}),
+        }),
+        offsetHeight: 400,
+      } as HTMLElement
+
+      const mockRef = { current: mockElement }
+
+      const { result } = renderHook(() => useReadingProgress(mockRef))
+
+      // Short article scrolled past top = 0% (current behavior)
+      expect(result.current).toBe(0)
+    })
   })
 
   describe('scroll event handling', () => {
