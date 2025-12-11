@@ -44,11 +44,20 @@ export function useReadingProgress(articleRef?: RefObject<HTMLElement | null>): 
         const start = elementTop
         // End progress when article bottom reaches viewport bottom
         const end = elementTop + elementHeight - windowHeight
+        const distance = end - start
+
+        // Handle short articles that fit entirely in viewport
+        if (distance <= 0) {
+          // Article is visible if its bottom is in viewport
+          const elementBottom = elementTop + elementHeight
+          const viewportBottom = scrollY + windowHeight
+          return elementBottom <= viewportBottom && elementTop >= scrollY ? 100 : 0
+        }
 
         if (scrollY <= start) return 0
         if (scrollY >= end) return 100
 
-        return ((scrollY - start) / (end - start)) * 100
+        return ((scrollY - start) / distance) * 100
       } else {
         // Fallback: calculate based on full document
         const scrollTop = window.scrollY
