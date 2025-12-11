@@ -298,6 +298,28 @@ describe('useReadingProgress', () => {
       expect(result.current).toBe(50)
     })
 
+    it('updates progress on resize event', () => {
+      // Initial: scrollY=600, innerHeight=800, scrollHeight=2000
+      // scrollableHeight = 2000 - 800 = 1200
+      // progress = 600 / 1200 = 50%
+      scrollY = 600
+      innerHeight = 800
+      scrollHeight = 2000
+
+      const { result } = renderHook(() => useReadingProgress())
+      expect(result.current).toBe(50)
+
+      // Simulate viewport resize: innerHeight changes to 1000
+      // New scrollableHeight = 2000 - 1000 = 1000
+      // New progress = 600 / 1000 = 60%
+      innerHeight = 1000
+      act(() => {
+        window.dispatchEvent(new Event('resize'))
+      })
+
+      expect(result.current).toBe(60)
+    })
+
     it('cleans up scroll listener on unmount', () => {
       const removeEventListenerSpy = vi.spyOn(window, 'removeEventListener')
 
