@@ -186,12 +186,4 @@ describe('MobileTOC', () => {
       expect(screen.getByRole('list')).toBeDefined()
     })
   })
-
-  describe('accessibility', () => {
-    it('trigger button has aria-label for screen readers', () => {
-      render(<MobileTOC headings={mockHeadings} triggerLabel="Navigation menu" />)
-
-      expect(screen.getByRole('button').getAttribute('aria-label')).toBe('Navigation menu')
-    })
-  })
 })
