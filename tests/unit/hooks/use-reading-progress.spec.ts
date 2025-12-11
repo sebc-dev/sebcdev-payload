@@ -283,7 +283,7 @@ describe('useReadingProgress', () => {
   })
 
   describe('scroll event handling', () => {
-    it('updates progress on scroll event', async () => {
+    it('updates progress on scroll event', () => {
       scrollY = 0
 
       const { result } = renderHook(() => useReadingProgress())
@@ -305,6 +305,24 @@ describe('useReadingProgress', () => {
       unmount()
 
       expect(removeEventListenerSpy).toHaveBeenCalledWith('scroll', expect.any(Function))
+    })
+
+    it('cancels pending requestAnimationFrame on unmount', () => {
+      const rafId = 12345
+      vi.spyOn(window, 'requestAnimationFrame').mockImplementation(() => rafId)
+      const cancelSpy = vi.spyOn(window, 'cancelAnimationFrame')
+
+      const { unmount } = renderHook(() => useReadingProgress())
+
+      // Trigger a scroll to schedule RAF
+      act(() => {
+        window.dispatchEvent(new Event('scroll'))
+      })
+
+      // Unmount should cancel the pending RAF
+      unmount()
+
+      expect(cancelSpy).toHaveBeenCalledWith(rafId)
     })
 
     it('throttles multiple scroll events via requestAnimationFrame', () => {
