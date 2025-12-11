@@ -86,6 +86,8 @@ export function TableOfContents({
     >
       <h2 className="text-sm font-semibold text-foreground mb-3">{title}</h2>
 
+      {/* role="list" restores list semantics for screen readers (Safari VoiceOver)
+          when list-style is removed by Tailwind's space-y-* utilities */}
       <ul className="space-y-0.5 border-l border-border" role="list">
         {headings.map((heading) => (
           <li key={heading.id}>

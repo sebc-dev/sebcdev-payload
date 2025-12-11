@@ -111,6 +111,8 @@ export function MobileTOC({
         </SheetHeader>
 
         <nav aria-label={title} className="mt-6 px-4">
+          {/* role="list" restores list semantics for screen readers (Safari VoiceOver)
+              when list-style is removed by Tailwind's space-y-* utilities */}
           <ul className="space-y-0.5 border-l border-border" role="list">
             {headings.map((heading) => (
               <li key={heading.id}>
