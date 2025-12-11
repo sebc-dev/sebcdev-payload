@@ -1,5 +1,6 @@
-import { test, expect, type Page } from '@playwright/test'
+import { test, expect } from '@playwright/test'
 import AxeBuilder from '@axe-core/playwright'
+import { gotoArticleOrSkip } from './helpers'
 
 /**
  * Reading Progress Bar E2E Tests
@@ -12,24 +13,6 @@ import AxeBuilder from '@axe-core/playwright'
  *
  * Requires seeded data (run: pnpm seed --clean)
  */
-
-// Seed data constants (must match scripts/seed.ts)
-const ARTICLE_SLUG = 'nextjs-cloudflare-workers'
-
-/**
- * Helper: navigate to article and skip test if not seeded.
- */
-async function gotoArticleOrSkip(page: Page, locale: 'fr' | 'en' = 'fr'): Promise<void> {
-  await page.goto(`/${locale}/articles/${ARTICLE_SLUG}`)
-
-  // Skip if article not found - check for <article> element
-  const articleElement = page.locator('article')
-  const articleExists = (await articleElement.count()) > 0
-
-  if (!articleExists) {
-    test.skip(true, 'Database not seeded - run: pnpm seed --clean')
-  }
-}
 
 test.describe('Reading Progress Bar', () => {
   test.beforeEach(async ({ page }) => {
