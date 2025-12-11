@@ -13,10 +13,14 @@
  * - ArticleHeader: Article page header with metadata (category, title, complexity, reading time, date)
  * - ArticleFooter: Article page footer with tags section
  * - ReadingProgressBar: Sticky progress bar showing reading progress through an article
+ * - TOCLink: Individual Table of Contents link with active state
+ * - TableOfContents: Desktop sticky sidebar TOC component
+ * - MobileTOC: Mobile TOC with Sheet modal
  *
  * Shared types:
  * - ArticleData, CategoryData, TagData, CoverImageData, Complexity: Shared interfaces for article components
  * - ReadingProgressBarProps: Props for the ReadingProgressBar component
+ * - TOCLinkProps, TableOfContentsProps, MobileTOCProps: Props for TOC components
  */
 
 // Types
@@ -44,3 +48,8 @@ export { EmptyState } from '../EmptyState'
 
 // Reading Progress
 export { ReadingProgressBar, type ReadingProgressBarProps } from './ReadingProgressBar'
+
+// Table of Contents
+export { TOCLink, type TOCLinkProps } from './TOCLink'
+export { TableOfContents, type TableOfContentsProps } from './TableOfContents'
+export { MobileTOC, type MobileTOCProps } from './MobileTOC'
