@@ -335,7 +335,7 @@ describe('useReadingProgress', () => {
 
     it('cancels pending requestAnimationFrame on unmount', () => {
       const rafId = 12345
-      vi.spyOn(window, 'requestAnimationFrame').mockImplementation(() => rafId)
+      rafSpy.mockImplementation(() => rafId)
       const cancelSpy = vi.spyOn(window, 'cancelAnimationFrame')
 
       const { unmount } = renderHook(() => useReadingProgress())
