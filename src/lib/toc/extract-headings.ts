@@ -31,10 +31,10 @@ function extractText(children: LexicalNode[]): string {
 }
 
 /**
- * Check if heading level is supported for TOC (h2 or h3)
+ * Check if heading level is supported for TOC (h1, h2, or h3)
  */
-function isTOCHeadingLevel(tag: HeadingNode['tag']): tag is 'h2' | 'h3' {
-  return tag === 'h2' || tag === 'h3'
+function isTOCHeadingLevel(tag: HeadingNode['tag']): tag is 'h1' | 'h2' | 'h3' {
+  return tag === 'h1' || tag === 'h2' || tag === 'h3'
 }
 
 /**
@@ -58,7 +58,7 @@ function headingNodeToTOCHeading(node: HeadingNode): TOCHeading | null {
   return {
     id,
     text: text.trim(),
-    level: node.tag === 'h2' ? 2 : 3,
+    level: node.tag === 'h1' ? 1 : node.tag === 'h2' ? 2 : 3,
   }
 }
 
@@ -88,7 +88,7 @@ function extractFromNodes(nodes: LexicalNode[]): TOCHeading[] {
 /**
  * Extract TOC headings from Lexical content
  *
- * Parses Lexical JSON structure and extracts h2/h3 headings
+ * Parses Lexical JSON structure and extracts h1/h2/h3 headings
  * with their IDs and text content for Table of Contents display.
  *
  * @param content - Lexical JSON content from Payload CMS
@@ -96,7 +96,7 @@ function extractFromNodes(nodes: LexicalNode[]): TOCHeading[] {
  *
  * @example
  * const headings = extractTOCHeadings(article.content)
- * // Returns: [{ id: 'introduction', text: 'Introduction', level: 2 }, ...]
+ * // Returns: [{ id: 'introduction', text: 'Introduction', level: 1 }, ...]
  */
 export function extractTOCHeadings(content: TOCExtractionInput): TOCData {
   if (!content?.root?.children) {

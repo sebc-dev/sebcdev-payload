@@ -32,7 +32,7 @@ export interface ArticleLayoutProps {
  * - Reading progress bar at the top
  * - Table of Contents sidebar (desktop, lg+ breakpoint)
  * - Mobile TOC floating button (mobile, <lg breakpoint)
- * - 3-column grid layout on desktop (spacer | article | TOC)
+ * - Centered flex layout on desktop (article + TOC side-by-side)
  * - Single column layout on mobile
  *
  * @example
@@ -69,21 +69,18 @@ export function ArticleLayout({
       <div
         className={cn(
           'container mx-auto px-4 py-8',
-          'lg:grid lg:grid-cols-[1fr_minmax(0,65ch)_300px] lg:gap-8',
+          'lg:flex lg:justify-center lg:gap-8',
           className,
         )}
       >
-        {/* Left Spacer (Desktop only) */}
-        <div className="hidden lg:block" aria-hidden="true" />
-
         {/* Article Content */}
-        <article ref={articleRef} className="min-w-0">
+        <article ref={articleRef} className="min-w-0 max-w-prose lg:flex-1 lg:max-w-[65ch]">
           {children}
         </article>
 
         {/* Desktop TOC Sidebar */}
         {hasTOC && (
-          <aside className="hidden lg:block">
+          <aside className="hidden lg:block lg:w-[280px] lg:flex-shrink-0">
             <div className="sticky top-24">
               <TableOfContents headings={headings} title={tocTitle} />
             </div>
