@@ -194,6 +194,63 @@ describe('useReadingProgress', () => {
 
       expect(result.current).toBe(50)
     })
+
+    it('returns 100 for short article fully visible in viewport', () => {
+      // Article height=400, viewport=800, article at Y=100
+      // Article fits entirely in viewport
+      scrollY = 0
+      innerHeight = 800
+
+      const mockElement = {
+        getBoundingClientRect: () => ({
+          top: 100,
+          bottom: 500,
+          height: 400,
+          left: 0,
+          right: 0,
+          width: 0,
+          x: 0,
+          y: 100,
+          toJSON: () => ({}),
+        }),
+        offsetHeight: 400,
+      } as HTMLElement
+
+      const mockRef = { current: mockElement }
+
+      const { result } = renderHook(() => useReadingProgress(mockRef))
+
+      // Short article fully visible = 100% read
+      expect(result.current).toBe(100)
+    })
+
+    it('returns 0 for short article not yet in viewport', () => {
+      // Article height=400, viewport=800, article below viewport
+      scrollY = 0
+      innerHeight = 800
+
+      const mockElement = {
+        getBoundingClientRect: () => ({
+          top: 1000, // Below viewport
+          bottom: 1400,
+          height: 400,
+          left: 0,
+          right: 0,
+          width: 0,
+          x: 0,
+          y: 1000,
+          toJSON: () => ({}),
+        }),
+        offsetHeight: 400,
+      } as HTMLElement
+
+      const mockRef = { current: mockElement }
+
+      const { result } = renderHook(() => useReadingProgress(mockRef))
+
+      // Short article not visible = 0%
+      expect(result.current).toBe(0)
+    })
   })
 
   describe('scroll event handling', () => {
