@@ -203,10 +203,11 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
   // Map to SEO data for JSON-LD
   const seoData = mapPayloadToSEOData(payloadArticle, locale)
 
-  // Extract TOC headings from content (server-side)
-  const headings = isLexicalContent(payloadArticle.content)
-    ? extractTOCHeadings(payloadArticle.content)
-    : []
+  // Déterminer une seule fois si le contenu est de type Lexical
+  const isLexical = isLexicalContent(payloadArticle.content)
+
+  // Extraire les titres du TOC côté serveur uniquement pour le contenu Lexical
+  const headings = isLexical ? extractTOCHeadings(payloadArticle.content) : []
 
   return (
     <>
@@ -229,7 +230,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
 
         {/* Content - Rendered via RichText serializer */}
         <div className="py-8">
-          {isLexicalContent(payloadArticle.content) ? (
+          {isLexical ? (
             <RichText content={payloadArticle.content} />
           ) : (
             <p className="text-muted-foreground italic">{t('contentUnavailable')}</p>
