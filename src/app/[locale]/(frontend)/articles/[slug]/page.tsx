@@ -12,12 +12,13 @@ import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { setRequestLocale, getTranslations } from 'next-intl/server'
 import { getArticleBySlug } from '@/lib/payload/articles'
-import { ArticleHeader, ArticleFooter, ArticleHero } from '@/components/articles'
+import { ArticleHeader, ArticleFooter, ArticleHero, ArticleLayout } from '@/components/articles'
 import type { ArticleData, CoverImage } from '@/components/articles/types'
 import type { Article as PayloadArticle, Category, Tag, Media } from '@/payload-types'
 import type { LucideCategoryIcon } from '@/lib/lucide-icons'
 import type { Locale } from '@/i18n/config'
 import { RichText, isLexicalContent } from '@/components/richtext'
+import { extractTOCHeadings } from '@/lib/toc'
 import {
   generateArticleMetadata,
   generate404Metadata,
@@ -202,12 +203,22 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
   // Map to SEO data for JSON-LD
   const seoData = mapPayloadToSEOData(payloadArticle, locale)
 
+  // Extract TOC headings from content (server-side)
+  const headings = isLexicalContent(payloadArticle.content)
+    ? extractTOCHeadings(payloadArticle.content)
+    : []
+
   return (
     <>
       {/* JSON-LD Structured Data */}
       <ArticleJsonLdScript article={seoData} />
 
-      <article className="container mx-auto px-4 py-8 max-w-prose">
+      <ArticleLayout
+        headings={headings}
+        tocTitle={t('toc.title')}
+        tocOpenLabel={t('toc.openButton')}
+        progressLabel={t('toc.progressLabel')}
+      >
         {/* Hero: Featured Image */}
         {article.heroCoverImage && (
           <ArticleHero image={article.heroCoverImage} title={article.title} />
@@ -227,7 +238,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
 
         {/* Footer: Tags */}
         <ArticleFooter tags={article.tags} locale={locale} />
-      </article>
+      </ArticleLayout>
     </>
   )
 }
