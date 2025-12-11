@@ -203,14 +203,14 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
   // Map to SEO data for JSON-LD
   const seoData = mapPayloadToSEOData(payloadArticle, locale)
 
-  // Déterminer une seule fois si le contenu est de type Lexical
-  const isLexical = isLexicalContent(payloadArticle.content)
+  // Extract and narrow content type once for type safety
+  const lexicalContent = isLexicalContent(payloadArticle.content) ? payloadArticle.content : null
 
-  // Extraire les titres du TOC côté serveur uniquement pour le contenu Lexical
+  // Extract TOC headings with defensive error handling
   let headings: TOCData = []
-  if (isLexical) {
+  if (lexicalContent) {
     try {
-      headings = extractTOCHeadings(payloadArticle.content as LexicalContent)
+      headings = extractTOCHeadings(lexicalContent)
     } catch (error) {
       // Log TOC extraction error but don't crash the page
       const normalizedError = error instanceof Error ? error : new Error(String(error))
@@ -244,8 +244,8 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
 
         {/* Content - Rendered via RichText serializer */}
         <div className="py-8">
-          {isLexical ? (
-            <RichText content={payloadArticle.content as LexicalContent} />
+          {lexicalContent ? (
+            <RichText content={lexicalContent} />
           ) : (
             <p className="text-muted-foreground italic">{t('contentUnavailable')}</p>
           )}
