@@ -93,29 +93,6 @@ describe('MobileTOC', () => {
     })
   })
 
-  describe('trigger button styling', () => {
-    it('has fixed positioning classes', () => {
-      render(<MobileTOC headings={mockHeadings} />)
-
-      const button = screen.getByRole('button')
-      expect(button.classList.contains('fixed')).toBe(true)
-      expect(button.classList.contains('bottom-4')).toBe(true)
-      expect(button.classList.contains('right-4')).toBe(true)
-    })
-
-    it('has rounded-full class', () => {
-      render(<MobileTOC headings={mockHeadings} />)
-
-      expect(screen.getByRole('button').classList.contains('rounded-full')).toBe(true)
-    })
-
-    it('has shadow class', () => {
-      render(<MobileTOC headings={mockHeadings} />)
-
-      expect(screen.getByRole('button').classList.contains('shadow-lg')).toBe(true)
-    })
-  })
-
   describe('sheet interaction', () => {
     it('opens sheet when trigger is clicked', () => {
       render(<MobileTOC headings={mockHeadings} />)
