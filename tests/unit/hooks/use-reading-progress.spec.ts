@@ -320,13 +320,14 @@ describe('useReadingProgress', () => {
       expect(result.current).toBe(60)
     })
 
-    it('cleans up scroll listener on unmount', () => {
+    it('cleans up scroll and resize listeners on unmount', () => {
       const removeEventListenerSpy = vi.spyOn(window, 'removeEventListener')
 
       const { unmount } = renderHook(() => useReadingProgress())
       unmount()
 
       expect(removeEventListenerSpy).toHaveBeenCalledWith('scroll', expect.any(Function))
+      expect(removeEventListenerSpy).toHaveBeenCalledWith('resize', expect.any(Function))
     })
 
     it('cancels pending requestAnimationFrame on unmount', () => {
