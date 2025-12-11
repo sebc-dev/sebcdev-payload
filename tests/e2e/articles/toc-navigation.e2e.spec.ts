@@ -47,7 +47,7 @@ test.describe('Table of Contents Navigation', () => {
 
       // Verify target heading is in viewport
       // The ID is generated from the heading text via slugify
-      const targetHeading = page.locator(`h2, h3`).filter({ hasText: linkText || '' })
+      const targetHeading = page.locator(`h1, h2, h3`).filter({ hasText: linkText || '' })
       await expect(targetHeading.first()).toBeInViewport()
     })
 
@@ -61,7 +61,7 @@ test.describe('Table of Contents Navigation', () => {
       const linkText = await secondLink.textContent()
 
       // Scroll the corresponding heading into view
-      const heading = page.locator('h2, h3').filter({ hasText: linkText || '' })
+      const heading = page.locator('h1, h2, h3').filter({ hasText: linkText || '' })
       await heading.first().scrollIntoViewIfNeeded()
       await page.waitForTimeout(400) // Wait for intersection observer
 
@@ -142,7 +142,7 @@ test.describe('Table of Contents Navigation', () => {
 
       // Verify scroll occurred
       const linkText = await firstLink.textContent()
-      const heading = page.locator('h2, h3').filter({ hasText: linkText || '' })
+      const heading = page.locator('h1, h2, h3').filter({ hasText: linkText || '' })
       await expect(heading.first()).toBeInViewport()
     })
   })
