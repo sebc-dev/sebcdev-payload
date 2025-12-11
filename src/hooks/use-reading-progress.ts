@@ -40,7 +40,7 @@ export function useReadingProgress(articleRef?: RefObject<HTMLElement | null>): 
         const windowHeight = window.innerHeight
         const scrollY = window.scrollY
 
-        // Start progress when article top enters viewport
+        // Start progress when article top reaches viewport top
         const start = elementTop
         // End progress when article bottom reaches viewport bottom
         const end = elementTop + elementHeight - windowHeight
