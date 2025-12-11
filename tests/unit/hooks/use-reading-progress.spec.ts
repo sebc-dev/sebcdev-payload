@@ -7,11 +7,21 @@ describe('useReadingProgress', () => {
   let innerHeight = 800
   let scrollHeight = 2000
 
+  // Store original property descriptors for cleanup
+  let originalScrollY: PropertyDescriptor | undefined
+  let originalInnerHeight: PropertyDescriptor | undefined
+  let originalScrollHeight: PropertyDescriptor | undefined
+
   beforeEach(() => {
     // Reset values
     scrollY = 0
     innerHeight = 800
     scrollHeight = 2000
+
+    // Capture original descriptors before mocking
+    originalScrollY = Object.getOwnPropertyDescriptor(window, 'scrollY')
+    originalInnerHeight = Object.getOwnPropertyDescriptor(window, 'innerHeight')
+    originalScrollHeight = Object.getOwnPropertyDescriptor(document.documentElement, 'scrollHeight')
 
     // Mock window.scrollY as a getter
     Object.defineProperty(window, 'scrollY', {
@@ -41,6 +51,25 @@ describe('useReadingProgress', () => {
   })
 
   afterEach(() => {
+    // Restore original property descriptors
+    if (originalScrollY) {
+      Object.defineProperty(window, 'scrollY', originalScrollY)
+    } else {
+      delete (window as Record<string, unknown>).scrollY
+    }
+
+    if (originalInnerHeight) {
+      Object.defineProperty(window, 'innerHeight', originalInnerHeight)
+    } else {
+      delete (window as Record<string, unknown>).innerHeight
+    }
+
+    if (originalScrollHeight) {
+      Object.defineProperty(document.documentElement, 'scrollHeight', originalScrollHeight)
+    } else {
+      delete (document.documentElement as Record<string, unknown>).scrollHeight
+    }
+
     vi.restoreAllMocks()
   })
 
