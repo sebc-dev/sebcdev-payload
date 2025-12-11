@@ -129,6 +129,11 @@
       "title": "Article non trouvé",
       "description": "L'article que vous recherchez n'existe pas ou a été supprimé.",
       "backToHome": "Retour à l'accueil"
+    },
+    "toc": {
+      "title": "Table des matières",
+      "openButton": "Ouvrir la table des matières",
+      "progressLabel": "Progression de lecture"
     }
   }
 }

@@ -129,6 +129,11 @@
       "title": "Article not found",
       "description": "The article you're looking for doesn't exist or has been removed.",
       "backToHome": "Back to home"
+    },
+    "toc": {
+      "title": "Table of Contents",
+      "openButton": "Open table of contents",
+      "progressLabel": "Reading progress"
     }
   }
 }
