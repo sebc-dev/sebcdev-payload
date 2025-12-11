@@ -277,6 +277,49 @@ describe('useReadingProgress', () => {
 
       expect(removeEventListenerSpy).toHaveBeenCalledWith('scroll', expect.any(Function))
     })
+
+    it('throttles multiple scroll events via requestAnimationFrame', () => {
+      // Capture RAF callbacks instead of executing immediately
+      let rafCallback: FrameRequestCallback | null = null
+      let rafCallCount = 0
+
+      vi.spyOn(window, 'requestAnimationFrame').mockImplementation((cb) => {
+        rafCallback = cb
+        rafCallCount++
+        return rafCallCount
+      })
+
+      scrollY = 0
+      const { result } = renderHook(() => useReadingProgress())
+
+      // Initial render calls RAF once
+      const initialRafCount = rafCallCount
+
+      // Dispatch multiple scroll events synchronously
+      scrollY = 300
+      act(() => {
+        window.dispatchEvent(new Event('scroll'))
+        window.dispatchEvent(new Event('scroll'))
+        window.dispatchEvent(new Event('scroll'))
+      })
+
+      // RAF should only be scheduled once more (throttling works)
+      expect(rafCallCount).toBe(initialRafCount + 1)
+
+      // Progress hasn't updated yet (RAF pending)
+      expect(result.current).toBe(0)
+
+      // Flush the RAF callback
+      scrollY = 600
+      act(() => {
+        if (rafCallback) {
+          rafCallback(0)
+        }
+      })
+
+      // Now progress should update
+      expect(result.current).toBe(50)
+    })
   })
 
   describe('edge cases', () => {
