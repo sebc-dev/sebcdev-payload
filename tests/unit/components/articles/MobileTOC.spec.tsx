@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
-import { render, screen, fireEvent } from '@testing-library/react'
+import { render, screen, fireEvent, waitFor } from '@testing-library/react'
 import type { TOCHeading } from '@/lib/toc/types'
 
 // Mock the hooks - must be before component import
@@ -127,7 +127,7 @@ describe('MobileTOC', () => {
       expect(screen.getByText('Conclusion')).toBeDefined()
     })
 
-    it('closes sheet when link is clicked', () => {
+    it('closes sheet when link is clicked', async () => {
       render(<MobileTOC headings={mockHeadings} />)
 
       // Open the sheet
@@ -137,9 +137,10 @@ describe('MobileTOC', () => {
       // Click a link
       fireEvent.click(screen.getByText('Introduction'))
 
-      // Sheet should close - dialog should no longer be visible
-      // Note: Due to animation, we check if dialog is no longer in document
-      // The Radix dialog may still be in DOM but with closed state
+      // Sheet should close - wait for dialog to be removed
+      await waitFor(() => {
+        expect(screen.queryByRole('dialog')).toBeNull()
+      })
     })
   })
 
