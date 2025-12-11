@@ -109,8 +109,15 @@ test.describe('Reading Progress Bar', () => {
         return window.getComputedStyle(el).transitionDuration
       })
 
-      // With reduced motion, transition should be 0s or none
-      expect(['0s', '0ms', 'none', '']).toContain(transitionDuration)
+      // Parse and verify all transitions are zero-duration
+      // Handles multiple transitions (e.g., "0s, 0s") and normalizes values
+      const durations = transitionDuration
+        .split(',')
+        .map((d) => d.trim())
+        .map((d) => (d === 'none' || d === '' ? '0s' : d))
+
+      const allZero = durations.every((d) => d === '0s' || d === '0ms')
+      expect(allZero).toBe(true)
     })
   })
 })
