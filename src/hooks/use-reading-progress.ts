@@ -67,7 +67,7 @@ export function useReadingProgress(articleRef?: RefObject<HTMLElement | null>): 
       ticking = false
     }
 
-    const handleScroll = () => {
+    const requestUpdate = () => {
       if (!ticking) {
         rafId = requestAnimationFrame(updateProgress)
         ticking = true
@@ -77,10 +77,12 @@ export function useReadingProgress(articleRef?: RefObject<HTMLElement | null>): 
     // Initial calculation
     updateProgress()
 
-    window.addEventListener('scroll', handleScroll, { passive: true })
+    window.addEventListener('scroll', requestUpdate, { passive: true })
+    window.addEventListener('resize', requestUpdate, { passive: true })
 
     return () => {
-      window.removeEventListener('scroll', handleScroll)
+      window.removeEventListener('scroll', requestUpdate)
+      window.removeEventListener('resize', requestUpdate)
       if (rafId !== null) {
         cancelAnimationFrame(rafId)
       }
