@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
+import { describe, it, expect, vi, beforeAll, afterAll, beforeEach, afterEach } from 'vitest'
 import { render, screen, fireEvent } from '@testing-library/react'
 import { TOCLink } from '@/components/articles/TOCLink'
 
@@ -9,6 +9,25 @@ describe('TOCLink', () => {
     level: 2 as const,
     isActive: false,
   }
+
+  // Store original global values
+  let originalScrollIntoView: typeof Element.prototype.scrollIntoView
+  let originalMatchMedia: typeof window.matchMedia
+
+  beforeAll(() => {
+    // Capture originals before any test runs
+    originalScrollIntoView = Element.prototype.scrollIntoView
+    originalMatchMedia = window.matchMedia
+  })
+
+  afterAll(() => {
+    // Restore originals after all tests complete
+    Element.prototype.scrollIntoView = originalScrollIntoView
+    Object.defineProperty(window, 'matchMedia', {
+      writable: true,
+      value: originalMatchMedia,
+    })
+  })
 
   beforeEach(() => {
     // Mock scrollIntoView
@@ -39,7 +58,9 @@ describe('TOCLink', () => {
   })
 
   afterEach(() => {
+    // Restore Vitest spies
     vi.restoreAllMocks()
+    // Clean up DOM
     document.body.innerHTML = ''
   })
 
