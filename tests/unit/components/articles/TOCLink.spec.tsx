@@ -171,26 +171,6 @@ describe('TOCLink', () => {
     })
   })
 
-  describe('keyboard navigation', () => {
-    it('activates on Enter key', () => {
-      render(<TOCLink {...defaultProps} />)
-
-      const link = screen.getByRole('link')
-      fireEvent.keyDown(link, { key: 'Enter' })
-
-      expect(Element.prototype.scrollIntoView).toHaveBeenCalled()
-    })
-
-    it('activates on Space key', () => {
-      render(<TOCLink {...defaultProps} />)
-
-      const link = screen.getByRole('link')
-      fireEvent.keyDown(link, { key: ' ' })
-
-      expect(Element.prototype.scrollIntoView).toHaveBeenCalled()
-    })
-  })
-
   describe('accessibility', () => {
     it('has focus-visible styles', () => {
       render(<TOCLink {...defaultProps} />)

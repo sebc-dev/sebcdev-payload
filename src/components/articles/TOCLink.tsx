@@ -73,18 +73,10 @@ export function TOCLink({ id, text, level, isActive, onNavigate, className }: TO
     [id, onNavigate],
   )
 
-  const handleKeyDown = useCallback((e: React.KeyboardEvent<HTMLAnchorElement>) => {
-    if (e.key === 'Enter' || e.key === ' ') {
-      e.preventDefault()
-      e.currentTarget.click()
-    }
-  }, [])
-
   return (
     <a
       href={`#${id}`}
       onClick={handleClick}
-      onKeyDown={handleKeyDown}
       aria-current={isActive ? 'location' : undefined}
       className={cn(
         // Base styles
