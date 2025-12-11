@@ -34,7 +34,7 @@ This epic contains **3 stories** as defined in the PRD:
 |-------|-------|-------------|--------|--------|----------|
 | 4.1 | Rendu Article & MDX | Affichage du contenu riche (code syntax-highlighted, images, mise en forme) via React Server Components | 🚧 IN PROGRESS | 5 | 0/5 |
 | 4.2 | Table des Matières (TOC) & Progression | Barre de progression de lecture sticky et Table des Matières cliquable pour navigation | 🚧 IN PROGRESS | 4 | 0/4 |
-| 4.3 | Live Preview | Mode prévisualisation temps réel Payload avec écran scindé pour l'auteur | 📋 NOT STARTED | - | 0/0 |
+| 4.3 | Live Preview | Mode prévisualisation temps réel Payload avec écran scindé pour l'auteur | 🚧 IN PROGRESS | 3 | 0/3 |
 
 **Columns Explained**:
 
@@ -88,10 +88,10 @@ cat docs/specs/epics/epic_4/EPIC_TRACKING.md
 
 ### Progress Summary
 
-- **Stories Started**: 2 / 3
+- **Stories Started**: 3 / 3
 - **Stories Completed**: 0 / 3
-- **Total Phases**: 9 (Story 4.1: 5, Story 4.2: 4)
-- **Phases Completed**: 0 / 9
+- **Total Phases**: 12 (Story 4.1: 5, Story 4.2: 4, Story 4.3: 3)
+- **Phases Completed**: 0 / 12
 
 **Completion**: 0%
 
@@ -140,6 +140,8 @@ Track epic-level milestones here:
 
 | Date | Update |
 |------|--------|
+| 2025-12-11 | Story 4.3 Phase 1 documentation generated (7 files) |
+| 2025-12-11 | Story 4.3 planifiée en 3 phases (Live Preview) |
 | 2025-12-10 | Story 4.2 planifiée en 4 phases (TOC & Progression) |
 | 2025-12-09 | Phase 2 documentation generated (7 files) |
 | 2025-12-09 | Phase 1 documentation generated (7 files) |
@@ -190,13 +192,14 @@ Track epic-level milestones here:
 
 - [x] First story planned (/plan-story)
 - [x] Second story planned (Story 4.2)
+- [x] Third story planned (Story 4.3)
 - [ ] First phase completed
 - [ ] First story validated
 - [ ] Metrics updated
 
 ### Epic Completion
 
-- [ ] All stories planned (2/3 done)
+- [x] All stories planned (3/3 done)
 - [ ] All stories in progress
 - [ ] All stories completed
 - [ ] Final review done
@@ -205,5 +208,5 @@ Track epic-level milestones here:
 ---
 
 **Epic Initialized**: 2025-12-09
-**Last Updated**: 2025-12-10
+**Last Updated**: 2025-12-11
 **Created by**: Claude Code (epic-initializer skill)
