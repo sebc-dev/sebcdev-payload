@@ -15,8 +15,8 @@ export interface TOCHeading {
   id: string
   /** Plain text content of the heading */
   text: string
-  /** Heading level - only h2 and h3 are supported for TOC */
-  level: 2 | 3
+  /** Heading level - h1, h2, and h3 are supported for TOC */
+  level: 1 | 2 | 3
 }
 
 /**

@@ -13,9 +13,9 @@ export interface TOCLinkProps {
    */
   text: string
   /**
-   * Heading level (2 or 3) for indentation
+   * Heading level (1, 2, or 3) for indentation
    */
-  level: 2 | 3
+  level: 1 | 2 | 3
   /**
    * Whether this link is currently active
    */
@@ -44,7 +44,7 @@ export interface TOCLinkProps {
  * <TOCLink
  *   id="introduction"
  *   text="Introduction"
- *   level={2}
+ *   level={1}
  *   isActive={activeId === 'introduction'}
  * />
  */
@@ -81,11 +81,11 @@ export function TOCLink({ id, text, level, isActive, onNavigate, className }: TO
       className={cn(
         // Base styles
         'block py-1.5 text-sm transition-colors duration-150',
-        // Indentation based on level
-        level === 2 ? 'pl-0' : 'pl-4',
-        // Active state
+        // Indentation based on level (with extra 2px for border on all levels)
+        level === 1 ? 'pl-4' : level === 2 ? 'pl-8' : 'pl-12',
+        // Active state (border replaces the 2px padding, maintaining alignment)
         isActive
-          ? 'text-primary font-medium border-l-2 border-primary -ml-px pl-3'
+          ? 'text-primary font-medium border-l-2 border-primary'
           : 'text-muted-foreground hover:text-foreground',
         // Focus styles
         'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2',
