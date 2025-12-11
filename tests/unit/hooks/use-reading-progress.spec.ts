@@ -14,6 +14,7 @@ describe('useReadingProgress', () => {
 
   // Spies for RAF - declared at describe level for reuse
   let rafSpy: ReturnType<typeof vi.spyOn<typeof window, 'requestAnimationFrame'>>
+  let cancelSpy: ReturnType<typeof vi.spyOn<typeof window, 'cancelAnimationFrame'>>
 
   beforeEach(() => {
     // Reset values
@@ -50,7 +51,7 @@ describe('useReadingProgress', () => {
       return 0
     })
 
-    vi.spyOn(window, 'cancelAnimationFrame').mockImplementation(() => {})
+    cancelSpy = vi.spyOn(window, 'cancelAnimationFrame').mockImplementation(() => {})
   })
 
   afterEach(() => {
@@ -336,7 +337,6 @@ describe('useReadingProgress', () => {
     it('cancels pending requestAnimationFrame on unmount', () => {
       const rafId = 12345
       rafSpy.mockImplementation(() => rafId)
-      const cancelSpy = vi.spyOn(window, 'cancelAnimationFrame')
 
       const { unmount } = renderHook(() => useReadingProgress())
 
