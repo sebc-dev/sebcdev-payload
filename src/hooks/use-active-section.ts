@@ -100,7 +100,7 @@ export function useActiveSection({
     })
 
     // Set initial active section (first one if at top)
-    if (window.scrollY < 100 && sectionIds.length > 0) {
+    if (window.scrollY < topOffset && sectionIds.length > 0) {
       setActiveId(sectionIds[0])
     }
 

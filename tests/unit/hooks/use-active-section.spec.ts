@@ -91,22 +91,24 @@ describe('useActiveSection', () => {
       const { result } = renderHook(() =>
         useActiveSection({
           sectionIds: ['intro', 'main'],
+          topOffset: 100,
         }),
       )
 
       expect(result.current).toBe('intro')
     })
 
-    it('does not set initial active when scrolled past threshold', () => {
+    it('does not set initial active when scrolled past topOffset threshold', () => {
       vi.spyOn(window, 'scrollY', 'get').mockReturnValue(150)
 
       const { result } = renderHook(() =>
         useActiveSection({
           sectionIds: ['intro', 'main'],
+          topOffset: 100,
         }),
       )
 
-      // No initial active section set when scrolled past 100px
+      // No initial active section set when scrolled past topOffset
       expect(result.current).toBeNull()
     })
   })
