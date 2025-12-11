@@ -17,7 +17,7 @@ import type { ArticleData, CoverImage } from '@/components/articles/types'
 import type { Article as PayloadArticle, Category, Tag, Media } from '@/payload-types'
 import type { LucideCategoryIcon } from '@/lib/lucide-icons'
 import type { Locale } from '@/i18n/config'
-import { RichText, isLexicalContent } from '@/components/richtext'
+import { RichText, isLexicalContent, type LexicalContent } from '@/components/richtext'
 import { extractTOCHeadings } from '@/lib/toc'
 import {
   generateArticleMetadata,
@@ -207,7 +207,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
   const isLexical = isLexicalContent(payloadArticle.content)
 
   // Extraire les titres du TOC côté serveur uniquement pour le contenu Lexical
-  const headings = isLexical ? extractTOCHeadings(payloadArticle.content) : []
+  const headings = isLexical ? extractTOCHeadings(payloadArticle.content as LexicalContent) : []
 
   return (
     <>
@@ -231,7 +231,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
         {/* Content - Rendered via RichText serializer */}
         <div className="py-8">
           {isLexical ? (
-            <RichText content={payloadArticle.content} />
+            <RichText content={payloadArticle.content as LexicalContent} />
           ) : (
             <p className="text-muted-foreground italic">{t('contentUnavailable')}</p>
           )}
