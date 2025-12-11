@@ -362,8 +362,9 @@ describe('useReadingProgress', () => {
       scrollY = 0
       const { result } = renderHook(() => useReadingProgress())
 
-      // Initial render calls RAF once
+      // Initial render calls updateProgress() directly, not via RAF
       const initialRafCount = rafCallCount
+      expect(initialRafCount).toBe(0)
 
       // Dispatch multiple scroll events synchronously
       scrollY = 300
