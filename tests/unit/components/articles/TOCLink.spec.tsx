@@ -115,23 +115,29 @@ describe('TOCLink', () => {
   })
 
   describe('indentation', () => {
-    it('has no left padding for level 2', () => {
-      render(<TOCLink {...defaultProps} level={2} />)
-
-      expect(screen.getByRole('link').classList.contains('pl-0')).toBe(true)
-    })
-
-    it('has left padding for level 3', () => {
-      render(<TOCLink {...defaultProps} level={3} />)
+    it('has minimal left padding for level 1', () => {
+      render(<TOCLink {...defaultProps} level={1} />)
 
       expect(screen.getByRole('link').classList.contains('pl-4')).toBe(true)
     })
 
-    it('has active-state padding for active level 3', () => {
-      render(<TOCLink {...defaultProps} level={3} isActive={true} />)
+    it('has medium left padding for level 2', () => {
+      render(<TOCLink {...defaultProps} level={2} />)
+
+      expect(screen.getByRole('link').classList.contains('pl-8')).toBe(true)
+    })
+
+    it('has large left padding for level 3', () => {
+      render(<TOCLink {...defaultProps} level={3} />)
+
+      expect(screen.getByRole('link').classList.contains('pl-12')).toBe(true)
+    })
+
+    it('maintains padding when active with border', () => {
+      render(<TOCLink {...defaultProps} level={2} isActive={true} />)
 
       const link = screen.getByRole('link')
-      expect(link.classList.contains('pl-3')).toBe(true)
+      expect(link.classList.contains('pl-8')).toBe(true)
       expect(link.classList.contains('border-l-2')).toBe(true)
     })
   })

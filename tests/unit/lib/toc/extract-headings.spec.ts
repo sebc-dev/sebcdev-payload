@@ -114,7 +114,7 @@ describe('extractTOCHeadings', () => {
   })
 
   describe('filtering', () => {
-    it('should ignore h1 headings', () => {
+    it('should include h1 headings', () => {
       const content = createLexicalContent([
         createHeading('h1', 'Title'),
         createHeading('h2', 'Introduction'),
@@ -122,8 +122,11 @@ describe('extractTOCHeadings', () => {
 
       const result = extractTOCHeadings(content)
 
-      expect(result).toHaveLength(1)
-      expect(result[0]?.text).toBe('Introduction')
+      expect(result).toHaveLength(2)
+      expect(result[0]?.text).toBe('Title')
+      expect(result[0]?.level).toBe(1)
+      expect(result[1]?.text).toBe('Introduction')
+      expect(result[1]?.level).toBe(2)
     })
 
     it('should ignore h4, h5, h6 headings', () => {
