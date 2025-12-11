@@ -83,7 +83,7 @@ test.describe('Table of Contents Navigation', () => {
       await page.waitForTimeout(400) // Wait for intersection observer
 
       // Check aria-current
-      await expect(secondLink).toHaveAttribute('aria-current', 'true')
+      await expect(secondLink).toHaveAttribute('aria-current', 'location')
     })
   })
 
