@@ -126,6 +126,14 @@ describe('TOCLink', () => {
 
       expect(screen.getByRole('link').classList.contains('pl-4')).toBe(true)
     })
+
+    it('has active-state padding for active level 3', () => {
+      render(<TOCLink {...defaultProps} level={3} isActive={true} />)
+
+      const link = screen.getByRole('link')
+      expect(link.classList.contains('pl-3')).toBe(true)
+      expect(link.classList.contains('border-l-2')).toBe(true)
+    })
   })
 
   describe('navigation', () => {
