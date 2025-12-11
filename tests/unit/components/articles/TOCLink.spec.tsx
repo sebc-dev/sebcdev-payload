@@ -181,14 +181,18 @@ describe('TOCLink', () => {
     })
 
     it('does not scroll when target element not found', () => {
+      const onNavigate = vi.fn()
+
       // Remove the target element
       document.body.innerHTML = ''
 
-      render(<TOCLink {...defaultProps} />)
+      render(<TOCLink {...defaultProps} onNavigate={onNavigate} />)
 
       fireEvent.click(screen.getByRole('link'))
 
       expect(Element.prototype.scrollIntoView).not.toHaveBeenCalled()
+      expect(window.history.pushState).not.toHaveBeenCalled()
+      expect(onNavigate).not.toHaveBeenCalled()
     })
   })
 
