@@ -18,7 +18,7 @@ import type { Article as PayloadArticle, Category, Tag, Media } from '@/payload-
 import type { LucideCategoryIcon } from '@/lib/lucide-icons'
 import type { Locale } from '@/i18n/config'
 import { RichText, isLexicalContent, type LexicalContent } from '@/components/richtext'
-import { extractTOCHeadings } from '@/lib/toc'
+import { extractTOCHeadings, type TOCData } from '@/lib/toc'
 import {
   generateArticleMetadata,
   generate404Metadata,
@@ -207,7 +207,21 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
   const isLexical = isLexicalContent(payloadArticle.content)
 
   // Extraire les titres du TOC côté serveur uniquement pour le contenu Lexical
-  const headings = isLexical ? extractTOCHeadings(payloadArticle.content as LexicalContent) : []
+  let headings: TOCData = []
+  if (isLexical) {
+    try {
+      headings = extractTOCHeadings(payloadArticle.content as LexicalContent)
+    } catch (error) {
+      // Log TOC extraction error but don't crash the page
+      const normalizedError = error instanceof Error ? error : new Error(String(error))
+      logger.error('Failed to extract TOC headings', {
+        slug,
+        locale,
+        error: normalizedError,
+      })
+      // headings remains empty array - page renders without TOC
+    }
+  }
 
   return (
     <>
