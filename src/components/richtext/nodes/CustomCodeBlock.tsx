@@ -14,6 +14,17 @@ interface CustomCodeBlockProps {
 }
 
 /**
+ * Human-friendly labels for common programming languages
+ */
+const LANGUAGE_LABELS: Record<string, string> = {
+  javascript: 'JavaScript',
+  typescript: 'TypeScript',
+  tsx: 'TSX',
+  jsx: 'JSX',
+  text: 'Plain Text',
+}
+
+/**
  * CustomCodeBlock Component
  *
  * Async Server Component that renders highlighted code from BlocksFeature blocks.
@@ -34,7 +45,7 @@ export async function CustomCodeBlock({ node }: CustomCodeBlockProps) {
   })
 
   // Language display name
-  const languageLabel = language === 'text' ? 'Plain Text' : language.toUpperCase()
+  const languageLabel = LANGUAGE_LABELS[language] ?? language.toUpperCase()
 
   return (
     <div className="group my-6 overflow-hidden rounded-lg border border-border">
