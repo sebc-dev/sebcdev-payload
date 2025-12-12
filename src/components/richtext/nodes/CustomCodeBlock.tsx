@@ -8,6 +8,7 @@
 import type { BlockNode } from '@/components/richtext/types'
 import { getHighlighter, getFallbackLanguage, CODE_THEME } from '@/components/richtext/shiki-config'
 import { CopyButton } from '@/components/ui/copy-button'
+import { logger } from '@/lib/logger'
 
 interface CustomCodeBlockProps {
   node: BlockNode
@@ -30,6 +31,15 @@ const LANGUAGE_LABELS: Record<string, string> = {
  * Async Server Component that renders highlighted code from BlocksFeature blocks.
  */
 export async function CustomCodeBlock({ node }: CustomCodeBlockProps) {
+  // Guard: ensure this is a code block
+  if (node.fields.blockType !== 'code') {
+    logger.warn('CustomCodeBlock received non-code block', {
+      blockType: node.fields.blockType,
+      blockName: node.fields.blockName,
+    })
+    return null
+  }
+
   const { fields } = node
 
   // Extract code and language from block fields
