@@ -89,6 +89,12 @@ export function CopyButton({ text, copyFromDOM = false, className }: CopyButtonP
       textToCopy = text
     }
 
+    // Guard against empty or whitespace-only content
+    if (!textToCopy.trim()) {
+      showError('No code to copy')
+      return
+    }
+
     try {
       await navigator.clipboard.writeText(textToCopy)
       setError(false) // Reset opposite state
