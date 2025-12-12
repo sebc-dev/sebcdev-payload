@@ -1,7 +1,7 @@
 /**
  * TOC Heading Extraction
  *
- * Extracts h2 and h3 headings from Lexical JSON content
+ * Extracts h1, h2 and h3 headings from Lexical JSON content
  * for Table of Contents generation.
  */
 
@@ -9,6 +9,11 @@ import type { LexicalNode, HeadingNode } from '@/components/richtext/types'
 import { hasChildren, isHeadingNode, isTextNode } from '@/components/richtext/types'
 import { slugify } from './slugify'
 import type { TOCHeading, TOCData, TOCExtractionInput } from './types'
+
+/**
+ * Map heading tags to TOC levels
+ */
+const LEVEL_MAP = { h1: 1, h2: 2, h3: 3 } as const
 
 /**
  * Extract plain text from Lexical node children
@@ -44,8 +49,6 @@ function headingNodeToTOCHeading(node: HeadingNode): TOCHeading | null {
   if (!isTOCHeadingLevel(node.tag)) {
     return null
   }
-
-  const LEVEL_MAP = { h1: 1, h2: 2, h3: 3 } as const
 
   const text = extractText(node.children)
   if (!text.trim()) {
