@@ -7,7 +7,7 @@
 
 import type { BlockNode } from '@/components/richtext/types'
 import { getHighlighter, getFallbackLanguage, CODE_THEME } from '@/components/richtext/shiki-config'
-import { CopyButton } from '@/components/ui/copy-button'
+import { HighlightedCodeBlock } from '@/components/richtext/nodes/HighlightedCodeBlock'
 import { logger } from '@/lib/logger'
 import { escapeHtml } from '@/components/richtext/escapeHtml'
 
@@ -83,28 +83,5 @@ export async function CustomCodeBlock({ node }: CustomCodeBlockProps) {
   // Language display name
   const languageLabel = LANGUAGE_LABELS[language] ?? language.toUpperCase()
 
-  return (
-    <div className="group my-6 overflow-hidden rounded-lg border border-border" data-code-container>
-      {/* Header with language indicator */}
-      <div className="flex items-center justify-between border-b border-border bg-muted/50 px-4 py-2">
-        <span
-          className="font-mono text-xs tracking-wider text-muted-foreground"
-          data-testid="codeblock-language"
-        >
-          {languageLabel}
-        </span>
-        <CopyButton
-          copyFromDOM
-          className="opacity-0 transition-opacity group-hover:opacity-100 group-focus-within:opacity-100 focus-visible:opacity-100"
-        />
-      </div>
-
-      {/* Code content */}
-      {/* biome-ignore lint/security/noDangerouslySetInnerHtml: HTML is either from trusted Shiki highlighter (escapes all user content) or fallback-escaped via escapeHtml() */}
-      <div
-        className="overflow-x-auto text-sm [&_pre]:!m-0 [&_pre]:bg-transparent [&_pre]:p-4 [&_code]:!p-0"
-        dangerouslySetInnerHTML={{ __html: html }}
-      />
-    </div>
-  )
+  return <HighlightedCodeBlock html={html} languageLabel={languageLabel} />
 }
