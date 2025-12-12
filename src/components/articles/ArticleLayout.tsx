@@ -80,7 +80,10 @@ export function ArticleLayout({
 
         {/* Desktop TOC Sidebar */}
         {hasTOC && (
-          <aside className="hidden lg:block lg:w-[280px] lg:flex-shrink-0">
+          <aside
+            aria-label={tocTitle || 'Table of contents'}
+            className="hidden lg:block lg:w-[280px] lg:flex-shrink-0"
+          >
             <div className="sticky top-24">
               <TableOfContents headings={headings} title={tocTitle} />
             </div>
