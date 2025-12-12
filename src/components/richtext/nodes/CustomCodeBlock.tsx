@@ -9,21 +9,10 @@ import type { BlockNode } from '@/components/richtext/types'
 import { getHighlighter, getFallbackLanguage, CODE_THEME } from '@/components/richtext/shiki-config'
 import { CopyButton } from '@/components/ui/copy-button'
 import { logger } from '@/lib/logger'
+import { escapeHtml } from '@/components/richtext/escapeHtml'
 
 interface CustomCodeBlockProps {
   node: BlockNode
-}
-
-/**
- * Escape HTML special characters for safe rendering
- */
-function escapeHtml(unsafe: string): string {
-  return unsafe
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#039;')
 }
 
 /**

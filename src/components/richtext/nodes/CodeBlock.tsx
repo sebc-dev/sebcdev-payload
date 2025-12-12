@@ -9,21 +9,10 @@ import type { CodeNode, LexicalNode, TextNode } from '../types'
 import { getHighlighter, getFallbackLanguage, CODE_THEME } from '../shiki-config'
 import { CopyButton } from '@/components/ui/copy-button'
 import { logger } from '@/lib/logger'
+import { escapeHtml } from '@/components/richtext/escapeHtml'
 
 interface CodeBlockProps {
   node: CodeNode
-}
-
-/**
- * Escape HTML special characters for safe rendering
- */
-function escapeHtml(unsafe: string): string {
-  return unsafe
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#039;')
 }
 
 /**
