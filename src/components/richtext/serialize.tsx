@@ -17,6 +17,7 @@ import type {
   QuoteNode,
   LinkNode,
   CodeNode,
+  BlockNode,
   UploadNode,
 } from './types'
 import { TEXT_FORMAT, hasChildren, isTextNode } from './types'
@@ -26,6 +27,7 @@ import { List, ListItem } from './nodes/List'
 import { Quote } from './nodes/Quote'
 import { Link } from './nodes/Link'
 import { CodeBlock } from './nodes/CodeBlock'
+import { CustomCodeBlock } from './nodes/CustomCodeBlock'
 import { ImageBlock } from './nodes/ImageBlock'
 
 /**
@@ -94,6 +96,19 @@ export function serializeNode(node: LexicalNode, index: number): ReactNode {
 
     case 'code':
       return <CodeBlock key={index} node={node as CodeNode} />
+
+    case 'block': {
+      const blockNode = node as BlockNode
+      // Handle different block types
+      if (blockNode.fields.blockType === 'code') {
+        return <CustomCodeBlock key={index} node={blockNode} />
+      }
+      // Future: add other block types here
+      if (process.env.NODE_ENV !== 'production') {
+        console.warn(`[serializeLexical] Unknown block type: ${blockNode.fields.blockType}`)
+      }
+      return null
+    }
 
     case 'upload':
       return <ImageBlock key={index} node={node as UploadNode} />
