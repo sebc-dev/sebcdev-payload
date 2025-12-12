@@ -586,7 +586,25 @@ export interface PayloadMigrationsSelect<T extends boolean = true> {
  * via the `definition` "CodeBlock".
  */
 export interface CodeBlock {
-  language: 'javascript' | 'typescript' | 'python' | 'html' | 'css' | 'json' | 'bash';
+  language:
+    | 'javascript'
+    | 'typescript'
+    | 'tsx'
+    | 'jsx'
+    | 'python'
+    | 'php'
+    | 'java'
+    | 'c'
+    | 'cpp'
+    | 'html'
+    | 'css'
+    | 'graphql'
+    | 'xml'
+    | 'json'
+    | 'sql'
+    | 'yaml'
+    | 'markdown'
+    | 'bash';
   code: string;
   id?: string | null;
   blockName?: string | null;
