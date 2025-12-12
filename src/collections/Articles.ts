@@ -45,6 +45,22 @@ export const Articles: CollectionConfig = {
     useAsTitle: 'title',
     defaultColumns: ['title', 'status', 'complexity', 'publishedAt'],
     group: 'Content',
+    livePreview: {
+      url: ({ data, locale }) => {
+        const baseUrl = process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:3000'
+        const previewLocale = locale || 'fr'
+        const slug = data?.slug || ''
+
+        if (!slug) return ''
+
+        return `${baseUrl}/${previewLocale}/articles/${slug}`
+      },
+      breakpoints: [
+        { name: 'mobile', width: 375, height: 667, label: 'Mobile' },
+        { name: 'tablet', width: 768, height: 1024, label: 'Tablet' },
+        { name: 'desktop', width: 1440, height: 900, label: 'Desktop' },
+      ],
+    },
   },
   hooks: {
     beforeValidate: [ensurePublishedAt],
