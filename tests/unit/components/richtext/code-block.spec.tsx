@@ -14,8 +14,13 @@ vi.mock('@/components/richtext/shiki-config', () => ({
 
 // Mock CopyButton to avoid client component issues in tests
 vi.mock('@/components/ui/copy-button', () => ({
-  CopyButton: ({ text }: { text: string }) => (
-    <button type="button" data-testid="copy-button" data-text={text}>
+  CopyButton: ({ copyFromDOM, text }: { copyFromDOM?: boolean; text?: string }) => (
+    <button
+      type="button"
+      data-testid="copy-button"
+      data-text={text}
+      data-copy-from-dom={copyFromDOM}
+    >
       Copy
     </button>
   ),
@@ -63,9 +68,11 @@ describe('CodeBlock', () => {
     const { container } = render(await CodeBlock({ node }))
     const copyButton = container.querySelector('[data-testid="copy-button"]')
 
-    // Verify extractText correctly concatenates children with linebreaks
-    expect(copyButton?.getAttribute('data-text')).toBe('line 1\nline 2')
+    // Verify CopyButton uses DOM mode (will copy from the actual code in the DOM)
+    expect(copyButton?.getAttribute('data-copy-from-dom')).toBe('true')
     expect(container.querySelector('pre')).toBeTruthy()
+    // Verify container has the data attribute for copyFromDOM to work
+    expect(container.querySelector('[data-code-container]')).toBeTruthy()
   })
 
   it('includes copy button with code text', async () => {
@@ -80,7 +87,10 @@ describe('CodeBlock', () => {
     const copyButton = container.querySelector('[data-testid="copy-button"]')
 
     expect(copyButton).toBeTruthy()
-    expect(copyButton?.getAttribute('data-text')).toBe('const x = 1')
+    // Verify CopyButton is in DOM mode (no text prop needed)
+    expect(copyButton?.getAttribute('data-copy-from-dom')).toBe('true')
+    // Verify pre/code structure exists (for copyFromDOM to work)
+    expect(container.querySelector('pre code')).toBeTruthy()
   })
 
   it('applies correct container styling', async () => {
