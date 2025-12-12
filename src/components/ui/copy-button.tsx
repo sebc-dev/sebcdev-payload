@@ -14,21 +14,37 @@ import { Button } from './button'
 /** Duration in ms to show feedback (success/error) before resetting */
 const FEEDBACK_DURATION_MS = 2000
 
-interface CopyButtonProps {
-  /** Text to copy (optional if copyFromDOM is true) */
-  text?: string
-  /** If true, copy text from nearest pre > code element in parent */
-  copyFromDOM?: boolean
-  className?: string
-}
+/**
+ * CopyButton Props - Discriminated Union
+ *
+ * Two modes enforced by TypeScript:
+ * 1. DOM mode: copyFromDOM: true (text not required)
+ * 2. Prop mode: copyFromDOM omitted/false (text required)
+ */
+type CopyButtonProps =
+  | {
+      /** Copy text from nearest pre > code element in parent */
+      copyFromDOM: true
+      className?: string
+    }
+  | {
+      /** Copy from text prop (default mode) */
+      copyFromDOM?: false
+      /** Text to copy - REQUIRED when copyFromDOM is false/omitted */
+      text: string
+      className?: string
+    }
 
 /**
  * CopyButton Component
  *
  * Copies text to clipboard with visual feedback.
  * Can copy from prop or extract from DOM for better RSC performance.
+ *
+ * Type-safe: TypeScript enforces text presence unless copyFromDOM is true.
  */
-export function CopyButton({ text, copyFromDOM = false, className }: CopyButtonProps) {
+export function CopyButton(props: CopyButtonProps) {
+  const { className } = props
   const buttonRef = useRef<HTMLButtonElement>(null)
   const [copied, setCopied] = useState(false)
   const [error, setError] = useState(false)
@@ -61,9 +77,10 @@ export function CopyButton({ text, copyFromDOM = false, className }: CopyButtonP
       return
     }
 
-    // Determine text to copy
+    // Determine text to copy - using discriminated union type narrowing
     let textToCopy: string
-    if (copyFromDOM) {
+    if (props.copyFromDOM === true) {
+      // Type narrowed: props is { copyFromDOM: true; className?: string }
       // Extract text from nearest pre > code element
       const button = buttonRef.current
       if (!button) {
@@ -82,11 +99,9 @@ export function CopyButton({ text, copyFromDOM = false, className }: CopyButtonP
       }
       textToCopy = codeElement.textContent || ''
     } else {
-      if (!text) {
-        showError('No text provided to copy')
-        return
-      }
-      textToCopy = text
+      // Type narrowed: props is { copyFromDOM?: false; text: string; className?: string }
+      // TypeScript now knows props.text exists and is string (discriminant checked with ===)
+      textToCopy = props.text
     }
 
     // Guard against empty or whitespace-only content
@@ -107,7 +122,7 @@ export function CopyButton({ text, copyFromDOM = false, className }: CopyButtonP
     } catch (err) {
       showError(`Failed to copy: ${err}`)
     }
-  }, [text, copyFromDOM, showError])
+  }, [props, showError])
 
   // Determine icon and aria-label based on state
   const getIcon = () => {
