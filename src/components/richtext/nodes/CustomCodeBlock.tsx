@@ -18,7 +18,7 @@ interface CustomCodeBlockProps {
 /**
  * Human-friendly labels for common programming languages
  */
-const LANGUAGE_LABELS: Record<string, string> = {
+export const LANGUAGE_LABELS: Record<string, string> = {
   javascript: 'JavaScript',
   typescript: 'TypeScript',
   tsx: 'TSX',

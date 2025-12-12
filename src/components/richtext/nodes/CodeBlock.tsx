@@ -7,6 +7,7 @@
 
 import type { CodeNode, LexicalNode, TextNode } from '@/components/richtext/types'
 import { getHighlighter, getFallbackLanguage, CODE_THEME } from '@/components/richtext/shiki-config'
+import { LANGUAGE_LABELS } from '@/components/richtext/nodes/CustomCodeBlock'
 import { CopyButton } from '@/components/ui/copy-button'
 import { logger } from '@/lib/logger'
 import { escapeHtml } from '@/components/richtext/escapeHtml'
@@ -64,7 +65,7 @@ export async function CodeBlock({ node }: CodeBlockProps) {
   }
 
   // Language display name
-  const languageLabel = language === 'text' ? 'Plain Text' : language.toUpperCase()
+  const languageLabel = LANGUAGE_LABELS[language] ?? language.toUpperCase()
 
   return (
     <div className="group my-6 overflow-hidden rounded-lg border border-border" data-code-container>
