@@ -16,7 +16,7 @@ import { gotoArticleOrSkip } from './helpers'
 
 test.describe('Reading Progress Bar', () => {
   test.beforeEach(async ({ page }) => {
-    await gotoArticleOrSkip(page)
+    await gotoArticleOrSkip(page, 'fr')
     await page.waitForLoadState('networkidle')
   })
 
