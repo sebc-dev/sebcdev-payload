@@ -132,12 +132,24 @@ export interface AutoLinkNode extends BaseLexicalNode {
 }
 
 /**
- * Code block node - for Phase 3 (rendered as plain pre/code for now)
+ * Code block node - legacy native Lexical code node
  */
 export interface CodeNode extends BaseLexicalNode {
   type: 'code'
   language?: string
   children: LexicalNode[]
+}
+
+/**
+ * Block node - custom blocks from BlocksFeature
+ */
+export interface BlockNode extends BaseLexicalNode {
+  type: 'block'
+  fields: {
+    blockType: string
+    blockName?: string
+    [key: string]: unknown
+  }
 }
 
 /**
@@ -185,6 +197,7 @@ export type LexicalNode =
   | LinkNode
   | AutoLinkNode
   | CodeNode
+  | BlockNode
   | UploadNode
   | RootNode
 
