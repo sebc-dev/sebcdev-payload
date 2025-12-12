@@ -47,12 +47,32 @@ export default buildConfig({
                 name: 'language',
                 type: 'select',
                 options: [
+                  // JavaScript/TypeScript ecosystem
                   { label: 'JavaScript', value: 'javascript' },
                   { label: 'TypeScript', value: 'typescript' },
+                  { label: 'TSX', value: 'tsx' },
+                  { label: 'JSX', value: 'jsx' },
+
+                  // Backend languages
                   { label: 'Python', value: 'python' },
+                  { label: 'PHP', value: 'php' },
+                  { label: 'Java', value: 'java' },
+                  { label: 'C', value: 'c' },
+                  { label: 'C++', value: 'cpp' },
+
+                  // Web technologies
                   { label: 'HTML', value: 'html' },
                   { label: 'CSS', value: 'css' },
+                  { label: 'GraphQL', value: 'graphql' },
+                  { label: 'XML', value: 'xml' },
+
+                  // Data & Configuration
                   { label: 'JSON', value: 'json' },
+                  { label: 'SQL', value: 'sql' },
+                  { label: 'YAML', value: 'yaml' },
+                  { label: 'Markdown', value: 'markdown' },
+
+                  // Shell
                   { label: 'Bash', value: 'bash' },
                 ],
                 defaultValue: 'javascript',

@@ -22,6 +22,7 @@ export const SUPPORTED_LANGUAGES: BundledLanguage[] = [
   'bash',
   'shell',
   'python',
+  'php',
   'sql',
   'yaml',
   'markdown',
