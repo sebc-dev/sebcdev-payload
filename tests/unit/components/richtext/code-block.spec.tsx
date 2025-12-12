@@ -37,7 +37,7 @@ describe('CodeBlock', () => {
 
     const { container } = render(await CodeBlock({ node }))
 
-    expect(container.textContent).toContain('TYPESCRIPT')
+    expect(container.textContent).toContain('TypeScript')
     expect(container.querySelector('pre')).toBeTruthy()
   })
 
@@ -109,7 +109,7 @@ describe('CodeBlock', () => {
     expect(wrapper?.className).toContain('my-6')
   })
 
-  it('renders uppercase language label', async () => {
+  it('renders human-friendly language label', async () => {
     const node: CodeNode = {
       type: 'code',
       language: 'python',
@@ -119,6 +119,6 @@ describe('CodeBlock', () => {
 
     const { container } = render(await CodeBlock({ node }))
 
-    expect(container.textContent).toContain('PYTHON')
+    expect(container.textContent).toContain('Python')
   })
 })
