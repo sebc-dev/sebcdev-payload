@@ -87,7 +87,10 @@ export async function CodeBlock({ node }: CodeBlockProps) {
         >
           {languageLabel}
         </span>
-        <CopyButton copyFromDOM className="opacity-0 transition-opacity group-hover:opacity-100" />
+        <CopyButton
+          copyFromDOM
+          className="opacity-0 transition-opacity group-hover:opacity-100 group-focus-within:opacity-100 focus-visible:opacity-100"
+        />
       </div>
 
       {/* Code content */}
