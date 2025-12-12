@@ -45,14 +45,18 @@ test.describe('Reading Progress Bar', () => {
       const article = document.querySelector('article')
       if (article) {
         const rect = article.getBoundingClientRect()
-        const middle = rect.top + window.scrollY + rect.height / 2
-        window.scrollTo({ top: middle, behavior: 'instant' })
-        return middle
+        const maxY = document.documentElement.scrollHeight - window.innerHeight
+        const desired = rect.top + window.scrollY + rect.height / 2
+        const target = Math.max(0, Math.min(desired, maxY))
+        window.scrollTo({ top: target, behavior: 'auto' })
+        return target
       }
       return 0
     })
-    // Wait for scroll to reach target
-    await page.waitForFunction((target) => Math.abs(window.scrollY - target) < 10, targetY)
+    // Wait for scroll to reach target (skip if already at top)
+    if (targetY !== 0) {
+      await page.waitForFunction((target) => Math.abs(window.scrollY - target) < 10, targetY)
+    }
 
     const progressBar = page.getByRole('progressbar')
     await expect(progressBar).toHaveAttribute('aria-valuenow')
@@ -68,15 +72,18 @@ test.describe('Reading Progress Bar', () => {
       const article = document.querySelector('article')
       if (article) {
         const rect = article.getBoundingClientRect()
-        const bottom = rect.top + window.scrollY + rect.height - window.innerHeight
-        const scrollTarget = Math.max(0, bottom)
-        window.scrollTo({ top: scrollTarget, behavior: 'instant' })
-        return scrollTarget
+        const maxY = document.documentElement.scrollHeight - window.innerHeight
+        const desired = rect.top + window.scrollY + rect.height - window.innerHeight
+        const target = Math.max(0, Math.min(desired, maxY))
+        window.scrollTo({ top: target, behavior: 'auto' })
+        return target
       }
       return 0
     })
-    // Wait for scroll to reach target
-    await page.waitForFunction((target) => Math.abs(window.scrollY - target) < 10, targetY)
+    // Wait for scroll to reach target (skip if already at top)
+    if (targetY !== 0) {
+      await page.waitForFunction((target) => Math.abs(window.scrollY - target) < 10, targetY)
+    }
 
     const progressBar = page.getByRole('progressbar')
     await expect(progressBar).toHaveAttribute('aria-valuenow')
