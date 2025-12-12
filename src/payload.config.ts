@@ -1,6 +1,6 @@
 // storage-adapter-import-placeholder
 import { sqliteD1Adapter } from '@payloadcms/db-d1-sqlite' // database-adapter-import
-import { lexicalEditor } from '@payloadcms/richtext-lexical'
+import { lexicalEditor, BlocksFeature } from '@payloadcms/richtext-lexical'
 import path from 'path'
 import { buildConfig } from 'payload'
 import { fileURLToPath } from 'url'
@@ -31,7 +31,42 @@ export default buildConfig({
     },
   },
   collections: [Users, Media, Categories, Tags, Articles],
-  editor: lexicalEditor(),
+  editor: lexicalEditor({
+    features: ({ defaultFeatures }) => [
+      ...defaultFeatures,
+      // Add BlocksFeature to support custom blocks including code blocks
+      BlocksFeature({
+        blocks: [
+          {
+            slug: 'code',
+            interfaceName: 'CodeBlock',
+            fields: [
+              {
+                name: 'language',
+                type: 'select',
+                options: [
+                  { label: 'JavaScript', value: 'javascript' },
+                  { label: 'TypeScript', value: 'typescript' },
+                  { label: 'Python', value: 'python' },
+                  { label: 'HTML', value: 'html' },
+                  { label: 'CSS', value: 'css' },
+                  { label: 'JSON', value: 'json' },
+                  { label: 'Bash', value: 'bash' },
+                ],
+                defaultValue: 'javascript',
+                required: true,
+              },
+              {
+                name: 'code',
+                type: 'textarea',
+                required: true,
+              },
+            ],
+          },
+        ],
+      }),
+    ],
+  }),
   secret: process.env.PAYLOAD_SECRET || '',
   typescript: {
     outputFile: path.resolve(dirname, 'payload-types.ts'),
