@@ -15,6 +15,18 @@ interface CustomCodeBlockProps {
 }
 
 /**
+ * Escape HTML special characters for safe rendering
+ */
+function escapeHtml(unsafe: string): string {
+  return unsafe
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;')
+}
+
+/**
  * Human-friendly labels for common programming languages
  */
 const LANGUAGE_LABELS: Record<string, string> = {
@@ -60,12 +72,23 @@ export async function CustomCodeBlock({ node }: CustomCodeBlockProps) {
   const rawLanguage = typeof fields.language === 'string' ? fields.language : 'text'
   const language = getFallbackLanguage(rawLanguage)
 
-  // Get highlighter and generate HTML
-  const highlighter = await getHighlighter()
-  const html = highlighter.codeToHtml(code, {
-    lang: language,
-    theme: CODE_THEME,
-  })
+  // Get highlighter and generate HTML with error handling
+  let html: string
+  try {
+    const highlighter = await getHighlighter()
+    html = highlighter.codeToHtml(code, {
+      lang: language,
+      theme: CODE_THEME,
+    })
+  } catch (error) {
+    // Fallback to safely escaped plain text if highlighting fails
+    const escapedCode = escapeHtml(code)
+    html = `<pre><code>${escapedCode}</code></pre>`
+    logger.error('Failed to highlight code block', {
+      language,
+      error: error instanceof Error ? error.message : String(error),
+    })
+  }
 
   // Language display name
   const languageLabel = LANGUAGE_LABELS[language] ?? language.toUpperCase()
@@ -87,12 +110,7 @@ export async function CustomCodeBlock({ node }: CustomCodeBlockProps) {
       </div>
 
       {/* Code content */}
-      {/*
-       * SECURITY: dangerouslySetInnerHTML is safe here because Shiki's codeToHtml()
-       * escapes all code content by default, treating it as text rather than markup.
-       * Characters like <, >, &, and quotes are converted to HTML entities.
-       * See: https://shiki.style/guide/install#codetohtml
-       */}
+      {/* biome-ignore lint/security/noDangerouslySetInnerHtml: HTML is either from trusted Shiki highlighter (escapes all user content) or fallback-escaped via escapeHtml() */}
       <div
         className="overflow-x-auto text-sm [&_pre]:!m-0 [&_pre]:bg-transparent [&_pre]:p-4 [&_code]:!p-0"
         dangerouslySetInnerHTML={{ __html: html }}
