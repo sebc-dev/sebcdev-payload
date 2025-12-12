@@ -15,7 +15,10 @@ import { Button } from './button'
 const FEEDBACK_DURATION_MS = 2000
 
 interface CopyButtonProps {
-  text: string
+  /** Text to copy (optional if copyFromDOM is true) */
+  text?: string
+  /** If true, copy text from nearest pre > code element in parent */
+  copyFromDOM?: boolean
   className?: string
 }
 
@@ -23,8 +26,10 @@ interface CopyButtonProps {
  * CopyButton Component
  *
  * Copies text to clipboard with visual feedback.
+ * Can copy from prop or extract from DOM for better RSC performance.
  */
-export function CopyButton({ text, className }: CopyButtonProps) {
+export function CopyButton({ text, copyFromDOM = false, className }: CopyButtonProps) {
+  const buttonRef = useRef<HTMLButtonElement>(null)
   const [copied, setCopied] = useState(false)
   const [error, setError] = useState(false)
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
@@ -56,8 +61,36 @@ export function CopyButton({ text, className }: CopyButtonProps) {
       return
     }
 
+    // Determine text to copy
+    let textToCopy: string
+    if (copyFromDOM) {
+      // Extract text from nearest pre > code element
+      const button = buttonRef.current
+      if (!button) {
+        showError('Button ref not available')
+        return
+      }
+      const container = button.closest('[data-code-container]')
+      if (!container) {
+        showError('Code container not found')
+        return
+      }
+      const codeElement = container.querySelector('pre code')
+      if (!codeElement) {
+        showError('Code element not found')
+        return
+      }
+      textToCopy = codeElement.textContent || ''
+    } else {
+      if (!text) {
+        showError('No text provided to copy')
+        return
+      }
+      textToCopy = text
+    }
+
     try {
-      await navigator.clipboard.writeText(text)
+      await navigator.clipboard.writeText(textToCopy)
       setError(false) // Reset opposite state
       setCopied(true)
       // Clear any existing timeout before setting a new one
@@ -68,7 +101,7 @@ export function CopyButton({ text, className }: CopyButtonProps) {
     } catch (err) {
       showError(`Failed to copy: ${err}`)
     }
-  }, [text, showError])
+  }, [text, copyFromDOM, showError])
 
   // Determine icon and aria-label based on state
   const getIcon = () => {
@@ -85,6 +118,7 @@ export function CopyButton({ text, className }: CopyButtonProps) {
 
   return (
     <Button
+      ref={buttonRef}
       variant="ghost"
       size="sm"
       className={className}

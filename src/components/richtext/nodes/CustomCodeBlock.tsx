@@ -94,7 +94,7 @@ export async function CustomCodeBlock({ node }: CustomCodeBlockProps) {
   const languageLabel = LANGUAGE_LABELS[language] ?? language.toUpperCase()
 
   return (
-    <div className="group my-6 overflow-hidden rounded-lg border border-border">
+    <div className="group my-6 overflow-hidden rounded-lg border border-border" data-code-container>
       {/* Header with language indicator */}
       <div className="flex items-center justify-between border-b border-border bg-muted/50 px-4 py-2">
         <span
@@ -104,7 +104,7 @@ export async function CustomCodeBlock({ node }: CustomCodeBlockProps) {
           {languageLabel}
         </span>
         <CopyButton
-          text={code}
+          copyFromDOM
           className="opacity-0 transition-opacity group-hover:opacity-100 group-focus-within:opacity-100 focus-visible:opacity-100"
         />
       </div>
