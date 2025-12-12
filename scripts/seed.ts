@@ -332,18 +332,20 @@ function headingWithChildren(
 }
 
 /**
- * Creates a Lexical code block node.
- * This generates a native Lexical 'code' node compatible with our CodeBlock component.
+ * Creates a Lexical code block using BlocksFeature.
+ * This uses the custom 'block' type configured in payload.config.ts
  */
 function codeBlock(code: string, language = 'typescript') {
   return {
-    type: 'code',
+    type: 'block',
     format: '',
-    indent: 0,
-    version: 1,
-    language,
-    direction: 'ltr',
-    children: [text(code)],
+    version: 2,
+    fields: {
+      blockName: '',
+      blockType: 'code',
+      language,
+      code,
+    },
   }
 }
 
