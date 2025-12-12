@@ -45,6 +45,8 @@ function headingNodeToTOCHeading(node: HeadingNode): TOCHeading | null {
     return null
   }
 
+  const LEVEL_MAP = { h1: 1, h2: 2, h3: 3 } as const
+
   const text = extractText(node.children)
   if (!text.trim()) {
     return null // Skip empty headings
@@ -58,7 +60,7 @@ function headingNodeToTOCHeading(node: HeadingNode): TOCHeading | null {
   return {
     id,
     text: text.trim(),
-    level: node.tag === 'h1' ? 1 : node.tag === 'h2' ? 2 : 3,
+    level: LEVEL_MAP[node.tag],
   }
 }
 
