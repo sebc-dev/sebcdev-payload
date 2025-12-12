@@ -335,13 +335,13 @@ function headingWithChildren(
  * Creates a Lexical code block using BlocksFeature.
  * This uses the custom 'block' type configured in payload.config.ts
  */
-function codeBlock(code: string, language = 'typescript') {
+function codeBlock(code: string, language = 'typescript', blockName?: string) {
   return {
     type: 'block',
     format: '',
     version: 2,
     fields: {
-      blockName: '',
+      ...(blockName ? { blockName } : {}),
       blockType: 'code',
       language,
       code,
