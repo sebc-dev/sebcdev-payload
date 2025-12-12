@@ -5,8 +5,8 @@
  * Server Component - highlighting happens at build/request time.
  */
 
-import type { CodeNode, LexicalNode, TextNode } from '../types'
-import { getHighlighter, getFallbackLanguage, CODE_THEME } from '../shiki-config'
+import type { CodeNode, LexicalNode, TextNode } from '@/components/richtext/types'
+import { getHighlighter, getFallbackLanguage, CODE_THEME } from '@/components/richtext/shiki-config'
 import { CopyButton } from '@/components/ui/copy-button'
 import { logger } from '@/lib/logger'
 import { escapeHtml } from '@/components/richtext/escapeHtml'
