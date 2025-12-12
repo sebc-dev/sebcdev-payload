@@ -48,12 +48,13 @@ export const Articles: CollectionConfig = {
     livePreview: {
       url: ({ data, locale }) => {
         const baseUrl = process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:3000'
-        const previewLocale = locale || 'fr'
+        // locale is a Locale object with a 'code' property, not a string
+        const localeCode = typeof locale === 'string' ? locale : locale?.code || 'fr'
         const slug = data?.slug || ''
 
         if (!slug) return ''
 
-        return `${baseUrl}/${previewLocale}/articles/${slug}`
+        return `${baseUrl}/${localeCode}/articles/${slug}`
       },
       breakpoints: [
         { name: 'mobile', width: 375, height: 667, label: 'Mobile' },
