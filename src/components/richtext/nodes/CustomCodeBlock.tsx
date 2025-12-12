@@ -72,7 +72,8 @@ export async function CustomCodeBlock({ node }: CustomCodeBlockProps) {
   } catch (error) {
     // Fallback to safely escaped plain text if highlighting fails
     const escapedCode = escapeHtml(code)
-    html = `<pre data-language="${language}"><code>${escapedCode}</code></pre>`
+    const escapedLanguage = escapeHtml(language)
+    html = `<pre data-language="${escapedLanguage}"><code>${escapedCode}</code></pre>`
     logger.error('Failed to highlight code block', {
       language,
       error: error instanceof Error ? error.message : String(error),
