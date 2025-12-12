@@ -17,7 +17,7 @@ import type { ArticleData, CoverImage } from '@/components/articles/types'
 import type { Article as PayloadArticle, Category, Tag, Media } from '@/payload-types'
 import type { LucideCategoryIcon } from '@/lib/lucide-icons'
 import type { Locale } from '@/i18n/config'
-import { RichText, isLexicalContent, type LexicalContent } from '@/components/richtext'
+import { RichText, isLexicalContent } from '@/components/richtext'
 import { extractTOCHeadings, type TOCData } from '@/lib/toc'
 import {
   generateArticleMetadata,
