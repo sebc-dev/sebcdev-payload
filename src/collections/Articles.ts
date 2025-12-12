@@ -48,7 +48,7 @@ export const Articles: CollectionConfig = {
     livePreview: {
       url: ({ data, locale }) => {
         const baseUrl = process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:3000'
-        // locale is a Locale object with a 'code' property, not a string
+        // locale peut être une chaîne de caractères ou un objet Locale avec une propriété 'code'
         const localeCode = typeof locale === 'string' ? locale : locale?.code || 'fr'
         const slug = data?.slug || ''
 
