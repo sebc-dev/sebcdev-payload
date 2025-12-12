@@ -28,9 +28,12 @@ test.describe('Reading Progress Bar', () => {
   test('starts near 0% at top of page', async ({ page }) => {
     // Ensure at top
     await page.evaluate(() => window.scrollTo(0, 0))
-    await page.waitForTimeout(150)
+    // Wait for scroll to complete
+    await page.waitForFunction(() => window.scrollY === 0)
 
     const progressBar = page.getByRole('progressbar')
+    // Wait for progress bar to update
+    await expect(progressBar).toHaveAttribute('aria-valuenow')
     const value = await progressBar.getAttribute('aria-valuenow')
 
     expect(Number(value)).toBeLessThanOrEqual(10)
@@ -38,17 +41,21 @@ test.describe('Reading Progress Bar', () => {
 
   test('updates progress on scroll', async ({ page }) => {
     // Scroll to middle of article
-    await page.evaluate(() => {
+    const targetY = await page.evaluate(() => {
       const article = document.querySelector('article')
       if (article) {
         const rect = article.getBoundingClientRect()
         const middle = rect.top + window.scrollY + rect.height / 2
         window.scrollTo({ top: middle, behavior: 'instant' })
+        return middle
       }
+      return 0
     })
-    await page.waitForTimeout(200)
+    // Wait for scroll to reach target
+    await page.waitForFunction((target) => Math.abs(window.scrollY - target) < 10, targetY)
 
     const progressBar = page.getByRole('progressbar')
+    await expect(progressBar).toHaveAttribute('aria-valuenow')
     const value = await progressBar.getAttribute('aria-valuenow')
 
     expect(Number(value)).toBeGreaterThan(20)
@@ -57,17 +64,22 @@ test.describe('Reading Progress Bar', () => {
 
   test('reaches high percentage at end of article', async ({ page }) => {
     // Scroll to end of article
-    await page.evaluate(() => {
+    const targetY = await page.evaluate(() => {
       const article = document.querySelector('article')
       if (article) {
         const rect = article.getBoundingClientRect()
         const bottom = rect.top + window.scrollY + rect.height - window.innerHeight
-        window.scrollTo({ top: Math.max(0, bottom), behavior: 'instant' })
+        const scrollTarget = Math.max(0, bottom)
+        window.scrollTo({ top: scrollTarget, behavior: 'instant' })
+        return scrollTarget
       }
+      return 0
     })
-    await page.waitForTimeout(200)
+    // Wait for scroll to reach target
+    await page.waitForFunction((target) => Math.abs(window.scrollY - target) < 10, targetY)
 
     const progressBar = page.getByRole('progressbar')
+    await expect(progressBar).toHaveAttribute('aria-valuenow')
     const value = await progressBar.getAttribute('aria-valuenow')
 
     expect(Number(value)).toBeGreaterThanOrEqual(85)
