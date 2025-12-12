@@ -47,9 +47,8 @@ const LANGUAGE_LABELS: Record<string, string> = {
 export async function CustomCodeBlock({ node }: CustomCodeBlockProps) {
   // Guard: ensure this is a code block
   if (node.fields.blockType !== 'code') {
-    logger.warn('CustomCodeBlock received non-code block', {
+    logger.debug('CustomCodeBlock received non-code block', {
       blockType: node.fields.blockType,
-      blockName: node.fields.blockName,
     })
     return null
   }
