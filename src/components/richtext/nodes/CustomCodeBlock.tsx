@@ -5,8 +5,8 @@
  * Server Component - highlighting happens at build/request time.
  */
 
-import type { BlockNode } from '../types'
-import { getHighlighter, getFallbackLanguage, CODE_THEME } from '../shiki-config'
+import type { BlockNode } from '@/components/richtext/types'
+import { getHighlighter, getFallbackLanguage, CODE_THEME } from '@/components/richtext/shiki-config'
 import { CopyButton } from '@/components/ui/copy-button'
 
 interface CustomCodeBlockProps {
