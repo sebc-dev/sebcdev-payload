@@ -13,4 +13,5 @@ import { routing } from './routing'
  * @see https://next-intl-docs.vercel.app/docs/usage/navigation
  */
 
+/** @public - Public API from next-intl, exported for potential future use */
 export const { Link, usePathname, useRouter, getPathname } = createNavigation(routing)
