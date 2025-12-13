@@ -147,23 +147,31 @@ export default async function HomePage({ params }: HomePageProps) {
   setRequestLocale(locale)
 
   const t = await getTranslations('homepage')
-  const payloadConfig = await config
-  const payload = await getPayload({ config: payloadConfig })
 
-  // Fetch 7 most recent published articles
-  const { docs: payloadArticles } = (await payload.find({
-    collection: 'articles',
-    locale,
-    limit: 7,
-    sort: '-publishedAt',
-    where: {
-      status: { equals: 'published' },
-    },
-    depth: 2,
-  })) as { docs: PayloadArticle[] }
+  let articles: ArticleData[] = []
 
-  // Map Payload articles to component articles
-  const articles = payloadArticles.map(mapArticle)
+  try {
+    const payloadConfig = await config
+    const payload = await getPayload({ config: payloadConfig })
+
+    // Fetch 7 most recent published articles
+    const { docs: payloadArticles } = (await payload.find({
+      collection: 'articles',
+      locale,
+      limit: 7,
+      sort: '-publishedAt',
+      where: {
+        status: { equals: 'published' },
+      },
+      depth: 2,
+    })) as { docs: PayloadArticle[] }
+
+    // Map Payload articles to component articles
+    articles = payloadArticles.map(mapArticle)
+  } catch (error) {
+    console.error('Failed to fetch articles for homepage:', error)
+    // Continue with empty articles array
+  }
 
   // Empty state
   if (articles.length === 0) {

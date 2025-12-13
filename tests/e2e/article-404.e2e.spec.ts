@@ -41,7 +41,11 @@ test.describe('Article 404 Handling', () => {
     const homeLink = page.getByRole('link', { name: /retour à l'accueil/i })
 
     await expect(homeLink).toBeVisible()
+
+    // Click and wait for URL change
     await homeLink.click()
+    await page.waitForURL(/\/(fr|en)(\/)?$/, { timeout: 10000 })
+
     await expect(page).toHaveURL(/\/(fr|en)(\/)?$/)
   })
 
