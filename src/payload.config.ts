@@ -18,7 +18,7 @@ const dirname = path.dirname(filename)
 // - For dev mode: pnpm dev (uses local SQLite via Wrangler)
 // - For production runtime: Cloudflare Workers sets NODE_ENV=production automatically
 const cloudflareRemoteBindings = process.env.NODE_ENV === 'production'
-const isGenerateTypes = process.argv.find((value) => value.match(/^generate:?/))
+const isGenerateTypes = process.argv.some((value) => /^generate:?/.test(value))
 const cloudflare =
   isGenerateTypes || !cloudflareRemoteBindings
     ? await getCloudflareContextFromWrangler()
