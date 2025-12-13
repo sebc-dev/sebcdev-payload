@@ -90,7 +90,7 @@ function mapCoverImage(featuredImage: PayloadImage): ArticleData['coverImage'] {
 
 /** Maps Payload category to component category */
 function mapCategory(category: PayloadCategory): ArticleData['category'] {
-  if (typeof category !== 'object' || category === null) {
+  if (typeof category !== 'object' || category === null || !category.id) {
     return { id: '', title: '', slug: '' }
   }
   return {
@@ -104,7 +104,7 @@ function mapCategory(category: PayloadCategory): ArticleData['category'] {
 
 /** Maps a single Payload tag to component tag */
 function mapTag(tag: PayloadTag): ArticleData['tags'][number] {
-  if (typeof tag === 'object' && tag !== null) {
+  if (typeof tag === 'object' && tag !== null && tag.id) {
     return {
       id: String(tag.id),
       title: 'name' in tag ? (tag.name as string) : '',
@@ -117,7 +117,12 @@ function mapTag(tag: PayloadTag): ArticleData['tags'][number] {
 /**
  * Maps Payload article to component article interface
  */
-function mapArticle(payloadArticle: PayloadArticle): ArticleData {
+function mapArticle(payloadArticle: PayloadArticle): ArticleData | null {
+  // Guard against malformed data
+  if (!payloadArticle || !payloadArticle.id) {
+    return null
+  }
+
   return {
     id: String(payloadArticle.id),
     title: payloadArticle.title || '',
@@ -166,8 +171,10 @@ export default async function HomePage({ params }: HomePageProps) {
       depth: 2,
     })) as { docs: PayloadArticle[] }
 
-    // Map Payload articles to component articles
-    articles = payloadArticles.map(mapArticle)
+    // Map Payload articles to component articles, filtering out any null/invalid entries
+    articles = payloadArticles
+      .map(mapArticle)
+      .filter((article): article is ArticleData => article !== null)
   } catch (error) {
     console.error('Failed to fetch articles for homepage:', error)
     // Continue with empty articles array

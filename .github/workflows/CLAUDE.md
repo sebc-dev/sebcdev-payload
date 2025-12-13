@@ -39,7 +39,7 @@ Les autres checks sont requis pour merger mais doivent être lancés manuellemen
 **Jobs parallèles** :
 - `unit-tests` : Vitest avec couverture
 - `integration-tests` : Vitest (require PAYLOAD_SECRET)
-- `e2e-tests` : Playwright Chromium
+- ~~`e2e-tests`~~ : Désactivé (disponible localement via `pnpm test:e2e`)
 
 ### security.yml
 
@@ -156,6 +156,6 @@ Configurer les status checks requis :
 - `Core Checks / Core Checks`
 - `Tests / Unit Tests`
 - `Tests / Integration Tests`
-- `Tests / E2E Tests`
+- ~~`Tests / E2E Tests`~~ (désactivé)
 - `Security / Security Checks`
 - `Architecture / Architecture Validation`
