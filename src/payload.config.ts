@@ -133,10 +133,11 @@ function getCloudflareContextFromWrangler(): Promise<CloudflareContext> {
     ({ getPlatformProxy }) =>
       getPlatformProxy({
         environment: process.env.CLOUDFLARE_ENV,
-        // Force local mode to avoid requiring Cloudflare authentication in CI
         persist: true,
-        // TODO: Check if remoteBindings option still exists in wrangler 4.54+
-        // experimental: { remoteBindings: cloudflareRemoteBindings },
+        // Migration note (Wrangler 4.54+):
+        // - Local dev: per-binding "remote" configuration in wrangler.jsonc (e.g., D1, R2)
+        // - Production: uses getCloudflareContext() (unchanged)
+        // - The global experimental.remoteBindings option has been removed for compatibility
       } satisfies GetPlatformProxyOptions),
   )
 }
