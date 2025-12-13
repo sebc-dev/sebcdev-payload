@@ -100,7 +100,8 @@ const config: KnipConfig = {
     'dotenv',
   ],
 
-  // Ignore barrel export patterns (re-exports in index.ts files)
+  // Ignore exports that are used in the same file where they are defined
+  // This includes barrel re-exports (index.ts) and self-contained helpers/utils
   // @knip-review-by: 2026-06-13
   ignoreExportsUsedInFile: true,
 
