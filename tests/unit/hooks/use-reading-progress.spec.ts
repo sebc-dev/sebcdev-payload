@@ -13,8 +13,10 @@ describe('useReadingProgress', () => {
   let originalScrollHeight: PropertyDescriptor | undefined
 
   // Spies for RAF - declared at describe level for reuse
-  let rafSpy: ReturnType<typeof vi.spyOn<typeof window, 'requestAnimationFrame'>>
-  let cancelSpy: ReturnType<typeof vi.spyOn<typeof window, 'cancelAnimationFrame'>>
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let rafSpy: any
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let cancelSpy: any
 
   beforeEach(() => {
     // Reset values
@@ -59,19 +61,19 @@ describe('useReadingProgress', () => {
     if (originalScrollY) {
       Object.defineProperty(window, 'scrollY', originalScrollY)
     } else {
-      delete (window as Record<string, unknown>).scrollY
+      delete (window as unknown as Record<string, unknown>).scrollY
     }
 
     if (originalInnerHeight) {
       Object.defineProperty(window, 'innerHeight', originalInnerHeight)
     } else {
-      delete (window as Record<string, unknown>).innerHeight
+      delete (window as unknown as Record<string, unknown>).innerHeight
     }
 
     if (originalScrollHeight) {
       Object.defineProperty(document.documentElement, 'scrollHeight', originalScrollHeight)
     } else {
-      delete (document.documentElement as Record<string, unknown>).scrollHeight
+      delete (document.documentElement as unknown as Record<string, unknown>).scrollHeight
     }
 
     vi.restoreAllMocks()
@@ -356,7 +358,7 @@ describe('useReadingProgress', () => {
       let rafCallback: FrameRequestCallback | null = null
       let rafCallCount = 0
 
-      rafSpy.mockImplementation((cb) => {
+      rafSpy.mockImplementation((cb: FrameRequestCallback) => {
         rafCallback = cb
         rafCallCount++
         return rafCallCount
