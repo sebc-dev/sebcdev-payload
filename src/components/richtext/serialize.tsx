@@ -17,7 +17,6 @@ import type {
   QuoteNode,
   LinkNode,
   CodeNode,
-  BlockNode,
   UploadNode,
 } from './types'
 import { TEXT_FORMAT, hasChildren, isTextNode, isBlockNode } from './types'
