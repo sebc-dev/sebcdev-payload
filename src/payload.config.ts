@@ -20,11 +20,15 @@ export const persistPath = path.resolve(
   process.env.PAYLOAD_PERSIST_PATH || '.payload/persist',
 )
 
-// IMPORTANT: Remote D1 bindings require NODE_ENV=production
-// - For migrations: NODE_ENV=production pnpm payload migrate
+// Remote D1 bindings configuration
+// Two ways to enable remote bindings:
+// 1. Explicit: CLOUDFLARE_REMOTE_BINDINGS=true (recommended for migrations/testing)
+// 2. Implicit: NODE_ENV=production (backward compatibility, auto-set in production)
+// - For migrations: CLOUDFLARE_REMOTE_BINDINGS=true pnpm payload migrate
 // - For dev mode: pnpm dev (uses local SQLite via Wrangler)
 // - For production runtime: Cloudflare Workers sets NODE_ENV=production automatically
-const cloudflareRemoteBindings = process.env.NODE_ENV === 'production'
+const cloudflareRemoteBindings =
+  process.env.CLOUDFLARE_REMOTE_BINDINGS === 'true' || process.env.NODE_ENV === 'production'
 const isGenerateTypes = process.argv.some((value) => /^generate:?/.test(value))
 const cloudflare =
   isGenerateTypes || !cloudflareRemoteBindings
