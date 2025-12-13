@@ -10,6 +10,7 @@ import type { ArticleData } from '@/components/articles/types'
 import type { Article as PayloadArticle } from '@/payload-types'
 import type { LucideCategoryIcon } from '@/lib/lucide-icons'
 import type { Locale } from '@/i18n/config'
+import { logger } from '@/lib/logger'
 
 /**
  * Force dynamic rendering to avoid pre-rendering during build.
@@ -154,6 +155,7 @@ export default async function HomePage({ params }: HomePageProps) {
   const t = await getTranslations('homepage')
 
   let articles: ArticleData[] = []
+  let hasError = false
 
   try {
     const payloadConfig = await config
@@ -176,15 +178,19 @@ export default async function HomePage({ params }: HomePageProps) {
       .map(mapArticle)
       .filter((article): article is ArticleData => article !== null)
   } catch (error) {
-    console.error('Failed to fetch articles for homepage:', error)
-    // Continue with empty articles array
+    hasError = true
+    logger.error('Failed to fetch articles for homepage', {
+      locale,
+      error,
+    })
+    // Continue with empty articles array to prevent crashes
   }
 
-  // Empty state
+  // Empty state or error state
   if (articles.length === 0) {
     return (
       <div className="container mx-auto px-4 py-12">
-        <EmptyState headingLevel="h1" />
+        <EmptyState headingLevel="h1" variant={hasError ? 'error' : 'empty'} />
       </div>
     )
   }
