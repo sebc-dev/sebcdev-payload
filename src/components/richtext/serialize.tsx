@@ -109,7 +109,22 @@ export function serializeNode(node: LexicalNode, index: number): ReactNode {
       }
       // Future: add other block types here
       logger.warn(`[serializeLexical] Unknown block type: ${node.fields.blockType}`)
-      return null
+
+      // Fallback: render visible placeholder for unknown block types
+      const blockName = node.fields.blockName || node.fields.blockType
+      return (
+        <div
+          key={index}
+          className="my-4 rounded border border-amber-500/50 bg-amber-50/50 p-4 dark:border-amber-500/30 dark:bg-amber-950/20"
+        >
+          <p className="font-medium text-amber-900 dark:text-amber-100">
+            Unsupported block: {blockName}
+          </p>
+          <p className="mt-1 text-sm text-amber-700 dark:text-amber-300">
+            This block type ({node.fields.blockType}) is not yet supported.
+          </p>
+        </div>
+      )
     }
 
     case 'upload':
