@@ -115,7 +115,7 @@ test.describe('Admin Panel Isolation', () => {
     })
 
     // Wait for page to load with extended timeout
-    await page.goto('/admin', { timeout: 60000 })
+    await page.goto('/admin', { timeout: 60000, waitUntil: 'networkidle' })
 
     // Should redirect to login or show admin UI
     await expect(page).toHaveURL(/\/admin/)
@@ -142,7 +142,7 @@ test.describe('Admin Panel Isolation', () => {
 
   test('admin panel uses its own styles (not frontend theme)', async ({ page }) => {
     // Wait for page to load with extended timeout
-    await page.goto('/admin', { timeout: 60000 })
+    await page.goto('/admin', { timeout: 60000, waitUntil: 'networkidle' })
 
     // Wait for Payload admin to render
     // Try multiple selectors as Payload may use different field IDs
