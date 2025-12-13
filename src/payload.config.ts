@@ -122,8 +122,9 @@ export default buildConfig({
 
 // Adapted from https://github.com/opennextjs/opennextjs-cloudflare/blob/d00b3a13e42e65aad76fba41774815726422cc39/packages/cloudflare/src/api/cloudflare-context.ts#L328C36-L328C46
 function getCloudflareContextFromWrangler(): Promise<CloudflareContext> {
-  // In CI or during type generation, skip wrangler initialization to avoid authentication requirements
-  if (process.env.CI || isGenerateTypes) {
+  // During type generation, skip wrangler initialization to avoid authentication requirements
+  // Note: Integration tests need real bindings even in CI, so we only mock for type generation
+  if (isGenerateTypes) {
     // Return mock CloudflareContext for type generation
     return Promise.resolve({
       env: {} as CloudflareEnv,
@@ -143,7 +144,7 @@ function getCloudflareContextFromWrangler(): Promise<CloudflareContext> {
         // Enable local persistent storage (e.g., SQLite for D1, file-based KV/R2)
         // This preserves data between runs and avoids ephemeral in-memory stores
         // Path is configurable via PAYLOAD_PERSIST_PATH env var (default: .payload/persist)
-        // Note: Cloudflare auth is skipped by the CI/type-generation guard above (lines 119-137)
+        // Note: Cloudflare auth is skipped by the type-generation guard above (line 127)
         persist: { path: persistPath },
         // Migration note (Wrangler 4.54+):
         // - Local dev: per-binding "remote" configuration in wrangler.jsonc (e.g., D1, R2)
