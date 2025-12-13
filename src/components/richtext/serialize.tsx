@@ -18,17 +18,17 @@ import type {
   LinkNode,
   CodeNode,
   UploadNode,
-} from './types'
-import { TEXT_FORMAT, hasChildren, isTextNode, isBlockNode } from './types'
+} from '@/components/richtext/types'
+import { TEXT_FORMAT, hasChildren, isTextNode, isBlockNode } from '@/components/richtext/types'
 import { logger } from '@/lib/logger'
-import { Paragraph } from './nodes/Paragraph'
-import { Heading } from './nodes/Heading'
-import { List, ListItem } from './nodes/List'
-import { Quote } from './nodes/Quote'
-import { Link } from './nodes/Link'
-import { CodeBlock } from './nodes/CodeBlock'
-import { CustomCodeBlock } from './nodes/CustomCodeBlock'
-import { ImageBlock } from './nodes/ImageBlock'
+import { Paragraph } from '@/components/richtext/nodes/Paragraph'
+import { Heading } from '@/components/richtext/nodes/Heading'
+import { List, ListItem } from '@/components/richtext/nodes/List'
+import { Quote } from '@/components/richtext/nodes/Quote'
+import { Link } from '@/components/richtext/nodes/Link'
+import { CodeBlock } from '@/components/richtext/nodes/CodeBlock'
+import { CustomCodeBlock } from '@/components/richtext/nodes/CustomCodeBlock'
+import { ImageBlock } from '@/components/richtext/nodes/ImageBlock'
 
 /**
  * Main entry point: serialize Lexical content to React
