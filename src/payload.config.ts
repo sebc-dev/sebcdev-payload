@@ -116,10 +116,17 @@ export default buildConfig({
 // Adapted from https://github.com/opennextjs/opennextjs-cloudflare/blob/d00b3a13e42e65aad76fba41774815726422cc39/packages/cloudflare/src/api/cloudflare-context.ts#L328C36-L328C46
 function getCloudflareContextFromWrangler(): Promise<CloudflareContext> {
   // In CI or during type generation, skip wrangler initialization to avoid authentication requirements
-  if (process.env.CI || process.argv.find((value) => value.match(/^generate:?/))) {
+  if (process.env.CI || isGenerateTypes) {
     // Return mock CloudflareContext for type generation
     return Promise.resolve({
-      env: {} as CloudflareEnv,
+      env: new Proxy({} as CloudflareEnv, {
+        get(target, prop) {
+          throw new Error(
+            `Cannot access Cloudflare binding "${String(prop)}" during type generation. ` +
+              `Bindings are only available at runtime.`,
+          )
+        },
+      }),
       cf: undefined,
       ctx: {
         waitUntil: () => {},
