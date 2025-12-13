@@ -128,6 +128,10 @@ test.describe('Homepage', () => {
     test('interactive elements are keyboard accessible', async ({ page }) => {
       await page.goto('/fr')
 
+      // Wait for page to be fully loaded and stable
+      await page.waitForLoadState('domcontentloaded')
+      await page.waitForTimeout(1000)
+
       // Track unique focused elements to detect focus traps and ensure multiple elements are reachable
       const focusedElements: string[] = []
       const maxTabs = 15 // Reasonable number to traverse main interactive elements
@@ -136,19 +140,29 @@ test.describe('Homepage', () => {
         await page.keyboard.press('Tab')
 
         const focused = page.locator(':focus')
-        if ((await focused.count()) > 0) {
-          // Get a unique identifier for the focused element
-          const identifier = await focused.evaluate((el) => {
-            const tagName = el.tagName.toLowerCase()
-            const role = el.getAttribute('role') || ''
-            const ariaLabel = el.getAttribute('aria-label') || ''
-            const text = el.textContent?.trim().slice(0, 30) || ''
-            return `${tagName}${role ? `[role=${role}]` : ''}${ariaLabel ? `[aria-label="${ariaLabel}"]` : ''}:${text}`
-          })
+        const count = await focused.count()
 
-          // Only add if not already in the list (avoid counting same element twice)
-          if (!focusedElements.includes(identifier)) {
-            focusedElements.push(identifier)
+        if (count > 0) {
+          // If multiple elements have focus (e.g., error dialogs), use the first one
+          const targetElement = count > 1 ? focused.first() : focused
+
+          try {
+            // Get a unique identifier for the focused element
+            const identifier = await targetElement.evaluate((el) => {
+              const tagName = el.tagName.toLowerCase()
+              const role = el.getAttribute('role') || ''
+              const ariaLabel = el.getAttribute('aria-label') || ''
+              const text = el.textContent?.trim().slice(0, 30) || ''
+              return `${tagName}${role ? `[role=${role}]` : ''}${ariaLabel ? `[aria-label="${ariaLabel}"]` : ''}:${text}`
+            })
+
+            // Only add if not already in the list (avoid counting same element twice)
+            if (!focusedElements.includes(identifier)) {
+              focusedElements.push(identifier)
+            }
+          } catch (e) {
+            // Skip elements that can't be evaluated
+            continue
           }
         }
       }

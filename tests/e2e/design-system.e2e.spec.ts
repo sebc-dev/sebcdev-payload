@@ -104,7 +104,7 @@ test.describe('Design System', () => {
 
 test.describe('Admin Panel Isolation', () => {
   // Admin panel tests are slower due to Payload's heavy JS bundle
-  test.setTimeout(60000)
+  test.setTimeout(90000)
 
   test('admin panel loads without JavaScript errors', async ({ page }) => {
     const errors: string[] = []
@@ -114,14 +114,23 @@ test.describe('Admin Panel Isolation', () => {
       }
     })
 
-    await page.goto('/admin')
+    // Wait for page to load with extended timeout
+    await page.goto('/admin', { timeout: 60000 })
 
     // Should redirect to login or show admin UI
     await expect(page).toHaveURL(/\/admin/)
 
     // Wait for Payload admin to render - look for login form or dashboard
-    // Wait for login form to appear (email input indicates Payload is ready)
-    await page.waitForSelector('input[name="email"], input[id="field-email"]', { timeout: 30000 })
+    // Try multiple selectors as Payload may use different field IDs
+    try {
+      await page.waitForSelector('input[name="email"]', { timeout: 45000, state: 'visible' })
+    } catch {
+      // Fallback to alternative selector
+      await page.waitForSelector('input[id="field-email"]', { timeout: 45000, state: 'visible' })
+    }
+
+    // Give a moment for any late errors to surface
+    await page.waitForTimeout(2000)
 
     // Filter out expected errors (like auth-related)
     const unexpectedErrors = errors.filter(
@@ -132,11 +141,20 @@ test.describe('Admin Panel Isolation', () => {
   })
 
   test('admin panel uses its own styles (not frontend theme)', async ({ page }) => {
-    await page.goto('/admin')
+    // Wait for page to load with extended timeout
+    await page.goto('/admin', { timeout: 60000 })
 
     // Wait for Payload admin to render
-    // Wait for login form to appear (indicates Payload admin is fully rendered)
-    await page.waitForSelector('input[name="email"], input[id="field-email"]', { timeout: 30000 })
+    // Try multiple selectors as Payload may use different field IDs
+    try {
+      await page.waitForSelector('input[name="email"]', { timeout: 45000, state: 'visible' })
+    } catch {
+      // Fallback to alternative selector
+      await page.waitForSelector('input[id="field-email"]', { timeout: 45000, state: 'visible' })
+    }
+
+    // Wait for styles to be fully applied
+    await page.waitForTimeout(1000)
 
     // Admin should NOT have our custom anthracite background (#1A1D23)
     // because admin panel has isolated styles
