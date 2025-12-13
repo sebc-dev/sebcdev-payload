@@ -21,8 +21,8 @@ pnpm preview                # Local preview of Cloudflare deployment
 # Testing
 pnpm test:unit              # Run unit tests (Vitest)
 pnpm test:int               # Run integration tests (Vitest)
-pnpm test:e2e               # Run E2E tests (Playwright)
-pnpm test                   # Run all tests
+pnpm test                   # Run unit + integration tests
+# pnpm test:e2e             # E2E tests available locally (disabled in CI)
 
 # Code Quality
 pnpm lint                   # ESLint
@@ -95,7 +95,7 @@ Le projet utilise une **architecture modulaire** de workflows GitHub Actions pou
 | Workflow | Déclenchement | Contenu |
 |----------|---------------|---------|
 | **Core Checks** | Auto sur PR | ESLint, Prettier, Type Sync, Next.js Build |
-| **Tests** | Manuel | Unit, Integration, E2E (Playwright) |
+| **Tests** | Manuel | Unit, Integration ~~(E2E désactivé)~~ |
 | **Security** | Manuel | Socket.dev, Knip (dead code) |
 | **Architecture** | Manuel | dependency-cruiser |
 | **Mutation** | Manuel | Stryker (optionnel) |
@@ -109,7 +109,7 @@ Le projet utilise une **architecture modulaire** de workflows GitHub Actions pou
 ```bash
 # Via GitHub CLI
 gh workflow run "Core Checks"           # ESLint, Prettier, Type Sync, Build
-gh workflow run "Tests"                  # Unit, Integration, E2E
+gh workflow run "Tests"                  # Unit, Integration (E2E désactivé)
 gh workflow run "Security"               # Socket.dev, Knip
 gh workflow run "Architecture"           # dependency-cruiser
 gh workflow run "Mutation Testing"       # Stryker
@@ -127,7 +127,7 @@ pnpm generate:types:payload  # Sync types Payload → TypeScript
 pnpm test:unit               # Unit tests (Vitest)
 pnpm test:int                # Integration tests (Vitest)
 pnpm build                   # Next.js build (no-DB mode)
-pnpm test:e2e                # E2E tests (Playwright)
+# pnpm test:e2e              # E2E tests (désactivé en CI, disponible localement)
 pnpm depcruise               # Architecture validation
 ```
 
@@ -151,7 +151,7 @@ Les checks suivants sont **requis pour merger sur main** (via branch protection)
 | **ESLint + Prettier** | Linting et formatage (Tailwind class ordering) |
 | **Type Sync** | Cohérence Payload ↔ TypeScript |
 | **dependency-cruiser** | Validation architecture (imports serveur/client) |
-| **Playwright** | Tests E2E et accessibilité WCAG 2.1 AA |
+| ~~**Playwright**~~ | ~~Tests E2E~~ (désactivé en CI) |
 | **Stryker** | Mutation testing (qualité des tests) |
 
 > **Documentation complète :** [CI-CD Security Architecture](docs/specs/CI-CD-Security.md)
@@ -274,28 +274,18 @@ Exemple concret : Si un test WCAG échoue pour un problème de contraste, corrig
 - Access Payload API directly via `getPayload()`
 - Run with: `pnpm test:int`
 
-### E2E Tests (`tests/e2e/*.e2e.spec.ts`)
+### ~~E2E Tests~~ (Désactivés en CI)
 
-- Use Playwright with Chromium
-- Dev server starts automatically
-- Run with: `pnpm test:e2e`
+Les tests E2E Playwright sont **désactivés en CI** car jugés trop instables pour un blog (problèmes d'infrastructure Wrangler/Payload/Next.js).
 
-### E2E Tests avec données seedées (`tests/e2e/*-seeded.e2e.spec.ts`)
+**Tests disponibles localement** : `pnpm test:e2e`
 
-Les tests `-seeded` nécessitent des données dans la base :
+**Raisons de la désactivation** :
+- Tests unitaires + intégration suffisent pour un blog
+- Problèmes de timing/réseau dans l'environnement CI
+- Accessibilité et SEO peuvent être validés manuellement
 
-```bash
-# Seeder la base avant de lancer les tests
-pnpm seed
-
-# Lancer les tests E2E (incluant les tests seeded)
-pnpm test:e2e
-
-# Nettoyer et re-seeder si nécessaire
-pnpm seed --clean
-```
-
-Ces tests vérifient le rendu avec de vraies données (articles, catégories, tags) et se skip automatiquement si la base est vide.
+**Pour les réactiver** : décommenter le job `e2e-tests` dans `.github/workflows/tests.yml`
 
 ## TypeScript Paths
 
