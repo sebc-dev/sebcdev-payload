@@ -104,30 +104,50 @@ test.describe('Navigation', () => {
     test('mobile menu opens and closes', async ({ page }) => {
       await page.goto('/fr')
 
-      // Open menu
-      await page.click(`button[aria-label="${frMessages.mobileMenu.open}"]`)
+      // Wait for page to be stable and hamburger to be actionable
+      await page.waitForLoadState('domcontentloaded')
+      const hamburger = page.locator(`button[aria-label="${frMessages.mobileMenu.open}"]`)
+      await expect(hamburger).toBeVisible()
+      await expect(hamburger).toBeEnabled()
 
-      // Sheet should be visible
+      // Click and wait for dialog to appear in DOM
+      await hamburger.click()
+      await page.waitForSelector('[role="dialog"]', { state: 'attached', timeout: 15000 })
+
+      // Now check visibility
       const sheet = page.getByRole('dialog')
-      await expect(sheet).toBeVisible()
+      await expect(sheet).toBeVisible({ timeout: 5000 })
 
       // Close button uses translated label from mobileMenu.close
-      await sheet.getByRole('button', { name: frMessages.mobileMenu.close }).click()
+      const closeButton = sheet.getByRole('button', { name: frMessages.mobileMenu.close })
+      await expect(closeButton).toBeVisible()
+      await closeButton.click()
+
+      // Wait for sheet to disappear
       await expect(sheet).not.toBeVisible()
     })
 
     test('Escape key closes mobile menu', async ({ page }) => {
       await page.goto('/fr')
 
-      // Open menu
-      await page.click(`button[aria-label="${frMessages.mobileMenu.open}"]`)
+      // Wait for page to be stable and hamburger to be actionable
+      await page.waitForLoadState('domcontentloaded')
+      const hamburger = page.locator(`button[aria-label="${frMessages.mobileMenu.open}"]`)
+      await expect(hamburger).toBeVisible()
+      await expect(hamburger).toBeEnabled()
 
+      // Click and wait for dialog to appear in DOM
+      await hamburger.click()
+      await page.waitForSelector('[role="dialog"]', { state: 'attached', timeout: 15000 })
+
+      // Now check visibility
       const sheet = page.getByRole('dialog')
-      await expect(sheet).toBeVisible()
+      await expect(sheet).toBeVisible({ timeout: 5000 })
 
       // Press Escape
       await page.keyboard.press('Escape')
 
+      // Wait for sheet to disappear
       await expect(sheet).not.toBeVisible()
     })
   })
@@ -151,41 +171,52 @@ test.describe('Navigation', () => {
     test('dropdown shows language options when opened', async ({ page }) => {
       await page.goto('/fr')
 
-      // Open the language dropdown
+      // Wait for and open the language dropdown
       const langSwitcher = page
         .locator('header')
         .getByRole('button', { name: frMessages.language.switch })
+      await expect(langSwitcher).toBeVisible()
       await langSwitcher.click()
 
       // Both language options should be visible in the dropdown menu
-      await expect(page.getByRole('menuitem', { name: 'Français' })).toBeVisible()
-      await expect(page.getByRole('menuitem', { name: 'English' })).toBeVisible()
+      await expect(page.getByRole('menuitem', { name: 'Français' })).toBeVisible({ timeout: 5000 })
+      await expect(page.getByRole('menuitem', { name: 'English' })).toBeVisible({ timeout: 5000 })
     })
 
     test('current language is highlighted', async ({ page }) => {
       await page.goto('/fr')
 
-      // Open the language dropdown
+      // Wait for and open the language dropdown
       const langSwitcher = page
         .locator('header')
         .getByRole('button', { name: frMessages.language.switch })
+      await expect(langSwitcher).toBeVisible()
       await langSwitcher.click()
 
-      // French should have aria-current="true"
+      // Wait for menu to open and French item to be visible
       const frItem = page.getByRole('menuitem', { name: 'Français' })
+      await expect(frItem).toBeVisible({ timeout: 5000 })
+
+      // French should have aria-current="true"
       await expect(frItem).toHaveAttribute('aria-current', 'true')
     })
 
     test('switching to English updates URL', async ({ page }) => {
       await page.goto('/fr')
 
-      // Open the language dropdown and click English
+      // Wait for and open the language dropdown
       const langSwitcher = page
         .locator('header')
         .getByRole('button', { name: frMessages.language.switch })
+      await expect(langSwitcher).toBeVisible()
       await langSwitcher.click()
-      await page.getByRole('menuitem', { name: 'English' }).click()
 
+      // Wait for English option and click it
+      const englishItem = page.getByRole('menuitem', { name: 'English' })
+      await expect(englishItem).toBeVisible({ timeout: 5000 })
+      await englishItem.click()
+
+      // Wait for navigation to complete
       await expect(page).toHaveURL('/en')
       await expect(page.locator('html')).toHaveAttribute('lang', 'en')
     })
@@ -193,13 +224,19 @@ test.describe('Navigation', () => {
     test('switching to French updates URL', async ({ page }) => {
       await page.goto('/en')
 
-      // Open the language dropdown and click French
+      // Wait for and open the language dropdown
       const langSwitcher = page
         .locator('header')
         .getByRole('button', { name: enMessages.language.switch })
+      await expect(langSwitcher).toBeVisible()
       await langSwitcher.click()
-      await page.getByRole('menuitem', { name: 'Français' }).click()
 
+      // Wait for French option and click it
+      const frenchItem = page.getByRole('menuitem', { name: 'Français' })
+      await expect(frenchItem).toBeVisible({ timeout: 5000 })
+      await frenchItem.click()
+
+      // Wait for navigation to complete
       await expect(page).toHaveURL('/fr')
       await expect(page.locator('html')).toHaveAttribute('lang', 'fr')
     })
