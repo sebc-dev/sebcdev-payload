@@ -20,7 +20,9 @@
       "binding": "D1",
       "database_id": "d558666f-e7e9-4ff7-a972-dbc0d8bea923",
       "database_name": "sebcdev",
-      "remote": true,
+      // Note: "remote" flag removed - use CLOUDFLARE_REMOTE_BINDINGS=true for remote access
+      // Default is local mode (via getPlatformProxy with persist)
+      // Production runtime uses getCloudflareContext() which accesses real remote D1
     },
   ],
   "services": [
