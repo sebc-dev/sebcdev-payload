@@ -38,9 +38,12 @@ export async function EmptyState({
   const t = await getTranslations(namespace)
   const tCommon = await getTranslations('common')
 
-  // Check authentication via payload-token cookie (only needed for empty state)
-  const cookieStore = await cookies()
-  const isAuthenticated = cookieStore.has('payload-token')
+  // Check authentication only when needed (empty variant shows auth-gated CTA)
+  let isAuthenticated = false
+  if (variant === 'empty') {
+    const cookieStore = await cookies()
+    isAuthenticated = cookieStore.has('payload-token')
+  }
 
   // Select icon based on variant
   const Icon = variant === 'error' ? AlertCircle : FileText
