@@ -119,14 +119,7 @@ function getCloudflareContextFromWrangler(): Promise<CloudflareContext> {
   if (process.env.CI || isGenerateTypes) {
     // Return mock CloudflareContext for type generation
     return Promise.resolve({
-      env: new Proxy({} as CloudflareEnv, {
-        get(target, prop) {
-          throw new Error(
-            `Cannot access Cloudflare binding "${String(prop)}" during type generation. ` +
-              `Bindings are only available at runtime.`,
-          )
-        },
-      }),
+      env: {} as CloudflareEnv,
       cf: undefined,
       ctx: {
         waitUntil: () => {},
