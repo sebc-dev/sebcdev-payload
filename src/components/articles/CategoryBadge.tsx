@@ -55,9 +55,9 @@ export function CategoryBadge({
   clickable = true,
   className,
 }: CategoryBadgeProps) {
-  const style = category.color
-    ? { backgroundColor: `${category.color}33`, color: category.color }
-    : {}
+  // Use white text on category color background (20% opacity) to ensure WCAG 2.1 AA contrast
+  // White text provides better contrast than using the category color for both bg and text
+  const style = category.color ? { backgroundColor: `${category.color}33`, color: '#fff' } : {}
 
   const IconComponent = category.icon ? getLucideIcon(category.icon) : null
 

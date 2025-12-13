@@ -61,7 +61,7 @@ export function LanguageSwitcher({ className }: LanguageSwitcherProps) {
   const CurrentFlag = currentLocale.Flag
 
   const handleLocaleChange = (newLocale: Locale) => {
-    router.replace(pathname, { locale: newLocale })
+    router.push(pathname, { locale: newLocale })
   }
 
   return (
@@ -77,7 +77,7 @@ export function LanguageSwitcher({ className }: LanguageSwitcherProps) {
           {locales.map(({ code, Flag }) => (
             <DropdownMenuItem
               key={code}
-              onClick={() => handleLocaleChange(code)}
+              onSelect={() => handleLocaleChange(code)}
               className="gap-3 cursor-pointer"
               aria-current={locale === code ? 'true' : undefined}
             >
