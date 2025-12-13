@@ -13,6 +13,13 @@ import { Users, Media, Categories, Tags, Articles } from '@/collections'
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
 
+// Configurable persistence path for Wrangler local mode
+// Override with PAYLOAD_PERSIST_PATH environment variable
+export const persistPath = path.resolve(
+  dirname,
+  process.env.PAYLOAD_PERSIST_PATH || '.payload/persist',
+)
+
 // IMPORTANT: Remote D1 bindings require NODE_ENV=production
 // - For migrations: NODE_ENV=production pnpm payload migrate
 // - For dev mode: pnpm dev (uses local SQLite via Wrangler)
@@ -135,8 +142,9 @@ function getCloudflareContextFromWrangler(): Promise<CloudflareContext> {
         environment: process.env.CLOUDFLARE_ENV,
         // Enable local persistent storage (e.g., SQLite for D1, file-based KV/R2)
         // This preserves data between runs and avoids ephemeral in-memory stores
+        // Path is configurable via PAYLOAD_PERSIST_PATH env var (default: .payload/persist)
         // Note: Cloudflare auth is skipped by the CI/type-generation guard above (lines 119-137)
-        persist: true,
+        persist: { path: persistPath },
         // Migration note (Wrangler 4.54+):
         // - Local dev: per-binding "remote" configuration in wrangler.jsonc (e.g., D1, R2)
         // - Production: uses getCloudflareContext() (unchanged)
