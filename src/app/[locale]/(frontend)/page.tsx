@@ -119,8 +119,8 @@ function mapTag(tag: PayloadTag): ArticleData['tags'][number] {
  * Maps Payload article to component article interface
  */
 function mapArticle(payloadArticle: PayloadArticle): ArticleData | null {
-  // Guard against malformed data
-  if (!payloadArticle || !payloadArticle.id) {
+  // Guard against malformed data (use == null to allow falsy but valid ids like 0)
+  if (!payloadArticle || payloadArticle.id == null) {
     return null
   }
 
