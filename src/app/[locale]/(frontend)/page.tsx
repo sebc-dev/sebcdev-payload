@@ -91,7 +91,7 @@ function mapCoverImage(featuredImage: PayloadImage): ArticleData['coverImage'] {
 
 /** Maps Payload category to component category */
 function mapCategory(category: PayloadCategory): ArticleData['category'] {
-  if (typeof category !== 'object' || category === null || !category.id) {
+  if (typeof category !== 'object' || category === null || category.id == null) {
     return { id: '', title: '', slug: '' }
   }
   return {
@@ -105,7 +105,7 @@ function mapCategory(category: PayloadCategory): ArticleData['category'] {
 
 /** Maps a single Payload tag to component tag */
 function mapTag(tag: PayloadTag): ArticleData['tags'][number] {
-  if (typeof tag === 'object' && tag !== null && tag.id) {
+  if (typeof tag === 'object' && tag !== null && tag.id != null) {
     return {
       id: String(tag.id),
       title: 'name' in tag ? (tag.name as string) : '',
