@@ -239,6 +239,24 @@ export function isHeadingNode(node: LexicalNode): node is HeadingNode {
 }
 
 /**
+ * Type guard for block nodes
+ * @param node - Node to check (accepts unknown for safe usage in serializers)
+ */
+export function isBlockNode(node: unknown): node is BlockNode {
+  return (
+    typeof node === 'object' &&
+    node !== null &&
+    'type' in node &&
+    node.type === 'block' &&
+    'fields' in node &&
+    typeof node.fields === 'object' &&
+    node.fields !== null &&
+    'blockType' in node.fields &&
+    typeof node.fields.blockType === 'string'
+  )
+}
+
+/**
  * Type guard for LexicalContent - validates minimal structure
  */
 export function isLexicalContent(value: unknown): value is LexicalContent {
