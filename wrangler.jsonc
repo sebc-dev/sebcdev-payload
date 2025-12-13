@@ -20,9 +20,14 @@
       "binding": "D1",
       "database_id": "d558666f-e7e9-4ff7-a972-dbc0d8bea923",
       "database_name": "sebcdev",
-      // Note: "remote" flag removed - use CLOUDFLARE_REMOTE_BINDINGS=true for remote access
-      // Default is local mode (via getPlatformProxy with persist)
-      // Production runtime uses getCloudflareContext() which accesses real remote D1
+      // Remote flag removed: Wrangler uses local D1 by default (SQLite with persistence)
+      // For explicit remote access, set CLOUDFLARE_REMOTE_BINDINGS=true env var
+      //   (application environment variable read by payload.config.ts, NOT a wrangler CLI flag)
+      // Modes:
+      //   - Local dev/tests: getPlatformProxy() with local SQLite
+      //   - Production: getCloudflareContext() with real remote D1
+      //   - Explicit remote: CLOUDFLARE_REMOTE_BINDINGS=true (e.g., for migrations)
+      // Verification: Local mode tested with D1/R2 persistence in dev/test workflows
     },
   ],
   "services": [
