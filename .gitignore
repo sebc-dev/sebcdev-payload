@@ -54,6 +54,9 @@ node_modules/
 .open-next
 .wrangler
 
+# Payload persistent storage (local development)
+.payload
+
 # Dependency cruiser reports (generated, not committed)
 depcruise-report.html
 
