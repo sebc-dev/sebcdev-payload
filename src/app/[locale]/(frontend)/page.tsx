@@ -162,7 +162,7 @@ export default async function HomePage({ params }: HomePageProps) {
     const payload = await getPayload({ config: payloadConfig })
 
     // Fetch 7 most recent published articles
-    const { docs: payloadArticles } = (await payload.find({
+    const { docs: payloadArticles } = await payload.find({
       collection: 'articles',
       locale,
       limit: 7,
@@ -171,7 +171,7 @@ export default async function HomePage({ params }: HomePageProps) {
         status: { equals: 'published' },
       },
       depth: 2,
-    })) as { docs: PayloadArticle[] }
+    })
 
     // Map Payload articles to component articles, filtering out any null/invalid entries
     articles = payloadArticles
