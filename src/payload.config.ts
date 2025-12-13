@@ -18,8 +18,9 @@ const dirname = path.dirname(filename)
 // - For dev mode: pnpm dev (uses local SQLite via Wrangler)
 // - For production runtime: Cloudflare Workers sets NODE_ENV=production automatically
 const cloudflareRemoteBindings = process.env.NODE_ENV === 'production'
+const isGenerateTypes = process.argv.find((value) => value.match(/^generate:?/))
 const cloudflare =
-  process.argv.find((value) => value.match(/^(generate|migrate):?/)) || !cloudflareRemoteBindings
+  isGenerateTypes || !cloudflareRemoteBindings
     ? await getCloudflareContextFromWrangler()
     : await getCloudflareContext({ async: true })
 
@@ -114,10 +115,26 @@ export default buildConfig({
 
 // Adapted from https://github.com/opennextjs/opennextjs-cloudflare/blob/d00b3a13e42e65aad76fba41774815726422cc39/packages/cloudflare/src/api/cloudflare-context.ts#L328C36-L328C46
 function getCloudflareContextFromWrangler(): Promise<CloudflareContext> {
+  // In CI or during type generation, skip wrangler initialization to avoid authentication requirements
+  if (process.env.CI || process.argv.find((value) => value.match(/^generate:?/))) {
+    // Return mock CloudflareContext for type generation
+    return Promise.resolve({
+      env: {} as CloudflareEnv,
+      cf: undefined,
+      ctx: {
+        waitUntil: () => {},
+        passThroughOnException: () => {},
+        props: {},
+      },
+    })
+  }
+
   return import(/* webpackIgnore: true */ `${'__wrangler'.replaceAll('_', '')}`).then(
     ({ getPlatformProxy }) =>
       getPlatformProxy({
         environment: process.env.CLOUDFLARE_ENV,
+        // Force local mode to avoid requiring Cloudflare authentication in CI
+        persist: true,
         // TODO: Check if remoteBindings option still exists in wrangler 4.54+
         // experimental: { remoteBindings: cloudflareRemoteBindings },
       } satisfies GetPlatformProxyOptions),
