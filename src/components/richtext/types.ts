@@ -21,6 +21,7 @@ export const TEXT_FORMAT = {
   SUPERSCRIPT: 64,
 } as const
 
+/** @public - Type definition for text formatting, may be used in custom components */
 export type TextFormat = (typeof TEXT_FORMAT)[keyof typeof TEXT_FORMAT]
 
 /**
@@ -210,6 +211,7 @@ export interface LexicalContent {
 
 /**
  * Props for node renderer components
+ * @public - Type definition for custom node renderers
  */
 export interface NodeRendererProps {
   node: LexicalNode

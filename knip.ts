@@ -78,12 +78,6 @@ const config: KnipConfig = {
   // - To update: verify dependency is still needed, then bump the date
   //
   ignoreDependencies: [
-    // === Temporary ignores (review every 90 days) ===
-
-    // @testing-library/react - reserved for future component tests
-    // @knip-review-by: 2026-03-03
-    '@testing-library/react',
-
     // === Build tooling - structural ignores (review every 180 days) ===
     // These are referenced as config keys/strings, not ES imports
 
@@ -105,6 +99,10 @@ const config: KnipConfig = {
     // @knip-review-by: 2026-06-05
     'dotenv',
   ],
+
+  // Ignore barrel export patterns (re-exports in index.ts files)
+  // @knip-review-by: 2026-06-13
+  ignoreExportsUsedInFile: true,
 
   // Rules configuration - strict on dependencies, warn on code
   rules: {
@@ -163,6 +161,8 @@ const config: KnipConfig = {
   vitest: {
     // Vitest config detection
     config: ['vitest.config.mts'],
+    // Test files as entry points to track test-only imports
+    entry: ['tests/**/*.{spec,test}.{ts,tsx}'],
   },
 
   stryker: {
