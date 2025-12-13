@@ -130,8 +130,21 @@ function getCloudflareContextFromWrangler(): Promise<CloudflareContext> {
   // Note: Integration tests need real bindings even in CI, so we only mock for type generation
   if (isGenerateTypes) {
     // Return mock CloudflareContext for type generation
+    // Use a Proxy that returns no-op stand-ins for bindings (D1, R2, KV, etc.)
+    // This prevents undefined errors if adapters validate/access bindings during construction
     return Promise.resolve({
-      env: {} as CloudflareEnv,
+      env: new Proxy({} as CloudflareEnv, {
+        get(target, prop) {
+          // Return a no-op Proxy for any binding property accessed
+          return new Proxy(
+            {},
+            {
+              get: () => () => {}, // All methods return no-op functions
+              apply: () => ({}), // If called as function, return empty object
+            },
+          )
+        },
+      }),
       cf: undefined,
       ctx: {
         waitUntil: () => {},
