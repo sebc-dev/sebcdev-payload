@@ -21,6 +21,7 @@ import type {
   UploadNode,
 } from './types'
 import { TEXT_FORMAT, hasChildren, isTextNode, isBlockNode } from './types'
+import { logger } from '@/lib/logger'
 import { Paragraph } from './nodes/Paragraph'
 import { Heading } from './nodes/Heading'
 import { List, ListItem } from './nodes/List'
@@ -99,9 +100,7 @@ export function serializeNode(node: LexicalNode, index: number): ReactNode {
 
     case 'block': {
       if (!isBlockNode(node)) {
-        if (process.env.NODE_ENV !== 'production') {
-          console.warn(`[serializeLexical] Invalid block node structure`)
-        }
+        logger.warn(`[serializeLexical] Invalid block node structure`)
         return null
       }
       // Handle different block types
@@ -109,9 +108,7 @@ export function serializeNode(node: LexicalNode, index: number): ReactNode {
         return <CustomCodeBlock key={index} node={node} />
       }
       // Future: add other block types here
-      if (process.env.NODE_ENV !== 'production') {
-        console.warn(`[serializeLexical] Unknown block type: ${node.fields.blockType}`)
-      }
+      logger.warn(`[serializeLexical] Unknown block type: ${node.fields.blockType}`)
       return null
     }
 
@@ -120,9 +117,7 @@ export function serializeNode(node: LexicalNode, index: number): ReactNode {
 
     default:
       // Unknown node type - render children if available
-      if (process.env.NODE_ENV !== 'production') {
-        console.warn(`[serializeLexical] Unknown node type: ${node.type}`)
-      }
+      logger.warn(`[serializeLexical] Unknown node type: ${node.type}`)
       if (hasChildren(node)) {
         return <span key={index}>{serializeChildren(node.children)}</span>
       }
