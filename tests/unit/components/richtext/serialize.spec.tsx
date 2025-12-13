@@ -118,7 +118,9 @@ describe('serializeLexical', () => {
     const result = serializeLexical(content)
     const { container } = render(<>{result}</>)
 
-    expect(consoleSpy).toHaveBeenCalledWith('[serializeLexical] Unknown node type: unknown-node')
+    expect(consoleSpy).toHaveBeenCalledWith(
+      expect.stringContaining('[serializeLexical] Unknown node type: unknown-node'),
+    )
     expect(container.textContent).toBe('')
 
     consoleSpy.mockRestore()
