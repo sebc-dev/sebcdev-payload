@@ -140,6 +140,9 @@ function getCloudflareContextFromWrangler(): Promise<CloudflareContext> {
     ({ getPlatformProxy }) =>
       getPlatformProxy({
         environment: process.env.CLOUDFLARE_ENV,
+        // Enable local persistent storage (e.g., SQLite for D1, file-based KV/R2)
+        // This preserves data between runs and avoids ephemeral in-memory stores
+        // Note: Cloudflare auth is skipped by the CI/type-generation guard above (lines 119-137)
         persist: true,
         // Migration note (Wrangler 4.54+):
         // - Local dev: per-binding "remote" configuration in wrangler.jsonc (e.g., D1, R2)
